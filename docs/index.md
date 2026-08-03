@@ -5,7 +5,28 @@ import { data as facts } from './.vitepress/data/facts.data.mts'
 # Welcome to the AC6502 Documentation
 
 This is the user's and programmer's guide for the **AC6502** family of homebrew
-computers — ACE, COB, DEV, KIM, and VCS — one shared BIOS across five machines.
+computers — ACE, COB, DEV, KIM, and VCS.
+
+Five machines, five very different shapes — a single-board all-in-one, a
+backplane you build up one card at a time, a Teensy-hosted development rig, a
+KIM-1-style keypad-and-LCD minimal machine, and a cartridge console — but they
+all run **one shared BIOS**. The same Kernal jump table, the same BASIC
+dialect, the same Monitor commands, work identically wherever you're sitting.
+What changes from machine to machine is which cards are fitted, not what the
+software can assume: every card the BIOS supports announces itself through a
+hardware probe at boot (`HW_PRESENT`, more in
+[Troubleshooting](/getting-started/troubleshooting)), and code that checks
+before it uses a peripheral runs unmodified across the whole family.
+
+<PlaceholderImage
+  label="The family, all five machines"
+  caption="ACE, COB, DEV, KIM and VCS side by side. The one real photo of a machine currently in this repo (docs/public/images/6502.png) shows a stale BIOS banner and stays out of the docs until Phase 8 resolves it — see ACCURACY.md, finding A9."
+/>
+
+If you're deciding which one describes your build (or which one to build),
+[Choosing your machine](/systems/comparison) has the comparison table. If you
+already have one on the bench, [Setting up](/getting-started/setup) is the
+next stop.
 
 This site is under construction. The chapters below will land as the
 documentation project proceeds through its phases:

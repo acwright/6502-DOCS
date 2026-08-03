@@ -36,7 +36,7 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 | Status | Count |
 |---|---|
 | confirmed | 9 |
-| open | 4 |
+| open | 5 |
 | fixed | 0 |
 
 ---
@@ -176,6 +176,16 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 | **Status** | Deliberate. Rebuilding card content is Phase 7, which opens by auditing every card against `data/`; doing it during the migration would have mixed a mechanical, diffable move with editorial work and made both harder to check. |
 | **Mitigation** | Nothing on the site links to a card yet. The cards are reachable by URL but are not presented as current. |
 | **Check** | pending GREP + RUN (Phase 7) |
+
+### O5 — `?NO DEVICE` cannot currently be produced with the emulator CLI
+
+| | |
+|---|---|
+| **Observation** | The BASIC error `?NO DEVICE ERROR` (`BASIC.asm:7976-7981`, `ReqHw`) fires when a statement needs a card whose `HW_PRESENT` bit is clear. Storage statements (`DIR`, `LOAD "name"`, `SAVE "name"`, `DEL`, `BLOAD`, `BSAVE`, `FORMAT`) all guard on `HW_CF`. Confirmed empirically: `6502 run --headless` with **no** `--cf` flag still reports `HW=$7F` (every bit set except video) and `DIR` prints an empty `DISK 0` rather than erroring — the emulator's default headless machine profile always includes a Storage card object (`src/tests/IO/Storage.test.ts` instantiates one unconditionally), and `--cf` only attaches a backing image to it; there is no CLI flag to remove the card itself. |
+| **Consequence for these docs** | [Storage](https://github.com/acwright/6502-DOCS/blob/main/docs/using/storage.md)'s `NO DEVICE` claim is GREP-sourced (the error text and the `ReqHw` guard are real and read directly from the ROM) but is **not** RUN-verified, unlike every other command in that chapter — the current tooling cannot reach the condition that would trigger it. |
+| **Status** | Open. Not a documentation error — a gap in what the emulator CLI can currently simulate. |
+| **Suggested upstream fix** | A `6502-EMULATOR` flag to omit the Storage card entirely (mirroring how `--console video` is the only currently-togglable card) would close this. Tracked here rather than filed upstream directly, since this repo doesn't own that one. |
+| **Check** | GREP (the error path); RUN attempted and found not reproducible |
 
 ---
 

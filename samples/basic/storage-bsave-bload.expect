@@ -1,0 +1,6 @@
+# BLOAD/BSAVE round trip against a real CompactFlash image, for the Storage
+# chapter (Phase 3). Proves a byte poked into RAM, saved, cleared, and loaded
+# back comes back unchanged.
+
+console storage
+pass

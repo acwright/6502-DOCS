@@ -51,6 +51,37 @@ export default defineConfig({
       {
         text: 'Introduction',
         items: [{ text: 'Welcome', link: '/' }]
+      },
+      {
+        text: 'Getting Started',
+        items: [
+          { text: 'Choosing your machine', link: '/systems/comparison' },
+          { text: 'Setting up', link: '/getting-started/setup' },
+          { text: 'First power-on', link: '/getting-started/first-boot' },
+          { text: 'Your first ten minutes', link: '/getting-started/first-ten-minutes' },
+          { text: 'Troubleshooting', link: '/getting-started/troubleshooting' }
+        ]
+      },
+      {
+        text: 'Systems',
+        items: [
+          { text: 'ACE', link: '/systems/ace' },
+          { text: 'COB', link: '/systems/cob' },
+          { text: 'DEV', link: '/systems/dev' },
+          { text: 'KIM', link: '/systems/kim' },
+          { text: 'VCS', link: '/systems/vcs' }
+        ]
+      },
+      {
+        text: 'Using the Machine',
+        items: [
+          { text: 'The keyboard', link: '/using/keyboard' },
+          { text: 'Storage', link: '/using/storage' },
+          { text: 'Serial & XModem', link: '/using/serial' },
+          { text: 'The Monitor', link: '/using/monitor' },
+          { text: 'Sound & video', link: '/using/sound-and-video' },
+          { text: 'Using the emulator', link: '/using/emulator' }
+        ]
       }
     ],
 

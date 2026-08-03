@@ -37,7 +37,7 @@ One directive per line; `#` starts a comment. A case must assert something.
 | `absent <regex>` | Console output must not match |
 | `pass` | Shorthand for `expect ^PASS$` + `absent ^FAIL$` |
 | `screen <regex>` | `dbg screen text` must match — implies `console video` |
-| `console serial\|video` | Which machine to run on (default `serial`) |
+| `console serial\|video\|storage` | Which machine to run on (default `serial`) |
 | `wait <regex>` | What `RUN` waits for before asserting (default `OK`, serial only) |
 | `cycles <n>` | Emulated cycles to advance after each send (video only, default 2,000,000) |
 | `send <text>` | Extra input after `RUN`, before asserting (repeatable) |
@@ -56,6 +56,26 @@ its own machine booted with `--console video`.
 
 Screen rows are padded to the full 40 columns, so anchor with `\s*$` rather than
 `$`.
+
+### Storage cases
+
+`console storage` boots with a prepared CompactFlash image attached
+(`--cf`), built fresh before every run by `buildStorageFixture()` via the
+already-installed `cffs` CLI — not checked into git, the same treatment as
+assembled `.prg` output. The fixture carries one seed file, `HELLO.TXT`. A
+case that `DEL`s or `FORMAT`s it doesn't affect the next case: every case
+restores from the snapshot taken right after boot, and that restore reverts
+the CF card's contents along with everything else — confirmed directly by
+running `FORMAT` then restoring the snapshot and seeing `HELLO.TXT`
+reappear in `DIR`.
+
+Watch for one thing writing a `.expect` for a storage case: typing a program
+line that contains a bare filename (`DEL "HELLO.TXT"`) gets echoed back into
+the console output verbatim, unpadded. A directory listing pads names to
+their 8.3 field width (`HELLO   .TXT`), so an `absent` check meant to prove a
+file is *gone* needs to require that padding (`HELLO\s+\.TXT`, not
+`HELLO\s*\.TXT`) or it will trip on the echoed program text instead of the
+real directory line.
 
 ## How it runs
 

@@ -16,7 +16,7 @@
 // branch on exit codes.
 
 import { spawn, spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -25,6 +25,10 @@ import { emulatorCommand } from './preflight.mjs'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SAMPLES = join(ROOT, 'samples')
 const BUILD = join(SAMPLES, 'build')
+// A prepared CompactFlash image for `console storage` cases, built fresh by
+// `buildStorageFixture()` before any machine boots — not checked into git,
+// same treatment as the assembled .prg files below.
+const STORAGE_FIXTURE = join(BUILD, 'storage-fixture.img')
 
 // Pinned so a run on a laptop and a run on a CI box land in the same machine.
 const RTC = '2026-01-01T00:00:00'
@@ -83,6 +87,7 @@ function discover(dir = SAMPLES) {
  * that a case must assert *something*.
  *
  *   console video        run on a machine with a video card fitted
+ *   console storage      run on a machine with a prepared CompactFlash image attached
  *   timeout 30s          per-assertion budget (default 20s)
  *   wait <pattern>       what RUN waits for before asserting (default OK, serial only)
  *   cycles <n>           emulated cycles to advance after each send (video only)
@@ -116,7 +121,9 @@ function parseExpect(path) {
 
     switch (key) {
       case 'console':
-        if (!['serial', 'video'].includes(value)) throw new Error(`${where}: console must be serial or video`)
+        if (!['serial', 'video', 'storage'].includes(value)) {
+          throw new Error(`${where}: console must be serial, video, or storage`)
+        }
         spec.console = value
         break
       case 'timeout':
@@ -192,6 +199,7 @@ class Machine {
       '600s'
     ]
     if (this.consoleMode === 'video') args.push('--console', 'video')
+    if (this.consoleMode === 'storage') args.push('--cf', STORAGE_FIXTURE)
 
     this.process = spawn(this.emulator.command, args, { stdio: 'ignore' })
     this.process.on('error', (error) => {
@@ -217,7 +225,9 @@ class Machine {
    * still independent of how fast the host is.
    */
   waitForPrompt() {
-    if (this.consoleMode === 'serial') {
+    // A storage machine is still a serial console — the only difference is
+    // the --cf attached at boot — so it waits the same way.
+    if (this.consoleMode !== 'video') {
       this.dbg(['wait', '--serial', 'OK', '--run', 'turbo', '--timeout', '60s'], { required: true })
       return
     }
@@ -390,6 +400,34 @@ function escapeRegExp(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+/**
+ * Build the CompactFlash image `console storage` cases boot with — one file,
+ * HELLO.TXT, so a DIR/LOAD case has something to find. Cases that DEL, BSAVE,
+ * or FORMAT never affect each other: every case restores from the snapshot
+ * taken right after boot, and a storage restore reverts the CF card's
+ * contents along with everything else (confirmed directly: FORMAT-then-restore
+ * brings HELLO.TXT back).
+ */
+function buildStorageFixture() {
+  mkdirSync(BUILD, { recursive: true })
+  rmSync(STORAGE_FIXTURE, { force: true })
+
+  const seed = join(BUILD, 'hello.txt')
+  writeFileSync(seed, 'HELLO\n')
+
+  const create = spawnSync('cffs', ['create', STORAGE_FIXTURE, '--disks', '1'], { encoding: 'utf-8' })
+  if (create.status !== 0) {
+    throw new Error(`cffs create failed:\n${(create.stderr || create.stdout || '').trim()}`)
+  }
+
+  const add = spawnSync('cffs', ['add', STORAGE_FIXTURE, seed, '--name', 'HELLO.TXT'], {
+    encoding: 'utf-8'
+  })
+  if (add.status !== 0) {
+    throw new Error(`cffs add failed:\n${(add.stderr || add.stdout || '').trim()}`)
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Driver
 // ---------------------------------------------------------------------------
@@ -420,8 +458,15 @@ async function main() {
     process.exit(1)
   }
 
+  const needsStorage = cases.some((c) => c.spec.console === 'storage')
+  if (needsStorage && spawnSync('cffs', ['--version']).error) {
+    console.error('verify: cffs is not installed — run `npm run preflight`')
+    process.exit(1)
+  }
+
   rmSync(BUILD, { recursive: true, force: true })
   mkdirSync(BUILD, { recursive: true })
+  if (needsStorage) buildStorageFixture()
 
   const modes = [...new Set(cases.map((c) => c.spec.console))]
   const machines = new Map()
