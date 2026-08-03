@@ -1,0 +1,5 @@
+10 A = (1 = 1)
+20 B = (1 = 2)
+30 PRINT A; B
+40 IF A = -1 AND B = 0 THEN PRINT "PASS"
+50 IF A <> -1 OR B <> 0 THEN PRINT "FAIL"

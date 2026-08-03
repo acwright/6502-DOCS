@@ -1,0 +1,291 @@
+{
+  "$meta": {
+    "title": "Error and status messages",
+    "description": "Verbatim strings from the ROM. Text is byte-for-byte what the machine prints.",
+    "generator": "scripts/extract-facts.mjs",
+    "biosVersion": "1.5",
+    "sources": [
+      {
+        "file": "BASIC.asm",
+        "sha256": "4bee14f3785d426c896af508f190eb3abb04fd3d43e9b2eca387241d3f19f139"
+      },
+      {
+        "file": "Monitor.asm",
+        "sha256": "9c0e44dbcb3d6ead5f3b1d68bbd9bb6d03f303fc84185f4edfe46a856f346fc7"
+      }
+    ],
+    "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
+  },
+  "basic": {
+    "format": "?<MESSAGE> ERROR[ IN nnnn]",
+    "note": "Errors print with a leading \"?\" and, inside a running program, \" IN \" and the line number.",
+    "errors": [
+      {
+        "code": 0,
+        "symbol": "ERR_SYNTAX",
+        "text": "SYNTAX",
+        "printed": "?SYNTAX ERROR",
+        "source": "BASIC.asm:8804",
+        "check": "GREP"
+      },
+      {
+        "code": 1,
+        "symbol": "ERR_OVERFLOW",
+        "text": "OVERFLOW",
+        "printed": "?OVERFLOW ERROR",
+        "source": "BASIC.asm:8805",
+        "check": "GREP"
+      },
+      {
+        "code": 2,
+        "symbol": "ERR_OUTOFMEM",
+        "text": "OUT OF MEMORY",
+        "printed": "?OUT OF MEMORY ERROR",
+        "source": "BASIC.asm:8806",
+        "check": "GREP"
+      },
+      {
+        "code": 3,
+        "symbol": "ERR_UNDEFSTMT",
+        "text": "UNDEF'D STATEMENT",
+        "printed": "?UNDEF'D STATEMENT ERROR",
+        "source": "BASIC.asm:8807",
+        "check": "GREP"
+      },
+      {
+        "code": 4,
+        "symbol": "ERR_BADSUBSCR",
+        "text": "BAD SUBSCRIPT",
+        "printed": "?BAD SUBSCRIPT ERROR",
+        "source": "BASIC.asm:8808",
+        "check": "GREP"
+      },
+      {
+        "code": 5,
+        "symbol": "ERR_REDIM",
+        "text": "REDIM'D ARRAY",
+        "printed": "?REDIM'D ARRAY ERROR",
+        "source": "BASIC.asm:8809",
+        "check": "GREP"
+      },
+      {
+        "code": 6,
+        "symbol": "ERR_DIVZERO",
+        "text": "DIVISION BY ZERO",
+        "printed": "?DIVISION BY ZERO ERROR",
+        "source": "BASIC.asm:8810",
+        "check": "GREP"
+      },
+      {
+        "code": 7,
+        "symbol": "ERR_ILLDIRECT",
+        "text": "ILLEGAL DIRECT",
+        "printed": "?ILLEGAL DIRECT ERROR",
+        "source": "BASIC.asm:8811",
+        "check": "GREP"
+      },
+      {
+        "code": 8,
+        "symbol": "ERR_TYPEMISM",
+        "text": "TYPE MISMATCH",
+        "printed": "?TYPE MISMATCH ERROR",
+        "source": "BASIC.asm:8812",
+        "check": "GREP"
+      },
+      {
+        "code": 9,
+        "symbol": "ERR_LONGSTR",
+        "text": "STRING TOO LONG",
+        "printed": "?STRING TOO LONG ERROR",
+        "source": "BASIC.asm:8813",
+        "check": "GREP"
+      },
+      {
+        "code": 10,
+        "symbol": "ERR_FORMULA",
+        "text": "FORMULA TOO COMPLEX",
+        "printed": "?FORMULA TOO COMPLEX ERROR",
+        "source": "BASIC.asm:8814",
+        "check": "GREP"
+      },
+      {
+        "code": 11,
+        "symbol": "ERR_ILLQUAN",
+        "text": "ILLEGAL QUANTITY",
+        "printed": "?ILLEGAL QUANTITY ERROR",
+        "source": "BASIC.asm:8815",
+        "check": "GREP"
+      },
+      {
+        "code": 12,
+        "symbol": "ERR_RG",
+        "text": "RETURN WITHOUT GOSUB",
+        "printed": "?RETURN WITHOUT GOSUB ERROR",
+        "source": "BASIC.asm:8816",
+        "check": "GREP"
+      },
+      {
+        "code": 13,
+        "symbol": "ERR_NF",
+        "text": "NEXT WITHOUT FOR",
+        "printed": "?NEXT WITHOUT FOR ERROR",
+        "source": "BASIC.asm:8817",
+        "check": "GREP"
+      },
+      {
+        "code": 14,
+        "symbol": "ERR_OD",
+        "text": "OUT OF DATA",
+        "printed": "?OUT OF DATA ERROR",
+        "source": "BASIC.asm:8818",
+        "check": "GREP"
+      },
+      {
+        "code": 15,
+        "symbol": "ERR_NODEV",
+        "text": "NO DEVICE",
+        "printed": "?NO DEVICE ERROR",
+        "source": "BASIC.asm:8819",
+        "check": "GREP"
+      },
+      {
+        "code": 16,
+        "symbol": "ERR_CANTCONT",
+        "text": "CAN'T CONTINUE",
+        "printed": "?CAN'T CONTINUE ERROR",
+        "source": "BASIC.asm:8820",
+        "check": "GREP"
+      }
+    ]
+  },
+  "basicMessages": [
+    {
+      "symbol": "MsgBreak",
+      "text": "BREAK",
+      "source": "BASIC.asm:6703",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgRedo",
+      "text": "?REDO FROM START\\r\\n",
+      "source": "BASIC.asm:7361",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgExtra",
+      "text": "?EXTRA IGNORED\\r\\n",
+      "source": "BASIC.asm:7363",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgFree",
+      "text": " BYTES FREE  HW=",
+      "source": "BASIC.asm:8624",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgLoadErr",
+      "text": "?LOAD ERROR\\r\\n",
+      "source": "BASIC.asm:8625",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgSaveErr",
+      "text": "?SAVE ERROR\\r\\n",
+      "source": "BASIC.asm:8626",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgDelErr",
+      "text": "?DEL ERROR\\r\\n",
+      "source": "BASIC.asm:8627",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgBytesFreeNL",
+      "text": " BYTES FREE\\r\\n",
+      "source": "BASIC.asm:8830",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgOK",
+      "text": "OK\\r\\n",
+      "source": "BASIC.asm:8833",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgErrorWord",
+      "text": " ERROR",
+      "source": "BASIC.asm:8836",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgInWord",
+      "text": " IN ",
+      "source": "BASIC.asm:8839",
+      "check": "GREP"
+    }
+  ],
+  "monitorMessages": [
+    {
+      "symbol": "MonStrBanner",
+      "text": "6502 MONITOR v1.1\\r\\n",
+      "source": "Monitor.asm:2537",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MonStrBrk",
+      "text": "BRK AT $",
+      "source": "Monitor.asm:2539",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MonStrNotFound",
+      "text": "FILE NOT FOUND",
+      "source": "Monitor.asm:2541",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MonStrDirFull",
+      "text": "DIRECTORY FULL",
+      "source": "Monitor.asm:2543",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MonStrLoadPfx",
+      "text": "LOADED ",
+      "source": "Monitor.asm:2545",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MonStrSavePfx",
+      "text": "SAVED ",
+      "source": "Monitor.asm:2547",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MonStrBytesAt",
+      "text": " BYTES AT $",
+      "source": "Monitor.asm:2549",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MonStrBytes",
+      "text": " BYTES",
+      "source": "Monitor.asm:2551",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MonStrIOErr",
+      "text": "I/O ERROR",
+      "source": "Monitor.asm:2553",
+      "check": "GREP"
+    }
+  ],
+  "monitorRegisterHeader": {
+    "text": "NV-BDIZC",
+    "description": "The flag legend printed above the P byte by R and the BRK entry.",
+    "source": "Monitor.asm:2084",
+    "check": "GREP"
+  }
+}

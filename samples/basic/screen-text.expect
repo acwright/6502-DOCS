@@ -1,0 +1,8 @@
+# The proving case for the video path: CLS, LOCATE and COLOR do nothing at all
+# on a machine with no video card (their arguments are still consumed), so
+# anything that draws has to be asserted against the screen, not the console.
+#
+# `screen` implies `console video`, which puts this case on its own machine.
+
+console video
+screen ^\s+SCREEN OK\s*$

@@ -1,0 +1,5 @@
+# The proving case for the BASIC path: type a listing in, RUN it, assert output.
+# Used by the "Your first ten minutes" chapter (Phase 3).
+
+expect ^HELLO$
+pass

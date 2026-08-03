@@ -12,6 +12,8 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
+    "facts": "node scripts/extract-facts.mjs",
+    "facts:check": "node scripts/extract-facts.mjs --check",
     "preflight": "node scripts/preflight.mjs",
     "verify": "node scripts/verify-samples.mjs"
   },

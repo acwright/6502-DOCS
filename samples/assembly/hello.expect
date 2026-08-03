@@ -1,0 +1,5 @@
+# The proving case for the assembly path.
+# Used by the "Hello world in assembly" chapter (Phase 6).
+
+expect ^HELLO FROM ASSEMBLY$
+pass

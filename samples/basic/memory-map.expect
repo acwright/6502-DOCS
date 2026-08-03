@@ -1,0 +1,15 @@
+# The memory map, checked from inside the machine.
+#
+# data/memory-map.json is extracted from BIOS.cfg and BIOS.inc (GREP); this
+# case is the other half of that claim (INSPECT/RUN), so a linker-config change
+# that moves a boundary turns the docs red instead of quietly wrong.
+#
+#   861/862  BAS_TXTTAB ($035D) must hold $0800  — where programs start
+#   871/872  BAS_MEMSIZ ($0367) must hold $8000  — top of usable RAM
+#   40960    $A000  first byte of the Kernal jump table: JMP abs ($4C)
+#   41119    $A09F  first reserved slot: also a JMP, to the RTS stub
+#   60928    $EE00  Monitor cold entry: JMP abs
+#   65280    $FF00  Wozmon: LDA #$1B ($A9)
+
+expect ^PASS$
+absent ^FAIL

@@ -1,0 +1,1046 @@
+{
+  "$meta": {
+    "title": "Kernal jump table",
+    "description": "Every published entry point, in slot order, plus the reserved range.",
+    "generator": "scripts/extract-facts.mjs",
+    "biosVersion": "1.5",
+    "sources": [
+      {
+        "file": "Kernal.asm",
+        "sha256": "250abc617e108c5fa31b6b8cdb777e74130f53a2fe6c22582348dfb02effd756"
+      }
+    ],
+    "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
+  },
+  "base": "$A000",
+  "slotSize": 3,
+  "publishedSlots": 53,
+  "reserved": {
+    "count": 32,
+    "start": "$A09F",
+    "end": "$A0FE",
+    "behaviour": "Each reserved slot jumps to UnimplementedStub, which is a bare RTS.",
+    "source": "Kernal.asm:96",
+    "check": "GREP"
+  },
+  "totalSlots": 85,
+  "groups": [
+    "Character I/O",
+    "IO Mode",
+    "Video (TMS9918)",
+    "Sound (SID)",
+    "Filesystem",
+    "Keyboard / GPIO",
+    "Serial (6551)",
+    "RTC (DS1511Y)",
+    "CompactFlash Storage",
+    "System",
+    "Disk banking / addressed storage",
+    "General output utilities (console = IO_MODE-routed via Chrout)",
+    "Keyboard encoder control (raw port access)"
+  ],
+  "slots": [
+    {
+      "name": "Chrout",
+      "address": "$A000",
+      "addressDecimal": 40960,
+      "slot": 0,
+      "group": "Character I/O",
+      "summary": "Output char (dispatched by IO_MODE)",
+      "target": "ChroutDispatch",
+      "description": "Chrout dispatcher — routes output based on IO_MODE",
+      "input": [
+        "A = character to output"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:30",
+      "check": "GREP"
+    },
+    {
+      "name": "Chrin",
+      "address": "$A003",
+      "addressDecimal": 40963,
+      "slot": 1,
+      "group": "Character I/O",
+      "summary": "Input char from buffer",
+      "target": "ChrinImpl",
+      "description": "Get a character from the INPUT_BUFFER if available",
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "On return, carry flag indicates whether a character was available",
+        "If character available the character will be in the A register"
+      ],
+      "source": "Kernal.asm:31",
+      "check": "GREP"
+    },
+    {
+      "name": "WriteBuffer",
+      "address": "$A006",
+      "addressDecimal": 40966,
+      "slot": 2,
+      "group": "Character I/O",
+      "summary": "Write byte to input buffer",
+      "target": "WriteBufferImpl",
+      "description": "Write a character from the A register to the INPUT_BUFFER",
+      "modifies": [
+        "Flags, X"
+      ],
+      "source": "Kernal.asm:32",
+      "check": "GREP"
+    },
+    {
+      "name": "ReadBuffer",
+      "address": "$A009",
+      "addressDecimal": 40969,
+      "slot": 3,
+      "group": "Character I/O",
+      "summary": "Read byte from input buffer",
+      "target": "ReadBufferImpl",
+      "description": "Read a character from the INPUT_BUFFER and store it in A register",
+      "modifies": [
+        "Flags, X, A"
+      ],
+      "source": "Kernal.asm:33",
+      "check": "GREP"
+    },
+    {
+      "name": "BufferSize",
+      "address": "$A00C",
+      "addressDecimal": 40972,
+      "slot": 4,
+      "group": "Character I/O",
+      "summary": "Get buffer count",
+      "target": "BufferSizeImpl",
+      "description": "Return in A register the number of unread bytes in the INPUT_BUFFER",
+      "modifies": [
+        "Flags, A"
+      ],
+      "source": "Kernal.asm:34",
+      "check": "GREP"
+    },
+    {
+      "name": "SetIOMode",
+      "address": "$A00F",
+      "addressDecimal": 40975,
+      "slot": 5,
+      "group": "IO Mode",
+      "summary": "Set IO_MODE",
+      "target": "SetIOModeImpl",
+      "description": "Set IO_MODE",
+      "input": [
+        "A = mode (bit 0: 0=video, 1=serial)"
+      ],
+      "source": "Kernal.asm:36",
+      "check": "GREP"
+    },
+    {
+      "name": "GetIOMode",
+      "address": "$A012",
+      "addressDecimal": 40978,
+      "slot": 6,
+      "group": "IO Mode",
+      "summary": "Get IO_MODE",
+      "target": "GetIOModeImpl",
+      "description": "Get IO_MODE",
+      "output": [
+        "A = current IO_MODE"
+      ],
+      "source": "Kernal.asm:37",
+      "check": "GREP"
+    },
+    {
+      "name": "InitVideo",
+      "address": "$A015",
+      "addressDecimal": 40981,
+      "slot": 7,
+      "group": "Video (TMS9918)",
+      "summary": "Initialize TMS9918 (mode registers + character set)",
+      "target": "InitVideoImpl",
+      "description": "Initialize the Video Card (TMS9918)",
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "notes": [
+        "Writes the eight mode registers (text mode, 40x24) and reloads the character",
+        "set into the pattern table at $0800, so a program that overwrote the glyphs",
+        "can fully restore text mode with a single call."
+      ],
+      "source": "Kernal.asm:39",
+      "check": "GREP"
+    },
+    {
+      "name": "VideoClear",
+      "address": "$A018",
+      "addressDecimal": 40984,
+      "slot": 8,
+      "group": "Video (TMS9918)",
+      "summary": "Clear video screen",
+      "target": "VideoClearImpl",
+      "description": "Fill name table (960 bytes at VRAM $0000) with spaces, reset cursor to (0,0)",
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "notes": [
+        "Skips silently if no video card is fitted"
+      ],
+      "source": "Kernal.asm:40",
+      "check": "GREP"
+    },
+    {
+      "name": "VideoPutChar",
+      "address": "$A01B",
+      "addressDecimal": 40987,
+      "slot": 9,
+      "group": "Video (TMS9918)",
+      "summary": "Write char at cursor",
+      "target": "VideoPutCharImpl",
+      "description": "Write a single character to VRAM at VID_CURSOR_ADDR",
+      "input": [
+        "A = character to write"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:41",
+      "check": "GREP"
+    },
+    {
+      "name": "VideoSetCursor",
+      "address": "$A01E",
+      "addressDecimal": 40990,
+      "slot": 10,
+      "group": "Video (TMS9918)",
+      "summary": "Set cursor (X=col, Y=row)",
+      "target": "VideoSetCursorImpl",
+      "description": "Set cursor position",
+      "input": [
+        "X = column (0-39), Y = row (0-23)"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Calculates VRAM address = Y * 40 + X and stores in VID_CURSOR_ADDR",
+        "Skips silently if no video card is fitted"
+      ],
+      "source": "Kernal.asm:42",
+      "check": "GREP"
+    },
+    {
+      "name": "VideoGetCursor",
+      "address": "$A021",
+      "addressDecimal": 40993,
+      "slot": 11,
+      "group": "Video (TMS9918)",
+      "summary": "Get cursor position",
+      "target": "VideoGetCursorImpl",
+      "description": "Get cursor position",
+      "output": [
+        "X = column (0-39), Y = row (0-23)"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:43",
+      "check": "GREP"
+    },
+    {
+      "name": "VideoScroll",
+      "address": "$A024",
+      "addressDecimal": 40996,
+      "slot": 12,
+      "group": "Video (TMS9918)",
+      "summary": "Scroll screen up one line",
+      "target": "VideoScrollImpl",
+      "description": "Scroll screen up one line",
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "notes": [
+        "Copies VRAM rows 1-23 to rows 0-22 (920 bytes), clears row 23 with spaces",
+        "Uses SCROLL_BUF ($0320, 40 bytes) as temporary storage"
+      ],
+      "source": "Kernal.asm:44",
+      "check": "GREP"
+    },
+    {
+      "name": "VideoSetColor",
+      "address": "$A027",
+      "addressDecimal": 40999,
+      "slot": 13,
+      "group": "Video (TMS9918)",
+      "summary": "Set TMS9918 text color (A=reg7 byte: hi=fg, lo=bg)",
+      "target": "VideoSetColorImpl",
+      "description": "Set TMS9918 text color register",
+      "input": [
+        "A = color byte (high nibble = fg color, low nibble = bg color)"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Skips silently if no video card is fitted"
+      ],
+      "source": "Kernal.asm:45",
+      "check": "GREP"
+    },
+    {
+      "name": "VideoChroutRaw",
+      "address": "$A02A",
+      "addressDecimal": 41002,
+      "slot": 14,
+      "group": "Video (TMS9918)",
+      "summary": "Output char to video (raw, no control-code handling)",
+      "target": "VideoChroutRawImpl",
+      "description": "Output character to video (raw, no control-code handling)",
+      "input": [
+        "A = character code (0-255)"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "notes": [
+        "Always writes the character glyph at the cursor position and advances.",
+        "Preserves: A, X, Y"
+      ],
+      "source": "Kernal.asm:46",
+      "check": "GREP"
+    },
+    {
+      "name": "InitSID",
+      "address": "$A02D",
+      "addressDecimal": 41005,
+      "slot": 15,
+      "group": "Sound (SID)",
+      "summary": "Initialize SID",
+      "target": "InitSIDImpl",
+      "description": "Initialze the Sound Card (6581)",
+      "modifies": [
+        "Flags, A, X"
+      ],
+      "source": "Kernal.asm:48",
+      "check": "GREP"
+    },
+    {
+      "name": "Beep",
+      "address": "$A030",
+      "addressDecimal": 41008,
+      "slot": 16,
+      "group": "Sound (SID)",
+      "summary": "Play beep tone",
+      "target": "BeepImpl",
+      "description": "Play a short beep sound",
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "notes": [
+        "Uses SidPlayNote on voice 0 with ~475 Hz tone, then silences",
+        "Skips silently if SID is absent"
+      ],
+      "source": "Kernal.asm:49",
+      "check": "GREP"
+    },
+    {
+      "name": "SidPlayNote",
+      "address": "$A033",
+      "addressDecimal": 41011,
+      "slot": 17,
+      "group": "Sound (SID)",
+      "summary": "Play note (A=voice, X=freqLo, Y=freqHi)",
+      "target": "SidPlayNoteImpl",
+      "description": "Play a note on a SID voice",
+      "input": [
+        "A = voice (0-2), X = frequency low byte, Y = frequency high byte"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Uses triangle waveform with standard ADSR (Attack=0, Decay=9, Sustain=A, Release=2)",
+        "Skips silently if no SID is fitted"
+      ],
+      "source": "Kernal.asm:50",
+      "check": "GREP"
+    },
+    {
+      "name": "SidSilence",
+      "address": "$A036",
+      "addressDecimal": 41014,
+      "slot": 18,
+      "group": "Sound (SID)",
+      "summary": "Silence all voices",
+      "target": "SidSilenceImpl",
+      "description": "Silence all 3 SID voices",
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Gates off all voices, letting the release phase of the envelope ring out.",
+        "The frequency registers are deliberately left alone. Zeroing them stops the",
+        "oscillator dead, which freezes the waveform at whatever level it had reached",
+        "and leaves the envelope to decay a DC offset instead of a tone — an audible",
+        "thump at the end of every note. Gate off is all the SID needs; the envelope",
+        "takes the voice to zero on its own.",
+        "Skips silently if no SID is fitted"
+      ],
+      "source": "Kernal.asm:51",
+      "check": "GREP"
+    },
+    {
+      "name": "SidSetVolume",
+      "address": "$A039",
+      "addressDecimal": 41017,
+      "slot": 19,
+      "group": "Sound (SID)",
+      "summary": "Set SID master volume (A=0-15)",
+      "target": "SidSetVolumeImpl",
+      "description": "Set SID master volume",
+      "input": [
+        "A = volume (0-15); upper nibble of SID_MODE_VOL is cleared (no filter)"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Skips silently if no SID is fitted"
+      ],
+      "source": "Kernal.asm:52",
+      "check": "GREP"
+    },
+    {
+      "name": "FsLoadFile",
+      "address": "$A03C",
+      "addressDecimal": 41020,
+      "slot": 20,
+      "group": "Filesystem",
+      "summary": "Load file from CF",
+      "target": "FsLoadFileImpl",
+      "description": "Load file from CF into PROGRAM_START ($0800)",
+      "input": [
+        "STR_PTR ($02-$03) points to null-terminated filename"
+      ],
+      "output": [
+        "Carry clear = success, FS_FILE_SIZE = bytes loaded",
+        "Carry set = file not found or read error"
+      ],
+      "modifies": [
+        "Flags, A, X, Y, CF_LBA, CF_BUF_PTR"
+      ],
+      "source": "Kernal.asm:54",
+      "check": "GREP"
+    },
+    {
+      "name": "FsSaveFile",
+      "address": "$A03F",
+      "addressDecimal": 41023,
+      "slot": 21,
+      "group": "Filesystem",
+      "summary": "Save file to CF",
+      "target": "FsSaveFileImpl",
+      "description": "Save data from PROGRAM_START to CF",
+      "input": [
+        "STR_PTR ($02-$03) points to null-terminated filename",
+        "FS_FILE_SIZE ($034A-$034B) = number of bytes to save"
+      ],
+      "output": [
+        "Carry clear = success, Carry set = error (directory full or write error)"
+      ],
+      "modifies": [
+        "Flags, A, X, Y, CF_LBA, CF_BUF_PTR"
+      ],
+      "source": "Kernal.asm:55",
+      "check": "GREP"
+    },
+    {
+      "name": "FsDeleteFile",
+      "address": "$A042",
+      "addressDecimal": 41026,
+      "slot": 22,
+      "group": "Filesystem",
+      "summary": "Delete file from CF",
+      "target": "FsDeleteFileImpl",
+      "description": "Delete a file from the CompactFlash filesystem",
+      "input": [
+        "STR_PTR ($02-$03) points to null-terminated filename"
+      ],
+      "output": [
+        "Carry clear = success, Carry set = file not found or error"
+      ],
+      "modifies": [
+        "Flags, A, X, Y, CF_LBA, CF_BUF_PTR"
+      ],
+      "source": "Kernal.asm:56",
+      "check": "GREP"
+    },
+    {
+      "name": "InitKB",
+      "address": "$A045",
+      "addressDecimal": 41029,
+      "slot": 23,
+      "group": "Keyboard / GPIO",
+      "summary": "Initialize GPIO/VIA keyboard",
+      "target": "InitKBImpl",
+      "description": "Initialize the Keyboard via VIA (IO 6)",
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Configures Port B (matrix) and Port A (PS/2) as inputs",
+        "CB2 low (enable matrix encoder), CA2 low (enable PS/2 encoder)",
+        "CB1 and CA1 falling-edge IRQs enabled"
+      ],
+      "source": "Kernal.asm:58",
+      "check": "GREP"
+    },
+    {
+      "name": "ReadJoystick1",
+      "address": "$A048",
+      "addressDecimal": 41032,
+      "slot": 24,
+      "group": "Keyboard / GPIO",
+      "summary": "Read joystick 1",
+      "target": "ReadJoystick1Impl",
+      "description": "Read joystick 1 on Port B",
+      "output": [
+        "A = joystick bitmask (active-low bits: R-L-D-U-Y-X-B-A)"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Disables both encoders, waits for release, then reads the raw port directly —",
+        "the same way a C64 reads a CIA port. No sei/PCR save-restore is needed: the port",
+        "is static while the encoders are off and no interrupt handler touches these ports."
+      ],
+      "source": "Kernal.asm:59",
+      "check": "GREP"
+    },
+    {
+      "name": "ReadJoystick2",
+      "address": "$A04B",
+      "addressDecimal": 41035,
+      "slot": 25,
+      "group": "Keyboard / GPIO",
+      "summary": "Read joystick 2",
+      "target": "ReadJoystick2Impl",
+      "description": "Read joystick 2 on Port A",
+      "output": [
+        "A = joystick bitmask (active-low bits: R-L-D-U-Y-X-B-A)"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "source": "Kernal.asm:60",
+      "check": "GREP"
+    },
+    {
+      "name": "InitSC",
+      "address": "$A04E",
+      "addressDecimal": 41038,
+      "slot": 26,
+      "group": "Serial (6551)",
+      "summary": "Initialize serial 6551",
+      "target": "InitSCImpl",
+      "description": "Initialize the Serial Card (6551)",
+      "modifies": [
+        "Flags, A"
+      ],
+      "source": "Kernal.asm:62",
+      "check": "GREP"
+    },
+    {
+      "name": "SerialChrout",
+      "address": "$A051",
+      "addressDecimal": 41041,
+      "slot": 27,
+      "group": "Serial (6551)",
+      "summary": "Direct serial output (bypass IO_MODE)",
+      "target": "SerialChroutImpl",
+      "description": "Output a character from the A register to the Serial Card",
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:63",
+      "check": "GREP"
+    },
+    {
+      "name": "XModemLoad",
+      "address": "$A054",
+      "addressDecimal": 41044,
+      "slot": 28,
+      "group": "Serial (6551)",
+      "summary": "Receive binary via XModem",
+      "target": "XModemLoadImpl",
+      "description": "Receive data via standard XModem protocol",
+      "input": [
+        "XFER_PTR = destination address (set by caller)"
+      ],
+      "output": [
+        "Carry clear = success, XFER_PTR past last byte written",
+        "XFER_REMAIN = total bytes received",
+        "Carry set = transfer failed"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "source": "Kernal.asm:64",
+      "check": "GREP"
+    },
+    {
+      "name": "XModemSave",
+      "address": "$A057",
+      "addressDecimal": 41047,
+      "slot": 29,
+      "group": "Serial (6551)",
+      "summary": "Send binary via XModem",
+      "target": "XModemSaveImpl",
+      "description": "Send data via standard XModem protocol",
+      "input": [
+        "XFER_PTR = source address, XFER_REMAIN = byte count (set by caller)"
+      ],
+      "output": [
+        "Carry clear = success, Carry set = transfer failed"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "source": "Kernal.asm:65",
+      "check": "GREP"
+    },
+    {
+      "name": "RtcReadTime",
+      "address": "$A05A",
+      "addressDecimal": 41050,
+      "slot": 30,
+      "group": "RTC (DS1511Y)",
+      "summary": "Read RTC time",
+      "target": "RtcReadTimeImpl",
+      "description": "Read current time from DS1511Y",
+      "output": [
+        "A = hours (binary), X = minutes (binary), Y = seconds (binary)"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:67",
+      "check": "GREP"
+    },
+    {
+      "name": "RtcReadDate",
+      "address": "$A05D",
+      "addressDecimal": 41053,
+      "slot": 31,
+      "group": "RTC (DS1511Y)",
+      "summary": "Read RTC date",
+      "target": "RtcReadDateImpl",
+      "description": "Read current date from DS1511Y",
+      "output": [
+        "A = day of month (binary), X = month (binary), Y = year (binary)",
+        "RTC_BUF_CENT = century (binary)"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:68",
+      "check": "GREP"
+    },
+    {
+      "name": "RtcWriteTime",
+      "address": "$A060",
+      "addressDecimal": 41056,
+      "slot": 32,
+      "group": "RTC (DS1511Y)",
+      "summary": "Set RTC time",
+      "target": "RtcWriteTimeImpl",
+      "description": "Set DS1511Y time",
+      "input": [
+        "A = hours (binary), X = minutes (binary), Y = seconds (binary)"
+      ],
+      "modifies": [
+        "Flags, A, X"
+      ],
+      "source": "Kernal.asm:69",
+      "check": "GREP"
+    },
+    {
+      "name": "RtcWriteDate",
+      "address": "$A063",
+      "addressDecimal": 41059,
+      "slot": 33,
+      "group": "RTC (DS1511Y)",
+      "summary": "Set RTC date",
+      "target": "RtcWriteDateImpl",
+      "description": "Set DS1511Y date",
+      "input": [
+        "A = day of month (binary), X = month (binary), Y = year (binary)",
+        "RTC_BUF_CENT = century (binary)"
+      ],
+      "modifies": [
+        "Flags, A, X"
+      ],
+      "source": "Kernal.asm:70",
+      "check": "GREP"
+    },
+    {
+      "name": "RtcReadNVRAM",
+      "address": "$A066",
+      "addressDecimal": 41062,
+      "slot": 34,
+      "group": "RTC (DS1511Y)",
+      "summary": "Read NVRAM byte",
+      "target": "RtcReadNVRAMImpl",
+      "description": "Read a byte from DS1511Y NVRAM",
+      "input": [
+        "X = NVRAM address ($00-$FF)"
+      ],
+      "output": [
+        "A = data byte"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:71",
+      "check": "GREP"
+    },
+    {
+      "name": "RtcWriteNVRAM",
+      "address": "$A069",
+      "addressDecimal": 41065,
+      "slot": 35,
+      "group": "RTC (DS1511Y)",
+      "summary": "Write NVRAM byte",
+      "target": "RtcWriteNVRAMImpl",
+      "description": "Write a byte to DS1511Y NVRAM",
+      "input": [
+        "X = NVRAM address ($00-$FF), A = data byte"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:72",
+      "check": "GREP"
+    },
+    {
+      "name": "StReadSector",
+      "address": "$A06C",
+      "addressDecimal": 41068,
+      "slot": 36,
+      "group": "CompactFlash Storage",
+      "summary": "Read CF sector",
+      "target": "StReadSectorImpl",
+      "description": "Read one 512-byte sector from CompactFlash",
+      "input": [
+        "CF_LBA ($26-$29) = LBA address, CF_BUF_PTR ($24-$25) = destination pointer"
+      ],
+      "output": [
+        "Carry clear = success, Carry set = error",
+        "CF_BUF_PTR advanced by 512 bytes on success"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "source": "Kernal.asm:74",
+      "check": "GREP"
+    },
+    {
+      "name": "StWriteSector",
+      "address": "$A06F",
+      "addressDecimal": 41071,
+      "slot": 37,
+      "group": "CompactFlash Storage",
+      "summary": "Write CF sector",
+      "target": "StWriteSectorImpl",
+      "description": "Write one 512-byte sector to CompactFlash",
+      "input": [
+        "CF_LBA ($26-$29) = LBA address, CF_BUF_PTR ($24-$25) = source pointer"
+      ],
+      "output": [
+        "Carry clear = success, Carry set = error",
+        "CF_BUF_PTR advanced by 512 bytes on success"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "source": "Kernal.asm:75",
+      "check": "GREP"
+    },
+    {
+      "name": "StWaitReady",
+      "address": "$A072",
+      "addressDecimal": 41074,
+      "slot": 38,
+      "group": "CompactFlash Storage",
+      "summary": "Wait CF ready",
+      "target": "StWaitReadyImpl",
+      "description": "Wait for CompactFlash to become ready",
+      "output": [
+        "Carry clear = ready, Carry set = error or timeout"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "notes": [
+        "Polls ST_STATUS until BSY=0 and RDY=1, with X/Y timeout (~65536 iterations)"
+      ],
+      "source": "Kernal.asm:76",
+      "check": "GREP"
+    },
+    {
+      "name": "SysDelay",
+      "address": "$A075",
+      "addressDecimal": 41077,
+      "slot": 39,
+      "group": "System",
+      "summary": "Delay A=cnt_lo, X=cnt_hi centiseconds",
+      "target": "SysDelayImpl",
+      "description": "Delay for a specified number of centiseconds",
+      "input": [
+        "A = count low byte, X = count high byte"
+      ],
+      "modifies": [
+        "Flags, A, X, Y (X/Y clobbered only in software-fallback path)"
+      ],
+      "notes": [
+        "Uses VIA T1 in one-shot mode. 9999 cycles @ 1MHz = ~10ms per tick."
+      ],
+      "source": "Kernal.asm:78",
+      "check": "GREP"
+    },
+    {
+      "name": "KernalInit",
+      "address": "$A078",
+      "addressDecimal": 41080,
+      "slot": 40,
+      "group": "System",
+      "summary": "Initialize all hardware (caller must reset SP; no cli, no splash); rts when done",
+      "target": "KernalInitImpl",
+      "description": "Initialize RAM variables, probe & init all hardware",
+      "modifies": [
+        "All registers, flags"
+      ],
+      "notes": [
+        "Sets HW_PRESENT, IO_MODE, IRQ/BRK/NMI pointers, BOOT_VECTOR=0",
+        "Does NOT enable interrupts (caller must cli)",
+        "Does NOT reset the stack pointer (caller should do this before JSR)",
+        "Does NOT display splash or enter boot menu"
+      ],
+      "source": "Kernal.asm:79",
+      "check": "GREP"
+    },
+    {
+      "name": "KernalVersion",
+      "address": "$A07B",
+      "addressDecimal": 41083,
+      "slot": 41,
+      "group": "System",
+      "summary": "Get BIOS version (A=major, X=minor)",
+      "target": "KernalVersionImpl",
+      "description": "Return BIOS version in registers",
+      "output": [
+        "A = major version, X = minor version"
+      ],
+      "modifies": [
+        "A, X"
+      ],
+      "source": "Kernal.asm:80",
+      "check": "GREP"
+    },
+    {
+      "name": "FsLoadFileAddr",
+      "address": "$A07E",
+      "addressDecimal": 41086,
+      "slot": 42,
+      "group": "Disk banking / addressed storage",
+      "summary": "Load named file to FS_IO_ADDR",
+      "target": "FsLoadFileAddrImpl",
+      "description": "Load named file to FS_IO_ADDR (caller preset)",
+      "input": [
+        "STR_PTR = filename, FS_IO_ADDR = destination address"
+      ],
+      "source": "Kernal.asm:82",
+      "check": "GREP"
+    },
+    {
+      "name": "FsSaveFileAddr",
+      "address": "$A081",
+      "addressDecimal": 41089,
+      "slot": 43,
+      "group": "Disk banking / addressed storage",
+      "summary": "Save FS_FILE_SIZE bytes from FS_IO_ADDR to named file",
+      "target": "FsSaveFileAddrImpl",
+      "description": "Save FS_FILE_SIZE bytes from FS_IO_ADDR to named file",
+      "input": [
+        "STR_PTR = filename, FS_IO_ADDR = source address, FS_FILE_SIZE = byte count"
+      ],
+      "source": "Kernal.asm:83",
+      "check": "GREP"
+    },
+    {
+      "name": "FsFormatDisk",
+      "address": "$A084",
+      "addressDecimal": 41092,
+      "slot": 44,
+      "group": "Disk banking / addressed storage",
+      "summary": "Zero the current disk's directory sector",
+      "target": "FsFormatDiskImpl",
+      "description": "Zero the current disk's directory sector (erases its file list)",
+      "output": [
+        "Carry clear = success, Carry set = write error"
+      ],
+      "modifies": [
+        "Flags, A, X, Y, CF_LBA, CF_BUF_PTR"
+      ],
+      "source": "Kernal.asm:84",
+      "check": "GREP"
+    },
+    {
+      "name": "FsSetDisk",
+      "address": "$A087",
+      "addressDecimal": 41095,
+      "slot": 45,
+      "group": "Disk banking / addressed storage",
+      "summary": "Select current CF disk (A=0-255)",
+      "target": "FsSetDiskImpl",
+      "description": "Select the current CF disk bank",
+      "input": [
+        "A = disk number (0-255)"
+      ],
+      "modifies": [
+        "Flags"
+      ],
+      "source": "Kernal.asm:85",
+      "check": "GREP"
+    },
+    {
+      "name": "FsGetDisk",
+      "address": "$A08A",
+      "addressDecimal": 41098,
+      "slot": 46,
+      "group": "Disk banking / addressed storage",
+      "summary": "Get current CF disk (A=disk)",
+      "target": "FsGetDiskImpl",
+      "description": "Get the current CF disk bank",
+      "output": [
+        "A = current disk number"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "source": "Kernal.asm:86",
+      "check": "GREP"
+    },
+    {
+      "name": "FsPrintDisk",
+      "address": "$A08D",
+      "addressDecimal": 41101,
+      "slot": 47,
+      "group": "Disk banking / addressed storage",
+      "summary": "Print \"DISK n\" + CRLF via Chrout",
+      "target": "FsPrintDiskImpl",
+      "description": "Print \"DISK n\" (decimal) + CRLF via Chrout",
+      "modifies": [
+        "Flags, A, X, Y, FS_FILE_SIZE, FS_DIR_IDX"
+      ],
+      "source": "Kernal.asm:87",
+      "check": "GREP"
+    },
+    {
+      "name": "PrintStr",
+      "address": "$A090",
+      "addressDecimal": 41104,
+      "slot": 48,
+      "group": "General output utilities (console = IO_MODE-routed via Chrout)",
+      "summary": "Print NUL-terminated string (A=lo, Y=hi); clobbers A,Y,STR_PTR",
+      "target": "PrintStrImpl",
+      "description": "Print a NUL-terminated string to the console (routed by IO_MODE",
+      "input": [
+        "A = string address low, Y = string address high"
+      ],
+      "output": [
+        "A, Y clobbered; X preserved; clobbers STR_PTR (Chrout preserves it)"
+      ],
+      "notes": [
+        "through Chrout, so it works for video OR serial).  General-purpose; used by",
+        "BASIC (via the BasPrintStr alias) and available to cartridges."
+      ],
+      "source": "Kernal.asm:89",
+      "check": "GREP"
+    },
+    {
+      "name": "PrintCRLF",
+      "address": "$A093",
+      "addressDecimal": 41107,
+      "slot": 49,
+      "group": "General output utilities (console = IO_MODE-routed via Chrout)",
+      "summary": "Print CR+LF",
+      "target": "PrintCRLFImpl",
+      "description": "Emit CR ($0D) then LF ($0A) via Chrout.",
+      "source": "Kernal.asm:90",
+      "check": "GREP"
+    },
+    {
+      "name": "PrintDecU16",
+      "address": "$A096",
+      "addressDecimal": 41110,
+      "slot": 50,
+      "group": "General output utilities (console = IO_MODE-routed via Chrout)",
+      "summary": "Print unsigned 16-bit decimal (A=lo, X=hi), no leading zeros",
+      "target": "PrintDecU16Impl",
+      "description": "Print an unsigned 16-bit value as decimal (no leading zeros).",
+      "input": [
+        "A = value low, X = value high"
+      ],
+      "modifies": [
+        "Flags, A, X, Y, FS_FILE_SIZE (consumed), FS_DIR_IDX"
+      ],
+      "notes": [
+        "General-purpose console output; used by BASIC (line numbers) and available",
+        "to cartridges.  Shares the FsPrintSize core below."
+      ],
+      "source": "Kernal.asm:91",
+      "check": "GREP"
+    },
+    {
+      "name": "KBDisable",
+      "address": "$A099",
+      "addressDecimal": 41113,
+      "slot": 51,
+      "group": "Keyboard encoder control (raw port access)",
+      "summary": "Release both encoders and settle; ports free for raw read",
+      "target": "KBDisableImpl",
+      "description": "Disable both keyboard encoders and wait for them to release the ports",
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Sets CB2/CA2 high, then busy-waits so the encoder firmware has time to let go of",
+        "both ports before the caller reads them. Self-contained cycle loop — deliberately",
+        "not SysDelay or the VIA T1 path, so it is safe to call while the caller owns the timers."
+      ],
+      "source": "Kernal.asm:93",
+      "check": "GREP"
+    },
+    {
+      "name": "KBEnable",
+      "address": "$A09C",
+      "addressDecimal": 41116,
+      "slot": 52,
+      "group": "Keyboard encoder control (raw port access)",
+      "summary": "Re-enable both encoders",
+      "target": "KBEnableImpl",
+      "description": "Re-enable both keyboard encoders",
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Sets CB2 low (enable matrix encoder) and CA2 low (enable PS/2 encoder)"
+      ],
+      "source": "Kernal.asm:94",
+      "check": "GREP"
+    }
+  ]
+}

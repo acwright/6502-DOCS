@@ -1,0 +1,252 @@
+{
+  "$meta": {
+    "title": "The five machines",
+    "description": "What each AC6502 system is, what is onboard, what is optional, and what is absent. Unlike the rest of data/, this file is hand-maintained: the KiCad repos' READMEs are structured too differently to parse, so each record is authored from its README and carries verified:false until Phase 3 confirms it against the schematics (SCHEM).",
+    "generator": "hand-maintained (not written by scripts/extract-facts.mjs)",
+    "biosVersion": "1.5",
+    "sources": [
+      { "file": "6502-ACE/README.md", "rank": 4 },
+      { "file": "6502-COB/README.md", "rank": 4 },
+      { "file": "6502-DEV/README.md", "rank": 4 },
+      { "file": "6502-KIM/README.md", "rank": 4 },
+      { "file": "6502-VCS/README.md", "rank": 4 },
+      { "file": "6502-{ACE,COB,DEV,KIM,VCS}/Schematics", "rank": 1, "status": "pending — Phase 3" }
+    ]
+  },
+
+  "shared": {
+    "description": "Every AC6502 machine shares these, which is why one BIOS serves all five.",
+    "cpu": "65C02, or a cycle-accurate emulation of one",
+    "memory": "32 KB RAM + 32 KB ROM, with optional banked RAM expansion",
+    "memoryMap": "Standardised across the family — see data/memory-map.json",
+    "ioWindow": "$8000–$9FFF, eight 1 KB slots — see data/hardware.json",
+    "bus": "16-bit address bus, 8-bit bidirectional data bus, standard 65C02 control signals (RW, PHI2, RESET, IRQ, NMI, RDY, SYNC)",
+    "bios": "The common BIOS provides the Kernal, Monitor and BASIC on every machine",
+    "source": "6502-ACE/README.md#architecture (identical text in all five)",
+    "check": "GREP",
+    "verified": false
+  },
+
+  "systems": [
+    {
+      "id": "ace",
+      "name": "ACE",
+      "fullName": "All-in-one Computer Experience",
+      "tagline": "The whole family on one board.",
+      "formFactor": "Single-board computer",
+      "repo": "https://github.com/acwright/6502-ACE",
+      "heroImage": "6502-ACE.png",
+      "emulated": true,
+      "summary": "A complete, self-contained 65C02 computer on a single PCB. It integrates everything found across the COB's modular cards — CPU, memory, video, audio, storage, serial, GPIO, RTC and keyboard controller — onto one board, delivering the full experience without a backplane or expansion cards.",
+      "onboard": [
+        { "role": "CPU", "part": "W65C02S", "detail": "1 or 2 MHz, jumper-selectable (J1 PHI2 SELECT)" },
+        { "role": "RAM", "part": "62256", "detail": "32 KB SRAM" },
+        { "role": "ROM", "part": "28C256", "detail": "32 KB EEPROM" },
+        { "role": "Video", "part": "Pico9918", "detail": "VGA 640×480, TMS9918A-compatible", "slot": 8 },
+        { "role": "Audio", "part": "ARMSID", "detail": "3-voice SID emulation, RCA output", "slot": 7 },
+        { "role": "Serial", "part": "65C51 ACIA + MAX238", "detail": "RS-232 via DB9, 50–19200 baud", "slot": 5 },
+        { "role": "GPIO", "part": "65C22 VIA", "detail": "20 GPIO pins, 2× 16-bit timers, shift register", "slot": 6 },
+        { "role": "RTC", "part": "DS1511Y", "detail": "Battery-backed clock and 256 bytes of NVRAM", "slot": 3 },
+        { "role": "Keyboard controller", "part": "ATmega1284P", "detail": "Runs AB Controller firmware" },
+        { "role": "Input", "part": "PS/2 connector + 8×8 matrix header", "detail": "Both live at once" },
+        { "role": "Joysticks", "part": "2× Atari 2600-compatible", "detail": "J6 JOYSTICK A on VIA PORT A reads as JOY(2); J8 JOYSTICK B on VIA PORT B reads as JOY(1)" },
+        { "role": "Clock", "part": "16 MHz DIP-14 oscillator (X1)", "detail": "Drives the ATmega1284 at 16 MHz and the 65C02 at 1 or 2 MHz via a 74HC163 divider" },
+        { "role": "Reset", "part": "SW70", "detail": "Manual reset into the ATmega1284, which also provides power-on reset to the 65C02" },
+        { "role": "Power", "part": "5 V DC barrel jack", "detail": "" }
+      ],
+      "optional": [
+        { "role": "Banked RAM", "part": "AS6C4008", "detail": "512 KB, as 256 × 1 KB windows per half", "slot": [1, 2] },
+        { "role": "Storage", "part": "ACE CF Adapter", "detail": "CompactFlash in 8-bit True IDE mode, into the Storage header", "slot": 4 }
+      ],
+      "absent": [],
+      "boards": [
+        { "name": "ACE Board", "path": "Hardware/ACE Board/" },
+        { "name": "ACE CF Adapter", "path": "Hardware/ACE CF Adapter/", "detail": "CompactFlash adapter for the Storage header" },
+        { "name": "ACE RAM Patch", "path": "Hardware/ACE RAM Patch/", "detail": "Piggyback fix for Rev 1.0 banked RAM; plugs into the U13 socket" }
+      ],
+      "revisions": [
+        {
+          "board": "ACE Board",
+          "revision": "1.1",
+          "notes": "Fixes the LOADL/LOADH latch-enable gating for the banked SRAM: the final NAND stage becomes a NOR (LOADL = NOR(SEL_L, WB)), added as one 74HC02 (U23). Pull-ups R1–R4 and R25 go from 1 kΩ to 10 kΩ; C31 (10 µF) added at the power input. No firmware change."
+        },
+        { "board": "ACE Board", "revision": "1.0", "notes": "Initial release. Banked RAM does not latch reliably — needs the ACE RAM Patch." }
+      ],
+      "verified": false,
+      "check": "pending SCHEM (Phase 3)"
+    },
+
+    {
+      "id": "cob",
+      "name": "COB",
+      "fullName": "Computer On a Backplane",
+      "tagline": "Build the machine you want, one card at a time.",
+      "formFactor": "Passive backplane with plug-in cards",
+      "repo": "https://github.com/acwright/6502-COB",
+      "heroImage": "6502-COB.png",
+      "emulated": true,
+      "summary": "The modular machine. A passive backplane carries the bus; every function — CPU, memory, video, sound, storage, serial, GPIO, RTC — is a card you choose to fit or leave out. This is the system the BIOS's hardware probe exists for.",
+      "onboard": [],
+      "optional": [
+        { "role": "CPU", "part": "CPU Card", "detail": "Hosts the 65C02 in card form" },
+        { "role": "CPU", "part": "CPU Card Pro", "detail": "65816 16-bit CPU, backward-compatible with the 65C02", "status": "untested" },
+        { "role": "Memory", "part": "Memory Card", "detail": "32 KB SRAM + 32 KB EEPROM with address decoding" },
+        { "role": "Banked RAM", "part": "RAM Card", "detail": "512 KB as two 256 KB banks, 256 × 1 KB windows each", "slot": [1, 2] },
+        { "role": "RTC", "part": "RTC Card", "detail": "DS1511Y with battery backup and 256 bytes of NVRAM", "slot": 3 },
+        { "role": "Storage", "part": "Storage Card", "detail": "CompactFlash over IDE", "slot": 4 },
+        { "role": "Storage", "part": "Storage Card Pro", "detail": "SD card + 16 MB SPI flash", "status": "untested — the stock BIOS has no driver for it" },
+        { "role": "Serial", "part": "Serial Card", "detail": "RS-232 via 65C51 ACIA + MAX232", "slot": 5 },
+        { "role": "Serial", "part": "Serial Card Pro", "detail": "Adds full modem control (DTR, DCD, DSR)", "slot": 5 },
+        { "role": "GPIO", "part": "GPIO Card", "detail": "65C22 VIA for keyboards, joysticks, timers", "slot": 6 },
+        { "role": "Audio", "part": "Sound Card", "detail": "3-voice SID via ARMSID, RCA line-level out", "slot": 7 },
+        { "role": "Video", "part": "VGA Card", "detail": "VGA 640×480 via Pico9918", "slot": 8 },
+        { "role": "Video", "part": "VGA Card Pro", "detail": "Fully programmable VGA via Pi Pico", "slot": 8, "status": "untested" },
+        { "role": "Video", "part": "Video Card", "detail": "Composite video via a real TMS9918A with 16 KB VRAM", "slot": 8 },
+        { "role": "Video", "part": "Video Card Pro", "detail": "Enhanced composite video", "slot": 8, "status": "untested" },
+        { "role": "Display", "part": "LCD Card", "detail": "16×2 character LCD via 65C22 VIA, 4- or 8-bit mode" },
+        { "role": "Diagnostics", "part": "Blinkenlights Card", "detail": "LEDs on the 16 address, 8 data and 8 control lines, live" },
+        { "role": "Prototyping", "part": "Prototype Card", "detail": "Breadboard area with full bus access" }
+      ],
+      "absent": [],
+      "boards": [
+        { "name": "Backplane", "path": "Hardware/Backplane/", "detail": "Passive, 5 slots, full bus interconnect" },
+        { "name": "Backplane Pro", "path": "Hardware/Backplane Pro/", "detail": "5 slots plus integrated clock, reset and power distribution. Rev 1.1 is all through-hole and adds a power switch and DC barrel jack." },
+        { "name": "Backplane Helper", "path": "Hardware/Backplane Helper/", "detail": "Expands the total configuration to as many as 12 slots" }
+      ],
+      "revisions": [
+        { "board": "Backplane Pro", "revision": "1.1", "notes": "Entirely through-hole; adds an onboard power switch and DC barrel jack input." }
+      ],
+      "verified": false,
+      "check": "pending SCHEM (Phase 3)"
+    },
+
+    {
+      "id": "dev",
+      "name": "DEV",
+      "fullName": "Development Environment Vehicle",
+      "tagline": "A 65C02 you can single-step, with the peripherals emulated alongside.",
+      "formFactor": "Teensy-hosted development board",
+      "repo": "https://github.com/acwright/6502-DEV",
+      "heroImage": "6502-DEV.png",
+      "emulated": true,
+      "summary": "An emulation-based development system. It replaces the physical 65C02 with a Teensy 4.1 running cycle-accurate 65C02 emulation via vrEmu6502, and adds hardware Run/Stop, Step, Reset and Frequency controls — so the bus can be stopped and inspected in a way real silicon will not allow.",
+      "onboard": [
+        { "role": "CPU", "part": "Teensy 4.1 running vrEmu6502", "detail": "Cycle-accurate 65C02 emulation driving a real bus" },
+        { "role": "Bus", "part": "5× SN74LVC4245A", "detail": "Level shifters onto a real 6502 bus connector and card slot" },
+        { "role": "Storage", "part": "SD card (Teensy)", "detail": "" },
+        { "role": "Network", "part": "Ethernet (RJ45)", "detail": "" },
+        { "role": "Input", "part": "USB host", "detail": "USB keyboard and joystick input" },
+        { "role": "Controls", "part": "SW1–SW4", "detail": "Run/Stop, Step, Clock, Reset" },
+        { "role": "RTC", "part": "CR2032-backed", "detail": "" }
+      ],
+      "optional": [
+        { "role": "AV output", "part": "DEV Output Board", "detail": "Teensy 4.0 + 2.4\" ILI9341 TFT emulating a TMS9918A and a 6581 SID, driven over high-speed serial. The DEV Board sends the same AV packets over USB simultaneously, so a browser can render the output in parallel." },
+        { "role": "Real hardware", "part": "Bus connector + card slot", "detail": "Level-shifted, for driving genuine COB cards" }
+      ],
+      "absent": [
+        { "role": "Physical 65C02", "reason": "Emulated by the Teensy — this is the point of the board" }
+      ],
+      "boards": [
+        { "name": "DEV Board", "path": "Hardware/DEV Board/" },
+        { "name": "DEV Output Board", "path": "Hardware/DEV Output Board/" }
+      ],
+      "revisions": [],
+      "verified": false,
+      "check": "pending SCHEM (Phase 3)"
+    },
+
+    {
+      "id": "kim",
+      "name": "KIM",
+      "fullName": "Keypad Input Monitor",
+      "tagline": "24 keys, two lines of LCD, and nothing in the way.",
+      "formFactor": "Minimal machine — backplane build (preferred) or single Main Board",
+      "repo": "https://github.com/acwright/6502-KIM",
+      "heroImage": "6502-KIM.png",
+      "emulated": false,
+      "emulationNote": "The Keypad Card overlays the top of the address space, replacing BASIC, the Monitor, Wozmon and the CPU vectors. Neither the emulator nor the DEV board models that takeover, so the KIM is not currently emulated.",
+      "summary": "A KIM-1-inspired minimal computer. The preferred build is a COB Backplane (or Backplane Pro) with the COB CPU Card, Memory Card, Serial Card and Backplane Helper, plus the Keypad Card that the Keypad Helper and Keypad LCD Helper attach to. The VCS Main Board can stand in for the Backplane/CPU/Memory combination.",
+      "onboard": [],
+      "optional": [
+        { "role": "Backplane", "part": "COB Backplane / Backplane Pro", "detail": "Preferred build" },
+        { "role": "CPU", "part": "COB CPU Card", "detail": "Preferred build" },
+        { "role": "Memory", "part": "COB Memory Card", "detail": "Preferred build" },
+        { "role": "Serial", "part": "COB Serial Card", "detail": "Carries the concurrent Wozmon-compatible serial monitor", "slot": 5 },
+        { "role": "Keypad + LCD", "part": "Keypad Card", "detail": "65C21 PIA, AT28C64 8 KB EEPROM, two 74HC138 decoders. Port A carries the keypad code (PA0–PA4) and the LCD control lines (PA5 = RS, PA6 = R/W, PA7 = E); Port B is the LCD data bus. CA1 is the keypad data-available interrupt, CA2 the encoder's output enable." },
+        { "role": "Keypad", "part": "Keypad Helper", "detail": "24 Cherry MX switches as a 4×6 matrix, MM74C922 16-key encoder extended to 24 with a 74HC00. All scanning, debounce and encoding in hardware — no microcontroller, no firmware." },
+        { "role": "Display", "part": "Keypad LCD Helper", "detail": "16×2 HD44780 with a 10 kΩ contrast trimmer; passes PA0–PA4, CA1 and CA2 through to the Keypad Helper." },
+        { "role": "All-in-one alternative", "part": "VCS Main Board", "detail": "Replaces Backplane + CPU Card + Memory Card" }
+      ],
+      "absent": [
+        { "role": "Video", "reason": "The KIM's display is the 16×2 LCD" },
+        { "role": "BASIC / Monitor / Wozmon at their usual addresses", "reason": "The Keypad Card's ROM overlays $E000–$FFFF and the vectors" }
+      ],
+      "memoryOverlay": {
+        "description": "Unlike every other card in the family, the Keypad Card overlays the top of the address space. The BIOS Kernal stays reachable and the cartridge calls into it.",
+        "ranges": [
+          { "start": "$A000", "end": "$BFFF", "contents": "BIOS Kernal (unchanged, still callable)" },
+          { "start": "$C000", "end": "$DFFF", "contents": "PIA registers (mirrored I/O window)" },
+          { "start": "$E000", "end": "$FFF9", "contents": "Cartridge ROM (AT28C64, 8 KB)" },
+          { "start": "$FFFA", "end": "$FFFF", "contents": "CPU vectors — the cartridge's own" }
+        ],
+        "source": "6502-KIM/README.md#keypad-card",
+        "verified": false,
+        "check": "pending SCHEM (Phase 3)"
+      },
+      "boards": [
+        { "name": "Keypad Card", "path": "Hardware/Keypad Card/" },
+        { "name": "Keypad Helper", "path": "Hardware/Keypad Helper/" },
+        { "name": "Keypad LCD Helper", "path": "Hardware/Keypad LCD Helper/" }
+      ],
+      "firmware": [
+        { "name": "KC Monitor", "path": "Firmware/KC Monitor/", "detail": "6502 assembly cartridge ROM burned to the Keypad Card's AT28C64. Turns the card into a KIM-1-style hex monitor — browse and edit memory, execute code from the 24-key keypad and 16×2 LCD — with a concurrent Wozmon-compatible serial monitor when a Serial Card is fitted." }
+      ],
+      "revisions": [],
+      "verified": false,
+      "check": "pending SCHEM (Phase 3)"
+    },
+
+    {
+      "id": "vcs",
+      "name": "VCS",
+      "fullName": "Video Computer System",
+      "tagline": "Plug in a cartridge, pick up a joystick.",
+      "formFactor": "Cartridge console — Main, Input and Output boards",
+      "repo": "https://github.com/acwright/6502-VCS",
+      "heroImage": "6502-VCS.png",
+      "emulated": true,
+      "summary": "A cartridge-based retro gaming console with a real 65C02, swappable ROM cartridges, VGA video via Pico9918, SID audio via ARMSID, and support for PS/2 keyboards, matrix keyboards and Atari 2600-compatible joysticks.",
+      "onboard": [
+        { "role": "CPU", "part": "65C02", "detail": "1 MHz" },
+        { "role": "RAM", "part": "SRAM", "detail": "32 KB" },
+        { "role": "ROM", "part": "EEPROM", "detail": "32 KB" },
+        { "role": "Video", "part": "Pico9918", "detail": "VGA 640×480, on the Output Board", "slot": 8 },
+        { "role": "Audio", "part": "ARMSID", "detail": "3-voice SID, on the Output Board", "slot": 7 },
+        { "role": "GPIO", "part": "65C22 VIA + ATmega1284p", "detail": "On the Input Board; the ATmega1284p is the keyboard encoder controller", "slot": 6 },
+        { "role": "Input", "part": "PS/2 + matrix keyboard", "detail": "Both live at once" },
+        { "role": "Joysticks", "part": "2× Atari 2600-compatible", "detail": "They share the VIA ports with the keyboard encoder rather than having connectors of their own: J1 PORT B reads as JOY(1), J2 PORT A reads as JOY(2)." }
+      ],
+      "optional": [
+        { "role": "Cartridge", "part": "ROM Cart Rev 1.0a", "detail": "28C256 32 KB EEPROM — electrically erasable, no UV eraser needed" },
+        { "role": "Cartridge", "part": "ROM Cart Rev 1.0b", "detail": "27C256 32 KB EPROM — UV-erasable" }
+      ],
+      "absent": [
+        { "role": "Storage", "reason": "No CompactFlash — programs arrive on cartridge" },
+        { "role": "RTC", "reason": "Not fitted" },
+        { "role": "Serial", "reason": "Not fitted" }
+      ],
+      "boards": [
+        { "name": "Main Board", "path": "Hardware/Main Board/", "detail": "65C02, 32 KB SRAM, 32 KB EEPROM, clock and reset; carries the bus for the Input and Output boards" },
+        { "name": "Input Board", "path": "Hardware/Input Board/", "detail": "Matrix keyboard, PS/2 keyboard and joysticks over a 65C22 VIA with an ATmega1284p encoder" },
+        { "name": "Output Board", "path": "Hardware/Output Board/", "detail": "VGA video (Pico9918) and SID audio (ARMSID)" },
+        { "name": "ROM Cart", "path": "Hardware/ROM Cart/", "detail": "Swappable cartridge, two EEPROM/EPROM variants" }
+      ],
+      "revisions": [
+        { "board": "Main Board", "revision": "1.1", "notes": "Pull-up resistors changed from 1 kΩ to 10 kΩ." },
+        { "board": "Main Board", "revision": "1.0", "notes": "Initial release." }
+      ],
+      "verified": false,
+      "check": "pending SCHEM (Phase 3)"
+    }
+  ]
+}

@@ -22,22 +22,74 @@ npm run docs:build    # production build to docs/.vitepress/dist
 npm run docs:preview  # serve the production build locally
 ```
 
+To run or regenerate anything that touches the machine, you also need the
+emulator CLI and cc65:
+
+```sh
+npm run preflight     # what's installed, what's missing, and what to do about it
+```
+
+## The fact base
+
+`data/*.json` is the machine's truth, extracted mechanically from the BIOS
+source so the docs write against it instead of re-deriving it. Every table on
+the site is generated from these files at build time — no address, opcode,
+keyword or error string on this site is typed in by hand.
+
+```sh
+npm run facts         # regenerate data/ and samples/lib/6502.inc
+npm run facts:check   # fail if either is stale (run before committing)
+```
+
+| File | Extracted from |
+|---|---|
+| `boot.json` | Version, splash strings, and the boot menu — `BIOS.inc`, `Kernal.asm` |
+| `kernal.json` | All 53 published jump-table slots plus the reserved range — `Kernal.asm` |
+| `memory-map.json` | RAM regions, ROM segments, I/O window, every named symbol — `BIOS.inc`, `BIOS.cfg` |
+| `hardware.json` | `HW_PRESENT` bits, the eight I/O slots and their registers — `BIOS.inc` |
+| `basic-keywords.json` | Every keyword, token and dispatch target — `BASIC.asm` |
+| `monitor-commands.json` | The command set, in dispatch-table order — `Monitor.asm` |
+| `errors.json` | BASIC and Monitor message strings, verbatim — `BASIC.asm`, `Monitor.asm` |
+| `systems.json` | The five machines. **Hand-maintained** from the KiCad READMEs, pending schematic verification in Phase 3. |
+
+The extractor needs a `6502-BIOS` checkout (`--bios <path>`, `$BIOS_SRC`, or
+`~/Developer/Assembly/6502-BIOS`). The generated files are committed, so
+building the site and running CI need only this repo.
+
+Each record carries its provenance: `source` names the file and line it came
+from, and `check` records which verification method backs it. Anything read
+from a README is rank 4 and stays `verified: false` until a running sample
+proves it.
+
 ## Adding and verifying a sample
 
 Every code listing in the docs is a real file under `samples/`, included into
-the Markdown by path, and executed against the emulator so the prose can
-never drift from tested output. That harness (`npm run verify`) is built out
-in Phase 1 of `PLAN.md`; today it's a placeholder that always passes. Once
-Phase 1 lands, the workflow will be:
+the Markdown by path, and executed against the emulator so the prose can never
+drift from tested output.
 
-1. Add `samples/<topic>/<name>.bas` (or `.prg`, `.asm`) plus a sibling
-   `.expect` file with the asserted console output.
-2. Run `npm run verify` locally — it boots the emulator, runs every sample,
-   and prints `ok`/`FAIL` per case.
-3. Reference the sample from a chapter using VitePress's code-snippet import
-   syntax so the docs embed the tested file directly.
+1. Add `samples/<topic>/<name>.bas` (or `.asm`, `.prg`) plus a sibling
+   `.expect` file saying what must be true. The harness refuses to run a
+   listing that has no `.expect`.
+2. `npm run verify` boots the emulator, runs every case, and prints `ok`/`FAIL`
+   per case. `npm run verify -- <name>` runs one; add `-- --verbose` to see
+   what the machine actually printed.
+3. Reference it from a chapter with VitePress's snippet import so the page
+   embeds the tested file:
+   `<<< @/../samples/basic/first-program.bas`
 
-CI runs the same harness on every push via `.github/workflows/verify.yml`.
+[`samples/README.md`](samples/README.md) documents the `.expect` directives and
+the boot-once/restore-per-case method. `samples/_harness/` holds a case that
+asserts something untrue on purpose, so the suite is proved able to fail.
+
+CI runs the same harness on every push via `.github/workflows/verify.yml`,
+which builds the emulator CLI and cc65 from source on the runner.
+
+## Accuracy
+
+[`ACCURACY.md`](ACCURACY.md) is the ledger of every place a document in this
+ecosystem disagrees with the machine, what the machine actually does, and how
+that was established. Phase 9 fixes each open item in the repo that got it
+wrong, not just in these docs.
 
 ## Deploying
 
@@ -49,12 +101,12 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 | Path | Purpose |
 |---|---|
 | `docs/` | VitePress site source (pages, theme, public assets) |
-| `data/` | Machine-readable fact base consumed by the docs at build time (Phase 1) |
-| `samples/` | Verified BASIC/assembly listings backing the docs (Phase 1+) |
+| `data/` | Machine-readable fact base, generated — consumed by the docs at build time |
+| `samples/` | Verified BASIC/assembly listings backing every listing in the docs |
+| `scripts/` | Fact extractor, sample harness, toolchain preflight |
 | `cards/` | Printable HTML quick-reference cards (Phase 2/7) |
 | `assets/` | Legacy design sources (`.afdesign`, `.numbers`) kept for provenance |
-| `scripts/` | Sample harness and toolchain preflight scripts |
-| `ACCURACY.md` | Ledger of factual discrepancies found and fixed (Phase 1+) |
+| `ACCURACY.md` | Ledger of factual discrepancies found and fixed |
 
 ## Sibling repositories
 

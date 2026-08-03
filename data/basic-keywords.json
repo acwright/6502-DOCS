@@ -1,0 +1,1843 @@
+{
+  "$meta": {
+    "title": "BASIC keywords",
+    "description": "Every keyword the tokenizer recognises, with its token and dispatch. Token, name and dispatch are GREP-verified against BASIC.asm; syntax and description are lifted from the BIOS README (rank 4) and stay verified:false until a RUN-backed sample proves them in Phase 4.",
+    "generator": "scripts/extract-facts.mjs",
+    "biosVersion": "1.5",
+    "sources": [
+      {
+        "file": "BASIC.asm",
+        "sha256": "4bee14f3785d426c896af508f190eb3abb04fd3d43e9b2eca387241d3f19f139"
+      },
+      {
+        "file": "README.md",
+        "sha256": "ecc3c73ce93678e7aea277256e4e175dae83a4839cfd8f56bf258fe2e4e3e85e"
+      }
+    ],
+    "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
+  },
+  "tokenBase": "$80",
+  "lastStatementToken": "$B5",
+  "counts": {
+    "total": 85,
+    "statements": 49,
+    "keywords": 9,
+    "functions": 27
+  },
+  "limits": {
+    "notes": [
+      "**Numeric range:** ~±1.7 × 10³⁸, six significant digits. Numbers print with a leading-space sign convention (positive numbers prefixed by a space, negative by `-`). Boolean expressions evaluate to `-1` (true) or `0` (false).",
+      "**Stack limits:** GOSUB and FOR/NEXT frames both live on the 6502 stack, which they share with the interpreter's own working space. At least 20 GOSUB levels are available whatever the subroutine does, and about 27 for a simple one; FOR/NEXT supports up to 8 nested loops. Exceeding either limit produces an `OUT OF MEMORY` error.",
+      "**Memory layout:** Programs grow up from `$0800`. Numeric/string scalar variables follow the program, then arrays, then the string heap which grows down from `$8000`. `MEM` and the cold-boot banner report `MEMSIZ - VARTAB` (free bytes for variables, arrays, and strings combined)."
+    ],
+    "forNestingLevels": 8,
+    "gosubLevelsGuaranteed": 20,
+    "variableNames": "Single letter A-Z (numeric) and A$-Z$ (string); each may also be DIMed as a 1-D array",
+    "floatBytes": 5,
+    "significantDigits": 6,
+    "printZoneWidth": 14,
+    "source": "6502-BIOS/README.md",
+    "check": "pending RUN (Phase 4)",
+    "verified": false
+  },
+  "operatorPrecedence": [
+    {
+      "rank": 1,
+      "level": "Power",
+      "operators": [
+        "^"
+      ],
+      "source": "6502-BIOS/README.md",
+      "verified": false
+    },
+    {
+      "rank": 2,
+      "level": "Unary",
+      "operators": [
+        "-",
+        "+"
+      ],
+      "source": "6502-BIOS/README.md",
+      "verified": false
+    },
+    {
+      "rank": 3,
+      "level": "Multiplicative",
+      "operators": [
+        "*",
+        "/"
+      ],
+      "source": "6502-BIOS/README.md",
+      "verified": false
+    },
+    {
+      "rank": 4,
+      "level": "Additive",
+      "operators": [
+        "+",
+        "-"
+      ],
+      "source": "6502-BIOS/README.md",
+      "verified": false
+    },
+    {
+      "rank": 5,
+      "level": "Relational",
+      "operators": [
+        "=",
+        "<>",
+        "<",
+        ">",
+        "<=",
+        ">="
+      ],
+      "source": "6502-BIOS/README.md",
+      "verified": false
+    },
+    {
+      "rank": 6,
+      "level": "Logical NOT",
+      "operators": [
+        "NOT"
+      ],
+      "source": "6502-BIOS/README.md",
+      "verified": false
+    },
+    {
+      "rank": 7,
+      "level": "Logical AND",
+      "operators": [
+        "AND"
+      ],
+      "source": "6502-BIOS/README.md",
+      "verified": false
+    },
+    {
+      "rank": 8,
+      "level": "Logical OR",
+      "operators": [
+        "OR"
+      ],
+      "source": "6502-BIOS/README.md",
+      "verified": false
+    }
+  ],
+  "keywords": [
+    {
+      "name": "END",
+      "token": "$80",
+      "tokenDecimal": 128,
+      "kind": "statement",
+      "handler": "BasCmdEnd",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "END",
+          "description": "Stop execution and return to `OK`. Variables preserved",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8711",
+      "check": "GREP"
+    },
+    {
+      "name": "FOR",
+      "token": "$81",
+      "tokenDecimal": 129,
+      "kind": "statement",
+      "handler": "BasCmdFor",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "FOR var = init TO limit [STEP step]",
+          "description": "Counted loop. Default step is `1`. Up to 8 nested loops. The limit is tested at `NEXT`, as in Microsoft 6502 BASIC, so the body always runs at least once — `FOR I = 5 TO 1` runs once and leaves `I` at 6",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8712",
+      "check": "GREP"
+    },
+    {
+      "name": "NEXT",
+      "token": "$82",
+      "tokenDecimal": 130,
+      "kind": "statement",
+      "handler": "BasCmdNext",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "NEXT [var [, var ...]]",
+          "description": "Increment loop variable and branch back to matching `FOR` if condition holds",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8713",
+      "check": "GREP"
+    },
+    {
+      "name": "DATA",
+      "token": "$83",
+      "tokenDecimal": 131,
+      "kind": "statement",
+      "handler": "BasCmdData",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "DATA v1,v2,...",
+          "description": "Inline data for `READ` (numeric or string literals). Skipped during normal execution",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8714",
+      "check": "GREP"
+    },
+    {
+      "name": "INPUT",
+      "token": "$84",
+      "tokenDecimal": 132,
+      "kind": "statement",
+      "handler": "BasCmdInput",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "INPUT [\"prompt\"{;",
+          "description": "Read value(s) from the user. Numeric or string vars supported. Re-prompts with `?REDO FROM START` on bad numeric input; `?EXTRA IGNORED` if too many comma-separated values",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8715",
+      "check": "GREP"
+    },
+    {
+      "name": "DIM",
+      "token": "$85",
+      "tokenDecimal": 133,
+      "kind": "statement",
+      "handler": "BasCmdDim",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "DIM var(size) [, var(size) ...]",
+          "description": "Dimension a 1-D array (numeric or string), valid indices `0..size`. `REDIM'D ARRAY` if already dimensioned. Only one dimension is supported",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8716",
+      "check": "GREP"
+    },
+    {
+      "name": "READ",
+      "token": "$86",
+      "tokenDecimal": 134,
+      "kind": "statement",
+      "handler": "BasCmdRead",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "READ var [,var ...]",
+          "description": "Read next value(s) from `DATA` into variables. `OUT OF DATA` if exhausted",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8717",
+      "check": "GREP"
+    },
+    {
+      "name": "LET",
+      "token": "$87",
+      "tokenDecimal": 135,
+      "kind": "statement",
+      "handler": "BasCmdLet",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "[LET] var = expr",
+          "description": "Assign expression to variable. `LET` keyword is optional",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8718",
+      "check": "GREP"
+    },
+    {
+      "name": "GOTO",
+      "token": "$88",
+      "tokenDecimal": 136,
+      "kind": "statement",
+      "handler": "BasCmdGoto",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "GOTO linenum",
+          "description": "Jump unconditionally to line `linenum`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8719",
+      "check": "GREP"
+    },
+    {
+      "name": "RUN",
+      "token": "$89",
+      "tokenDecimal": 137,
+      "kind": "statement",
+      "handler": "BasCmdRun",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "RUN [linenum]",
+          "description": "Clear variables and run the program (optionally from `linenum`)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8720",
+      "check": "GREP"
+    },
+    {
+      "name": "IF",
+      "token": "$8A",
+      "tokenDecimal": 138,
+      "kind": "statement",
+      "handler": "BasCmdIf",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "IF expr THEN stmt [ELSE stmt]",
+          "description": "Execute THEN branch if `expr` non-zero, else (if present) the ELSE branch. `THEN linenum` is shorthand for `THEN GOTO linenum`, and `ELSE linenum` for `ELSE GOTO linenum`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8721",
+      "check": "GREP"
+    },
+    {
+      "name": "RESTORE",
+      "token": "$8B",
+      "tokenDecimal": 139,
+      "kind": "statement",
+      "handler": "BasCmdRestore",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "RESTORE",
+          "description": "Reset `DATA` pointer to start of program",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8722",
+      "check": "GREP"
+    },
+    {
+      "name": "GOSUB",
+      "token": "$8C",
+      "tokenDecimal": 140,
+      "kind": "statement",
+      "handler": "BasCmdGosub",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "GOSUB linenum",
+          "description": "Push current position and jump. Nesting is bounded by the 6502 stack, which the frames share with the interpreter's own working space — at least 20 levels are available whatever the subroutine does, and about 27 for a simple one. Exceeding the space raises `OUT OF MEMORY`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8723",
+      "check": "GREP"
+    },
+    {
+      "name": "RETURN",
+      "token": "$8D",
+      "tokenDecimal": 141,
+      "kind": "statement",
+      "handler": "BasCmdReturn",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "RETURN",
+          "description": "Pop the GOSUB stack and resume after the calling `GOSUB`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8724",
+      "check": "GREP"
+    },
+    {
+      "name": "REM",
+      "token": "$8E",
+      "tokenDecimal": 142,
+      "kind": "statement",
+      "handler": "BasCmdRem",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "REM [text]",
+          "description": "Comment — rest of line is ignored",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8725",
+      "check": "GREP"
+    },
+    {
+      "name": "STOP",
+      "token": "$8F",
+      "tokenDecimal": 143,
+      "kind": "statement",
+      "handler": "BasCmdStop",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "STOP",
+          "description": "Stop and print `BREAK IN nnnn`. Resume with `CONT`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8726",
+      "check": "GREP"
+    },
+    {
+      "name": "ON",
+      "token": "$90",
+      "tokenDecimal": 144,
+      "kind": "statement",
+      "handler": "BasCmdOn",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "ON expr GOTO l1,l2,...",
+          "description": "Evaluate `expr`, branch to nth target. Out-of-range index silently continues",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8727",
+      "check": "GREP"
+    },
+    {
+      "name": "WAIT",
+      "token": "$91",
+      "tokenDecimal": 145,
+      "kind": "statement",
+      "handler": "BasCmdWait",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "WAIT <addr>, <mask>",
+          "description": "Spin until `(addr) AND mask` is non-zero; Ctrl+C aborts",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8728",
+      "check": "GREP"
+    },
+    {
+      "name": "LOAD",
+      "token": "$92",
+      "tokenDecimal": 146,
+      "kind": "statement",
+      "handler": "BasCmdLoad",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "LOAD \"name\"",
+          "description": "Load a named file from CompactFlash to `$0800`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        },
+        {
+          "syntax": "LOAD",
+          "description": "Receive a program via XModem on the serial port",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        },
+        {
+          "syntax": "LOAD \"name\"",
+          "description": "Programs. Loads at `$0800` and readies BASIC to `RUN` it",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8729",
+      "check": "GREP"
+    },
+    {
+      "name": "SAVE",
+      "token": "$93",
+      "tokenDecimal": 147,
+      "kind": "statement",
+      "handler": "BasCmdSave",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "SAVE \"name\"",
+          "description": "Save the current program to CompactFlash",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        },
+        {
+          "syntax": "SAVE",
+          "description": "Transmit the current program via XModem",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        },
+        {
+          "syntax": "LOAD \"name\"",
+          "description": "Programs. Loads at `$0800` and readies BASIC to `RUN` it",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8730",
+      "check": "GREP"
+    },
+    {
+      "name": "DEF",
+      "token": "$94",
+      "tokenDecimal": 148,
+      "kind": "statement",
+      "handler": "BasCmdDef",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "DEF FN A(X) = expr",
+          "description": "Define a single-argument numeric user function. Call with `FN A(value)`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8731",
+      "check": "GREP"
+    },
+    {
+      "name": "POKE",
+      "token": "$95",
+      "tokenDecimal": 149,
+      "kind": "statement",
+      "handler": "BasCmdPoke",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "POKE addr, value",
+          "description": "Write byte `value` to memory address `addr`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8732",
+      "check": "GREP"
+    },
+    {
+      "name": "PRINT",
+      "token": "$96",
+      "tokenDecimal": 150,
+      "kind": "statement",
+      "handler": "BasCmdPrintW",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "PRINT [item [sep item ...]]",
+          "description": "Output items to console. Items may be string or numeric expressions. `;` = no separator (trailing `;` suppresses CRLF); `,` = advance to next 14-column print zone. Bare `PRINT` prints only CRLF",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8733",
+      "check": "GREP"
+    },
+    {
+      "name": "CONT",
+      "token": "$97",
+      "tokenDecimal": 151,
+      "kind": "statement",
+      "handler": "BasCmdCont",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "CONT",
+          "description": "Continue after `STOP`, `END` or a Ctrl+C break (immediate mode only), including from inside a `FOR` loop or a subroutine — the loop and `GOSUB` frames survive the break, so `NEXT` and `RETURN` still find them. `CAN'T CONTINUE` after an error, a `NEW`, a `CLR` or a `RUN`, all of which reset the stack those frames live on",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8734",
+      "check": "GREP"
+    },
+    {
+      "name": "LIST",
+      "token": "$98",
+      "tokenDecimal": 152,
+      "kind": "statement",
+      "handler": "BasCmdList",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "LIST",
+          "description": "Print the program in detokenized form. Ctrl+C interrupts",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8735",
+      "check": "GREP"
+    },
+    {
+      "name": "CLR",
+      "token": "$99",
+      "tokenDecimal": 153,
+      "kind": "statement",
+      "handler": "BasCmdClr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "CLR",
+          "description": "Clear variables and arrays; reset GOSUB/FOR stacks. Program is kept",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8736",
+      "check": "GREP"
+    },
+    {
+      "name": "NEW",
+      "token": "$9A",
+      "tokenDecimal": 154,
+      "kind": "statement",
+      "handler": "BasCmdNew",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "NEW",
+          "description": "Erase the program and clear variables",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8737",
+      "check": "GREP"
+    },
+    {
+      "name": "TAB",
+      "token": "$9B",
+      "tokenDecimal": 155,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "TAB(n)",
+          "description": "In `PRINT`, advance cursor to column `n` (no-op if already past)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8738",
+      "check": "GREP"
+    },
+    {
+      "name": "TO",
+      "token": "$9C",
+      "tokenDecimal": 156,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [],
+      "verified": false,
+      "source": "BASIC.asm:8739",
+      "check": "GREP"
+    },
+    {
+      "name": "FN",
+      "token": "$9D",
+      "tokenDecimal": 157,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [],
+      "verified": false,
+      "source": "BASIC.asm:8740",
+      "check": "GREP"
+    },
+    {
+      "name": "SPC",
+      "token": "$9E",
+      "tokenDecimal": 158,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "SPC(n)",
+          "description": "In `PRINT`, emit `n` spaces",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8741",
+      "check": "GREP"
+    },
+    {
+      "name": "THEN",
+      "token": "$9F",
+      "tokenDecimal": 159,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [],
+      "verified": false,
+      "source": "BASIC.asm:8742",
+      "check": "GREP"
+    },
+    {
+      "name": "NOT",
+      "token": "$A0",
+      "tokenDecimal": 160,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [],
+      "verified": false,
+      "source": "BASIC.asm:8743",
+      "check": "GREP"
+    },
+    {
+      "name": "STEP",
+      "token": "$A1",
+      "tokenDecimal": 161,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [],
+      "verified": false,
+      "source": "BASIC.asm:8744",
+      "check": "GREP"
+    },
+    {
+      "name": "AND",
+      "token": "$A2",
+      "tokenDecimal": 162,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [],
+      "verified": false,
+      "source": "BASIC.asm:8745",
+      "check": "GREP"
+    },
+    {
+      "name": "OR",
+      "token": "$A3",
+      "tokenDecimal": 163,
+      "kind": "keyword",
+      "handler": "SynErr",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": false,
+      "forms": [],
+      "verified": false,
+      "source": "BASIC.asm:8746",
+      "check": "GREP"
+    },
+    {
+      "name": "ELSE",
+      "token": "$A4",
+      "tokenDecimal": 164,
+      "kind": "statement",
+      "handler": "BasCmdRem",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [],
+      "verified": false,
+      "source": "BASIC.asm:8747",
+      "check": "GREP"
+    },
+    {
+      "name": "SYS",
+      "token": "$A5",
+      "tokenDecimal": 165,
+      "kind": "statement",
+      "handler": "BasCmdSys",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "SYS <addr>",
+          "description": "Call a machine-code routine; `RTS` returns to BASIC",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8748",
+      "check": "GREP"
+    },
+    {
+      "name": "DIR",
+      "token": "$A6",
+      "tokenDecimal": 166,
+      "kind": "statement",
+      "handler": "BasCmdDir",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "DIR",
+          "description": "List current disk's directory (prints `DISK n` header)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8749",
+      "check": "GREP"
+    },
+    {
+      "name": "DEL",
+      "token": "$A7",
+      "tokenDecimal": 167,
+      "kind": "statement",
+      "handler": "BasCmdDel",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "DEL \"name\"",
+          "description": "Delete a named file from the current disk",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8750",
+      "check": "GREP"
+    },
+    {
+      "name": "CLS",
+      "token": "$A8",
+      "tokenDecimal": 168,
+      "kind": "statement",
+      "handler": "BasCmdCls",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "CLS",
+          "description": "Clear the screen and reset cursor to (0, 0)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8751",
+      "check": "GREP"
+    },
+    {
+      "name": "LOCATE",
+      "token": "$A9",
+      "tokenDecimal": 169,
+      "kind": "statement",
+      "handler": "BasCmdLocate",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "LOCATE <row>, <col>",
+          "description": "Move cursor to row 0–23, column 0–39",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8752",
+      "check": "GREP"
+    },
+    {
+      "name": "COLOR",
+      "token": "$AA",
+      "tokenDecimal": 170,
+      "kind": "statement",
+      "handler": "BasCmdColor",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "COLOR <fg>, <bg>",
+          "description": "Set TMS9918 text foreground/background colours (0–15 each)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8753",
+      "check": "GREP"
+    },
+    {
+      "name": "SOUND",
+      "token": "$AB",
+      "tokenDecimal": 171,
+      "kind": "statement",
+      "handler": "BasCmdSound",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "SOUND <voice>, <freq>, <dur>",
+          "description": "Play a tone on voice 1–3 at `freq` Hz for `dur` centiseconds, then silence. Numbered from 1 as in Commodore BASIC V3.5; the `SidPlayNote` Kernal slot indexes the same three voices from 0",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8754",
+      "check": "GREP"
+    },
+    {
+      "name": "VOL",
+      "token": "$AC",
+      "tokenDecimal": 172,
+      "kind": "statement",
+      "handler": "BasCmdVol",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "VOL <n>",
+          "description": "Set SID master volume (0–15)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8755",
+      "check": "GREP"
+    },
+    {
+      "name": "TIME",
+      "token": "$AD",
+      "tokenDecimal": 173,
+      "kind": "statement",
+      "handler": "BasCmdTime",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "TIME",
+          "description": "Print current RTC time as `HH:MM:SS`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8756",
+      "check": "GREP"
+    },
+    {
+      "name": "DATE",
+      "token": "$AE",
+      "tokenDecimal": 174,
+      "kind": "statement",
+      "handler": "BasCmdDate",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "DATE",
+          "description": "Print current RTC date as `CCYY-MM-DD`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8757",
+      "check": "GREP"
+    },
+    {
+      "name": "SETTIME",
+      "token": "$AF",
+      "tokenDecimal": 175,
+      "kind": "statement",
+      "handler": "BasCmdSettime",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "SETTIME <hh>, <mm>, <ss>",
+          "description": "Set the RTC time",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8758",
+      "check": "GREP"
+    },
+    {
+      "name": "SETDATE",
+      "token": "$B0",
+      "tokenDecimal": 176,
+      "kind": "statement",
+      "handler": "BasCmdSetdate",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "SETDATE <cc>, <yy>, <mm>, <dd>",
+          "description": "Set the RTC date",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8759",
+      "check": "GREP"
+    },
+    {
+      "name": "NVRAM",
+      "token": "$B1",
+      "tokenDecimal": 177,
+      "kind": "statement",
+      "handler": "BasCmdNvram",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "NVRAM <addr>, <value>",
+          "description": "Write a byte to RTC NVRAM at address 0–255",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        },
+        {
+          "syntax": "NVRAM(addr)",
+          "description": "Read byte from RTC NVRAM (returns 0 if RTC absent)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8760",
+      "check": "GREP"
+    },
+    {
+      "name": "PAUSE",
+      "token": "$B2",
+      "tokenDecimal": 178,
+      "kind": "statement",
+      "handler": "BasCmdPause",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "PAUSE <n>",
+          "description": "Pause for `n` centiseconds (~10 ms each)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8761",
+      "check": "GREP"
+    },
+    {
+      "name": "BANK",
+      "token": "$B3",
+      "tokenDecimal": 179,
+      "kind": "statement",
+      "handler": "BasCmdBank",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "BANK <n>",
+          "description": "Select 1KB RAM bank `n` at `$8000–$83FE`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8762",
+      "check": "GREP"
+    },
+    {
+      "name": "BRK",
+      "token": "$B4",
+      "tokenDecimal": 180,
+      "kind": "statement",
+      "handler": "BasCmdBrk",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "BRK",
+          "description": "Drop into the machine-code monitor. Return to BASIC with `X`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8763",
+      "check": "GREP"
+    },
+    {
+      "name": "MEM",
+      "token": "$B5",
+      "tokenDecimal": 181,
+      "kind": "statement",
+      "handler": "BasCmdMem",
+      "dispatch": "BasTokenAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "MEM",
+          "description": "Print free bytes, `HW=$xx`, and `DISK n`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8764",
+      "check": "GREP"
+    },
+    {
+      "name": "SGN",
+      "token": "$B6",
+      "tokenDecimal": 182,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "SGN(x)",
+          "description": "Sign of `x`: `1`, `0`, or `-1`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8766",
+      "check": "GREP"
+    },
+    {
+      "name": "INT",
+      "token": "$B7",
+      "tokenDecimal": 183,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "INT(x)",
+          "description": "Largest integer ≤ `x` (floor)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8767",
+      "check": "GREP"
+    },
+    {
+      "name": "ABS",
+      "token": "$B8",
+      "tokenDecimal": 184,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "ABS(x)",
+          "description": "Absolute value of `x`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8768",
+      "check": "GREP"
+    },
+    {
+      "name": "FRE",
+      "token": "$B9",
+      "tokenDecimal": 185,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "FRE(x)",
+          "description": "Free bytes between top of variable space and bottom of string heap (argument ignored)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8769",
+      "check": "GREP"
+    },
+    {
+      "name": "POS",
+      "token": "$BA",
+      "tokenDecimal": 186,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "POS(x)",
+          "description": "Current print column (argument ignored)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8770",
+      "check": "GREP"
+    },
+    {
+      "name": "SQR",
+      "token": "$BB",
+      "tokenDecimal": 187,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "SQR(x)",
+          "description": "Square root of `x` (error if negative)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8771",
+      "check": "GREP"
+    },
+    {
+      "name": "RND",
+      "token": "$BC",
+      "tokenDecimal": 188,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "RND(x)",
+          "description": "Pseudo-random float in `[0, 1)` for `x > 0`; repeats last value for `x = 0`; reseeds for `x < 0`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8772",
+      "check": "GREP"
+    },
+    {
+      "name": "LOG",
+      "token": "$BD",
+      "tokenDecimal": 189,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "LOG(x)",
+          "description": "Natural logarithm (error if `x ≤ 0`)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8773",
+      "check": "GREP"
+    },
+    {
+      "name": "EXP",
+      "token": "$BE",
+      "tokenDecimal": 190,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "EXP(x)",
+          "description": "e raised to `x`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8774",
+      "check": "GREP"
+    },
+    {
+      "name": "COS",
+      "token": "$BF",
+      "tokenDecimal": 191,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "SIN(x)",
+          "description": "Trig functions, radians",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8775",
+      "check": "GREP"
+    },
+    {
+      "name": "SIN",
+      "token": "$C0",
+      "tokenDecimal": 192,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "SIN(x)",
+          "description": "Trig functions, radians",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8776",
+      "check": "GREP"
+    },
+    {
+      "name": "TAN",
+      "token": "$C1",
+      "tokenDecimal": 193,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "SIN(x)",
+          "description": "Trig functions, radians",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8777",
+      "check": "GREP"
+    },
+    {
+      "name": "ATN",
+      "token": "$C2",
+      "tokenDecimal": 194,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "ATN(x)",
+          "description": "Arctangent, radians",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8778",
+      "check": "GREP"
+    },
+    {
+      "name": "PEEK",
+      "token": "$C3",
+      "tokenDecimal": 195,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "PEEK(addr)",
+          "description": "Byte value at memory address `addr`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8779",
+      "check": "GREP"
+    },
+    {
+      "name": "LEN",
+      "token": "$C4",
+      "tokenDecimal": 196,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "LEN(s$)",
+          "description": "String length",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8780",
+      "check": "GREP"
+    },
+    {
+      "name": "STR$",
+      "token": "$C5",
+      "tokenDecimal": 197,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "STR$(n)",
+          "description": "Numeric value `n` formatted as a string",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8781",
+      "check": "GREP"
+    },
+    {
+      "name": "VAL",
+      "token": "$C6",
+      "tokenDecimal": 198,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "VAL(s$)",
+          "description": "Parse `s$` as a number; returns 0 if not numeric",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8782",
+      "check": "GREP"
+    },
+    {
+      "name": "ASC",
+      "token": "$C7",
+      "tokenDecimal": 199,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "ASC(s$)",
+          "description": "ASCII code of first character of `s$`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8783",
+      "check": "GREP"
+    },
+    {
+      "name": "CHR$",
+      "token": "$C8",
+      "tokenDecimal": 200,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "CHR$(n)",
+          "description": "One-character string with ASCII code `n`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8784",
+      "check": "GREP"
+    },
+    {
+      "name": "LEFT$",
+      "token": "$C9",
+      "tokenDecimal": 201,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "LEFT$(s$,n)",
+          "description": "First / last `n` chars of `s$`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8785",
+      "check": "GREP"
+    },
+    {
+      "name": "RIGHT$",
+      "token": "$CA",
+      "tokenDecimal": 202,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "LEFT$(s$,n)",
+          "description": "First / last `n` chars of `s$`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8786",
+      "check": "GREP"
+    },
+    {
+      "name": "MID$",
+      "token": "$CB",
+      "tokenDecimal": 203,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "MID$(s$,start[,len])",
+          "description": "Substring of `s$` starting at 1-based index `start`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8787",
+      "check": "GREP"
+    },
+    {
+      "name": "JOY",
+      "token": "$CC",
+      "tokenDecimal": 204,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "JOY(1)",
+          "description": "Joystick port 1 or 2 bitmask (R-L-D-U-Y-X-B-A). The port is **active low** — each line is pulled up and grounded by its switch — and the value is the port read raw, so a held button is a `0` bit and an untouched stick reads `$FF`. Test a direction with `IF (JOY(1) AND 16) = 0`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8788",
+      "check": "GREP"
+    },
+    {
+      "name": "INKEY",
+      "token": "$CD",
+      "tokenDecimal": 205,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "INKEY",
+          "description": "Non-blocking key read: ASCII code or `0`. No parentheses",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8789",
+      "check": "GREP"
+    },
+    {
+      "name": "HEX",
+      "token": "$CE",
+      "tokenDecimal": 206,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "HEX(n)",
+          "description": "In `PRINT`, output `n` as `$xxxx` hex; in expressions, returns `n` unchanged",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8790",
+      "check": "GREP"
+    },
+    {
+      "name": "MIN",
+      "token": "$CF",
+      "tokenDecimal": 207,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "MIN(a,b)",
+          "description": "Smaller / larger of `a` and `b`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8791",
+      "check": "GREP"
+    },
+    {
+      "name": "MAX",
+      "token": "$D0",
+      "tokenDecimal": 208,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "MIN(a,b)",
+          "description": "Smaller / larger of `a` and `b`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8792",
+      "check": "GREP"
+    },
+    {
+      "name": "DISK",
+      "token": "$D1",
+      "tokenDecimal": 209,
+      "kind": "statement",
+      "handler": "KBasCmdDisk",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "DISK <n>",
+          "description": "Select CF disk bank `n` (0–255); resets to 0 on boot. Each disk is 1 MB (2048 sectors) — 256 disks = 256 MB total",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8793",
+      "check": "GREP"
+    },
+    {
+      "name": "BLOAD",
+      "token": "$D2",
+      "tokenDecimal": 210,
+      "kind": "statement",
+      "handler": "KBasCmdBload",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "BLOAD <addr>,\"name\"",
+          "description": "Load a file's raw bytes from the current disk to address `addr`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        },
+        {
+          "syntax": "BLOAD <addr>,\"name\"",
+          "description": "Raw bytes at an address you choose — data, graphics, code",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8794",
+      "check": "GREP"
+    },
+    {
+      "name": "BSAVE",
+      "token": "$D3",
+      "tokenDecimal": 211,
+      "kind": "statement",
+      "handler": "KBasCmdBsave",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "BSAVE <addr>,<len>,\"name\"",
+          "description": "Save `len` bytes from address `addr` to a named file on the current disk",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        },
+        {
+          "syntax": "BLOAD <addr>,\"name\"",
+          "description": "Raw bytes at an address you choose — data, graphics, code",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8795",
+      "check": "GREP"
+    },
+    {
+      "name": "FORMAT",
+      "token": "$D4",
+      "tokenDecimal": 212,
+      "kind": "statement",
+      "handler": "KBasCmdFormat",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "FORMAT",
+          "description": "Erase the current disk's file directory (prompts `ERASE DISK n? (Y/N)`)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:8796",
+      "check": "GREP"
+    }
+  ]
+}

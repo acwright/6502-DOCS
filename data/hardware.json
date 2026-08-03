@@ -1,0 +1,719 @@
+{
+  "$meta": {
+    "title": "Hardware detection and I/O slots",
+    "description": "The HW_PRESENT bitmask set by the Reset probe, and what lives in each 1 KB I/O slot.",
+    "generator": "scripts/extract-facts.mjs",
+    "biosVersion": "1.5",
+    "sources": [
+      {
+        "file": "BIOS.inc",
+        "sha256": "71bdfc46cf19dcae00ef7da0867d40245870efd0b9e724d03c8a577d1b651109"
+      }
+    ],
+    "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
+  },
+  "hwPresent": {
+    "address": "$030D",
+    "description": "Bitmask written by the Reset probe. Bit order matches the I/O slot numbers. Guard your own code against a missing card the way the Kernal guards its own.",
+    "readFromBasic": "PEEK(781)",
+    "readFromMem": "MEM prints it as HW=$xx",
+    "source": "BIOS.inc:62",
+    "check": "GREP"
+  },
+  "slots": [
+    {
+      "symbol": "HW_RAM_L",
+      "bit": 0,
+      "mask": "%00000001",
+      "maskHex": "$01",
+      "slot": 1,
+      "chip": "AS6C4008 banked SRAM (low)",
+      "card": "RAM Card",
+      "description": "RAM card low  (IO 1, $8000-$83FF)",
+      "source": "BIOS.inc:64",
+      "check": "GREP",
+      "start": "$8000",
+      "end": "$83FF",
+      "size": 1024,
+      "registers": [
+        {
+          "symbol": "RAM_DATA_L",
+          "address": "$8000",
+          "description": "R/W ($8000-$83FE)",
+          "source": "BIOS.inc:145"
+        },
+        {
+          "symbol": "RAM_BANK_L",
+          "address": "$83FF",
+          "description": "Write-only RAM bank latch, value ($00-$FF) sets which of 256 ~1K banks of RAM is selected",
+          "source": "BIOS.inc:146"
+        }
+      ]
+    },
+    {
+      "symbol": "HW_RAM_H",
+      "bit": 1,
+      "mask": "%00000010",
+      "maskHex": "$02",
+      "slot": 2,
+      "chip": "AS6C4008 banked SRAM (high)",
+      "card": "RAM Card",
+      "description": "RAM card high (IO 2, $8400-$87FF)",
+      "source": "BIOS.inc:65",
+      "check": "GREP",
+      "start": "$8400",
+      "end": "$87FF",
+      "size": 1024,
+      "registers": [
+        {
+          "symbol": "RAM_DATA_H",
+          "address": "$8400",
+          "description": "R/W ($8400-$87FE)",
+          "source": "BIOS.inc:149"
+        },
+        {
+          "symbol": "RAM_BANK_H",
+          "address": "$87FF",
+          "description": "Write-only RAM bank latch, value ($00-$FF) sets which of 256 ~1K banks of RAM is selected",
+          "source": "BIOS.inc:150"
+        }
+      ]
+    },
+    {
+      "symbol": "HW_RTC",
+      "bit": 2,
+      "mask": "%00000100",
+      "maskHex": "$04",
+      "slot": 3,
+      "chip": "DS1511Y",
+      "card": "RTC Card",
+      "description": "RTC card (IO 3, DS1511Y)",
+      "source": "BIOS.inc:66",
+      "check": "GREP",
+      "start": "$8800",
+      "end": "$8BFF",
+      "size": 1024,
+      "registers": [
+        {
+          "symbol": "RTC_SEC",
+          "address": "$8800",
+          "description": "",
+          "source": "BIOS.inc:153"
+        },
+        {
+          "symbol": "RTC_MIN",
+          "address": "$8801",
+          "description": "",
+          "source": "BIOS.inc:154"
+        },
+        {
+          "symbol": "RTC_HR",
+          "address": "$8802",
+          "description": "",
+          "source": "BIOS.inc:155"
+        },
+        {
+          "symbol": "RTC_DAY",
+          "address": "$8803",
+          "description": "",
+          "source": "BIOS.inc:156"
+        },
+        {
+          "symbol": "RTC_DATE",
+          "address": "$8804",
+          "description": "",
+          "source": "BIOS.inc:157"
+        },
+        {
+          "symbol": "RTC_MON",
+          "address": "$8805",
+          "description": "",
+          "source": "BIOS.inc:158"
+        },
+        {
+          "symbol": "RTC_YR",
+          "address": "$8806",
+          "description": "",
+          "source": "BIOS.inc:159"
+        },
+        {
+          "symbol": "RTC_CENT",
+          "address": "$8807",
+          "description": "",
+          "source": "BIOS.inc:160"
+        },
+        {
+          "symbol": "RTC_ALARM_SEC",
+          "address": "$8808",
+          "description": "",
+          "source": "BIOS.inc:161"
+        },
+        {
+          "symbol": "RTC_ALARM_MIN",
+          "address": "$8809",
+          "description": "",
+          "source": "BIOS.inc:162"
+        },
+        {
+          "symbol": "RTC_ALARM_HR",
+          "address": "$880A",
+          "description": "",
+          "source": "BIOS.inc:163"
+        },
+        {
+          "symbol": "RTC_ALARM_DATE",
+          "address": "$880B",
+          "description": "",
+          "source": "BIOS.inc:164"
+        },
+        {
+          "symbol": "RTC_WD_L",
+          "address": "$880C",
+          "description": "",
+          "source": "BIOS.inc:165"
+        },
+        {
+          "symbol": "RTC_WD_H",
+          "address": "$880D",
+          "description": "",
+          "source": "BIOS.inc:166"
+        },
+        {
+          "symbol": "RTC_CTRL_A",
+          "address": "$880E",
+          "description": "",
+          "source": "BIOS.inc:167"
+        },
+        {
+          "symbol": "RTC_CTRL_B",
+          "address": "$880F",
+          "description": "",
+          "source": "BIOS.inc:168"
+        },
+        {
+          "symbol": "RTC_RAM_ADDR",
+          "address": "$8810",
+          "description": "",
+          "source": "BIOS.inc:169"
+        },
+        {
+          "symbol": "RTC_RAM_DATA",
+          "address": "$8813",
+          "description": "",
+          "source": "BIOS.inc:170"
+        }
+      ]
+    },
+    {
+      "symbol": "HW_CF",
+      "bit": 3,
+      "mask": "%00001000",
+      "maskHex": "$08",
+      "slot": 4,
+      "chip": "CompactFlash (8-bit True IDE)",
+      "card": "Storage Card",
+      "description": "Storage card (IO 4, CompactFlash)",
+      "source": "BIOS.inc:67",
+      "check": "GREP",
+      "start": "$8C00",
+      "end": "$8FFF",
+      "size": 1024,
+      "registers": [
+        {
+          "symbol": "ST_DATA",
+          "address": "$8C00",
+          "description": "R/W",
+          "source": "BIOS.inc:180"
+        },
+        {
+          "symbol": "ST_ERROR",
+          "address": "$8C01",
+          "description": "Read",
+          "source": "BIOS.inc:181"
+        },
+        {
+          "symbol": "ST_FEATURE",
+          "address": "$8C01",
+          "description": "Write",
+          "source": "BIOS.inc:182"
+        },
+        {
+          "symbol": "ST_SECT_CNT",
+          "address": "$8C02",
+          "description": "R/W",
+          "source": "BIOS.inc:183"
+        },
+        {
+          "symbol": "ST_LBA_0",
+          "address": "$8C03",
+          "description": "R/W",
+          "source": "BIOS.inc:184"
+        },
+        {
+          "symbol": "ST_LBA_1",
+          "address": "$8C04",
+          "description": "R/W",
+          "source": "BIOS.inc:185"
+        },
+        {
+          "symbol": "ST_LBA_2",
+          "address": "$8C05",
+          "description": "R/W",
+          "source": "BIOS.inc:186"
+        },
+        {
+          "symbol": "ST_LBA_3",
+          "address": "$8C06",
+          "description": "R/W",
+          "source": "BIOS.inc:187"
+        },
+        {
+          "symbol": "ST_STATUS",
+          "address": "$8C07",
+          "description": "Read",
+          "source": "BIOS.inc:188"
+        },
+        {
+          "symbol": "ST_CMD",
+          "address": "$8C07",
+          "description": "Write",
+          "source": "BIOS.inc:189"
+        }
+      ]
+    },
+    {
+      "symbol": "HW_SC",
+      "bit": 4,
+      "mask": "%00010000",
+      "maskHex": "$10",
+      "slot": 5,
+      "chip": "R65C51 / W65C51 ACIA",
+      "card": "Serial Card",
+      "description": "Serial card (IO 5, R65C51)",
+      "source": "BIOS.inc:68",
+      "check": "GREP",
+      "start": "$9000",
+      "end": "$93FF",
+      "size": 1024,
+      "registers": [
+        {
+          "symbol": "SC_DATA",
+          "address": "$9000",
+          "description": "R/W",
+          "source": "BIOS.inc:221"
+        },
+        {
+          "symbol": "SC_RESET",
+          "address": "$9001",
+          "description": "Write",
+          "source": "BIOS.inc:222"
+        },
+        {
+          "symbol": "SC_STATUS",
+          "address": "$9001",
+          "description": "Read",
+          "source": "BIOS.inc:223"
+        },
+        {
+          "symbol": "SC_CMD",
+          "address": "$9002",
+          "description": "R/W",
+          "source": "BIOS.inc:224"
+        },
+        {
+          "symbol": "SC_CTRL",
+          "address": "$9003",
+          "description": "R/W",
+          "source": "BIOS.inc:225"
+        }
+      ]
+    },
+    {
+      "symbol": "HW_GPIO",
+      "bit": 5,
+      "mask": "%00100000",
+      "maskHex": "$20",
+      "slot": 6,
+      "chip": "W65C22 VIA",
+      "card": "GPIO Card / Input Board",
+      "description": "GPIO card (IO 6, 65C22 VIA — keyboard/joysticks)",
+      "source": "BIOS.inc:69",
+      "check": "GREP",
+      "start": "$9400",
+      "end": "$97FF",
+      "size": 1024,
+      "registers": [
+        {
+          "symbol": "GPIO_PORTB",
+          "address": "$9400",
+          "description": "",
+          "source": "BIOS.inc:237"
+        },
+        {
+          "symbol": "GPIO_PORTA",
+          "address": "$9401",
+          "description": "",
+          "source": "BIOS.inc:238"
+        },
+        {
+          "symbol": "GPIO_DDRB",
+          "address": "$9402",
+          "description": "",
+          "source": "BIOS.inc:239"
+        },
+        {
+          "symbol": "GPIO_DDRA",
+          "address": "$9403",
+          "description": "",
+          "source": "BIOS.inc:240"
+        },
+        {
+          "symbol": "GPIO_T1CL",
+          "address": "$9404",
+          "description": "",
+          "source": "BIOS.inc:241"
+        },
+        {
+          "symbol": "GPIO_T1CH",
+          "address": "$9405",
+          "description": "",
+          "source": "BIOS.inc:242"
+        },
+        {
+          "symbol": "GPIO_T1LL",
+          "address": "$9406",
+          "description": "",
+          "source": "BIOS.inc:243"
+        },
+        {
+          "symbol": "GPIO_T1LH",
+          "address": "$9407",
+          "description": "",
+          "source": "BIOS.inc:244"
+        },
+        {
+          "symbol": "GPIO_T2CL",
+          "address": "$9408",
+          "description": "",
+          "source": "BIOS.inc:245"
+        },
+        {
+          "symbol": "GPIO_T2CH",
+          "address": "$9409",
+          "description": "",
+          "source": "BIOS.inc:246"
+        },
+        {
+          "symbol": "GPIO_SR",
+          "address": "$940A",
+          "description": "",
+          "source": "BIOS.inc:247"
+        },
+        {
+          "symbol": "GPIO_ACR",
+          "address": "$940B",
+          "description": "",
+          "source": "BIOS.inc:248"
+        },
+        {
+          "symbol": "GPIO_PCR",
+          "address": "$940C",
+          "description": "",
+          "source": "BIOS.inc:249"
+        },
+        {
+          "symbol": "GPIO_IFR",
+          "address": "$940D",
+          "description": "",
+          "source": "BIOS.inc:250"
+        },
+        {
+          "symbol": "GPIO_IER",
+          "address": "$940E",
+          "description": "",
+          "source": "BIOS.inc:251"
+        },
+        {
+          "symbol": "GPIO_ORA",
+          "address": "$940F",
+          "description": "",
+          "source": "BIOS.inc:252"
+        }
+      ]
+    },
+    {
+      "symbol": "HW_SID",
+      "bit": 6,
+      "mask": "%01000000",
+      "maskHex": "$40",
+      "slot": 7,
+      "chip": "MOS 6581 SID / ARMSID",
+      "card": "Sound Card",
+      "description": "Sound card (IO 7, SID/ARMSID)",
+      "source": "BIOS.inc:70",
+      "check": "GREP",
+      "start": "$9800",
+      "end": "$9BFF",
+      "size": 1024,
+      "registers": [
+        {
+          "symbol": "SID_V1_FREQ_LO",
+          "address": "$9800",
+          "description": "Voice 1 Frequency Low",
+          "source": "BIOS.inc:265"
+        },
+        {
+          "symbol": "SID_V1_FREQ_HI",
+          "address": "$9801",
+          "description": "Voice 1 Frequency High",
+          "source": "BIOS.inc:266"
+        },
+        {
+          "symbol": "SID_V1_PW_LO",
+          "address": "$9802",
+          "description": "Voice 1 Pulse Width Low",
+          "source": "BIOS.inc:267"
+        },
+        {
+          "symbol": "SID_V1_PW_HI",
+          "address": "$9803",
+          "description": "Voice 1 Pulse Width High",
+          "source": "BIOS.inc:268"
+        },
+        {
+          "symbol": "SID_V1_CTRL",
+          "address": "$9804",
+          "description": "Voice 1 Control Register",
+          "source": "BIOS.inc:269"
+        },
+        {
+          "symbol": "SID_V1_AD",
+          "address": "$9805",
+          "description": "Voice 1 Attack/Decay",
+          "source": "BIOS.inc:270"
+        },
+        {
+          "symbol": "SID_V1_SR",
+          "address": "$9806",
+          "description": "Voice 1 Sustain/Release",
+          "source": "BIOS.inc:271"
+        },
+        {
+          "symbol": "SID_V2_FREQ_LO",
+          "address": "$9807",
+          "description": "Voice 2 Frequency Low",
+          "source": "BIOS.inc:272"
+        },
+        {
+          "symbol": "SID_V2_FREQ_HI",
+          "address": "$9808",
+          "description": "Voice 2 Frequency High",
+          "source": "BIOS.inc:273"
+        },
+        {
+          "symbol": "SID_V2_PW_LO",
+          "address": "$9809",
+          "description": "Voice 2 Pulse Width Low",
+          "source": "BIOS.inc:274"
+        },
+        {
+          "symbol": "SID_V2_PW_HI",
+          "address": "$980A",
+          "description": "Voice 2 Pulse Width High",
+          "source": "BIOS.inc:275"
+        },
+        {
+          "symbol": "SID_V2_CTRL",
+          "address": "$980B",
+          "description": "Voice 2 Control Register",
+          "source": "BIOS.inc:276"
+        },
+        {
+          "symbol": "SID_V2_AD",
+          "address": "$980C",
+          "description": "Voice 2 Attack/Decay",
+          "source": "BIOS.inc:277"
+        },
+        {
+          "symbol": "SID_V2_SR",
+          "address": "$980D",
+          "description": "Voice 2 Sustain/Release",
+          "source": "BIOS.inc:278"
+        },
+        {
+          "symbol": "SID_V3_FREQ_LO",
+          "address": "$980E",
+          "description": "Voice 3 Frequency Low",
+          "source": "BIOS.inc:279"
+        },
+        {
+          "symbol": "SID_V3_FREQ_HI",
+          "address": "$980F",
+          "description": "Voice 3 Frequency High",
+          "source": "BIOS.inc:280"
+        },
+        {
+          "symbol": "SID_V3_PW_LO",
+          "address": "$9810",
+          "description": "Voice 3 Pulse Width Low",
+          "source": "BIOS.inc:281"
+        },
+        {
+          "symbol": "SID_V3_PW_HI",
+          "address": "$9811",
+          "description": "Voice 3 Pulse Width High",
+          "source": "BIOS.inc:282"
+        },
+        {
+          "symbol": "SID_V3_CTRL",
+          "address": "$9812",
+          "description": "Voice 3 Control Register",
+          "source": "BIOS.inc:283"
+        },
+        {
+          "symbol": "SID_V3_AD",
+          "address": "$9813",
+          "description": "Voice 3 Attack/Decay",
+          "source": "BIOS.inc:284"
+        },
+        {
+          "symbol": "SID_V3_SR",
+          "address": "$9814",
+          "description": "Voice 3 Sustain/Release",
+          "source": "BIOS.inc:285"
+        },
+        {
+          "symbol": "SID_FC_LO",
+          "address": "$9815",
+          "description": "Filter Cutoff Low",
+          "source": "BIOS.inc:286"
+        },
+        {
+          "symbol": "SID_FC_HI",
+          "address": "$9816",
+          "description": "Filter Cutoff High",
+          "source": "BIOS.inc:287"
+        },
+        {
+          "symbol": "SID_RES_FILT",
+          "address": "$9817",
+          "description": "Resonance/Filter",
+          "source": "BIOS.inc:288"
+        },
+        {
+          "symbol": "SID_MODE_VOL",
+          "address": "$9818",
+          "description": "Filter Mode/Volume",
+          "source": "BIOS.inc:289"
+        },
+        {
+          "symbol": "SID_PADDLE_X",
+          "address": "$9819",
+          "description": "Paddle X (Read-only)",
+          "source": "BIOS.inc:290"
+        },
+        {
+          "symbol": "SID_PADDLE_Y",
+          "address": "$981A",
+          "description": "Paddle Y (Read-only)",
+          "source": "BIOS.inc:291"
+        },
+        {
+          "symbol": "SID_OSC3",
+          "address": "$981B",
+          "description": "Oscillator 3 (Read-only)",
+          "source": "BIOS.inc:292"
+        },
+        {
+          "symbol": "SID_ENV3",
+          "address": "$981C",
+          "description": "Envelope 3 (Read-only)",
+          "source": "BIOS.inc:293"
+        }
+      ]
+    },
+    {
+      "symbol": "HW_VID",
+      "bit": 7,
+      "mask": "%10000000",
+      "maskHex": "$80",
+      "slot": 8,
+      "chip": "TMS9918A / Pico9918",
+      "card": "Video Card / VGA Card",
+      "description": "Video card (IO 8, TMS9918/pico9918)",
+      "source": "BIOS.inc:71",
+      "check": "GREP",
+      "start": "$9C00",
+      "end": "$9FFF",
+      "size": 1024,
+      "registers": [
+        {
+          "symbol": "VC_DATA",
+          "address": "$9C00",
+          "description": "R/W",
+          "source": "BIOS.inc:310"
+        },
+        {
+          "symbol": "VC_REG",
+          "address": "$9C01",
+          "description": "Write",
+          "source": "BIOS.inc:311"
+        },
+        {
+          "symbol": "VC_STATUS",
+          "address": "$9C01",
+          "description": "Read",
+          "source": "BIOS.inc:312"
+        }
+      ]
+    }
+  ],
+  "joystick": {
+    "description": "ReadJoystick1 and ReadJoystick2 return the raw VIA port. The port is active low: a held direction or button reads 0, an untouched stick reads $FF.",
+    "bits": [
+      {
+        "bit": 7,
+        "label": "R",
+        "mask": "$80"
+      },
+      {
+        "bit": 6,
+        "label": "L",
+        "mask": "$40"
+      },
+      {
+        "bit": 5,
+        "label": "D",
+        "mask": "$20"
+      },
+      {
+        "bit": 4,
+        "label": "U",
+        "mask": "$10"
+      },
+      {
+        "bit": 3,
+        "label": "Y",
+        "mask": "$08"
+      },
+      {
+        "bit": 2,
+        "label": "X",
+        "mask": "$04"
+      },
+      {
+        "bit": 1,
+        "label": "B",
+        "mask": "$02"
+      },
+      {
+        "bit": 0,
+        "label": "A",
+        "mask": "$01"
+      }
+    ],
+    "test": "IF (JOY(1) AND 16) = 0",
+    "source": "Kernal.asm ReadJoystick1Impl",
+    "check": "GREP"
+  }
+}

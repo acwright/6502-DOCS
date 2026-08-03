@@ -1,0 +1,8 @@
+# This case asserts something untrue on purpose.
+#
+# A suite that cannot fail is not testing anything, so the harness inverts this
+# one: it is reported ok when the assertions below do NOT hold, and FAIL if they
+# somehow do. If this line ever goes red, the harness has stopped asserting.
+
+expect-failure
+pass
