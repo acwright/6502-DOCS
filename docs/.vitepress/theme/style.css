@@ -1,0 +1,110 @@
+/**
+ * Self-hosted fonts — no external font CDN, so the site renders offline and
+ * on GitHub Pages without a third-party request.
+ */
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/BebasNeue-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/SourceCodePro-Variable.woff2') format('woff2');
+}
+
+/**
+ * Greyscale palette — ink/paper inverted pair for light and dark, greys for
+ * chrome, no accent hue. "Brand" variables are repurposed as the ink colour.
+ */
+:root {
+  --ac-ink: #111111;
+  --ac-paper: #ffffff;
+
+  --vp-c-brand-1: #1a1a1a;
+  --vp-c-brand-2: #333333;
+  --vp-c-brand-3: #4d4d4d;
+  --vp-c-brand-soft: rgba(0, 0, 0, 0.08);
+
+  --vp-c-default-1: #3c3c43;
+  --vp-c-default-2: #4c4c4c;
+  --vp-c-default-3: #6e6e6e;
+  --vp-c-default-soft: rgba(0, 0, 0, 0.06);
+
+  --vp-font-family-base: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    sans-serif;
+  --vp-font-family-mono: 'Source Code Pro', ui-monospace, 'SFMono-Regular', Menlo,
+    Consolas, monospace;
+
+  /* Shiki (css-variables theme) — greyscale tokens, light mode */
+  --shiki-foreground: #1a1a1a;
+  --shiki-background: #f6f6f6;
+  --shiki-token-constant: #1a1a1a;
+  --shiki-token-string: #4d4d4d;
+  --shiki-token-comment: #8a8a8a;
+  --shiki-token-keyword: #000000;
+  --shiki-token-parameter: #6e6e6e;
+  --shiki-token-function: #262626;
+  --shiki-token-string-expression: #595959;
+  --shiki-token-punctuation: #737373;
+  --shiki-token-link: #1a1a1a;
+  --shiki-token-inserted: #262626;
+  --shiki-token-deleted: #595959;
+  --shiki-token-changed: #4d4d4d;
+}
+
+.dark {
+  --ac-ink: #f2f2f2;
+  --ac-paper: #111111;
+
+  --vp-c-brand-1: #f2f2f2;
+  --vp-c-brand-2: #d4d4d4;
+  --vp-c-brand-3: #b3b3b3;
+  --vp-c-brand-soft: rgba(255, 255, 255, 0.1);
+
+  --vp-c-default-1: #d4d4d4;
+  --vp-c-default-2: #bdbdbd;
+  --vp-c-default-3: #8f8f8f;
+  --vp-c-default-soft: rgba(255, 255, 255, 0.08);
+
+  /* Shiki (css-variables theme) — greyscale tokens, dark mode */
+  --shiki-foreground: #f2f2f2;
+  --shiki-background: #1a1a1a;
+  --shiki-token-constant: #f2f2f2;
+  --shiki-token-string: #cfcfcf;
+  --shiki-token-comment: #7a7a7a;
+  --shiki-token-keyword: #ffffff;
+  --shiki-token-parameter: #a6a6a6;
+  --shiki-token-function: #e0e0e0;
+  --shiki-token-string-expression: #bfbfbf;
+  --shiki-token-punctuation: #9c9c9c;
+  --shiki-token-link: #f2f2f2;
+  --shiki-token-inserted: #e0e0e0;
+  --shiki-token-deleted: #bfbfbf;
+  --shiki-token-changed: #cfcfcf;
+}
+
+/* Headings, nav, and display text use Bebas Neue; body text stays legible. */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4,
+.VPNavBarTitle .title,
+.VPSidebarItem .text,
+.VPButton {
+  font-family: 'Bebas Neue', var(--vp-font-family-base);
+  letter-spacing: 0.02em;
+}
+
+/* No accent hue anywhere: links read as underlined ink, not a colour swap. */
+.vp-doc a,
+.VPLink.link {
+  color: var(--vp-c-brand-1);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

@@ -1,0 +1,41 @@
+{
+  "name": "basic",
+  "scopeName": "source.basic",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#keywords" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "match": "(?i:REM).*$", "name": "comment.line.basic" }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        { "match": "\"[^\"]*\"", "name": "string.quoted.double.basic" }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        { "match": "\\b\\d+(\\.\\d+)?\\b", "name": "constant.numeric.basic" }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "(?i:\\b(PRINT|INPUT|IF|THEN|ELSE|GOTO|GOSUB|RETURN|FOR|TO|STEP|NEXT|DIM|LET|END|STOP|CONT|NEW|RUN|LIST|CLR|DATA|READ|RESTORE|DEF|FN|ON|POKE|PEEK|SYS|BANK|MEM|FRE|WAIT|PAUSE|CLS|LOCATE|COLOR|SOUND|VOL|LOAD|SAVE|DIR|DEL|DISK|FORMAT|BLOAD|BSAVE|TIME|DATE|SETTIME|SETDATE|NVRAM|INKEY|JOY|AND|OR|NOT|LEN|LEFT\\$|RIGHT\\$|MID\\$|CHR\\$|ASC|STR\\$|VAL|TAB|SPC|POS|HEX\\$)\\b)",
+          "name": "keyword.control.basic"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        { "match": "[+\\-*/^=<>]", "name": "keyword.operator.basic" }
+      ]
+    }
+  }
+}
