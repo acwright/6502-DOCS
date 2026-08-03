@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIM LED Demo — KITT Scanner</title>
+<link rel="stylesheet" href="../card.css">
+</head>
+<body class="card placard va-middle" style="--w-label: 30%; --w-addr: 16%">
+
+<div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
+
+<div class="page">
+
+  <div class="pg-header">
+    <h1>KIM LED DEMO</h1>
+    <div class="side-info">A.C. Wright 6502<br>KITT Scanner</div>
+  </div>
+
+  <div class="pg-body">
+
+    <!-- Overview -->
+    <div class="section">
+      <span class="sec-title">Overview</span>
+      <div class="note-box">
+        A single lit LED bounces left and right across the 8 breadboard LEDs, like the scanner on KITT from <em>Knight Rider</em>. Each step advances about <strong>100 ms</strong>, sweeping 14 steps per full cycle. Runs forever — press <code>ESC</code> to stop and return to the KC Monitor.
+      </div>
+    </div>
+
+    <!-- Program Details -->
+    <div class="section">
+      <span class="sec-title">Program Details</span>
+      <table>
+        <tbody>
+          <tr><td class="td-label">Load address</td><td class="td-desc"><code>$0800</code> — Program RAM</td></tr>
+          <tr><td class="td-label">Run address</td><td class="td-desc"><code>$0800</code> — press ▲ there</td></tr>
+          <tr><td class="td-label">Program size</td><td class="td-desc">38 bytes (24 code + 14 table)</td></tr>
+          <tr><td class="td-label">LED register</td><td class="td-desc"><code>$9400</code> — 74HC373 latch</td></tr>
+          <tr><td class="td-label">Scan table</td><td class="td-desc"><code>$0818</code> — 14 one-hot patterns</td></tr>
+          <tr><td class="td-label">Step delay</td><td class="td-desc">~100 ms via SysDelay at <code>$A075</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Type-In Bytes -->
+    <div class="section">
+      <span class="sec-title">Type-In Bytes — Load at $0800</span>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:17%">ADDR</th>
+            <th class="th-hex">+0</th>
+            <th class="th-hex">+1</th>
+            <th class="th-hex">+2</th>
+            <th class="th-hex">+3</th>
+            <th class="th-hex">+4</th>
+            <th class="th-hex">+5</th>
+            <th class="th-hex">+6</th>
+            <th class="th-hex">+7</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-addr">$0800</td>
+            <td class="td-hex">A0</td><td class="td-hex">00</td>
+            <td class="td-hex">B9</td><td class="td-hex">18</td>
+            <td class="td-hex">08</td><td class="td-hex">8D</td>
+            <td class="td-hex">00</td><td class="td-hex">94</td>
+          </tr>
+          <tr>
+            <td class="td-addr">$0808</td>
+            <td class="td-hex">5A</td><td class="td-hex">A9</td>
+            <td class="td-hex">0A</td><td class="td-hex">A2</td>
+            <td class="td-hex">00</td><td class="td-hex">20</td>
+            <td class="td-hex">75</td><td class="td-hex">A0</td>
+          </tr>
+          <tr>
+            <td class="td-addr">$0810</td>
+            <td class="td-hex">7A</td><td class="td-hex">C8</td>
+            <td class="td-hex">C0</td><td class="td-hex">0E</td>
+            <td class="td-hex">D0</td><td class="td-hex">EC</td>
+            <td class="td-hex">80</td><td class="td-hex">E8</td>
+          </tr>
+          <tr>
+            <td class="td-addr-data">$0818</td>
+            <td class="td-hex-data">01</td><td class="td-hex-data">02</td>
+            <td class="td-hex-data">04</td><td class="td-hex-data">08</td>
+            <td class="td-hex-data">10</td><td class="td-hex-data">20</td>
+            <td class="td-hex-data">40</td><td class="td-hex-data">80</td>
+          </tr>
+          <tr>
+            <td class="td-addr-data">$0820</td>
+            <td class="td-hex-data">40</td><td class="td-hex-data">20</td>
+            <td class="td-hex-data">10</td><td class="td-hex-data">08</td>
+            <td class="td-hex-data">04</td><td class="td-hex-data">02</td>
+            <td class="td-hex-empty">—</td><td class="td-hex-empty">—</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        Rows $0818–$0825 (shown lighter) are the <strong>scan table</strong> — 14 one-hot bit patterns, not executable code.
+      </div>
+    </div>
+
+    <!-- How To Run -->
+    <div class="section">
+      <span class="sec-title">How To Run</span>
+      <table>
+        <tbody>
+          <tr>
+            <td class="td-step">1</td>
+            <td class="td-desc">Press <strong>Reset</strong> — KC Monitor starts; the LCD shows the current address and byte.</td>
+          </tr>
+          <tr>
+            <td class="td-step">2</td>
+            <td class="td-desc">Key in <code>0 8 0 0</code> on the hex pad to navigate to address <code>$0800</code>.</td>
+          </tr>
+          <tr>
+            <td class="td-step">3</td>
+            <td class="td-desc">Press <strong>INS</strong> to enter data-edit mode.</td>
+          </tr>
+          <tr>
+            <td class="td-step">4</td>
+            <td class="td-desc">Key each byte as two hex digits (e.g., <code>A 0</code> for $A0), then press <strong>►</strong> to step to the next address. Repeat for all 38 bytes.</td>
+          </tr>
+          <tr>
+            <td class="td-step">5</td>
+            <td class="td-desc">Press <strong>INS</strong> to exit data-edit mode.</td>
+          </tr>
+          <tr>
+            <td class="td-step">6</td>
+            <td class="td-desc">Key in <code>0 8 0 0</code> to return to the start address.</td>
+          </tr>
+          <tr>
+            <td class="td-step">7</td>
+            <td class="td-desc">Press <strong>▲</strong> to run — the LED begins scanning back and forth!</td>
+          </tr>
+          <tr>
+            <td class="td-step">8</td>
+            <td class="td-desc">Press <strong>ESC</strong> to stop and return to the monitor.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Assembly Source — forced to right column -->
+    <div class="section" style="break-before: column;">
+      <span class="sec-title">Assembly Source</span>
+<div class="code-block"><span class="cm">; KIM LED Demo — KITT Scanner</span>
+<span class="cm">; Assemble at $0800  ·  Run: press ▲ at $0800</span>
+<span class="cm">;</span>
+<span class="cm">; Equates ─────────────────────────────────</span>
+LED  = $9400    <span class="cm">; 74HC373 LED latch</span>
+<span class="cm">;</span>
+<span class="cm">; Code ───────────────────────────────────</span>
+<span class="lbl">Start:</span>
+    ldy  #0         <span class="cm">; $A0 00  —  table index = 0</span>
+<span class="lbl">Loop:</span>
+    lda  Table,y    <span class="cm">; $B9 18 08  —  load LED pattern</span>
+    sta  LED        <span class="cm">; $8D 00 94  —  display on LEDs</span>
+    phy             <span class="cm">; $5A  —  save Y (SysDelay clobbers)</span>
+    lda  #10        <span class="cm">; $A9 0A  —  10 centiseconds</span>
+    ldx  #0         <span class="cm">; $A2 00  —  SysDelay high byte</span>
+    jsr  $A075      <span class="cm">; $20 75 A0  —  wait ~100 ms</span>
+    ply             <span class="cm">; $7A  —  restore Y</span>
+    iny             <span class="cm">; $C8  —  next step</span>
+    cpy  #14        <span class="cm">; $C0 0E  —  14 steps per cycle?</span>
+    bne  Loop       <span class="cm">; $D0 EC  —  no: loop</span>
+    bra  Start      <span class="cm">; $80 E8  —  yes: restart sweep</span>
+<span class="cm">;</span>
+<span class="cm">; Scan table — 14 one-hot bit patterns</span>
+<span class="lbl">Table:</span>
+    <span class="cm">; sweep LED left → right (8 steps)</span>
+    .byte $01,$02,$04,$08,$10,$20,$40,$80
+    <span class="cm">; sweep LED right → left (6 steps)</span>
+    .byte $40,$20,$10,$08,$04,$02</div>
+    </div>
+
+    <!-- Notes -->
+    <div class="section">
+      <span class="sec-title">Notes</span>
+      <div class="note-box">
+        <strong>SysDelay</strong> — Kernal routine at <code>$A075</code>. It clobbers the Y register, so the code saves and restores Y with <code>PHY</code> / <code>PLY</code> around each call.
+      </div>
+      <div class="note-box">
+        <strong>The scan table</strong> at <code>$0818</code> holds 14 one-hot bytes — one bit set per byte, stepping from bit 0 (rightmost LED) to bit 7 (leftmost), then back to bit 1, skipping the endpoints to create a smooth bounce.
+      </div>
+      <div class="note-box">
+        <strong>Scan cycle</strong> — 8 steps right, 6 steps left (no double-tap at either end), totaling 14 steps × 100 ms = 1.4 s per full sweep.
+      </div>
+      <div class="note-box">
+        <strong>LDA Table,y</strong> uses absolute indexed Y addressing. The 16-bit table address ($0818) is embedded in the instruction bytes <code>B9 18 08</code>.
+      </div>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>KIM LED DEMO — KITT SCANNER</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">FRONT</span>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>

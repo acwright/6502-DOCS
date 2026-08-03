@@ -35,8 +35,8 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| confirmed | 8 |
-| open | 3 |
+| confirmed | 9 |
+| open | 4 |
 | fixed | 0 |
 
 ---
@@ -124,6 +124,18 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 | **Check** | GREP |
 | **Consequence** | A reader who trusts the name will POKE into BASIC's line buffer. `data/memory-map.json` names these regions for what they are; the docs must too, and the `6502-PRG` include's comment should be reworded in Phase 9. The genuinely free RAM is `$003A–$00FF` in zero page and everything above the program in `$0800–$7FFF`. |
 
+### A9 — The family hero photo shows a two-major-versions-stale banner
+
+| | |
+|---|---|
+| **Claim** | `6502-ASSETS/Images/6502.png` — now `docs/public/images/6502.png` — is the one photograph of a real machine in the whole asset set, and PLAN.md Phase 3 chapter 1 and Appendix B both earmark it for the introduction. Its monitor reads `6502 BASIC v1.0` / `30719 BYTES FREE` / `OK`. |
+| **Truth** | The banner is **`6502 BASIC V2.0`** (uppercase `V`, major version 2) and the machine reports **`30718 BYTES FREE`**. |
+| **Source** | RUN: `6502 run --headless --exit-on 'OK'` prints `-- 6502 BIOS v1.5 --` / `6502 BASIC V2.0` / `30718 BYTES FREE` / `OK`. |
+| **Check** | RUN |
+| **Consequence** | Putting it on the intro page unedited teaches the wrong banner on the first screen a reader sees, and it is the kind of error a reader would reasonably take as authoritative — it is a photograph. |
+| **Fix** | Phase 8, one of three ways: reshoot against v1.5, crop below the text, or run it as a captioned historical shot. `IMAGES.md` carries the decision. Until then the file is migrated but **not referenced by any page**. |
+| **Aside** | The photo independently corroborates A3: even on that firmware the prompt was `OK`, never `READY.`. |
+
 ---
 
 ## Open
@@ -155,6 +167,15 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 | **Status** | Not yet compared. Any disagreement is by definition a template bug, since the generated file is derived from the ROM. |
 | **Plan** | Diff them in Phase 9 and fix the template. |
 | **Check** | pending GREP |
+
+### O4 — The migrated cards still carry their original v1.0-era content
+
+| | |
+|---|---|
+| **Observation** | Phase 2 moved seventeen sheets onto the shared `cards/card.css`. That transform touched the `<head>` and the `<body>` tag only — every table, address, and listing is exactly the text that shipped in `6502-ASSETS`. So A2 (BASIC/Monitor ROM boundary) and A3 (`READY.`) are still printed on `docs/public/cards/ace.html` today, and the other four system cards have not been read against the fact base at all. |
+| **Status** | Deliberate. Rebuilding card content is Phase 7, which opens by auditing every card against `data/`; doing it during the migration would have mixed a mechanical, diffable move with editorial work and made both harder to check. |
+| **Mitigation** | Nothing on the site links to a card yet. The cards are reachable by URL but are not presented as current. |
+| **Check** | pending GREP + RUN (Phase 7) |
 
 ---
 

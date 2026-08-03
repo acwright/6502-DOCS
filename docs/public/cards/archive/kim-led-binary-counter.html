@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIM LED Demo — Binary Counter</title>
+<link rel="stylesheet" href="../card.css">
+</head>
+<body class="card placard va-middle" style="--w-label: 30%; --w-addr: 16%">
+
+<div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
+
+<div class="page">
+
+  <div class="pg-header">
+    <h1>KIM LED DEMO</h1>
+    <div class="side-info">A.C. Wright 6502<br>Binary Counter</div>
+  </div>
+
+  <div class="pg-body">
+
+    <!-- Overview -->
+    <div class="section">
+      <span class="sec-title">Overview</span>
+      <div class="note-box">
+        Counts 0 through 255 in binary on the 8 breadboard LEDs, stepping about once every <strong>500 ms</strong>. At $FF the count rolls back to $00 and repeats forever. Press <code>ESC</code> on the keypad to stop and return to the KC Monitor.
+      </div>
+    </div>
+
+    <!-- Program Details -->
+    <div class="section">
+      <span class="sec-title">Program Details</span>
+      <table>
+        <tbody>
+          <tr><td class="td-label">Load address</td><td class="td-desc"><code>$0800</code> — Program RAM</td></tr>
+          <tr><td class="td-label">Run address</td><td class="td-desc"><code>$0800</code> — press ▲ there</td></tr>
+          <tr><td class="td-label">Program size</td><td class="td-desc">18 bytes</td></tr>
+          <tr><td class="td-label">LED register</td><td class="td-desc"><code>$9400</code> — 74HC373 latch</td></tr>
+          <tr><td class="td-label">ZP counter</td><td class="td-desc"><code>$36</code> — free user zero page</td></tr>
+          <tr><td class="td-label">Step delay</td><td class="td-desc">~500 ms via SysDelay at <code>$A075</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Type-In Bytes -->
+    <div class="section">
+      <span class="sec-title">Type-In Bytes — Load at $0800</span>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:17%">ADDR</th>
+            <th class="th-hex">+0</th>
+            <th class="th-hex">+1</th>
+            <th class="th-hex">+2</th>
+            <th class="th-hex">+3</th>
+            <th class="th-hex">+4</th>
+            <th class="th-hex">+5</th>
+            <th class="th-hex">+6</th>
+            <th class="th-hex">+7</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-addr">$0800</td>
+            <td class="td-hex">64</td><td class="td-hex">36</td>
+            <td class="td-hex">A5</td><td class="td-hex">36</td>
+            <td class="td-hex">8D</td><td class="td-hex">00</td>
+            <td class="td-hex">94</td><td class="td-hex">A9</td>
+          </tr>
+          <tr>
+            <td class="td-addr">$0808</td>
+            <td class="td-hex">32</td><td class="td-hex">A2</td>
+            <td class="td-hex">00</td><td class="td-hex">20</td>
+            <td class="td-hex">75</td><td class="td-hex">A0</td>
+            <td class="td-hex">E6</td><td class="td-hex">36</td>
+          </tr>
+          <tr>
+            <td class="td-addr">$0810</td>
+            <td class="td-hex">80</td><td class="td-hex">F0</td>
+            <td class="td-hex-empty">—</td><td class="td-hex-empty">—</td>
+            <td class="td-hex-empty">—</td><td class="td-hex-empty">—</td>
+            <td class="td-hex-empty">—</td><td class="td-hex-empty">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- How To Run -->
+    <div class="section">
+      <span class="sec-title">How To Run</span>
+      <table>
+        <tbody>
+          <tr>
+            <td class="td-step">1</td>
+            <td class="td-desc">Press <strong>Reset</strong> — KC Monitor starts; the LCD shows the current address and byte.</td>
+          </tr>
+          <tr>
+            <td class="td-step">2</td>
+            <td class="td-desc">Key in <code>0 8 0 0</code> on the hex pad to navigate to address <code>$0800</code>.</td>
+          </tr>
+          <tr>
+            <td class="td-step">3</td>
+            <td class="td-desc">Press <strong>INS</strong> to enter data-edit mode.</td>
+          </tr>
+          <tr>
+            <td class="td-step">4</td>
+            <td class="td-desc">Key each byte as two hex digits (e.g., <code>6 4</code> for $64), then press <strong>►</strong> to step to the next address. Repeat for all 18 bytes.</td>
+          </tr>
+          <tr>
+            <td class="td-step">5</td>
+            <td class="td-desc">Press <strong>INS</strong> to exit data-edit mode.</td>
+          </tr>
+          <tr>
+            <td class="td-step">6</td>
+            <td class="td-desc">Key in <code>0 8 0 0</code> to return to the start address.</td>
+          </tr>
+          <tr>
+            <td class="td-step">7</td>
+            <td class="td-desc">Press <strong>▲</strong> to run — the LEDs begin counting in binary!</td>
+          </tr>
+          <tr>
+            <td class="td-step">8</td>
+            <td class="td-desc">Press <strong>ESC</strong> to stop and return to the monitor.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Assembly Source — forced to right column -->
+    <div class="section" style="break-before: column;">
+      <span class="sec-title">Assembly Source</span>
+<div class="code-block"><span class="cm">; KIM LED Demo — Binary Counter</span>
+<span class="cm">; Assemble at $0800  ·  Run: press ▲ at $0800</span>
+<span class="cm">;</span>
+<span class="cm">; Equates ─────────────────────────────────</span>
+LED  = $9400    <span class="cm">; 74HC373 LED latch</span>
+CNT  = $36      <span class="cm">; zero-page counter (user ZP)</span>
+<span class="cm">;</span>
+<span class="cm">; Code ───────────────────────────────────</span>
+<span class="lbl">Start:</span>
+    stz  CNT        <span class="cm">; $64 36  —  zero the counter</span>
+<span class="lbl">Loop:</span>
+    lda  CNT        <span class="cm">; $A5 36  —  load current count</span>
+    sta  LED        <span class="cm">; $8D 00 94  —  display on LEDs</span>
+    lda  #50        <span class="cm">; $A9 32  —  50 centiseconds</span>
+    ldx  #0         <span class="cm">; $A2 00  —  SysDelay high byte</span>
+    jsr  $A075      <span class="cm">; $20 75 A0  —  wait ~500 ms</span>
+    inc  CNT        <span class="cm">; $E6 36  —  next value</span>
+    bra  Loop       <span class="cm">; $80 F0  —  repeat forever</span></div>
+    </div>
+
+    <!-- Notes -->
+    <div class="section">
+      <span class="sec-title">Notes</span>
+      <div class="note-box">
+        <strong>SysDelay</strong> — Kernal routine at <code>$A075</code>. Pass the centisecond count in <strong>A</strong> (low byte) and <strong>X</strong> (high byte) before the JSR. 50 cs ≈ 500 ms.
+      </div>
+      <div class="note-box">
+        <strong>Reading the LEDs</strong> — bit 0 (value $01) is the rightmost LED; bit 7 (value $80) is the leftmost. Store <code>$AA</code> at <code>$9400</code> in edit mode to see an alternating pattern.
+      </div>
+      <div class="note-box">
+        <strong>Natural wrap</strong> — <code>INC CNT</code> on a zero-page byte overflows cleanly from $FF back to $00 with no extra code needed.
+      </div>
+      <div class="note-box">
+        <strong>Zero-page $36</strong> is in the free user area (<code>$36–$FF</code>). No conflict with system variables.
+      </div>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>KIM LED DEMO — BINARY COUNTER</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">FRONT</span>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>

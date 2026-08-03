@@ -84,6 +84,38 @@ asserts something untrue on purpose, so the suite is proved able to fail.
 CI runs the same harness on every push via `.github/workflows/verify.yml`,
 which builds the emulator CLI and cc65 from source on the runner.
 
+## The reference cards
+
+`docs/public/cards/*.html` are printable quick-reference sheets, served raw at
+`/cards/` outside the VitePress chrome. Print them at **letter, 100% scale,
+margins off, background graphics on** — the black header and footer bars are
+part of the artwork.
+
+They all share one print stylesheet,
+[`docs/public/cards/card.css`](docs/public/cards/card.css), which self-hosts
+Bebas Neue and Source Code Pro so a card printed offline looks identical to one
+printed online. A card picks a size regime with a body class — `card` for a
+dense reference sheet, `card placard` for one read at arm's length — and sets
+its column widths with custom properties. It never carries CSS of its own.
+
+```sh
+npm run cards:check   # no external requests, no inline CSS, real letter pages
+```
+
+`cards/archive/` holds superseded sheets: the BIOS v1.0–v1.4 references and the
+two KIM LED walk-throughs. They are kept as the record of what each firmware
+release documented, not as current documentation.
+
+The cards were migrated from `6502-ASSETS` and **still carry their original
+v1.0-era content** — Phase 7 rebuilds each one from `data/`. See
+[`ASSETS-MIGRATION.md`](ASSETS-MIGRATION.md) for what moved, what was recreated,
+and what was deliberately dropped:
+
+```sh
+npm run migrate         # re-run the migration from a 6502-ASSETS checkout
+npm run migrate:check   # fail if that repo holds anything this one doesn't
+```
+
 ## Accuracy
 
 [`ACCURACY.md`](ACCURACY.md) is the ledger of every place a document in this
@@ -101,12 +133,13 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 | Path | Purpose |
 |---|---|
 | `docs/` | VitePress site source (pages, theme, public assets) |
+| `docs/public/cards/` | Printable HTML quick-reference cards, served raw at `/cards/` |
 | `data/` | Machine-readable fact base, generated — consumed by the docs at build time |
 | `samples/` | Verified BASIC/assembly listings backing every listing in the docs |
-| `scripts/` | Fact extractor, sample harness, toolchain preflight |
-| `cards/` | Printable HTML quick-reference cards (Phase 2/7) |
-| `assets/` | Legacy design sources (`.afdesign`, `.numbers`) kept for provenance |
+| `scripts/` | Fact extractor, sample harness, toolchain preflight, asset migration |
+| `assets/` | Design sources — logos, label artwork, and the `.afdesign`/`.numbers` originals pending HTML recreation. Never served; see [`assets/README.md`](assets/README.md). |
 | `ACCURACY.md` | Ledger of factual discrepancies found and fixed |
+| `ASSETS-MIGRATION.md` | What moved out of `6502-ASSETS`, and the evidence for retiring it |
 
 ## Sibling repositories
 

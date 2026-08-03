@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6502-VCS — System Reference</title>
+<link rel="stylesheet" href="card.css">
+</head>
+<body class="card placard">
+
+<div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 1 — FRONT -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>6502-VCS</h1>
+    <div class="side-info">A.C. Wright 6502<br>Video Computer System</div>
+  </div>
+
+  <div class="pg-body">
+
+    <!-- Overview -->
+    <div class="section">
+      <span class="sec-title">Overview</span>
+      <div class="note-box">
+        The <strong>6502-VCS</strong> (Video Computer System) is A.C. Wright's cartridge-based game console in the <strong>AC6502</strong> family. A real 65C02 CPU drives VGA video through a Pico9918 and 3-voice SID sound through an ARMSID, with swappable ROM cartridges and support for classic Atari 2600-style joysticks. Slide in a cartridge, grab a joystick, and play.
+      </div>
+    </div>
+
+    <!-- History & Design -->
+    <div class="section">
+      <span class="sec-title">History &amp; Design</span>
+      <div class="note-box">
+        Its name and spirit nod to the 1977 Atari VCS (later the Atari 2600), the console that made swappable cartridges the standard for home gaming. This homebrew take keeps that plug-in-and-play feel but builds on the shared AC6502 architecture: the same Main Board, CPU, memory map and BIOS as its siblings, with a dedicated Output Board for TMS9918A-compatible graphics and SID audio. Cartridges hold 32KB ROM games written in 6502 assembly.
+      </div>
+    </div>
+
+    <!-- System Specs -->
+    <div class="section">
+      <span class="sec-title">System Specifications</span>
+      <table>
+        <tbody>
+          <tr><td class="td-label">CPU</td><td class="td-desc">WDC 65C02 @ 1 MHz</td></tr>
+          <tr><td class="td-label">RAM</td><td class="td-desc">32KB SRAM</td></tr>
+          <tr><td class="td-label">ROM</td><td class="td-desc">32KB EEPROM (BIOS) + swappable cartridges</td></tr>
+          <tr><td class="td-label">Video</td><td class="td-desc">Pico9918 — VGA 640×480, TMS9918A-compatible</td></tr>
+          <tr><td class="td-label">Audio</td><td class="td-desc">ARMSID (SID) — 3-voice synthesis, RCA out</td></tr>
+          <tr><td class="td-label">Input</td><td class="td-desc">Atari 2600-compatible joysticks</td></tr>
+          <tr><td class="td-label">Keyboard</td><td class="td-desc">PS/2 + 8×8 matrix (ATmega1284P encoder)</td></tr>
+          <tr><td class="td-label">Cartridge</td><td class="td-desc">28C256 EEPROM or 27C256 EPROM ROM cart</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- At the Party -->
+    <div class="section">
+      <span class="sec-title">At This Party</span>
+      <div class="note-box">
+        This VCS has a small <strong>white reset button on the Main Board near the front</strong>. Press it to restart the current cartridge — or, with no cartridge inserted, to reboot into the built-in BIOS BASIC. Plug a joystick into the front port before you start a game.
+      </div>
+    </div>
+
+    <!-- AC6502 Family -->
+    <div class="section">
+      <span class="sec-title">The AC6502 Family</span>
+      <table>
+        <thead><tr><th style="width:22%">System</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">VCS</td><td class="td-desc">Cartridge-based game console (this machine)</td></tr>
+          <tr><td class="td-cmd">ACE</td><td class="td-desc">All-in-one single-board computer</td></tr>
+          <tr><td class="td-cmd">COB</td><td class="td-desc">Modular backplane desktop</td></tr>
+          <tr><td class="td-cmd">KIM</td><td class="td-desc">Keypad + LCD minimal monitor</td></tr>
+          <tr><td class="td-cmd">DEV</td><td class="td-desc">Emulation-based development system</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        The VCS shares its Main Board, CPU and memory map with the rest of the family — with the slot empty it <em>is</em> a full AC6502 computer.
+      </div>
+    </div>
+
+    <!-- Memory Map -->
+    <div class="section">
+      <span class="sec-title">Memory Map</span>
+      <table>
+        <thead><tr><th style="width:36%">Range</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td class="td-addr">$0000–$07FF</td><td class="td-desc">Zero page, stack, input &amp; system variables</td></tr>
+          <tr><td class="td-addr">$0800–$7FFF</td><td class="td-desc">Program / BASIC RAM (30 KB)</td></tr>
+          <tr><td class="td-addr">$8000–$9FFF</td><td class="td-desc">I/O hardware — video, sound, joysticks</td></tr>
+          <tr><td class="td-addr">$A000–$B7FF</td><td class="td-desc">Kernal + jump table</td></tr>
+          <tr><td class="td-addr">$B800–$BFFF</td><td class="td-desc">Character set ROM</td></tr>
+          <tr><td class="td-addr">$C000–$FFF9</td><td class="td-desc">BASIC / Monitor — or cartridge ROM</td></tr>
+          <tr><td class="td-addr">$FFFA–$FFFF</td><td class="td-desc">CPU vectors (NMI, RESET, IRQ)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Did You Know -->
+    <div class="section">
+      <span class="sec-title">Did You Know?</span>
+      <div class="note-box">
+        Each game cartridge is just a <strong>32 KB ROM chip</strong> — a 28C256 EEPROM or 27C256 EPROM — holding hand-written 6502 assembly.
+      </div>
+      <div class="note-box">
+        The name honors the 1977 <strong>Atari VCS</strong> (the 2600), the console that made swappable cartridges the home-gaming standard.
+      </div>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502-VCS — SYSTEM REFERENCE</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">FRONT</span>
+  </div>
+
+</div><!-- /page 1 -->
+
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 2 — BACK -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>6502-VCS</h1>
+    <div class="side-info">A.C. Wright 6502<br>Video Computer System</div>
+  </div>
+
+  <div class="pg-body">
+
+    <!-- Playing a Cartridge -->
+    <div class="section">
+      <span class="sec-title">Playing a Cartridge</span>
+      <div class="note-box">
+        With the power <strong>off</strong>, slide a ROM cartridge fully into the cartridge slot. Plug a joystick into the front port. Turn the power on (or tap <strong>Reset</strong>) and the game starts automatically. To switch games, power off, swap the cartridge, and power back on.
+      </div>
+    </div>
+
+    <!-- Joystick -->
+    <div class="section">
+      <span class="sec-title">Joystick Controls</span>
+      <table>
+        <thead><tr><th style="width:38%">Input</th><th>Typical Use</th></tr></thead>
+        <tbody>
+          <tr><td class="td-desc">Stick (4 directions)</td><td class="td-desc">Move / steer</td></tr>
+          <tr><td class="td-desc">Fire button</td><td class="td-desc">Shoot / jump / select</td></tr>
+          <tr><td class="td-desc">Reset button</td><td class="td-desc">Restart the current game</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:2px;">
+        Controls vary by game — most use the standard Atari 2600 single-button convention.
+      </div>
+    </div>
+
+    <!-- No Cartridge -->
+    <div class="section">
+      <span class="sec-title">With No Cartridge</span>
+      <div class="note-box">
+        Boot the VCS with the slot empty and it falls back to the shared <strong>BIOS BASIC</strong> with a <code>READY.</code> prompt (a PS/2 keyboard is handy here). You get the full AC6502 BASIC just like the ACE or COB.
+      </div>
+    </div>
+
+    <!-- Fun To Try -->
+    <div class="section">
+      <span class="sec-title">Fun To Try (No Cartridge Needed)</span>
+      <div class="note-box">
+        <strong>Read the joystick —</strong> at the BASIC prompt type <code>PRINT JOY(1)</code> and move the stick; the number changes with each direction and the fire button.
+      </div>
+      <div class="note-box">
+        <strong>Make some noise —</strong> <code>VOL 15</code> then <code>SOUND 0,440,50</code> plays a tone through the SID chip.
+      </div>
+      <div class="note-box">
+        <strong>Color the screen —</strong> <code>COLOR 1,6</code> sets text and background colors (0–15 each) on the TMS9918 display.
+      </div>
+    </div>
+
+    <!-- BASIC Quick Reference -->
+    <div class="section">
+      <span class="sec-title">BASIC Quick Reference</span>
+      <table>
+        <thead><tr><th style="width:42%">Statement</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">PRINT / ?</td><td class="td-desc">Display text or numbers</td></tr>
+          <tr><td class="td-cmd">JOY(1)</td><td class="td-desc">Read the joystick / fire button</td></tr>
+          <tr><td class="td-cmd">SOUND / VOL</td><td class="td-desc">Play a tone / set volume</td></tr>
+          <tr><td class="td-cmd">COLOR f,b</td><td class="td-desc">Set text &amp; background color</td></tr>
+          <tr><td class="td-cmd">FOR…NEXT</td><td class="td-desc">Counting loop</td></tr>
+          <tr><td class="td-cmd">GOTO / GOSUB</td><td class="td-desc">Jump to / call a line number</td></tr>
+          <tr><td class="td-cmd">PEEK / POKE</td><td class="td-desc">Read / write a memory byte</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Monitor Commands -->
+    <div class="section">
+      <span class="sec-title">Monitor Commands</span>
+      <table>
+        <thead><tr><th style="width:34%">Command</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">M aaaa</td><td class="td-desc">Memory dump (hex + ASCII)</td></tr>
+          <tr><td class="td-cmd">D aaaa</td><td class="td-desc">Disassemble 65C02 code</td></tr>
+          <tr><td class="td-cmd">&gt; aaaa bb…</td><td class="td-desc">Deposit bytes into memory</td></tr>
+          <tr><td class="td-cmd">G aaaa</td><td class="td-desc">Go — run code at an address</td></tr>
+          <tr><td class="td-cmd">X</td><td class="td-desc">Exit Monitor back to BASIC</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        Reach BASIC and the Monitor by powering on with <strong>no cartridge</strong> in the slot.
+      </div>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502-VCS — SYSTEM REFERENCE</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">BACK</span>
+  </div>
+
+</div><!-- /page 2 -->
+
+</body>
+</html>

@@ -13,6 +13,35 @@ env:
   CC65_REF: master
 
 jobs:
+  # Cheap, dependency-free checks on the migrated assets. Split out from
+  # `verify` so a broken card reports in seconds rather than behind a cc65 build.
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Check the reference cards
+        run: npm run cards:check
+
+      # The migration is only evidence for retiring 6502-ASSETS if it is still
+      # true. This re-walks that repo and fails if it holds a path this repo does
+      # not account for. Drop the step once 6502-ASSETS is deleted (Phase 10
+      # archives it first, and an archived repo still checks out).
+      - name: Checkout 6502-ASSETS
+        uses: actions/checkout@v7
+        with:
+          repository: acwright/6502-ASSETS
+          path: .assets
+
+      - name: Check migration coverage
+        run: npm run migrate:check -- --source "$GITHUB_WORKSPACE/.assets"
+
   verify:
     runs-on: ubuntu-latest
     steps:

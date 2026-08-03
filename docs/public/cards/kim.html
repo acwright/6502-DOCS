@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6502-KIM — System Reference</title>
+<link rel="stylesheet" href="card.css">
+</head>
+<body class="card placard">
+
+<div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 1 — FRONT -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>6502-KIM</h1>
+    <div class="side-info">A.C. Wright 6502<br>Keypad Input Monitor</div>
+  </div>
+
+  <div class="pg-body">
+
+    <!-- Overview -->
+    <div class="section">
+      <span class="sec-title">Overview</span>
+      <div class="note-box">
+        The <strong>6502-KIM</strong> (Keypad Input Monitor) is A.C. Wright's tribute to the legendary <strong>KIM-1</strong> single-board computer. There is no full keyboard and no monitor screen — just a <strong>hex keypad</strong> and a small <strong>16×2 character LCD</strong>. You talk to the machine the old-fashioned way: by keying in hexadecimal addresses and data, byte by byte, exactly as hobbyists did in 1976.
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="section">
+      <span class="sec-title">History</span>
+      <div class="note-box">
+        The original <strong>KIM-1</strong> (Keyboard Input Monitor) was released by MOS Technology in 1976 for about $245 to show off their brand-new 6502 chip. With a hex keypad, a six-digit LED display, and a 1&nbsp;KB monitor ROM, it became many people's first computer and launched a generation of 6502 hobbyists. This homebrew KIM rebuilds that experience from AC6502 parts — a Main Board, Serial Card, and a custom Keypad Card — running the <strong>KC Monitor</strong> cartridge.
+      </div>
+    </div>
+
+    <!-- System Specs -->
+    <div class="section">
+      <span class="sec-title">System Specifications</span>
+      <table>
+        <tbody>
+          <tr><td class="td-label">CPU</td><td class="td-desc">WDC 65C02 @ 1 MHz (VCS Main Board)</td></tr>
+          <tr><td class="td-label">RAM</td><td class="td-desc">32KB SRAM</td></tr>
+          <tr><td class="td-label">ROM</td><td class="td-desc">32KB EEPROM + KC Monitor cartridge</td></tr>
+          <tr><td class="td-label">Display</td><td class="td-desc">16×2 character LCD (Keypad LCD Helper)</td></tr>
+          <tr><td class="td-label">Input</td><td class="td-desc">24-key hex keypad (MM74C922 encoder) + PS/2</td></tr>
+          <tr><td class="td-label">Interface</td><td class="td-desc">65C21 PIA + 8KB EEPROM (Keypad Card)</td></tr>
+          <tr><td class="td-label">Serial</td><td class="td-desc">65C51 ACIA + MAX232 (Serial Card)</td></tr>
+          <tr><td class="td-label">Expansion</td><td class="td-desc">Backplane Helper card slots</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- At the Party -->
+    <div class="section">
+      <span class="sec-title">At This Party</span>
+      <div class="note-box">
+        This KIM has a small <strong>white reset button on the Main Board near the front</strong>. Press it to restart the KC Monitor. Wired to the breadboard are <strong>8 LEDs</strong> — key in one of the two demo programs printed on the cards beside it, press run, and watch them dance.
+      </div>
+      <div class="note-box">
+        Don't expect a desktop — this machine is all about poking values straight into memory with the keypad and reading them back on the little LCD, exactly like 1976.
+      </div>
+    </div>
+
+    <!-- AC6502 Family -->
+    <div class="section">
+      <span class="sec-title">The AC6502 Family</span>
+      <table>
+        <thead><tr><th style="width:22%">System</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">KIM</td><td class="td-desc">Keypad + LCD minimal monitor (this machine)</td></tr>
+          <tr><td class="td-cmd">ACE</td><td class="td-desc">All-in-one single-board computer</td></tr>
+          <tr><td class="td-cmd">COB</td><td class="td-desc">Modular backplane desktop</td></tr>
+          <tr><td class="td-cmd">VCS</td><td class="td-desc">Cartridge-based game console</td></tr>
+          <tr><td class="td-cmd">DEV</td><td class="td-desc">Emulation-based development system</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Did You Know -->
+    <div class="section">
+      <span class="sec-title">Did You Know?</span>
+      <div class="note-box">
+        The original <strong>KIM-1</strong> sold for about $245 in 1976 and was many hobbyists' very first computer.
+      </div>
+      <div class="note-box">
+        The KC Monitor runs a <strong>second monitor over serial at the same time</strong> — it speaks the same language as the Apple I's “Wozmon.”
+      </div>
+    </div>
+    <!-- Memory Map -->
+    <div class="section">
+      <span class="sec-title">Memory Map</span>
+      <table>
+        <thead><tr><th style="width:42%">Range</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td class="td-addr">$0000&ndash;$07FF</td><td class="td-desc">Zero page, stack &amp; system vars</td></tr>
+          <tr><td class="td-addr">$0800&ndash;$7FFF</td><td class="td-desc">Program / scratch RAM</td></tr>
+          <tr><td class="td-addr">$9400&ndash;$940F</td><td class="td-desc">I/O &mdash; GPIO (drives the 8 LEDs)</td></tr>
+          <tr><td class="td-addr">$A000&ndash;$BFFF</td><td class="td-desc">Kernal &amp; jump table</td></tr>
+          <tr><td class="td-addr">$E000&ndash;$FFF9</td><td class="td-desc">KC Monitor ROM</td></tr>
+          <tr><td class="td-addr">$FFFA&ndash;$FFFF</td><td class="td-desc">6502 vectors (reset / IRQ / NMI)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- The Keypad Card -->
+    <div class="section">
+      <span class="sec-title">The Keypad Card</span>
+      <div class="note-box">
+        The custom <strong>Keypad Card</strong> reads the 24-key pad through a 74C922 encoder into a 65C21 PIA, firing an interrupt on every press &mdash; so the monitor never misses a key.
+      </div>
+    </div>
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502-KIM — SYSTEM REFERENCE</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">FRONT</span>
+  </div>
+
+</div><!-- /page 1 -->
+
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 2 — BACK -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>6502-KIM</h1>
+    <div class="side-info">A.C. Wright 6502<br>Keypad Input Monitor</div>
+  </div>
+
+  <div class="pg-body">
+
+    <!-- Getting Started -->
+    <div class="section">
+      <span class="sec-title">Getting Started</span>
+      <div class="note-box">
+        Power on (or press <strong>Reset</strong>) and the <strong>KC Monitor</strong> takes over, showing the current <strong>address</strong> and the <strong>byte</strong> stored there on the 16×2 LCD. The monitor has two modes: <em>navigation</em> (move around memory) and <em>data-edit</em> (change bytes). Press <code>INS</code> to toggle between them.
+      </div>
+    </div>
+
+    <!-- Keypad Layout -->
+    <div class="section">
+      <span class="sec-title">Keypad Layout</span>
+      <table style="text-align:center;">
+        <tbody>
+          <tr><td class="td-cmd">ESC</td><td class="td-cmd">INS</td><td class="td-cmd">PgUp</td><td class="td-cmd">A</td></tr>
+          <tr><td class="td-cmd">▲</td><td class="td-cmd">DEL</td><td class="td-cmd">PgDn</td><td class="td-cmd">B</td></tr>
+          <tr><td class="td-cmd">7</td><td class="td-cmd">8</td><td class="td-cmd">9</td><td class="td-cmd">C</td></tr>
+          <tr><td class="td-cmd">4</td><td class="td-cmd">5</td><td class="td-cmd">6</td><td class="td-cmd">D</td></tr>
+          <tr><td class="td-cmd">1</td><td class="td-cmd">2</td><td class="td-cmd">3</td><td class="td-cmd">E</td></tr>
+          <tr><td class="td-cmd">◄</td><td class="td-cmd">0</td><td class="td-cmd">►</td><td class="td-cmd">F</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Keypad Functions -->
+    <div class="section">
+      <span class="sec-title">Keypad Functions</span>
+      <table>
+        <thead><tr><th style="width:30%">Key</th><th>What It Does</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">0 – F</td><td class="td-desc">Enter a hex digit (address, or data in edit mode)</td></tr>
+          <tr><td class="td-cmd">◄ / ►</td><td class="td-desc">Step to previous / next byte (address −1 / +1)</td></tr>
+          <tr><td class="td-cmd">PgUp / PgDn</td><td class="td-desc">Jump back / forward one page ($0100)</td></tr>
+          <tr><td class="td-cmd">INS</td><td class="td-desc">Toggle data-edit mode on / off</td></tr>
+          <tr><td class="td-cmd">DEL</td><td class="td-desc">Write $00 to the current address</td></tr>
+          <tr><td class="td-cmd">▲</td><td class="td-desc">Run code at the current address (returns on RTS)</td></tr>
+          <tr><td class="td-cmd">ESC</td><td class="td-desc">Abort a running program, back to the monitor</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LED Demos -->
+    <div class="section">
+      <span class="sec-title">The Breadboard LEDs</span>
+      <div class="note-box">
+        The breadboard adds <strong>8 LEDs</strong> behind a 74HC373 latch. Writing a byte to address <code>$9400</code> lights the LEDs to match that byte's bits — store <code>$FF</code> and all eight glow.
+      </div>
+      <div class="note-box">
+        Two ready-to-key-in programs are printed on separate sheets: a <strong>KITT scanner</strong> (a lit LED bouncing back and forth) and an <strong>8-bit binary counter</strong>.
+      </div>
+      <div class="note-box">
+        <strong>To run one:</strong> press <code>INS</code> to enter edit mode, key the bytes into RAM (the LCD shows each address and value), then press <code>▲</code> at the start address. Watch the LEDs — press <code>ESC</code> to stop.
+      </div>
+    </div>
+
+    <!-- Serial Monitor -->
+    <div class="section">
+      <span class="sec-title">Serial Monitor (Optional)</span>
+      <div class="note-box">
+        Attach a terminal to the Serial Card at <strong>19200 baud, 8-N-1</strong> for a roomier view. At the <code>&gt;</code> prompt:
+      </div>
+      <table>
+        <thead><tr><th style="width:38%">Type</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">XXXX</td><td class="td-desc">Examine the byte at address XXXX</td></tr>
+          <tr><td class="td-cmd">XXXX.YYYY</td><td class="td-desc">Examine a range of memory</td></tr>
+          <tr><td class="td-cmd">XXXX: BB BB</td><td class="td-desc">Deposit bytes starting at XXXX</td></tr>
+          <tr><td class="td-cmd">XXXX R</td><td class="td-desc">Run the program at XXXX</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        The serial and keypad monitors share the same memory, so you can key in bytes by hand and then examine them over serial — or the reverse.
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="section">
+      <span class="sec-title">Tips</span>
+      <div class="note-box">
+        With only two lines of LCD, work <strong>one address at a time</strong>: read a byte, change it, step forward with <code>►</code>, and watch the value update.
+      </div>
+      <div class="note-box">
+        Programs run as <strong>subroutines</strong> — always end yours with an <code>RTS</code> so control returns cleanly to the monitor.
+      </div>
+    </div>
+
+    <!-- More To Try -->
+    <div class="section">
+      <span class="sec-title">More To Try</span>
+      <div class="note-box">
+        <strong>Light a pattern —</strong> in edit mode, store different bytes to <code>$9400</code> and watch which of the 8 LEDs turn on. <code>$AA</code> lights every other one.
+      </div>
+      <div class="note-box">
+        <strong>Explore the ROM —</strong> point the address at the monitor ROM and step through it byte by byte to see the code that makes the KIM tick.
+      </div>
+      <div class="note-box">
+        <strong>Leave a message —</strong> write a short sequence of bytes into RAM, then come back later (without resetting) and read them back to prove the memory remembered.
+      </div>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502-KIM — SYSTEM REFERENCE</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">BACK</span>
+  </div>
+
+</div><!-- /page 2 -->
+
+</body>
+</html>

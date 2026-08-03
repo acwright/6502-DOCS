@@ -17,6 +17,14 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
 
+  // Branding migrated from 6502-ASSETS in Phase 2. Entries in `head` are emitted
+  // verbatim, so they carry `base` by hand; `themeConfig.logo` does not.
+  head: [
+    ['link', { rel: 'icon', href: '/6502-DOCS/favicon.ico', sizes: '16x16' }],
+    ['link', { rel: 'apple-touch-icon', href: '/6502-DOCS/images/mark.png' }],
+    ['meta', { property: 'og:image', content: '/6502-DOCS/images/mark.png' }]
+  ],
+
   // No landing page: `/` renders docs/index.md directly, using the default
   // doc layout (no `layout: home`), so the sidebar is visible from first paint.
   rewrites: {
@@ -31,7 +39,12 @@ export default defineConfig({
   },
 
   themeConfig: {
-    logo: undefined,
+    // Three wordmark variants shipped from ASSETS: `logo` is white glyphs on
+    // transparent, `logo-bow` black glyphs on a white plate, `logo-wob` white on
+    // a black plate. The plated `wob` reads as a cramped chip at nav height, so
+    // each theme takes the variant whose plate matches its paper and disappears.
+    logo: { light: '/images/logo-bow.png', dark: '/images/logo.png' },
+
     nav: [{ text: 'Guide', link: '/' }],
 
     sidebar: [

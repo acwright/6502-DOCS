@@ -14,6 +14,9 @@
     "docs:preview": "vitepress preview docs",
     "facts": "node scripts/extract-facts.mjs",
     "facts:check": "node scripts/extract-facts.mjs --check",
+    "migrate": "node scripts/migrate-assets.mjs",
+    "migrate:check": "node scripts/migrate-assets.mjs --check",
+    "cards:check": "node scripts/check-cards.mjs",
     "preflight": "node scripts/preflight.mjs",
     "verify": "node scripts/verify-samples.mjs"
   },

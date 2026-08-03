@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6502 BIOS — BASIC Reference</title>
+<link rel="stylesheet" href="../card.css">
+</head>
+<body class="card" style="--w-cmd: 36%; --w-syn: 40%">
+
+<div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 1 — FRONT -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>BASIC Reference</h1>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Commands &amp; Statements</div>
+  </div>
+
+  <div class="pg-body">
+
+    <!-- Core Statements -->
+    <div class="section">
+      <span class="sec-title">Core Statements</span>
+      <table>
+        <thead><tr><th style="width:22%">Command</th><th style="width:40%">Syntax</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">PRINT</td><td class="td-desc"><code>PRINT [item [sep item …]]</code></td><td class="td-desc">Output to console. <code>;</code>=no sep (trailing ; suppresses CRLF), <code>,</code>=14-col zone. Bare PRINT=CRLF only</td></tr>
+          <tr><td class="td-cmd">INPUT</td><td class="td-desc"><code>INPUT ["prompt"{;|,}] var [,var…]</code></td><td class="td-desc">Read value(s) from user. <code>?REDO FROM START</code> on bad numeric input; <code>?EXTRA IGNORED</code> if too many</td></tr>
+          <tr><td class="td-cmd">LET</td><td class="td-desc"><code>[LET] var = expr</code></td><td class="td-desc">Assign expression to variable. <code>LET</code> keyword is optional</td></tr>
+          <tr><td class="td-cmd">GOTO</td><td class="td-desc"><code>GOTO linenum</code></td><td class="td-desc">Jump unconditionally to line</td></tr>
+          <tr><td class="td-cmd">GOSUB</td><td class="td-desc"><code>GOSUB linenum</code></td><td class="td-desc">Push position and jump. ≥20 levels always, ~27 for a simple one; beyond → <code>OUT OF MEMORY</code></td></tr>
+          <tr><td class="td-cmd">RETURN</td><td class="td-desc"><code>RETURN</code></td><td class="td-desc">Pop GOSUB stack and resume after calling GOSUB</td></tr>
+          <tr><td class="td-cmd">IF</td><td class="td-desc"><code>IF expr THEN stmt [ELSE stmt]</code></td><td class="td-desc">Execute THEN if expr non-zero, else ELSE branch. <code>THEN</code>/<code>ELSE linenum</code> = <code>GOTO linenum</code></td></tr>
+          <tr><td class="td-cmd">FOR</td><td class="td-desc"><code>FOR var=init TO limit [STEP n]</code></td><td class="td-desc">Counted loop. Default step 1. Up to 8 nested. Limit tested at <code>NEXT</code>, so the body always runs once</td></tr>
+          <tr><td class="td-cmd">NEXT</td><td class="td-desc"><code>NEXT [var [,var…]]</code></td><td class="td-desc">Increment loop var and branch back to matching FOR if condition holds</td></tr>
+          <tr><td class="td-cmd">REM</td><td class="td-desc"><code>REM [text]</code></td><td class="td-desc">Comment — rest of line ignored</td></tr>
+          <tr><td class="td-cmd">END</td><td class="td-desc"><code>END</code></td><td class="td-desc">Stop execution and return to <code>OK</code>. Variables preserved</td></tr>
+          <tr><td class="td-cmd">STOP</td><td class="td-desc"><code>STOP</code></td><td class="td-desc">Stop and print <code>BREAK IN nnnn</code>. Resume with CONT</td></tr>
+          <tr><td class="td-cmd">CONT</td><td class="td-desc"><code>CONT</code></td><td class="td-desc">Continue after STOP, END or Ctrl+C (immediate mode only); FOR and GOSUB frames survive. <code>CAN’T CONTINUE</code> after an error, NEW, CLR or RUN</td></tr>
+          <tr><td class="td-cmd">ON</td><td class="td-desc"><code>ON expr GOTO l1,l2…</code></td><td class="td-desc">Evaluate expr, branch to nth target. Also <code>ON … GOSUB</code>. Out-of-range silently continues</td></tr>
+          <tr><td class="td-cmd">DATA</td><td class="td-desc"><code>DATA v1,v2,…</code></td><td class="td-desc">Inline data (numeric or string literals) for READ. Skipped during normal execution</td></tr>
+          <tr><td class="td-cmd">READ</td><td class="td-desc"><code>READ var [,var…]</code></td><td class="td-desc">Read next value(s) from DATA. <code>OUT OF DATA</code> if exhausted</td></tr>
+          <tr><td class="td-cmd">RESTORE</td><td class="td-desc"><code>RESTORE</code></td><td class="td-desc">Reset DATA pointer to start of program</td></tr>
+          <tr><td class="td-cmd">LIST</td><td class="td-desc"><code>LIST</code></td><td class="td-desc">Print program in detokenized form. Ctrl+C interrupts</td></tr>
+          <tr><td class="td-cmd">RUN</td><td class="td-desc"><code>RUN [linenum]</code></td><td class="td-desc">Clear variables and run program, optionally from linenum</td></tr>
+          <tr><td class="td-cmd">NEW</td><td class="td-desc"><code>NEW</code></td><td class="td-desc">Erase program and clear variables</td></tr>
+          <tr><td class="td-cmd">CLR</td><td class="td-desc"><code>CLR</code></td><td class="td-desc">Clear variables and arrays; reset stacks. Program is kept</td></tr>
+          <tr><td class="td-cmd">DIM</td><td class="td-desc"><code>DIM var(size) [,var(size)…]</code></td><td class="td-desc">Dimension a 1-D array (numeric or string). Valid indices 0..size. <code>REDIM'D ARRAY</code> if already done</td></tr>
+          <tr><td class="td-cmd">DEF FN</td><td class="td-desc"><code>DEF FN A(X) = expr</code></td><td class="td-desc">Define single-argument numeric user function. Call with <code>FN A(value)</code></td></tr>
+          <tr><td class="td-cmd">POKE</td><td class="td-desc"><code>POKE addr, value</code></td><td class="td-desc">Write byte value to memory address addr</td></tr>
+          <tr><td class="td-cmd">BRK</td><td class="td-desc"><code>BRK</code></td><td class="td-desc">Drop into machine-code monitor. Return to BASIC with <code>X</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Storage & System -->
+    <div class="section">
+      <span class="sec-title">Storage &amp; System</span>
+      <table>
+        <thead><tr><th style="width:32%">Command</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">SYS &lt;addr&gt;</td><td class="td-desc">Call machine-code routine at addr; RTS returns to BASIC</td></tr>
+          <tr><td class="td-cmd">LOAD "name"</td><td class="td-desc">Load named file from CompactFlash to $0800</td></tr>
+          <tr><td class="td-cmd">SAVE "name"</td><td class="td-desc">Save current program to CompactFlash</td></tr>
+          <tr><td class="td-cmd">LOAD</td><td class="td-desc">Receive program via XModem on serial port</td></tr>
+          <tr><td class="td-cmd">SAVE</td><td class="td-desc">Transmit current program via XModem</td></tr>
+          <tr><td class="td-cmd">DIR</td><td class="td-desc">List current disk's directory (prints DISK n header)</td></tr>
+          <tr><td class="td-cmd">DEL "name"</td><td class="td-desc">Delete named file from current disk</td></tr>
+          <tr><td class="td-cmd">DISK &lt;n&gt;</td><td class="td-desc">Select CF disk bank 0–255. Each disk = 1MB (2048 sectors); 256 disks = 256MB total. Resets to 0 on boot</td></tr>
+          <tr><td class="td-cmd">BLOAD &lt;addr&gt;,"name"</td><td class="td-desc">Load file's raw bytes from current disk to memory address addr</td></tr>
+          <tr><td class="td-cmd">BSAVE &lt;addr&gt;,&lt;len&gt;,"name"</td><td class="td-desc">Save len bytes from address addr to a named file on current disk</td></tr>
+          <tr><td class="td-cmd">FORMAT</td><td class="td-desc">Erase current disk's file directory (prompts ERASE DISK n? Y/N)</td></tr>
+          <tr><td class="td-cmd">BANK &lt;n&gt;</td><td class="td-desc">Select 1KB RAM bank n at $8000–$83FE</td></tr>
+          <tr><td class="td-cmd">MEM</td><td class="td-desc">Print free bytes, HW_PRESENT (hex), and current DISK n</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Video & Display -->
+    <div class="section">
+      <span class="sec-title">Video &amp; Display</span>
+      <table>
+        <thead><tr><th style="width:32%">Command</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">CLS</td><td class="td-desc">Clear screen; reset cursor to (0,0)</td></tr>
+          <tr><td class="td-cmd">LOCATE &lt;row&gt;,&lt;col&gt;</td><td class="td-desc">Move cursor to row 0–23, col 0–39</td></tr>
+          <tr><td class="td-cmd">COLOR &lt;fg&gt;,&lt;bg&gt;</td><td class="td-desc">Set TMS9918 text foreground/background colours (0–15 each)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sound -->
+    <div class="section">
+      <span class="sec-title">Sound</span>
+      <table>
+        <thead><tr><th style="width:32%">Command</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">SOUND &lt;v&gt;,&lt;f&gt;,&lt;d&gt;</td><td class="td-desc">Play tone on voice <strong>1–3</strong> at freq Hz for dur centiseconds, then silence (Kernal <code>SidPlayNote</code> numbers them 0–2)</td></tr>
+          <tr><td class="td-cmd">VOL &lt;n&gt;</td><td class="td-desc">Set SID master volume (0–15)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Timing & I/O -->
+    <div class="section">
+      <span class="sec-title">Timing &amp; I/O</span>
+      <table>
+        <thead><tr><th style="width:32%">Command</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">PAUSE &lt;n&gt;</td><td class="td-desc">Pause for n centiseconds (~10 ms each)</td></tr>
+          <tr><td class="td-cmd">WAIT &lt;addr&gt;,&lt;mask&gt;</td><td class="td-desc">Spin until (addr) AND mask is non-zero; Ctrl+C aborts</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Time & Date -->
+    <div class="section">
+      <span class="sec-title">Time &amp; Date</span>
+      <table>
+        <thead><tr><th style="width:32%">Command</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">TIME</td><td class="td-desc">Print current RTC time as HH:MM:SS</td></tr>
+          <tr><td class="td-cmd">DATE</td><td class="td-desc">Print current RTC date as CCYY-MM-DD</td></tr>
+          <tr><td class="td-cmd">SETTIME &lt;hh&gt;,&lt;mm&gt;,&lt;ss&gt;</td><td class="td-desc">Set the RTC time</td></tr>
+          <tr><td class="td-cmd">SETDATE &lt;cc&gt;,&lt;yy&gt;,&lt;mm&gt;,&lt;dd&gt;</td><td class="td-desc">Set the RTC date</td></tr>
+          <tr><td class="td-cmd">NVRAM &lt;addr&gt;,&lt;val&gt;</td><td class="td-desc">Write byte to RTC NVRAM at address 0–255</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502 BIOS — BASIC REFERENCE</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span>V1.4</span>
+    <span class="pg-num">FRONT</span>
+  </div>
+
+</div><!-- /page 1 -->
+
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 2 — BACK -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>BASIC Reference</h1>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Functions &amp; Expressions</div>
+  </div>
+
+  <div class="pg-body">
+
+    <!-- Functions & Expressions -->
+    <div class="section">
+      <span class="sec-title">Functions &amp; Expressions</span>
+      <table>
+        <thead><tr><th style="width:36%">Function</th><th>Returns</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">ABS(x)</td><td class="td-desc">Absolute value of x</td></tr>
+          <tr><td class="td-cmd">SGN(x)</td><td class="td-desc">Sign of x: 1, 0, or −1</td></tr>
+          <tr><td class="td-cmd">INT(x)</td><td class="td-desc">Floor — largest integer ≤ x</td></tr>
+          <tr><td class="td-cmd">SQR(x)</td><td class="td-desc">Square root of x (error if negative)</td></tr>
+          <tr><td class="td-cmd">EXP(x)</td><td class="td-desc">e raised to x</td></tr>
+          <tr><td class="td-cmd">LOG(x)</td><td class="td-desc">Natural logarithm (error if x ≤ 0)</td></tr>
+          <tr><td class="td-cmd">SIN(x) / COS(x) / TAN(x)</td><td class="td-desc">Trig functions, radians</td></tr>
+          <tr><td class="td-cmd">ATN(x)</td><td class="td-desc">Arctangent, radians</td></tr>
+          <tr><td class="td-cmd">RND(x)</td><td class="td-desc">Float [0,1) for x&gt;0; repeats last for x=0; reseeds for x&lt;0</td></tr>
+          <tr><td class="td-cmd">PEEK(addr)</td><td class="td-desc">Byte value at memory address addr</td></tr>
+          <tr><td class="td-cmd">FRE(x)</td><td class="td-desc">Free bytes between top of var space and string heap (arg ignored)</td></tr>
+          <tr><td class="td-cmd">POS(x)</td><td class="td-desc">Current print column (arg ignored)</td></tr>
+          <tr><td class="td-cmd">LEN(s$)</td><td class="td-desc">String length</td></tr>
+          <tr><td class="td-cmd">VAL(s$)</td><td class="td-desc">Parse s$ as number; returns 0 if not numeric</td></tr>
+          <tr><td class="td-cmd">ASC(s$)</td><td class="td-desc">ASCII code of first character of s$</td></tr>
+          <tr><td class="td-cmd">CHR$(n)</td><td class="td-desc">One-character string with ASCII code n</td></tr>
+          <tr><td class="td-cmd">STR$(n)</td><td class="td-desc">Numeric value n formatted as a string</td></tr>
+          <tr><td class="td-cmd">LEFT$(s$,n)</td><td class="td-desc">First n characters of s$</td></tr>
+          <tr><td class="td-cmd">RIGHT$(s$,n)</td><td class="td-desc">Last n characters of s$</td></tr>
+          <tr><td class="td-cmd">MID$(s$,start[,len])</td><td class="td-desc">Substring from 1-based index start, optional length len</td></tr>
+          <tr><td class="td-cmd">TAB(n)</td><td class="td-desc">In PRINT: advance cursor to column n (no-op if already past)</td></tr>
+          <tr><td class="td-cmd">SPC(n)</td><td class="td-desc">In PRINT: emit n spaces</td></tr>
+          <tr><td class="td-cmd">INKEY</td><td class="td-desc">Non-blocking key: ASCII code or 0. No parentheses</td></tr>
+          <tr><td class="td-cmd">JOY(1) / JOY(2)</td><td class="td-desc">Joystick bitmask, bits R L D U Y X B A (7→0). <strong>Active low</strong> — a held button reads 0, an untouched stick reads $FF. Test with <code>IF (JOY(1) AND 16) = 0</code></td></tr>
+          <tr><td class="td-cmd">NVRAM(addr)</td><td class="td-desc">Read byte from RTC NVRAM; returns 0 if RTC absent</td></tr>
+          <tr><td class="td-cmd">HEX(n)</td><td class="td-desc">In PRINT: output n as $xxxx hex; in expressions: returns n unchanged</td></tr>
+          <tr><td class="td-cmd">MIN(a,b) / MAX(a,b)</td><td class="td-desc">Smaller / larger of a and b</td></tr>
+          <tr><td class="td-cmd">FN A(value)</td><td class="td-desc">Call user function defined with DEF FN A(X)</td></tr>
+          <tr><td class="td-cmd">var(index)</td><td class="td-desc">Array element access. Array must be DIM-med first</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Operators -->
+    <div class="section">
+      <span class="sec-title">Operators</span>
+      <table>
+        <thead><tr><th style="width:36%">Operator</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">+ &nbsp; − &nbsp; * &nbsp; /</td><td class="td-desc">Standard arithmetic</td></tr>
+          <tr><td class="td-cmd">^</td><td class="td-desc">Exponentiation</td></tr>
+          <tr><td class="td-cmd">+ (strings)</td><td class="td-desc">String concatenation</td></tr>
+          <tr><td class="td-cmd">= &nbsp; &lt;&gt; &nbsp; &lt; &nbsp; &gt; &nbsp; &lt;= &nbsp; &gt;=</td><td class="td-desc">Comparisons — work on numbers and strings; return −1 (true) or 0 (false)</td></tr>
+          <tr><td class="td-cmd">AND &nbsp; OR &nbsp; NOT</td><td class="td-desc">Bitwise logical on integer parts of operands</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Operator Precedence -->
+    <div class="section">
+      <span class="sec-title">Operator Precedence  (High → Low)</span>
+      <table>
+        <thead><tr><th style="width:36%">Level</th><th>Operators</th></tr></thead>
+        <tbody>
+          <tr><td class="td-desc">Power</td><td class="td-cmd">^</td></tr>
+          <tr><td class="td-desc">Unary</td><td class="td-cmd">− (negate) &nbsp; +</td></tr>
+          <tr><td class="td-desc">Multiplicative</td><td class="td-cmd">* &nbsp; /</td></tr>
+          <tr><td class="td-desc">Additive</td><td class="td-cmd">+ &nbsp; −</td></tr>
+          <tr><td class="td-desc">Relational</td><td class="td-cmd">= &nbsp; &lt;&gt; &nbsp; &lt; &nbsp; &gt; &nbsp; &lt;= &nbsp; &gt;=</td></tr>
+          <tr><td class="td-desc">Logical NOT</td><td class="td-cmd">NOT</td></tr>
+          <tr><td class="td-desc">Logical AND</td><td class="td-cmd">AND</td></tr>
+          <tr><td class="td-desc">Logical OR</td><td class="td-cmd">OR</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Graceful Degradation -->
+    <div class="section">
+      <span class="sec-title">Graceful Degradation</span>
+      <table>
+        <thead><tr><th style="width:36%">Hardware Absent</th><th>BASIC Behavior</th></tr></thead>
+        <tbody>
+          <tr><td class="td-desc">CompactFlash</td><td class="td-desc"><code>LOAD</code>, <code>SAVE</code>, <code>DIR</code>, <code>DEL</code>, <code>BLOAD</code>, <code>BSAVE</code>, <code>FORMAT</code> print <code>NO DEVICE</code></td></tr>
+          <tr><td class="td-desc">Serial</td><td class="td-desc">XModem <code>LOAD</code>/<code>SAVE</code> return error</td></tr>
+          <tr><td class="td-desc">GPIO/VIA</td><td class="td-desc"><code>JOY()</code> returns <code>$FF</code> — every line released, as an untouched stick reads. <code>PAUSE</code> falls back to a calibrated software loop</td></tr>
+          <tr><td class="td-desc">SID</td><td class="td-desc"><code>SOUND</code>, <code>VOL</code> silently return</td></tr>
+          <tr><td class="td-desc">Video</td><td class="td-desc"><code>CLS</code>, <code>LOCATE</code>, <code>COLOR</code> silently skip; console auto-switches to serial</td></tr>
+          <tr><td class="td-desc">RTC</td><td class="td-desc"><code>TIME</code>, <code>DATE</code>, <code>SETTIME</code>, <code>SETDATE</code>, <code>NVRAM</code> (write) print <code>NO DEVICE</code>; <code>NVRAM()</code> read returns 0</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:2px;">
+        A screen and a speaker have nothing to report back, so those statements skip silently; the ones that move data (CompactFlash, RTC) raise <code>NO DEVICE</code>, because there the program asked for something it did not get. Either way arguments are parsed and range-checked first — <code>LOCATE 24,0</code> and <code>VOL 16</code> are <code>ILLEGAL QUANTITY</code> even on a machine with neither card, so a program is wrong or right everywhere.
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="section">
+      <span class="sec-title">Notes</span>
+      <div class="note-box">
+        <strong>Variables:</strong> &nbsp;A–Z single-letter numeric (5-byte float, ~±1.7×10³⁸, 6 sig. digits). &nbsp;A$–Z$ strings. &nbsp;Arrays: <code>DIM var(size)</code> — indices 0..size, 1-D only.<br>
+        <strong>Boolean:</strong> &nbsp;−1 = true, 0 = false. &nbsp;Multiple statements per line separated by <code>:</code>.<br>
+        <strong>Stack Limits:</strong> &nbsp;GOSUB and FOR frames share the 6502 stack with the interpreter: at least 20 GOSUB levels always, ~27 for a simple subroutine · FOR/NEXT 8 nested loops. Exceeding either → <code>OUT OF MEMORY</code>.<br>
+        <strong>Memory Layout:</strong> &nbsp;Programs grow up from $0800. Vars follow. String heap grows down from $8000. <code>MEM</code> reports free bytes.<br>
+        <strong>XModem:</strong> &nbsp;<code>LOAD</code>/<code>SAVE</code> without filename uses XModem (128-byte blocks, checksum). System prints <code>XMODEM RX/TX READY</code> and waits ~60 s for terminal to begin transfer.<br>
+        <strong>Sign Convention:</strong> &nbsp;Positive numbers print with a leading space; negative with <code>−</code>.<br>
+        <strong>Program Files:</strong> &nbsp;<code>.bas</code>/<code>.prg</code> both just mean the bytes at $0800; the extension is cosmetic. A <code>.prg</code> is a <code>10 SYS 2060</code> stub with machine code attached. <code>LOAD</code>/<code>SAVE</code> round-trip it intact — don't edit its BASIC line, since that shifts the attached code.
+      </div>
+    </div>
+
+    <!-- HW_PRESENT Reference -->
+    <div class="section">
+      <span class="sec-title">HW_PRESENT Flags &nbsp;($030D)</span>
+      <table>
+        <thead><tr><th>Bit</th><th>Mask</th><th>Card / Device</th></tr></thead>
+        <tbody>
+          <tr><td class="td-desc">0</td><td class="td-cmd">$01</td><td class="td-desc">RAM card low (IO 1)</td></tr>
+          <tr><td class="td-desc">1</td><td class="td-cmd">$02</td><td class="td-desc">RAM card high (IO 2)</td></tr>
+          <tr><td class="td-desc">2</td><td class="td-cmd">$04</td><td class="td-desc">RTC DS1511Y (IO 3)</td></tr>
+          <tr><td class="td-desc">3</td><td class="td-cmd">$08</td><td class="td-desc">CompactFlash (IO 4)</td></tr>
+          <tr><td class="td-desc">4</td><td class="td-cmd">$10</td><td class="td-desc">Serial R65C51 (IO 5)</td></tr>
+          <tr><td class="td-desc">5</td><td class="td-cmd">$20</td><td class="td-desc">GPIO / VIA 65C22 (IO 6)</td></tr>
+          <tr><td class="td-desc">6</td><td class="td-cmd">$40</td><td class="td-desc">SID / ARMSID (IO 7)</td></tr>
+          <tr><td class="td-desc">7</td><td class="td-cmd">$80</td><td class="td-desc">Video TMS9918 (IO 8)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502 BIOS — BASIC REFERENCE</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span>V1.4</span>
+    <span class="pg-num">BACK</span>
+  </div>
+
+</div><!-- /page 2 -->
+
+</body>
+</html>
