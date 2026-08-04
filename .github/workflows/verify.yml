@@ -4,13 +4,15 @@ on:
   push:
   pull_request:
 
-# The emulator CLI and cc65 are both built from source here. Neither ships as a
-# package the runner already has: the CLI lives inside the desktop app, and the
-# cc65 in every distro is still the 2.19 release from 2020.
+# The emulator CLI, cc65 and cffs are all built from source here. None ships as
+# a package the runner already has: the CLI lives inside the desktop app, cc65
+# in every distro is still the 2.19 release from 2020, and cffs is a standalone
+# tool with no package published anywhere.
 env:
   # Pinned so a red build means the docs changed, not that an upstream did.
   EMULATOR_REF: main
   CC65_REF: master
+  CFFS_REF: main
 
 jobs:
   # Cheap, dependency-free checks on the migrated assets. Split out from
@@ -82,6 +84,31 @@ jobs:
 
       - name: Point the harness at it
         run: echo "SIXFIVEOHTWO=node $GITHUB_WORKSPACE/.emulator/out/cli/index.js" >> "$GITHUB_ENV"
+
+      # --- cffs ---------------------------------------------------------------
+      # `console storage` samples build a CompactFlash image with it before the
+      # machine boots. Unlike the emulator, the harness shells out to a `cffs`
+      # on PATH rather than an overridable command, so this installs a wrapper
+      # rather than pointing an env var at the checkout.
+      - name: Checkout cffs
+        uses: actions/checkout@v7
+        with:
+          repository: acwright/cffs
+          ref: ${{ env.CFFS_REF }}
+          path: .cffs
+
+      - name: Build cffs
+        working-directory: .cffs
+        run: |
+          npm ci
+          npm run build
+
+      - name: Put cffs on PATH
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          printf '#!/bin/sh\nexec node "%s/.cffs/dist/cli.js" "$@"\n' "$GITHUB_WORKSPACE" > "$HOME/.local/bin/cffs"
+          chmod +x "$HOME/.local/bin/cffs"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       # --- cc65 -------------------------------------------------------------
       # The recipe from 6502-BIOS/README.md: `bin` builds the tools, `none`
