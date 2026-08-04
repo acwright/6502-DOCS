@@ -88,6 +88,13 @@ The numbers are how BASIC knows what order to run things in — and they go up i
 tens so you've got room to slip a line in later. `RUN` it again; it does the
 same thing, every time.
 
+<Figure
+  src="/images/screens/first-program.png"
+  alt="A screen showing a session: PRINT 12 * 12 answered with 144, A = 5, PRINT A * A answered with 25, then the four-line program typed in, RUN, and the machine asking for a name and saying hello."
+  caption="Everything so far, on one screen. The four lines with numbers in front were stored; everything above them ran as it was typed."
+  screen
+/>
+
 ## `LIST`, `RUN`, `NEW`
 
 Three commands you'll use constantly:

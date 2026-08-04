@@ -160,9 +160,11 @@ Reading `VC_STATUS` (the same address as `VC_REG`) resets the card's
 first-byte-or-second-byte flip-flop, which is the standard way to get back in
 step if you are unsure.
 
-<PlaceholderImage
-  label="A framed sign"
-  caption="The ACE screen showing the double-line box drawn by this chapter's program, THE ACE centred inside it in light yellow on dark blue, with the OK prompt below."
+<Figure
+  src="/images/screens/framed-sign.png"
+  alt="A blue screen with a double-lined box drawn in pale yellow, THE ACE centred inside it, and OK below."
+  caption="Every character of that frame is above 126, so PRINT cannot reach a single one of them."
+  screen
 />
 
 Next: [the graphics modes](/assembly/graphics).

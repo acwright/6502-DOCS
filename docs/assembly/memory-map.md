@@ -80,6 +80,11 @@ while you run.
 </table>
 :::
 
+<Diagram
+  name="zero-page"
+  caption="The Kernal has the first fifty-eight bytes. The other 198 are yours, and they are the fastest memory on the machine."
+/>
+
 ## The rest of the low RAM
 
 **`$0100–$01FF` — the stack.** 256 bytes, growing down from `$01FF`. BASIC
@@ -133,6 +138,11 @@ Eight slots of one kilobyte each, from `$8000` to `$9FFF`, one per card.
   </tbody>
 </table>
 
+<Diagram
+  name="io-slots"
+  caption="One kilobyte per slot, in the order the detection bits come in. A card that is not fitted leaves its slot reading nothing in particular — which is what HW_PRESENT is for."
+/>
+
 ## The ROM
 
 The first 256 bytes of the Kernal are the jump table — the only addresses in
@@ -143,9 +153,9 @@ which is worth knowing about because you can read it, copy it, and change it
 `$FF00` is Wozmon, Steve Wozniak's 256-byte monitor from the Apple I, kept
 because it fits and because it is a lovely thing to have.
 
-<PlaceholderImage
-  label="The memory map"
-  caption="A vertical strip of the whole 64K address space, from zero page at the bottom to the processor's vectors at the top, with the RAM, hardware and ROM areas shaded differently and each boundary address labelled."
+<Diagram
+  name="memory-map"
+  caption="The whole 64K, bottom to top. The bands are not to scale — at 64K in a page-height strip, zero page would be two pixels."
 />
 
 <div class="card-link">

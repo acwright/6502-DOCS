@@ -49,9 +49,11 @@ every pattern the same checkerboard and letting only the colour vary.
 
 <<< @/../samples/assembly/graphics-1.asm{asm}
 
-<PlaceholderImage
-  label="Graphics Mode I"
-  caption="The ACE screen filled with 32-by-24 checkerboard cells in 32 different colour pairs, showing the whole palette at once."
+<Figure
+  src="/images/screens/graphics-1.png"
+  alt="A screen filled with a grid of chequered cells in many different two-colour combinations."
+  caption="Every cell is the same checkerboard pattern. All that varies is the colour pair — thirty-two of them, which is the whole of what this mode gives you."
+  screen
 />
 
 Worth noticing in that listing:
@@ -83,6 +85,13 @@ Graphics II bug, and the symptom is a screen that repeats every third.
 <<< @/../samples/assembly/graphics-2.asm{asm}
 :::
 
+<Figure
+  src="/images/screens/graphics-2.png"
+  alt="A screen densely filled with small coloured chequered blocks, finer and more varied than the Graphics I screen."
+  caption="Graphics II, filled with random patterns. Each cell has its own pattern and its own colour for every pixel row, which is what makes a real picture possible."
+  screen
+/>
+
 ## Multicolor
 
 No patterns and no colour table: the pattern table *is* the picture, one nibble
@@ -99,9 +108,11 @@ plain 1536-byte framebuffer that you can fill from top to bottom.
 <<< @/../samples/assembly/multicolor.asm{asm}
 :::
 
-<PlaceholderImage
-  label="Multicolor mode"
-  caption="The ACE screen as a grid of 64 by 48 chunky coloured blocks, deliberately random, showing the mode's resolution and palette."
+<Figure
+  src="/images/screens/multicolor.png"
+  alt="A screen of small square blocks of colour arranged in a fine random grid, sixteen colours in play."
+  caption="64 × 48 fat pixels, any colour anywhere. Nothing here is a character."
+  screen
 />
 
 ## Drawing something you meant to draw

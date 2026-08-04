@@ -2,9 +2,10 @@
 
 The machine with no processor in it.
 
-<PlaceholderImage
-  label="The DEV rig"
-  caption="The DEV Board with its Teensy 4.1 fitted and the Run/Stop, Step, Reset and Frequency buttons visible, with the Output Board's small colour LCD alongside."
+<Figure
+  src="/images/photos/dev.jpg"
+  alt="Two boards side by side on a plate: one with a Teensy module and a row of four buttons, the other carrying a small colour LCD."
+  caption="The DEV rig: the board with the buttons runs the processor, the board with the screen shows you what it did."
 />
 
 Where the CPU socket would be, the DEV board has a **Teensy 4.1** running a

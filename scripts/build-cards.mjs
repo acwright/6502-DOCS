@@ -25,6 +25,8 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { keyboardSvg } from './lib/keyboard.mjs'
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const DATA = join(ROOT, 'data')
 const CARDS = join(ROOT, 'docs/public/cards')
@@ -783,81 +785,8 @@ function characterMap() {
 // Keyboard layout
 // ---------------------------------------------------------------------------
 
-/**
- * Draw the ACE's keyboard from the KLE layout migrated in Phase 2.
- *
- * The `.svg` that came with it is unusable here: keyboard-layout-editor.com's
- * SVG export draws the keycaps and **omits every legend**, so it is 40 KB of
- * blank white rectangles. Only the `.png` carried the labels, and a card wants
- * something that prints at the printer's resolution and matches the site's
- * greyscale.
- *
- * So the picture is drawn here from the JSON, which is the actual source: KLE
- * puts one unit at 54 px, keys are 52 px with a 1 px margin, and a bare object
- * before a legend sets the width (`w`), the gap in front of it (`x`) and the
- * row offset (`y`) for the key that follows.
- */
-function keyboardSvg() {
-  const layout = JSON.parse(readFileSync(join(ROOT, 'assets/keyboard/keyboard-layout.json'), 'utf-8'))
-  const U = 54
-  const GAP = 1
-  const CAP = 52
-
-  const keys = []
-  let y = 0
-  let maxX = 0
-
-  for (const row of layout) {
-    if (!Array.isArray(row)) continue // the metadata object at the top
-    let x = 0
-    let w = 1
-    for (const item of row) {
-      if (typeof item === 'object') {
-        if (item.x) x += item.x
-        if (item.y) y += item.y
-        if (item.w) w = item.w
-        continue
-      }
-      keys.push({ x, y, w, legend: item })
-      x += w
-      maxX = Math.max(maxX, x)
-      w = 1
-    }
-    y += 1
-  }
-
-  const width = Math.round(maxX * U + GAP)
-  const height = Math.round(y * U + GAP)
-
-  const parts = [
-    `<svg class="keyboard" viewBox="0 0 ${width} ${height}" role="img" aria-label="The ACE's ${keys.length}-key layout">`,
-    `<rect x="0" y="0" width="${width}" height="${height}" class="kb-plate"/>`
-  ]
-
-  for (const key of keys) {
-    const kx = Math.round(key.x * U + GAP)
-    const ky = Math.round(key.y * U + GAP)
-    const kw = Math.round(key.w * U - GAP * 2)
-    // A legend is one or two lines: KLE writes "shifted\nunshifted", and the
-    // unshifted character is the one printed on the front of the cap.
-    const lines = key.legend.split('\n').filter((l) => l !== '')
-    const cx = kx + kw / 2
-    const text = lines.map((line, i) => {
-      const ty = lines.length === 1 ? ky + CAP / 2 + 4 : ky + 16 + i * 17
-      const cls = lines.length === 1 || i === 1 ? 'kb-legend' : 'kb-legend kb-legend-shift'
-      return `<text class="${cls}" x="${cx}" y="${ty}">${esc(line)}</text>`
-    })
-    parts.push(
-      `<g><rect class="kb-cap" x="${kx}" y="${ky}" width="${kw}" height="${CAP}" rx="5"/>${text.join('')}</g>`
-    )
-  }
-
-  parts.push('</svg>')
-  return { svg: parts.join('\n'), count: keys.length }
-}
-
 function keyboardLayout() {
-  const { svg, count } = keyboardSvg()
+  const { svg, count } = keyboardSvg(join(ROOT, 'assets/keyboard/keyboard-layout.json'), { escape: esc })
 
   return card({
     file: 'keyboard-layout.html',

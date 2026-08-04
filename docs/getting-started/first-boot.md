@@ -24,9 +24,18 @@ Take the default, and a moment later:
 OK
 ```
 
-<PlaceholderImage
-  label="The boot screen"
-  caption="A VGA monitor showing the BIOS splash line, the BASIC banner, and the OK prompt with the cursor blinking under it."
+<Figure
+  src="/images/screens/boot-splash.png"
+  alt="A screen showing two centred lines: dash dash 6502 BIOS v1.5 dash dash, and below it ENTER=BASIC  ESC=MONITOR."
+  caption="The five seconds you get to choose. Do nothing and BASIC starts."
+  screen
+/>
+
+## What it does in those five seconds
+
+<Diagram
+  name="boot-flow"
+  caption="Switch on, and the machine sets the screen up, looks around to see which cards are fitted, and then waits for you."
 />
 
 ## The `OK` prompt

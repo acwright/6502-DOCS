@@ -31,6 +31,11 @@ add your own is to put yourself *in front of* it.
 
 ## Chaining
 
+<Diagram
+  name="irq-chain"
+  caption="Your handler runs first and then hands on. Replace the Kernal's instead of chaining to it and the keyboard stops working."
+/>
+
 <<< @/../samples/assembly/ticker.asm{asm}
 
 ```

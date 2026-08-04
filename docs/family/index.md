@@ -7,9 +7,10 @@ They all still exist, they all still run the same BIOS, and they're all open
 hardware. If you want to *build* a 6502 rather than use one, this is where the
 interesting reading is.
 
-<PlaceholderImage
-  label="The whole family"
-  caption="COB, DEV, VCS, KIM and ACE lined up together, oldest to newest."
+<Figure
+  src="/images/photos/family-desk.jpg"
+  alt="An older machine on a desk: a board and a separate keyboard in front of a monitor showing a BASIC banner and an OK prompt."
+  caption="One of the earlier machines, driving a monitor from a stack of boards with the keyboard on a cable — photographed some years ago, when BASIC still announced itself as version 1.0. The ACE is all of this on one board."
 />
 
 ## How it went

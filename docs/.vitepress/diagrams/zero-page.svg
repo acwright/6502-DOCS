@@ -1,0 +1,301 @@
+<svg class="dg" viewBox="0 0 482 538" role="img" aria-label="The 256 bytes of zero page, showing which are the Kernal’s and which are yours"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>The 256 bytes of zero page, showing which are the Kernal’s and which are yours</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="46" y="20" text-anchor="start">Zero page, byte by byte</text>
+<text class="dg-a" x="59" y="38" text-anchor="middle">0</text>
+<text class="dg-a" x="85" y="38" text-anchor="middle">1</text>
+<text class="dg-a" x="111" y="38" text-anchor="middle">2</text>
+<text class="dg-a" x="137" y="38" text-anchor="middle">3</text>
+<text class="dg-a" x="163" y="38" text-anchor="middle">4</text>
+<text class="dg-a" x="189" y="38" text-anchor="middle">5</text>
+<text class="dg-a" x="215" y="38" text-anchor="middle">6</text>
+<text class="dg-a" x="241" y="38" text-anchor="middle">7</text>
+<text class="dg-a" x="267" y="38" text-anchor="middle">8</text>
+<text class="dg-a" x="293" y="38" text-anchor="middle">9</text>
+<text class="dg-a" x="319" y="38" text-anchor="middle">A</text>
+<text class="dg-a" x="345" y="38" text-anchor="middle">B</text>
+<text class="dg-a" x="371" y="38" text-anchor="middle">C</text>
+<text class="dg-a" x="397" y="38" text-anchor="middle">D</text>
+<text class="dg-a" x="423" y="38" text-anchor="middle">E</text>
+<text class="dg-a" x="449" y="38" text-anchor="middle">F</text>
+<text class="dg-a" x="38" y="63" text-anchor="end">$00</text>
+<rect class="dg-solid" x="46" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="72" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="98" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="124" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="150" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="176" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="202" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="228" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="254" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="280" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="306" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="332" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="358" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="384" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="410" y="46" width="26" height="26"/>
+<rect class="dg-solid" x="436" y="46" width="26" height="26"/>
+<text class="dg-a" x="38" y="89" text-anchor="end">$10</text>
+<rect class="dg-solid" x="46" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="72" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="98" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="124" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="150" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="176" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="202" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="228" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="254" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="280" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="306" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="332" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="358" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="384" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="410" y="72" width="26" height="26"/>
+<rect class="dg-solid" x="436" y="72" width="26" height="26"/>
+<text class="dg-a" x="38" y="115" text-anchor="end">$20</text>
+<rect class="dg-solid" x="46" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="72" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="98" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="124" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="150" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="176" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="202" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="228" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="254" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="280" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="306" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="332" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="358" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="384" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="410" y="98" width="26" height="26"/>
+<rect class="dg-solid" x="436" y="98" width="26" height="26"/>
+<text class="dg-a" x="38" y="141" text-anchor="end">$30</text>
+<rect class="dg-solid" x="46" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="72" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="98" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="124" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="150" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="176" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="202" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="228" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="254" y="124" width="26" height="26"/>
+<rect class="dg-solid" x="280" y="124" width="26" height="26"/>
+<rect class="dg-open" x="306" y="124" width="26" height="26"/>
+<rect class="dg-open" x="332" y="124" width="26" height="26"/>
+<rect class="dg-open" x="358" y="124" width="26" height="26"/>
+<rect class="dg-open" x="384" y="124" width="26" height="26"/>
+<rect class="dg-open" x="410" y="124" width="26" height="26"/>
+<rect class="dg-open" x="436" y="124" width="26" height="26"/>
+<text class="dg-a" x="38" y="167" text-anchor="end">$40</text>
+<rect class="dg-open" x="46" y="150" width="26" height="26"/>
+<rect class="dg-open" x="72" y="150" width="26" height="26"/>
+<rect class="dg-open" x="98" y="150" width="26" height="26"/>
+<rect class="dg-open" x="124" y="150" width="26" height="26"/>
+<rect class="dg-open" x="150" y="150" width="26" height="26"/>
+<rect class="dg-open" x="176" y="150" width="26" height="26"/>
+<rect class="dg-open" x="202" y="150" width="26" height="26"/>
+<rect class="dg-open" x="228" y="150" width="26" height="26"/>
+<rect class="dg-open" x="254" y="150" width="26" height="26"/>
+<rect class="dg-open" x="280" y="150" width="26" height="26"/>
+<rect class="dg-open" x="306" y="150" width="26" height="26"/>
+<rect class="dg-open" x="332" y="150" width="26" height="26"/>
+<rect class="dg-open" x="358" y="150" width="26" height="26"/>
+<rect class="dg-open" x="384" y="150" width="26" height="26"/>
+<rect class="dg-open" x="410" y="150" width="26" height="26"/>
+<rect class="dg-open" x="436" y="150" width="26" height="26"/>
+<text class="dg-a" x="38" y="193" text-anchor="end">$50</text>
+<rect class="dg-open" x="46" y="176" width="26" height="26"/>
+<rect class="dg-open" x="72" y="176" width="26" height="26"/>
+<rect class="dg-open" x="98" y="176" width="26" height="26"/>
+<rect class="dg-open" x="124" y="176" width="26" height="26"/>
+<rect class="dg-open" x="150" y="176" width="26" height="26"/>
+<rect class="dg-open" x="176" y="176" width="26" height="26"/>
+<rect class="dg-open" x="202" y="176" width="26" height="26"/>
+<rect class="dg-open" x="228" y="176" width="26" height="26"/>
+<rect class="dg-open" x="254" y="176" width="26" height="26"/>
+<rect class="dg-open" x="280" y="176" width="26" height="26"/>
+<rect class="dg-open" x="306" y="176" width="26" height="26"/>
+<rect class="dg-open" x="332" y="176" width="26" height="26"/>
+<rect class="dg-open" x="358" y="176" width="26" height="26"/>
+<rect class="dg-open" x="384" y="176" width="26" height="26"/>
+<rect class="dg-open" x="410" y="176" width="26" height="26"/>
+<rect class="dg-open" x="436" y="176" width="26" height="26"/>
+<text class="dg-a" x="38" y="219" text-anchor="end">$60</text>
+<rect class="dg-open" x="46" y="202" width="26" height="26"/>
+<rect class="dg-open" x="72" y="202" width="26" height="26"/>
+<rect class="dg-open" x="98" y="202" width="26" height="26"/>
+<rect class="dg-open" x="124" y="202" width="26" height="26"/>
+<rect class="dg-open" x="150" y="202" width="26" height="26"/>
+<rect class="dg-open" x="176" y="202" width="26" height="26"/>
+<rect class="dg-open" x="202" y="202" width="26" height="26"/>
+<rect class="dg-open" x="228" y="202" width="26" height="26"/>
+<rect class="dg-open" x="254" y="202" width="26" height="26"/>
+<rect class="dg-open" x="280" y="202" width="26" height="26"/>
+<rect class="dg-open" x="306" y="202" width="26" height="26"/>
+<rect class="dg-open" x="332" y="202" width="26" height="26"/>
+<rect class="dg-open" x="358" y="202" width="26" height="26"/>
+<rect class="dg-open" x="384" y="202" width="26" height="26"/>
+<rect class="dg-open" x="410" y="202" width="26" height="26"/>
+<rect class="dg-open" x="436" y="202" width="26" height="26"/>
+<text class="dg-a" x="38" y="245" text-anchor="end">$70</text>
+<rect class="dg-open" x="46" y="228" width="26" height="26"/>
+<rect class="dg-open" x="72" y="228" width="26" height="26"/>
+<rect class="dg-open" x="98" y="228" width="26" height="26"/>
+<rect class="dg-open" x="124" y="228" width="26" height="26"/>
+<rect class="dg-open" x="150" y="228" width="26" height="26"/>
+<rect class="dg-open" x="176" y="228" width="26" height="26"/>
+<rect class="dg-open" x="202" y="228" width="26" height="26"/>
+<rect class="dg-open" x="228" y="228" width="26" height="26"/>
+<rect class="dg-open" x="254" y="228" width="26" height="26"/>
+<rect class="dg-open" x="280" y="228" width="26" height="26"/>
+<rect class="dg-open" x="306" y="228" width="26" height="26"/>
+<rect class="dg-open" x="332" y="228" width="26" height="26"/>
+<rect class="dg-open" x="358" y="228" width="26" height="26"/>
+<rect class="dg-open" x="384" y="228" width="26" height="26"/>
+<rect class="dg-open" x="410" y="228" width="26" height="26"/>
+<rect class="dg-open" x="436" y="228" width="26" height="26"/>
+<text class="dg-a" x="38" y="271" text-anchor="end">$80</text>
+<rect class="dg-open" x="46" y="254" width="26" height="26"/>
+<rect class="dg-open" x="72" y="254" width="26" height="26"/>
+<rect class="dg-open" x="98" y="254" width="26" height="26"/>
+<rect class="dg-open" x="124" y="254" width="26" height="26"/>
+<rect class="dg-open" x="150" y="254" width="26" height="26"/>
+<rect class="dg-open" x="176" y="254" width="26" height="26"/>
+<rect class="dg-open" x="202" y="254" width="26" height="26"/>
+<rect class="dg-open" x="228" y="254" width="26" height="26"/>
+<rect class="dg-open" x="254" y="254" width="26" height="26"/>
+<rect class="dg-open" x="280" y="254" width="26" height="26"/>
+<rect class="dg-open" x="306" y="254" width="26" height="26"/>
+<rect class="dg-open" x="332" y="254" width="26" height="26"/>
+<rect class="dg-open" x="358" y="254" width="26" height="26"/>
+<rect class="dg-open" x="384" y="254" width="26" height="26"/>
+<rect class="dg-open" x="410" y="254" width="26" height="26"/>
+<rect class="dg-open" x="436" y="254" width="26" height="26"/>
+<text class="dg-a" x="38" y="297" text-anchor="end">$90</text>
+<rect class="dg-open" x="46" y="280" width="26" height="26"/>
+<rect class="dg-open" x="72" y="280" width="26" height="26"/>
+<rect class="dg-open" x="98" y="280" width="26" height="26"/>
+<rect class="dg-open" x="124" y="280" width="26" height="26"/>
+<rect class="dg-open" x="150" y="280" width="26" height="26"/>
+<rect class="dg-open" x="176" y="280" width="26" height="26"/>
+<rect class="dg-open" x="202" y="280" width="26" height="26"/>
+<rect class="dg-open" x="228" y="280" width="26" height="26"/>
+<rect class="dg-open" x="254" y="280" width="26" height="26"/>
+<rect class="dg-open" x="280" y="280" width="26" height="26"/>
+<rect class="dg-open" x="306" y="280" width="26" height="26"/>
+<rect class="dg-open" x="332" y="280" width="26" height="26"/>
+<rect class="dg-open" x="358" y="280" width="26" height="26"/>
+<rect class="dg-open" x="384" y="280" width="26" height="26"/>
+<rect class="dg-open" x="410" y="280" width="26" height="26"/>
+<rect class="dg-open" x="436" y="280" width="26" height="26"/>
+<text class="dg-a" x="38" y="323" text-anchor="end">$A0</text>
+<rect class="dg-open" x="46" y="306" width="26" height="26"/>
+<rect class="dg-open" x="72" y="306" width="26" height="26"/>
+<rect class="dg-open" x="98" y="306" width="26" height="26"/>
+<rect class="dg-open" x="124" y="306" width="26" height="26"/>
+<rect class="dg-open" x="150" y="306" width="26" height="26"/>
+<rect class="dg-open" x="176" y="306" width="26" height="26"/>
+<rect class="dg-open" x="202" y="306" width="26" height="26"/>
+<rect class="dg-open" x="228" y="306" width="26" height="26"/>
+<rect class="dg-open" x="254" y="306" width="26" height="26"/>
+<rect class="dg-open" x="280" y="306" width="26" height="26"/>
+<rect class="dg-open" x="306" y="306" width="26" height="26"/>
+<rect class="dg-open" x="332" y="306" width="26" height="26"/>
+<rect class="dg-open" x="358" y="306" width="26" height="26"/>
+<rect class="dg-open" x="384" y="306" width="26" height="26"/>
+<rect class="dg-open" x="410" y="306" width="26" height="26"/>
+<rect class="dg-open" x="436" y="306" width="26" height="26"/>
+<text class="dg-a" x="38" y="349" text-anchor="end">$B0</text>
+<rect class="dg-open" x="46" y="332" width="26" height="26"/>
+<rect class="dg-open" x="72" y="332" width="26" height="26"/>
+<rect class="dg-open" x="98" y="332" width="26" height="26"/>
+<rect class="dg-open" x="124" y="332" width="26" height="26"/>
+<rect class="dg-open" x="150" y="332" width="26" height="26"/>
+<rect class="dg-open" x="176" y="332" width="26" height="26"/>
+<rect class="dg-open" x="202" y="332" width="26" height="26"/>
+<rect class="dg-open" x="228" y="332" width="26" height="26"/>
+<rect class="dg-open" x="254" y="332" width="26" height="26"/>
+<rect class="dg-open" x="280" y="332" width="26" height="26"/>
+<rect class="dg-open" x="306" y="332" width="26" height="26"/>
+<rect class="dg-open" x="332" y="332" width="26" height="26"/>
+<rect class="dg-open" x="358" y="332" width="26" height="26"/>
+<rect class="dg-open" x="384" y="332" width="26" height="26"/>
+<rect class="dg-open" x="410" y="332" width="26" height="26"/>
+<rect class="dg-open" x="436" y="332" width="26" height="26"/>
+<text class="dg-a" x="38" y="375" text-anchor="end">$C0</text>
+<rect class="dg-open" x="46" y="358" width="26" height="26"/>
+<rect class="dg-open" x="72" y="358" width="26" height="26"/>
+<rect class="dg-open" x="98" y="358" width="26" height="26"/>
+<rect class="dg-open" x="124" y="358" width="26" height="26"/>
+<rect class="dg-open" x="150" y="358" width="26" height="26"/>
+<rect class="dg-open" x="176" y="358" width="26" height="26"/>
+<rect class="dg-open" x="202" y="358" width="26" height="26"/>
+<rect class="dg-open" x="228" y="358" width="26" height="26"/>
+<rect class="dg-open" x="254" y="358" width="26" height="26"/>
+<rect class="dg-open" x="280" y="358" width="26" height="26"/>
+<rect class="dg-open" x="306" y="358" width="26" height="26"/>
+<rect class="dg-open" x="332" y="358" width="26" height="26"/>
+<rect class="dg-open" x="358" y="358" width="26" height="26"/>
+<rect class="dg-open" x="384" y="358" width="26" height="26"/>
+<rect class="dg-open" x="410" y="358" width="26" height="26"/>
+<rect class="dg-open" x="436" y="358" width="26" height="26"/>
+<text class="dg-a" x="38" y="401" text-anchor="end">$D0</text>
+<rect class="dg-open" x="46" y="384" width="26" height="26"/>
+<rect class="dg-open" x="72" y="384" width="26" height="26"/>
+<rect class="dg-open" x="98" y="384" width="26" height="26"/>
+<rect class="dg-open" x="124" y="384" width="26" height="26"/>
+<rect class="dg-open" x="150" y="384" width="26" height="26"/>
+<rect class="dg-open" x="176" y="384" width="26" height="26"/>
+<rect class="dg-open" x="202" y="384" width="26" height="26"/>
+<rect class="dg-open" x="228" y="384" width="26" height="26"/>
+<rect class="dg-open" x="254" y="384" width="26" height="26"/>
+<rect class="dg-open" x="280" y="384" width="26" height="26"/>
+<rect class="dg-open" x="306" y="384" width="26" height="26"/>
+<rect class="dg-open" x="332" y="384" width="26" height="26"/>
+<rect class="dg-open" x="358" y="384" width="26" height="26"/>
+<rect class="dg-open" x="384" y="384" width="26" height="26"/>
+<rect class="dg-open" x="410" y="384" width="26" height="26"/>
+<rect class="dg-open" x="436" y="384" width="26" height="26"/>
+<text class="dg-a" x="38" y="427" text-anchor="end">$E0</text>
+<rect class="dg-open" x="46" y="410" width="26" height="26"/>
+<rect class="dg-open" x="72" y="410" width="26" height="26"/>
+<rect class="dg-open" x="98" y="410" width="26" height="26"/>
+<rect class="dg-open" x="124" y="410" width="26" height="26"/>
+<rect class="dg-open" x="150" y="410" width="26" height="26"/>
+<rect class="dg-open" x="176" y="410" width="26" height="26"/>
+<rect class="dg-open" x="202" y="410" width="26" height="26"/>
+<rect class="dg-open" x="228" y="410" width="26" height="26"/>
+<rect class="dg-open" x="254" y="410" width="26" height="26"/>
+<rect class="dg-open" x="280" y="410" width="26" height="26"/>
+<rect class="dg-open" x="306" y="410" width="26" height="26"/>
+<rect class="dg-open" x="332" y="410" width="26" height="26"/>
+<rect class="dg-open" x="358" y="410" width="26" height="26"/>
+<rect class="dg-open" x="384" y="410" width="26" height="26"/>
+<rect class="dg-open" x="410" y="410" width="26" height="26"/>
+<rect class="dg-open" x="436" y="410" width="26" height="26"/>
+<text class="dg-a" x="38" y="453" text-anchor="end">$F0</text>
+<rect class="dg-open" x="46" y="436" width="26" height="26"/>
+<rect class="dg-open" x="72" y="436" width="26" height="26"/>
+<rect class="dg-open" x="98" y="436" width="26" height="26"/>
+<rect class="dg-open" x="124" y="436" width="26" height="26"/>
+<rect class="dg-open" x="150" y="436" width="26" height="26"/>
+<rect class="dg-open" x="176" y="436" width="26" height="26"/>
+<rect class="dg-open" x="202" y="436" width="26" height="26"/>
+<rect class="dg-open" x="228" y="436" width="26" height="26"/>
+<rect class="dg-open" x="254" y="436" width="26" height="26"/>
+<rect class="dg-open" x="280" y="436" width="26" height="26"/>
+<rect class="dg-open" x="306" y="436" width="26" height="26"/>
+<rect class="dg-open" x="332" y="436" width="26" height="26"/>
+<rect class="dg-open" x="358" y="436" width="26" height="26"/>
+<rect class="dg-open" x="384" y="436" width="26" height="26"/>
+<rect class="dg-open" x="410" y="436" width="26" height="26"/>
+<rect class="dg-open" x="436" y="436" width="26" height="26"/>
+<rect class="dg-solid" x="46" y="492" width="18" height="18"/>
+<text class="dg-n" x="72" y="505" text-anchor="start">$00–$39 — the Kernal, BASIC, the Monitor and XModem</text>
+<rect class="dg-open" x="46" y="518" width="18" height="18"/>
+<text class="dg-n" x="72" y="531" text-anchor="start">$3A–$FF — 198 bytes, yours</text>
+</svg>

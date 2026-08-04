@@ -39,6 +39,11 @@ One byte, called P. `PHP` and `PLP` push and pull it.
 | **Z** — zero | The result was zero |
 | **C** — carry | An addition carried out, a subtraction did not borrow, or a shift pushed a bit out |
 
+<Diagram
+  name="status-flags"
+  caption="Bit 5 is not a flag and always reads 1. The Monitor prints the other seven in this order, left to right."
+/>
+
 Four of them do the work. **Z** and **N** are set by almost every instruction
 that produces a value, so `lda Count` followed by `beq Empty` needs no test in
 between. **C** carries between bytes when you do 16-bit arithmetic, and it is

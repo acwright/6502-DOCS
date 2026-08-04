@@ -49,6 +49,11 @@ Three bytes each, in a fixed order that has not changed and will not. So
 
 **Call the slot, never the implementation.** That is the whole contract.
 
+<Diagram
+  name="kernal-table"
+  caption="Two jumps instead of one, and the second one is free of your program. That is the price of never having to look an address up again."
+/>
+
 You will not type `$A000` either, because `6502.inc` gives every slot a name:
 
 ```asm

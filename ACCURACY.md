@@ -35,7 +35,7 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| confirmed | 40 |
+| confirmed | 41 |
 | open | 3 |
 | fixed | 2 |
 | wontfix | 3 |
@@ -69,6 +69,11 @@ system sheets carried the same four broken listings; one of them, the "random
 maze", runs for ever and puts *nothing at all* on the screen. A42 is the
 schematic disagreeing with the ACE README about nine connector designators, and
 A43 is this repo's own fact base contradicting A18.
+
+**A44** comes from Phase 8, which put the first photographs of real hardware on
+the site. It is A9's problem in a second photograph — a version number visible
+in a picture — and A9 itself is resolved there, as a captioned historical shot
+rather than a reshoot.
 
 A common root cause runs through A14–A18, worth naming: **the guide was written
 through the serial console, because that is the interface the harness drives.**
@@ -170,7 +175,7 @@ serial are false at the machine itself.
 | **Source** | RUN: `6502 run --headless --exit-on 'OK'` prints `-- 6502 BIOS v1.5 --` / `6502 BASIC V2.0` / `30718 BYTES FREE` / `OK`. |
 | **Check** | RUN |
 | **Consequence** | Putting it on the intro page unedited teaches the wrong banner on the first screen a reader sees, and it is the kind of error a reader would reasonably take as authoritative — it is a photograph. |
-| **Fix** | Phase 8, one of three ways: reshoot against v1.5, crop below the text, or run it as a captioned historical shot. `IMAGES.md` carries the decision. Until then the file is migrated but **not referenced by any page**. |
+| **Fix** | **Resolved in Phase 8**, by the third route: it runs as a captioned historical shot on `docs/family/index.md`, where "an earlier machine, before the ACE brought all of this onto one board" is the page's subject rather than a caveat on it. The caption dates the banner explicitly, so nothing about it is presented as current. Imported as `photos/family-desk.jpg`; `IMAGES.md` carries the entry. |
 | **Aside** | The photo independently corroborates A3: even on that firmware the prompt was `OK`, never `READY.`. |
 
 ---
@@ -582,6 +587,19 @@ serial are false at the machine itself.
 | **Check** | GREP |
 | **Consequence** | Nothing shipped it — the Monitor chapter was written by hand and got it right. But Phase 7 generates the Monitor card *from this file*, so it would have reprinted the trap on a card meant to be trusted at the keyboard. Worth recording as the case for generating cards: the error surfaced the moment something started reading the field. |
 | **Fix** | Corrected in the extractor, with the reason in a comment, and re-extracted. |
+
+---
+
+### A44 — The ACE's photograph shows a `BIOS V1.0` label on a v1.5 machine
+
+| | |
+|---|---|
+| **Claim** | `6502-ACE/Images/6502-ACE.png` — imported here as `photos/ace.jpg` and `photos/ace-board.jpg`, and used as the site's first and most prominent image — is a photograph of a complete ACE. |
+| **Truth** | It is, and the board is right in every respect the chapters point at. But the EPROM in the ZIF socket carries a hand-written label reading `BIOS V1.0`, legible at the size the Welcome page shows it, on a site whose every other statement is about **v1.5**. |
+| **Source** | The photograph itself, at full size; `BIOS.inc` for the version the site documents. |
+| **Check** | INSPECT |
+| **Consequence** | Small but real, and the same class as A9: a reader who looks closely gets a version number the rest of the site contradicts. It is a sticker on a socketed chip rather than anything about the design, so no claim in the guide depends on it. |
+| **Fix** | No caption on any page reads a version off the photograph, and none refers to the ROM label. Resolving it properly means re-shooting the board with a v1.5 chip in the socket — a Phase 9 item for `6502-ACE`, because the photograph lives in that repo and fixing it there fixes it everywhere. |
 
 ---
 

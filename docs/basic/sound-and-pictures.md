@@ -63,9 +63,11 @@ Fifteen colours and fifteen rising notes, in one loop. The `"  "` on the end of
 line 50 is there to wipe the tail of the previous, longer number — a trick worth
 remembering, because nothing erases itself.
 
-<PlaceholderImage
-  label="Fifteen colours"
-  caption="The 40-column screen part-way through the colour loop, one line of COLOUR text in each of the sixteen colours down the left edge."
+<Figure
+  src="/images/screens/colours.png"
+  alt="A black screen with the words COLOUR 15 in white in the middle, and OK below to the left."
+  caption="Where the loop leaves you: the last of its fifteen colours, on the black background it set on the way past. Each of the other fourteen was on screen for a fifteenth of the time."
+  screen
 />
 
 ## Animation

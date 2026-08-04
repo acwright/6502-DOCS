@@ -4,9 +4,10 @@ Three small boards turn your ACE into a **KIM-1** — the 1976 single-board
 computer that taught a generation what a microprocessor was. Twenty-four keys,
 a two-line display, and nothing between you and the bytes.
 
-<PlaceholderImage
-  label="An ACE wearing its KIM boards"
-  caption="The Keypad Card in the ACE's cartridge slot with the LCD Helper and the keypad stacked on it, the LCD showing an address and a byte."
+<Figure
+  src="/images/photos/kim.jpg"
+  alt="A keypad of 24 keys wired by ribbon cable to a small board carrying a two-line LCD, both connected to a 6502 main board."
+  caption="Twenty-four keys, a two-line display, and a ribbon cable back to the machine. That is the whole add-on."
 />
 
 ## What you need

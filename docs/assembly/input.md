@@ -55,6 +55,11 @@ Two bits can be low at the same time, so testing them one at a time gets you
 diagonals with no extra work. Test the pairs, not a switch statement.
 :::
 
+<Diagram
+  name="joystick-bits"
+  caption="Held reads 0. So AND with the mask followed by BEQ is the player pushing up, and BNE is the bug."
+/>
+
 ## A program that reads both
 
 <<< @/../samples/assembly/stick.asm{asm}

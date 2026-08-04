@@ -36,9 +36,9 @@ PRINT FRE(0)
 OK
 ```
 
-<PlaceholderImage
-  label="Where BASIC keeps things"
-  caption="A vertical strip of memory from 2048 to 32768: program, variables and arrays stacked upward from the bottom, strings growing downward from the top, and the free gap between them labelled FRE(0)."
+<Diagram
+  name="basic-memory"
+  caption="Your program and its numbers grow up from 2048; strings grow down from 32768. FRE(0) is the gap in the middle."
 />
 
 ## What things cost

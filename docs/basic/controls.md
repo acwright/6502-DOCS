@@ -88,9 +88,9 @@ halfway down the list.
 after that is arithmetic.
 :::
 
-<PlaceholderImage
-  label="The joystick bits"
-  caption="A single byte drawn as eight boxes, each labelled with its direction or button, showing that a pressed control reads 0 and an untouched one reads 1."
+<Diagram
+  name="joystick-bits"
+  caption="One byte, eight controls. Pushing the stick up turns bit 4 off, not on — which is why every test in this chapter ends in = 0."
 />
 
 ## PAUSE

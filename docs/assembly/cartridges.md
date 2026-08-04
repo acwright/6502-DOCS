@@ -21,6 +21,11 @@ The ROM in the cartridge overlays `$C000–$FFFF`:
 So you lose BASIC and gain 16 KB of ROM, and you keep every Kernal routine in
 this section. That is the trade, and for a finished program it is a good one.
 
+<Diagram
+  name="cartridge-overlay"
+  caption="The top 16K becomes yours, including the vectors. Everything below it is untouched, which is why a cartridge can still call the Kernal."
+/>
+
 ## Booting
 
 Because the reset vector is inside your ROM, **your code is what the processor

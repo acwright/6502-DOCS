@@ -1,0 +1,45 @@
+<svg class="dg" viewBox="0 0 726 324" role="img" aria-label="The joystick byte: eight bits, and a held control reads zero"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>The joystick byte: eight bits, and a held control reads zero</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="118" y="24" text-anchor="start">One byte from JOY(1)</text>
+<text class="dg-n" x="152" y="46" text-anchor="middle">bit 7</text>
+<rect class="dg-open" x="118" y="56" width="68" height="68"/>
+<text class="dg-t" x="152" y="88" text-anchor="middle">Right</text>
+<text class="dg-a" x="152" y="112" text-anchor="middle">$80</text>
+<text class="dg-n" x="220" y="46" text-anchor="middle">bit 6</text>
+<rect class="dg-open" x="186" y="56" width="68" height="68"/>
+<text class="dg-t" x="220" y="88" text-anchor="middle">Left</text>
+<text class="dg-a" x="220" y="112" text-anchor="middle">$40</text>
+<text class="dg-n" x="288" y="46" text-anchor="middle">bit 5</text>
+<rect class="dg-open" x="254" y="56" width="68" height="68"/>
+<text class="dg-t" x="288" y="88" text-anchor="middle">Down</text>
+<text class="dg-a" x="288" y="112" text-anchor="middle">$20</text>
+<text class="dg-n" x="356" y="46" text-anchor="middle">bit 4</text>
+<rect class="dg-open" x="322" y="56" width="68" height="68"/>
+<text class="dg-t" x="356" y="88" text-anchor="middle">Up</text>
+<text class="dg-a" x="356" y="112" text-anchor="middle">$10</text>
+<text class="dg-n" x="424" y="46" text-anchor="middle">bit 3</text>
+<rect class="dg-open" x="390" y="56" width="68" height="68"/>
+<text class="dg-t" x="424" y="88" text-anchor="middle">Button Y</text>
+<text class="dg-a" x="424" y="112" text-anchor="middle">$08</text>
+<text class="dg-n" x="492" y="46" text-anchor="middle">bit 2</text>
+<rect class="dg-open" x="458" y="56" width="68" height="68"/>
+<text class="dg-t" x="492" y="88" text-anchor="middle">Button X</text>
+<text class="dg-a" x="492" y="112" text-anchor="middle">$04</text>
+<text class="dg-n" x="560" y="46" text-anchor="middle">bit 1</text>
+<rect class="dg-open" x="526" y="56" width="68" height="68"/>
+<text class="dg-t" x="560" y="88" text-anchor="middle">Button B</text>
+<text class="dg-a" x="560" y="112" text-anchor="middle">$02</text>
+<text class="dg-n" x="628" y="46" text-anchor="middle">bit 0</text>
+<rect class="dg-open" x="594" y="56" width="68" height="68"/>
+<text class="dg-t" x="628" y="88" text-anchor="middle">Button A</text>
+<text class="dg-a" x="628" y="112" text-anchor="middle">$01</text>
+<text class="dg-n" x="106" y="177.1" text-anchor="end">nothing held</text><rect class="dg-open" x="118" y="154" width="68" height="40"/><text class="dg-a" x="152" y="181" text-anchor="middle">1</text><rect class="dg-open" x="186" y="154" width="68" height="40"/><text class="dg-a" x="220" y="181" text-anchor="middle">1</text><rect class="dg-open" x="254" y="154" width="68" height="40"/><text class="dg-a" x="288" y="181" text-anchor="middle">1</text><rect class="dg-open" x="322" y="154" width="68" height="40"/><text class="dg-a" x="356" y="181" text-anchor="middle">1</text><rect class="dg-open" x="390" y="154" width="68" height="40"/><text class="dg-a" x="424" y="181" text-anchor="middle">1</text><rect class="dg-open" x="458" y="154" width="68" height="40"/><text class="dg-a" x="492" y="181" text-anchor="middle">1</text><rect class="dg-open" x="526" y="154" width="68" height="40"/><text class="dg-a" x="560" y="181" text-anchor="middle">1</text><rect class="dg-open" x="594" y="154" width="68" height="40"/><text class="dg-a" x="628" y="181" text-anchor="middle">1</text><text class="dg-n" x="676" y="180" text-anchor="start">$FF</text>
+<text class="dg-n" x="106" y="233.1" text-anchor="end">pushed up</text><rect class="dg-open" x="118" y="210" width="68" height="40"/><text class="dg-a" x="152" y="237" text-anchor="middle">1</text><rect class="dg-open" x="186" y="210" width="68" height="40"/><text class="dg-a" x="220" y="237" text-anchor="middle">1</text><rect class="dg-open" x="254" y="210" width="68" height="40"/><text class="dg-a" x="288" y="237" text-anchor="middle">1</text><rect class="dg-solid" x="322" y="210" width="68" height="40"/><text class="dg-a dg-inv" x="356" y="237" text-anchor="middle">0</text><rect class="dg-open" x="390" y="210" width="68" height="40"/><text class="dg-a" x="424" y="237" text-anchor="middle">1</text><rect class="dg-open" x="458" y="210" width="68" height="40"/><text class="dg-a" x="492" y="237" text-anchor="middle">1</text><rect class="dg-open" x="526" y="210" width="68" height="40"/><text class="dg-a" x="560" y="237" text-anchor="middle">1</text><rect class="dg-open" x="594" y="210" width="68" height="40"/><text class="dg-a" x="628" y="237" text-anchor="middle">1</text><text class="dg-n" x="676" y="236" text-anchor="start">$EF</text>
+<text class="dg-n" x="118" y="282" text-anchor="start">A held direction or button reads 0, not 1. That is why the test is</text>
+<text class="dg-a" x="118" y="300" text-anchor="start">IF (JOY(1) AND 16) = 0</text>
+</svg>

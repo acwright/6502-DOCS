@@ -1,0 +1,32 @@
+<svg class="dg" viewBox="0 0 680 490" role="img" aria-label="How BASIC divides the memory between 2048 and 32768"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>How BASIC divides the memory between 2048 and 32768</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="150" y="26" text-anchor="start">What sits where, between 2048 and 32768</text>
+<rect class="dg-r2" x="150" y="40" width="230" height="74"/>
+<text class="dg-t" x="164" y="82" text-anchor="start">String heap</text>
+<rect class="dg-open" x="150" y="114" width="230" height="120"/>
+<text class="dg-t" x="164" y="179" text-anchor="start">Free</text>
+<rect class="dg-r" x="150" y="234" width="230" height="54"/>
+<text class="dg-t" x="164" y="266" text-anchor="start">Arrays</text>
+<rect class="dg-r" x="150" y="288" width="230" height="54"/>
+<text class="dg-t" x="164" y="320" text-anchor="start">Variables</text>
+<rect class="dg-r" x="150" y="342" width="230" height="96"/>
+<text class="dg-t" x="164" y="395" text-anchor="start">Your program</text>
+<line class="dg-l" x1="406" y1="52" x2="406" y2="148" marker-end="url(#dg-arrow)"/>
+<text class="dg-n" x="416" y="70" text-anchor="start">strings grow</text>
+<text class="dg-n" x="416" y="86" text-anchor="start">downwards</text>
+<line class="dg-l" x1="406" y1="426" x2="406" y2="308" marker-end="url(#dg-arrow)"/>
+<text class="dg-n" x="416" y="404" text-anchor="start">program, then</text>
+<text class="dg-n" x="416" y="420" text-anchor="start">variables, then arrays</text>
+<path class="dg-l" d="M128 114 H140 M128 234 H140"/>
+<line class="dg-l dg-dash" x1="134" y1="114" x2="134" y2="234"/>
+<text class="dg-t" x="122" y="174" text-anchor="end">FRE(0)</text>
+<text class="dg-n" x="122" y="190" text-anchor="end">counts this</text>
+<text class="dg-a" x="140" y="46" text-anchor="end">32768</text>
+<text class="dg-a" x="140" y="436" text-anchor="end">2048</text>
+<text class="dg-n" x="150" y="472" text-anchor="start">They grow towards each other. ?OUT OF MEMORY is what you get when they meet.</text>
+</svg>

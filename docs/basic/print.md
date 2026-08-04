@@ -32,6 +32,11 @@ Columns are 14 characters wide. Three of them fit across the ACE's 40-column
 screen, and a fourth wraps onto the next line — which looks like a bug the first
 time it happens and isn't.
 
+<Diagram
+  name="print-zones"
+  caption="Where a comma sends the next thing. It is why columns of numbers line up without any effort, and why a fourth item drops onto the next line."
+/>
+
 ## Holding the cursor
 
 End a `PRINT` with a semicolon and the next one carries on where it left off:

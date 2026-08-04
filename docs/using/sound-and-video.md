@@ -66,9 +66,11 @@ colours**. Three statements:
 `RUN` that and you get a line of text in the middle of an empty screen, dark on
 light instead of the usual light on dark.
 
-<PlaceholderImage
-  label="Text on screen"
-  caption="The 40×24 screen with HELLO FROM YOUR ACE centred on it in inverted colours, showing the full character cell grid."
+<Figure
+  src="/images/screens/screen-text.png"
+  alt="A mostly empty screen with HELLO FROM YOUR ACE printed in the middle, and OK on the left below it."
+  caption="Three lines of BASIC, and the words land where you put them."
+  screen
 />
 
 ## Both at once

@@ -42,9 +42,11 @@ waits for a keypress and use that as a seed — `RND(-S)` sets the starting poin
 **Now change this:** make it count down from 7 guesses and lose the game at
 zero.
 
-<PlaceholderImage
-  label="Treasure grid"
-  caption="The finished game on the ACE screen: a four-by-four grid of dots with two Xs dug into it, and TREASURE. FOUND IN 2 DIGS. underneath."
+<Figure
+  src="/images/screens/treasure.png"
+  alt="A screen showing four-by-four grids of dots with Xs where digs have happened, questions asking for row and column, and TREASURE. FOUND IN 2 DIGS. at the bottom."
+  caption="Two digs in. The grid is redrawn after each one, so you can see where you have been."
+  screen
 />
 
 ## A times table

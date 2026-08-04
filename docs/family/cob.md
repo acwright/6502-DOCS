@@ -8,9 +8,10 @@ const cob = facts.systems.systems.find(s => s.id === 'cob')
 The first machine in the family, and still the best one to build if you want to
 *see* how a 6502 computer works.
 
-<PlaceholderImage
-  label="A populated COB"
-  caption="The Backplane Pro with CPU, memory, video, sound and storage cards fitted, seen from the side so all the cards are visible at once."
+<Figure
+  src="/images/photos/cob.jpg"
+  alt="A backplane seen from the side with about a dozen cards standing upright in its slots, each labelled along its top edge."
+  caption="A COB with its cards in. Every card is one job — processor, memory, video, sound, storage — and every card comes out."
 />
 
 There is no motherboard here. A passive backplane carries the bus across five

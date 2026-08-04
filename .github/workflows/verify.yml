@@ -43,6 +43,16 @@ jobs:
       - name: Check the generated cards are current
         run: npm run cards:verify
 
+      # The diagrams are drawn from the same data, and drift the same way.
+      - name: Check the diagrams are current
+        run: npm run diagrams:verify
+
+      # The photographs are imported from the KiCad repos on a machine that has
+      # them checked out, so CI only asks whether every one a page references is
+      # committed here.
+      - name: Check every photograph is present
+        run: npm run photos:check
+
       # The migration is only evidence for retiring 6502-ASSETS if it is still
       # true. This re-walks that repo and fails if it holds a path this repo does
       # not account for. Drop the step once 6502-ASSETS is deleted (Phase 10

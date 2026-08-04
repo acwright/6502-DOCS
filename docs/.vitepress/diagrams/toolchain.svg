@@ -1,0 +1,31 @@
+<svg class="dg" viewBox="0 0 660 384" role="img" aria-label="The cross-development toolchain, from editor to machine"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>The cross-development toolchain, from editor to machine</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="30" y="22" text-anchor="start">From your editor to the machine</text>
+<rect class="dg-r" x="30" y="44" width="180" height="56" rx="3"/><text class="dg-t" x="120" y="70" text-anchor="middle">Your editor</text><text class="dg-a" x="120" y="86" text-anchor="middle">.asm  .bas</text>
+<rect class="dg-r" x="240" y="44" width="180" height="56" rx="3"/><text class="dg-t" x="330" y="70" text-anchor="middle">cl65 · bastok</text><text class="dg-a" x="330" y="86" text-anchor="middle">assemble, tokenize</text>
+<rect class="dg-solid" x="450" y="44" width="180" height="56" rx="3"/><text class="dg-t dg-inv" x="540" y="70" text-anchor="middle">build/game.prg</text><text class="dg-a" x="540" y="86" text-anchor="middle">the program</text>
+<line class="dg-l" x1="210" y1="72" x2="232" y2="72" marker-end="url(#dg-arrow)"/>
+<line class="dg-l" x1="420" y1="72" x2="442" y2="72" marker-end="url(#dg-arrow)"/>
+<path class="dg-l" d="M540 100 V134 H75"/>
+<line class="dg-l" x1="75" y1="134" x2="75" y2="162" marker-end="url(#dg-arrow)"/>
+<rect class="dg-r" x="0" y="168" width="150" height="58" rx="3"/><text class="dg-t" x="75" y="195" text-anchor="middle">The emulator</text><text class="dg-a" x="75" y="211" text-anchor="middle">seconds, no cables</text>
+<path class="dg-l" d="M75 226 V256"/>
+<line class="dg-l" x1="245" y1="134" x2="245" y2="162" marker-end="url(#dg-arrow)"/>
+<rect class="dg-r" x="170" y="168" width="150" height="58" rx="3"/><text class="dg-t" x="245" y="195" text-anchor="middle">A CF card</text><text class="dg-a" x="245" y="211" text-anchor="middle">cffs, then carry it</text>
+<path class="dg-l" d="M245 226 V256"/>
+<line class="dg-l" x1="415" y1="134" x2="415" y2="162" marker-end="url(#dg-arrow)"/>
+<rect class="dg-r" x="340" y="168" width="150" height="58" rx="3"/><text class="dg-t" x="415" y="195" text-anchor="middle">The serial port</text><text class="dg-a" x="415" y="211" text-anchor="middle">XModem, both ways</text>
+<path class="dg-l" d="M415 226 V256"/>
+<line class="dg-l" x1="585" y1="134" x2="585" y2="162" marker-end="url(#dg-arrow)"/>
+<rect class="dg-r" x="510" y="168" width="150" height="58" rx="3"/><text class="dg-t" x="585" y="195" text-anchor="middle">An EEPROM</text><text class="dg-a" x="585" y="211" text-anchor="middle">bin2woz · minipro</text>
+<path class="dg-l" d="M585 226 V256"/>
+<line class="dg-l" x1="75" y1="256" x2="585" y2="256"/>
+<line class="dg-l" x1="330" y1="256" x2="330" y2="284" marker-end="url(#dg-arrow)"/>
+<rect class="dg-r2" x="240" y="284" width="180" height="56" rx="3"/><text class="dg-t" x="330" y="310" text-anchor="middle">Your ACE</text><text class="dg-a" x="330" y="326" text-anchor="middle">or the emulator’s window</text>
+<text class="dg-n" x="30" y="366" text-anchor="start">The same .prg every time. Only the way it gets there changes.</text>
+</svg>

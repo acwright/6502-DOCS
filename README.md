@@ -183,6 +183,56 @@ npm run migrate         # re-run the migration from a 6502-ASSETS checkout
 npm run migrate:check   # fail if that repo holds anything this one doesn't
 ```
 
+## Pictures
+
+Three kinds, three pipelines, and one rule: **a picture ships when it shows
+something the prose cannot say as quickly.** [`IMAGES.md`](IMAGES.md) is the
+ledger — every image the site uses, where it came from, and what is still a
+placeholder waiting on a camera.
+
+```sh
+npm run screens       # re-take every emulator screenshot
+npm run diagrams      # redraw every diagram
+npm run diagrams:verify   # fail if a checked-in drawing has drifted (in verify + CI)
+npm run photos        # re-import the photographs from the KiCad repos
+npm run photos:check  # fail if one a page references is missing (in verify + CI)
+```
+
+**Screenshots** (`docs/public/images/screens/`) come off a real machine:
+`scripts/capture-screens.mjs` boots the emulator with a video console, types
+what a reader would type, and reads the screen with `dbg screen png`. Where a
+shot shows a program it names the file under `samples/` that the chapter
+displays, so the picture cannot drift from the listing beside it. Re-take them
+after a ROM change — they are not drift-checked, because that would mean
+asserting on a PNG encoder.
+
+**Diagrams** (`docs/.vitepress/diagrams/`) are drawn by
+`scripts/build-diagrams.mjs`, nine of the fifteen straight out of `data/`. They
+carry no colour: every shape is `currentColor` at a fixed opacity, which is what
+lets one file serve the light and the dark theme. That is also why they are
+inlined into the page by `<Diagram>` rather than linked as an `<img>` — an
+`<img>` is a separate document and cannot see the site's variables. Style them
+in `docs/.vitepress/theme/style.css`, under the `.dg-*` classes.
+
+**Photographs** (`docs/public/images/photos/`) are imported from the `Images/`
+directory of each KiCad repo by `scripts/import-photos.mjs`, which records the
+crop and the resize so the same command produces the same picture. The sources
+live in sibling repos, so the import runs on a machine that has them and the
+outputs are committed; CI only checks that every declared file is present.
+
+Pages use three components, all registered in
+[`docs/.vitepress/theme/index.ts`](docs/.vitepress/theme/index.ts):
+
+```
+<Figure src="/images/photos/ace.jpg" alt="…" caption="…" />      a photograph
+<Figure src="/images/screens/wozmon.png" alt="…" caption="…" screen />
+<Diagram name="memory-map" caption="…" />                        a drawing
+<PlaceholderImage label="…" caption="…" />                       not shot yet
+```
+
+A placeholder's caption **describes the picture and nothing else** — no phase
+numbers, no script names, no accuracy notes. Those go in `IMAGES.md`.
+
 ## Accuracy
 
 [`ACCURACY.md`](ACCURACY.md) is the ledger of every place a document in this
@@ -207,10 +257,13 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 | `docs/public/cards/` | Printable HTML quick-reference cards, served raw at `/cards/` |
 | `data/` | Machine-readable fact base, generated — consumed by the docs at build time |
 | `samples/` | Verified BASIC/assembly listings backing every listing in the docs |
-| `scripts/` | Fact extractor, sample harness, voice check, toolchain preflight, asset migration |
+| `scripts/` | Fact extractor, sample harness, voice check, toolchain preflight, asset migration, card/diagram builders, screenshot capture, photo import |
+| `docs/.vitepress/diagrams/` | Generated SVG diagrams, inlined into pages by `<Diagram>` |
+| `docs/public/images/` | Screenshots, photographs and branding, served as-is |
 | `assets/` | Design sources — logos, label artwork, and the `.afdesign`/`.numbers` originals pending HTML recreation. Never served; see [`assets/README.md`](assets/README.md). |
 | `ACCURACY.md` | Ledger of factual discrepancies found and fixed |
 | `ASSETS-MIGRATION.md` | What moved out of `6502-ASSETS`, and the evidence for retiring it |
+| `IMAGES.md` | Every image the site uses, how it is made, and what is still a placeholder |
 
 ## Sibling repositories
 

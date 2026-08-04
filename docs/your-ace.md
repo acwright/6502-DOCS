@@ -10,9 +10,10 @@ is a big board, about as tall as a Commodore 128 and a little narrower, and the
 front two-thirds of it is a full mechanical keyboard soldered straight to the
 PCB. No cards to fit, no expansion decisions to make.
 
-<PlaceholderImage
-  label="The ACE board, from above"
-  caption="The whole board photographed straight down: the keyboard filling the front, and behind it the CPU, sound chip, video module, serial port and CompactFlash adapter."
+<Figure
+  src="/images/photos/ace-board.jpg"
+  alt="The ACE board from above, without the keyboard: connectors along the back edge, the processor and ROM in the middle, and the CompactFlash adapter at the right."
+  caption="The board, front to back. Power and the connectors run along the top edge, the processor and the ROM sit in the middle, and the CompactFlash adapter is the small board on the right."
 />
 
 ## The tour

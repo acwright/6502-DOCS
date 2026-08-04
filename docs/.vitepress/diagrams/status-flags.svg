@@ -1,0 +1,44 @@
+<svg class="dg" viewBox="0 0 664 204" role="img" aria-label="The eight flags of the status register"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>The eight flags of the status register</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="60" y="24" text-anchor="start">P, one bit at a time</text>
+<text class="dg-n" x="94" y="46" text-anchor="middle">bit 7</text>
+<rect class="dg-r" x="60" y="56" width="68" height="68"/>
+<text class="dg-t" x="94" y="90" text-anchor="middle">N</text>
+<text class="dg-n" x="94" y="110" text-anchor="middle">negative</text>
+<text class="dg-n" x="162" y="46" text-anchor="middle">bit 6</text>
+<rect class="dg-r" x="128" y="56" width="68" height="68"/>
+<text class="dg-t" x="162" y="90" text-anchor="middle">V</text>
+<text class="dg-n" x="162" y="110" text-anchor="middle">overflow</text>
+<text class="dg-n" x="230" y="46" text-anchor="middle">bit 5</text>
+<rect class="dg-open" x="196" y="56" width="68" height="68"/>
+<text class="dg-t" x="230" y="90" text-anchor="middle">–</text>
+<text class="dg-n" x="230" y="110" text-anchor="middle">unused</text>
+<text class="dg-n" x="298" y="46" text-anchor="middle">bit 4</text>
+<rect class="dg-r" x="264" y="56" width="68" height="68"/>
+<text class="dg-t" x="298" y="90" text-anchor="middle">B</text>
+<text class="dg-n" x="298" y="110" text-anchor="middle">break</text>
+<text class="dg-n" x="366" y="46" text-anchor="middle">bit 3</text>
+<rect class="dg-r" x="332" y="56" width="68" height="68"/>
+<text class="dg-t" x="366" y="90" text-anchor="middle">D</text>
+<text class="dg-n" x="366" y="110" text-anchor="middle">decimal</text>
+<text class="dg-n" x="434" y="46" text-anchor="middle">bit 2</text>
+<rect class="dg-r" x="400" y="56" width="68" height="68"/>
+<text class="dg-t" x="434" y="90" text-anchor="middle">I</text>
+<text class="dg-n" x="434" y="110" text-anchor="middle">no IRQs</text>
+<text class="dg-n" x="502" y="46" text-anchor="middle">bit 1</text>
+<rect class="dg-r" x="468" y="56" width="68" height="68"/>
+<text class="dg-t" x="502" y="90" text-anchor="middle">Z</text>
+<text class="dg-n" x="502" y="110" text-anchor="middle">zero</text>
+<text class="dg-n" x="570" y="46" text-anchor="middle">bit 0</text>
+<rect class="dg-r" x="536" y="56" width="68" height="68"/>
+<text class="dg-t" x="570" y="90" text-anchor="middle">C</text>
+<text class="dg-n" x="570" y="110" text-anchor="middle">carry</text>
+<text class="dg-n" x="60" y="158" text-anchor="start">The Monitor prints them in this order, a letter where a flag is set:</text>
+<text class="dg-a" x="60" y="182" text-anchor="start">---B-IZC</text>
+<text class="dg-n" x="170" y="182" text-anchor="start">break, interrupts off, zero, carry.</text>
+</svg>

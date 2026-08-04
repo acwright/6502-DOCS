@@ -67,6 +67,13 @@ D FF00
 .,FF04  F0 18     BEQ $FF1E
 ```
 
+<Figure
+  src="/images/screens/monitor.png"
+  alt="A screen showing the Monitor banner, a BRK message, the register line, a dump of memory at 0800 that is all zeroes, and the register line again."
+  caption="A whole visit: in with BRK, a look at $0800, and R to see the registers again."
+  screen
+/>
+
 ## Everything it does
 
 <table>
@@ -123,9 +130,11 @@ needs the keyboard, and `G` turns interrupts off on its way out — so the
 keystrokes never arrive. `J` leaves them on.
 :::
 
-<PlaceholderImage
-  label="Wozmon"
-  caption="A screen showing the jump from the Monitor's dot prompt into Wozmon's backslash, and a short memory dump underneath."
+<Figure
+  src="/images/screens/wozmon.png"
+  alt="A screen showing the Monitor prompt, the command J FF00, a backslash on the next line, and a two-line hexadecimal dump of memory starting at FF00."
+  caption="That backslash is Wozmon's prompt, and those sixteen bytes are Wozmon reading itself."
+  screen
 />
 
 <div class="card-link">

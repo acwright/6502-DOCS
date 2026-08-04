@@ -1,0 +1,102 @@
+<svg class="dg" viewBox="0 0 660 224" role="img" aria-label="PRINT's fourteen-column zones"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>PRINT's fourteen-column zones</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="30" y="22" text-anchor="start">PRINT "A","B","C","D" on a 40-column screen</text>
+<text class="dg-n" x="30" y="40" text-anchor="start">A comma jumps to the start of the next zone, and a zone is fourteen columns</text>
+<rect class="dg-open" x="30" y="96" width="15" height="26"/>
+<text class="dg-a" x="37.5" y="115" text-anchor="middle">A</text>
+<rect class="dg-open" x="45" y="96" width="15" height="26"/>
+<rect class="dg-open" x="60" y="96" width="15" height="26"/>
+<rect class="dg-open" x="75" y="96" width="15" height="26"/>
+<rect class="dg-open" x="90" y="96" width="15" height="26"/>
+<rect class="dg-open" x="105" y="96" width="15" height="26"/>
+<rect class="dg-open" x="120" y="96" width="15" height="26"/>
+<rect class="dg-open" x="135" y="96" width="15" height="26"/>
+<rect class="dg-open" x="150" y="96" width="15" height="26"/>
+<rect class="dg-open" x="165" y="96" width="15" height="26"/>
+<rect class="dg-open" x="180" y="96" width="15" height="26"/>
+<rect class="dg-open" x="195" y="96" width="15" height="26"/>
+<rect class="dg-open" x="210" y="96" width="15" height="26"/>
+<rect class="dg-open" x="225" y="96" width="15" height="26"/>
+<rect class="dg-r" x="240" y="96" width="15" height="26"/>
+<text class="dg-a" x="247.5" y="115" text-anchor="middle">B</text>
+<rect class="dg-r" x="255" y="96" width="15" height="26"/>
+<rect class="dg-r" x="270" y="96" width="15" height="26"/>
+<rect class="dg-r" x="285" y="96" width="15" height="26"/>
+<rect class="dg-r" x="300" y="96" width="15" height="26"/>
+<rect class="dg-r" x="315" y="96" width="15" height="26"/>
+<rect class="dg-r" x="330" y="96" width="15" height="26"/>
+<rect class="dg-r" x="345" y="96" width="15" height="26"/>
+<rect class="dg-r" x="360" y="96" width="15" height="26"/>
+<rect class="dg-r" x="375" y="96" width="15" height="26"/>
+<rect class="dg-r" x="390" y="96" width="15" height="26"/>
+<rect class="dg-r" x="405" y="96" width="15" height="26"/>
+<rect class="dg-r" x="420" y="96" width="15" height="26"/>
+<rect class="dg-r" x="435" y="96" width="15" height="26"/>
+<rect class="dg-open" x="450" y="96" width="15" height="26"/>
+<text class="dg-a" x="457.5" y="115" text-anchor="middle">C</text>
+<rect class="dg-open" x="465" y="96" width="15" height="26"/>
+<rect class="dg-open" x="480" y="96" width="15" height="26"/>
+<rect class="dg-open" x="495" y="96" width="15" height="26"/>
+<rect class="dg-open" x="510" y="96" width="15" height="26"/>
+<rect class="dg-open" x="525" y="96" width="15" height="26"/>
+<rect class="dg-open" x="540" y="96" width="15" height="26"/>
+<rect class="dg-open" x="555" y="96" width="15" height="26"/>
+<rect class="dg-open" x="570" y="96" width="15" height="26"/>
+<rect class="dg-open" x="585" y="96" width="15" height="26"/>
+<rect class="dg-open" x="600" y="96" width="15" height="26"/>
+<rect class="dg-open" x="615" y="96" width="15" height="26"/>
+<rect class="dg-open" x="30" y="134" width="15" height="26"/>
+<text class="dg-a" x="37.5" y="153" text-anchor="middle">D</text>
+<rect class="dg-open" x="45" y="134" width="15" height="26"/>
+<rect class="dg-open" x="60" y="134" width="15" height="26"/>
+<rect class="dg-open" x="75" y="134" width="15" height="26"/>
+<rect class="dg-open" x="90" y="134" width="15" height="26"/>
+<rect class="dg-open" x="105" y="134" width="15" height="26"/>
+<rect class="dg-open" x="120" y="134" width="15" height="26"/>
+<rect class="dg-open" x="135" y="134" width="15" height="26"/>
+<rect class="dg-open" x="150" y="134" width="15" height="26"/>
+<rect class="dg-open" x="165" y="134" width="15" height="26"/>
+<rect class="dg-open" x="180" y="134" width="15" height="26"/>
+<rect class="dg-open" x="195" y="134" width="15" height="26"/>
+<rect class="dg-open" x="210" y="134" width="15" height="26"/>
+<rect class="dg-open" x="225" y="134" width="15" height="26"/>
+<rect class="dg-r" x="240" y="134" width="15" height="26"/>
+<rect class="dg-r" x="255" y="134" width="15" height="26"/>
+<rect class="dg-r" x="270" y="134" width="15" height="26"/>
+<rect class="dg-r" x="285" y="134" width="15" height="26"/>
+<rect class="dg-r" x="300" y="134" width="15" height="26"/>
+<rect class="dg-r" x="315" y="134" width="15" height="26"/>
+<rect class="dg-r" x="330" y="134" width="15" height="26"/>
+<rect class="dg-r" x="345" y="134" width="15" height="26"/>
+<rect class="dg-r" x="360" y="134" width="15" height="26"/>
+<rect class="dg-r" x="375" y="134" width="15" height="26"/>
+<rect class="dg-r" x="390" y="134" width="15" height="26"/>
+<rect class="dg-r" x="405" y="134" width="15" height="26"/>
+<rect class="dg-r" x="420" y="134" width="15" height="26"/>
+<rect class="dg-r" x="435" y="134" width="15" height="26"/>
+<rect class="dg-open" x="450" y="134" width="15" height="26"/>
+<rect class="dg-open" x="465" y="134" width="15" height="26"/>
+<rect class="dg-open" x="480" y="134" width="15" height="26"/>
+<rect class="dg-open" x="495" y="134" width="15" height="26"/>
+<rect class="dg-open" x="510" y="134" width="15" height="26"/>
+<rect class="dg-open" x="525" y="134" width="15" height="26"/>
+<rect class="dg-open" x="540" y="134" width="15" height="26"/>
+<rect class="dg-open" x="555" y="134" width="15" height="26"/>
+<rect class="dg-open" x="570" y="134" width="15" height="26"/>
+<rect class="dg-open" x="585" y="134" width="15" height="26"/>
+<rect class="dg-open" x="600" y="134" width="15" height="26"/>
+<rect class="dg-open" x="615" y="134" width="15" height="26"/>
+<path class="dg-l" d="M30 88 V82 H240 V88"/>
+<text class="dg-n" x="135" y="76" text-anchor="middle">zone 1</text>
+<path class="dg-l" d="M240 88 V82 H450 V88"/>
+<text class="dg-n" x="345" y="76" text-anchor="middle">zone 2</text>
+<path class="dg-l" d="M450 88 V82 H630 V88"/>
+<text class="dg-n" x="540" y="76" text-anchor="middle">zone 3</text>
+<text class="dg-n" x="30" y="188" text-anchor="start">Three zones fit. The fourth has nowhere to go, so it starts the next line.</text>
+<text class="dg-n" x="30" y="206" text-anchor="start">A semicolon does none of this: it prints straight on, with no gap.</text>
+</svg>

@@ -65,6 +65,11 @@ harmed — just type the command again.
   caption="An ACE with a USB-to-serial cable running to a laptop, the laptop's terminal window showing the same OK prompt as the ACE's monitor."
 />
 
+<Diagram
+  name="xmodem"
+  caption="The receiver starts it, and every block is answered. That is why nothing happens until both ends are ready — and why a bad cable shows up as a transfer that never begins rather than a file that arrives wrong."
+/>
+
 ## Writing listings on your computer
 
 Once you've got a terminal, the comfortable way to work on anything longer than

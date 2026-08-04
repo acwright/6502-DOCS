@@ -4,9 +4,15 @@ Sixty-seven mechanical keys across the front of the board. Most of it is
 exactly what you'd expect — letters type letters, <kbd>Enter</kbd> sends the
 line. This chapter is the rest.
 
-<PlaceholderImage
-  label="The ACE keyboard layout"
-  caption="The full key layout drawn out, with the keys that do something special picked out from the ordinary letters and numbers."
+<Figure
+  src="/images/photos/ace-keyboard.jpg"
+  alt="The ACE's keyboard: five rows of white and dark grey keycaps soldered to the board, with Esc, Insert, Delete and arrow keys down the right-hand side."
+  caption="Soldered to the board, so there is nothing to plug in and nothing to set up."
+/>
+
+<Diagram
+  name="keyboard"
+  caption="The same keys, drawn out. Where a cap has two legends, the upper one is what Shift gives you."
 />
 
 ## Everything is in capitals

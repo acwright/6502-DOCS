@@ -1,0 +1,47 @@
+<svg class="dg" viewBox="0 0 620 426" role="img" aria-label="What a cartridge replaces, and what stays underneath it"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>What a cartridge replaces, and what stays underneath it</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="40" y="26" text-anchor="start">Normally</text>
+<text class="dg-t" x="350" y="26" text-anchor="start">With a cartridge in the slot</text>
+<text class="dg-n" x="40" y="44" text-anchor="start">the top 16K is ROM the machine came with</text>
+<text class="dg-n" x="350" y="44" text-anchor="start">the cartridge answers instead</text>
+<rect class="dg-r2" x="40" y="62" width="230" height="92"/>
+<text class="dg-t" x="52" y="84" text-anchor="start">BASIC, Monitor, Wozmon</text>
+<text class="dg-a" x="52" y="102" text-anchor="start">$C000</text>
+<rect class="dg-solid" x="350" y="62" width="230" height="92"/>
+<text class="dg-t dg-inv" x="362" y="84" text-anchor="start">Your cartridge</text>
+<text class="dg-a dg-inv" x="362" y="102" text-anchor="start">$C000–$FFFF</text>
+<text class="dg-n dg-inv" x="362" y="126" text-anchor="start">including the reset vectors</text>
+<rect class="dg-r" x="40" y="154" width="230" height="36"/>
+<text class="dg-t" x="52" y="177" text-anchor="start">Character set</text>
+<text class="dg-a" x="258" y="177" text-anchor="end">$B800</text>
+<rect class="dg-r" x="350" y="154" width="230" height="36"/>
+<text class="dg-t" x="362" y="177" text-anchor="start">Character set</text>
+<text class="dg-a" x="568" y="177" text-anchor="end">$B800</text>
+<rect class="dg-r" x="40" y="190" width="230" height="56"/>
+<text class="dg-t" x="52" y="212" text-anchor="start">Kernal</text>
+<text class="dg-a" x="52" y="230" text-anchor="start">$A000</text>
+<rect class="dg-r" x="350" y="190" width="230" height="56"/>
+<text class="dg-t" x="362" y="212" text-anchor="start">Kernal</text>
+<text class="dg-a" x="362" y="230" text-anchor="start">$A000</text>
+<rect class="dg-r" x="40" y="246" width="230" height="46"/>
+<text class="dg-t" x="52" y="268" text-anchor="start">I/O slots</text>
+<text class="dg-a" x="52" y="286" text-anchor="start">$8000</text>
+<rect class="dg-r" x="350" y="246" width="230" height="46"/>
+<text class="dg-t" x="362" y="268" text-anchor="start">I/O slots</text>
+<text class="dg-a" x="362" y="286" text-anchor="start">$8000</text>
+<rect class="dg-r" x="40" y="292" width="230" height="90"/>
+<text class="dg-t" x="52" y="314" text-anchor="start">RAM</text>
+<text class="dg-a" x="52" y="332" text-anchor="start">$0000</text>
+<rect class="dg-r" x="350" y="292" width="230" height="90"/>
+<text class="dg-t" x="362" y="314" text-anchor="start">RAM</text>
+<text class="dg-a" x="362" y="332" text-anchor="start">$0000</text>
+<line class="dg-l" x1="284" y1="108" x2="336" y2="108" marker-end="url(#dg-arrow)"/>
+<path class="dg-l dg-dash" d="M284 218 H336"/>
+<text class="dg-n" x="310" y="210" text-anchor="middle">stays</text>
+<text class="dg-n" x="40" y="408" text-anchor="start">The Kernal and the character set survive, so a cartridge still has the jump table.</text>
+</svg>

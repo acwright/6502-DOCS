@@ -8,6 +8,12 @@ looks that code up and decides what it means.
 You need this if you are writing your own code for the keypad. If you are just
 using the KC Monitor, [The KIM keypad](/addons/kim) is the page you want.
 
+<Figure
+  src="/images/photos/kim-keypad.jpg"
+  alt="A close-up of the keypad: sixteen white keys numbered 0 to 9 and A to F, with dark Esc, INS, DEL, PGUP, PGDN and arrow keys around them."
+  caption="Twenty-four keys. The white ones are the hexadecimal digits; the dark ones move you about and change what you are looking at."
+/>
+
 ## The pad as it sits
 
 |  |  |  |  |

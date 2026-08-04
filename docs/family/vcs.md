@@ -3,9 +3,10 @@
 A games console. Cartridge in the slot, joysticks plugged in, no disk and no
 serial port — you switch it on and it plays.
 
-<PlaceholderImage
-  label="The VCS"
-  caption="The VCS with a ROM cartridge standing in its slot and two joysticks plugged in, on a shelf next to a television."
+<Figure
+  src="/images/photos/vcs.jpg"
+  alt="Three boards on a plate with a ROM cartridge standing upright in a slot at the front, its label reading EhBASIC."
+  caption="A VCS with a cartridge in the slot. Push it in, switch on, and whatever is on the ROM is what the machine runs."
 />
 
 The VCS is where the family first stopped being a stack of cards. Three boards

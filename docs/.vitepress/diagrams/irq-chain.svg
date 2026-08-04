@@ -1,0 +1,35 @@
+<svg class="dg" viewBox="0 0 620 506" role="img" aria-label="Chaining your own interrupt handler in front of the Kernal’s"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>Chaining your own interrupt handler in front of the Kernal’s</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="130" y="24" text-anchor="start">One interrupt, two handlers</text>
+<rect class="dg-r" x="130" y="46" width="300" height="56"/>
+<text class="dg-t" x="144" y="70" text-anchor="start">A card wants attention</text>
+<text class="dg-n" x="144" y="88" text-anchor="start">a key, a serial byte, the timer</text>
+<line class="dg-l" x1="280" y1="102" x2="280" y2="132" marker-end="url(#dg-arrow)"/>
+<rect class="dg-r2" x="130" y="132" width="300" height="56"/>
+<text class="dg-t" x="144" y="156" text-anchor="start">The processor reads $0300</text>
+<text class="dg-n" x="144" y="174" text-anchor="start">whatever address is in there</text>
+<line class="dg-l" x1="280" y1="188" x2="280" y2="218" marker-end="url(#dg-arrow)"/>
+<rect class="dg-solid" x="130" y="218" width="300" height="56"/>
+<text class="dg-t dg-inv" x="144" y="242" text-anchor="start">Your handler</text>
+<text class="dg-n dg-inv" x="144" y="260" text-anchor="start">count it, flash something, whatever it is</text>
+<line class="dg-l" x1="280" y1="274" x2="280" y2="304" marker-end="url(#dg-arrow)"/>
+<rect class="dg-r" x="130" y="304" width="300" height="56"/>
+<text class="dg-t" x="144" y="328" text-anchor="start">The Kernal's handler</text>
+<text class="dg-n" x="144" y="346" text-anchor="start">drains the ports into the ring buffer</text>
+<line class="dg-l" x1="280" y1="360" x2="280" y2="390" marker-end="url(#dg-arrow)"/>
+<rect class="dg-r" x="130" y="390" width="300" height="56"/>
+<text class="dg-t" x="144" y="414" text-anchor="start">rti</text>
+<text class="dg-n" x="144" y="432" text-anchor="start">back to whatever was running</text>
+<path class="dg-l" d="M116 218 H106 V274 H116"/>
+<text class="dg-n" x="96" y="242" text-anchor="end">yours,</text>
+<text class="dg-n" x="96" y="260" text-anchor="end">in front</text>
+<text class="dg-n" x="450" y="242" text-anchor="start">Push nothing here.</text>
+<text class="dg-n" x="450" y="260" text-anchor="start">The handler below reads the</text>
+<text class="dg-n" x="450" y="278" text-anchor="start">stack at a fixed depth.</text>
+<text class="dg-n" x="130" y="488" text-anchor="start">Save the old address, install yours, jump to the old one when you are done.</text>
+</svg>

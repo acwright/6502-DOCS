@@ -5,9 +5,10 @@ its own keyboard built in, plus sound, joysticks and a disk. It boots in about
 five seconds, straight into BASIC, and it will still be doing exactly what you
 tell it in thirty years.
 
-<PlaceholderImage
-  label="The ACE"
-  caption="An ACE on a desk, powered on, its built-in keyboard in front of you and a VGA monitor behind it showing the OK prompt."
+<Figure
+  src="/images/photos/ace.jpg"
+  alt="An ACE from above: one black circuit board carrying every chip, with a 67-key keyboard along the front and connectors across the back."
+  caption="This is the whole computer. Every chip, the keyboard, and every socket you will ever plug anything into, on one board."
 />
 
 There is no operating system to log into and nothing to install. You switch it

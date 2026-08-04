@@ -932,6 +932,62 @@ migrated first — those cover the hero shot for each system page immediately.
 Every chapter has at least one image or diagram; no chapter ships with an unlabelled gap;
 `IMAGES.md` accounts for every placeholder with what would replace it.
 
+### What shipped
+
+Eleven screenshots, fifteen diagrams and nine photographs, across thirty pages,
+plus the three scripts that make them and the `<Figure>` and `<Diagram>`
+components that put them on a page. `IMAGES.md` is rewritten as the ledger of
+all of it.
+
+Five notes for later phases:
+
+- **The KiCad repos' `Images/` are photographs, not renders.** The plan assumed
+  board renders and treated a photograph of each machine as a shoot waiting to
+  happen. In fact `6502-{ACE,COB,DEV,KIM,VCS}/Images/*.png` are exactly the
+  photographs six of the placeholders were asking for — the COB one is even the
+  side-on shot with every card visible that `IMAGES.md` had written a wish for.
+  Six placeholders became real pictures by importing what already existed, and
+  three of the ACE's became three by cropping: whole machine, board, keys.
+- **Diagrams are generated, and drift-checked.** Nine of the fifteen come out of
+  `data/` — the memory map, zero page, the I/O slots, the joystick byte, the
+  jump table, the interrupt vectors, the keyboard, the BASIC memory strip — and
+  `npm run verify` fails if a checked-in drawing no longer matches what the data
+  draws, exactly as it does for the six generated cards. Hand-drawing the memory
+  map would have been faster once and wrong from the next ROM release onwards.
+  They carry no colour at all: every shape is `currentColor` at a fixed opacity,
+  which is what lets one file serve both themes, and is why `<Diagram>` inlines
+  the SVG instead of linking it.
+- **Screenshots are deliberately not drift-checked.** They are reproducible —
+  pinned clock, cycle-counted waits, programs typed in from the same files under
+  `samples/` the chapters display — but asserting a committed PNG in CI means
+  asserting on an encoder. `npm run screens` after a ROM change is a step in the
+  Phase 10 maintenance list rather than a gate.
+- **One shot the plan wanted does not exist.** Appendix B asks for a picture of
+  the palette from the BASIC colour loop. That program paints one colour at a
+  time over the same two words, so no frame of it holds more than one, and the
+  loop finishes between two debug commands, so a mid-run frame is not reliably
+  reachable either. The chapter ships the frame it ends on, captioned for what
+  it is; the site's picture of the palette is the Graphics I demo. A palette
+  shot would need a different program, which is a Phase 4 decision, not a
+  Phase 8 one.
+- **"Every chapter has at least one image" is not met, on purpose.** Fifty-odd
+  pages ship without one, and `IMAGES.md` groups them and says why: reference
+  pages that are tables end to end, chapters whose subject is the listing they
+  already show, and chapters where a diagram would restate the sentence above
+  it. The criterion was written before the reference half of the site existed.
+  What replaced it is a rule that can be applied to the next page as well as
+  audited on this one — *a picture ships when it shows something the prose
+  cannot say as quickly* — and four diagrams were added under it that no
+  placeholder had asked for: `PRINT`'s zones, the status register, the Kernal
+  jump table's indirection, and interrupt chaining.
+
+Two accuracy items came out of it. **A9 is resolved** — the family photograph
+with the two-major-versions-stale banner runs as a captioned historical shot on
+the family index, the third of the three routes that entry offered. **A44 is
+new**: the ACE photograph, now the first image on the site, has a hand-written
+`BIOS V1.0` label on its EPROM. No caption reads a version off it, and the real
+fix is a re-shoot in `6502-ACE`, which makes it a Phase 9 item.
+
 ---
 
 ## Phase 9 — Cross-Repo Accuracy Pass & Backlinks

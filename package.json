@@ -19,9 +19,14 @@
     "cards": "node scripts/build-cards.mjs",
     "cards:verify": "node scripts/build-cards.mjs --check",
     "cards:check": "node scripts/check-cards.mjs",
+    "diagrams": "node scripts/build-diagrams.mjs",
+    "diagrams:verify": "node scripts/build-diagrams.mjs --check",
+    "photos": "node scripts/import-photos.mjs",
+    "photos:check": "node scripts/import-photos.mjs --check",
+    "screens": "node scripts/capture-screens.mjs",
     "preflight": "node scripts/preflight.mjs",
     "check:voice": "node scripts/check-voice.mjs",
-    "verify": "node scripts/check-voice.mjs && node scripts/check-cards.mjs && node scripts/build-cards.mjs --check && node scripts/verify-samples.mjs"
+    "verify": "node scripts/check-voice.mjs && node scripts/check-cards.mjs && node scripts/build-cards.mjs --check && node scripts/build-diagrams.mjs --check && node scripts/import-photos.mjs --check && node scripts/verify-samples.mjs"
   },
   "devDependencies": {
     "@shikijs/core": "^2.5.0",

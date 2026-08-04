@@ -27,6 +27,11 @@ $ printf '\rRUN\r' | 6502 run --headless --exit-on 'LIFT OFF' --timeout 20s buil
 That second form is the interesting one. It turns "does my program work" into a
 question a script can answer, which is what makes a test suite possible.
 
+<Diagram
+  name="toolchain"
+  caption="One program, four ways to the machine. The chapters that follow take them one at a time."
+/>
+
 ## What you need
 
 Three things, and two of them are already on your computer:

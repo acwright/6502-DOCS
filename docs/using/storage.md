@@ -21,6 +21,11 @@ disk is plenty until you've got more than sixteen things worth keeping.
 Filenames are **eight characters, a dot, and three more**: `INVADERS.BAS`,
 `SCORE.DAT`, `TITLE.SCR`. Upper case, and always in quotes when you type them.
 
+<Diagram
+  name="cf-disks"
+  caption="A card, 256 disks, sixteen files on each. Nothing nests."
+/>
+
 ## Looking at what's there
 
 `DIR` lists the current disk:
