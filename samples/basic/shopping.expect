@@ -1,0 +1,5 @@
+# "Lists that live in the program" — READ walking DATA until a sentinel.
+expect ^ 1\. BREAD$
+expect ^ 4\. COFFEE$
+expect ^ 4 THINGS TO BUY$
+absent END$

@@ -1,0 +1,81 @@
+{
+  "$meta": {
+    "title": "Boot sequence",
+    "description": "Version, the boot menu, and the strings the machine prints on the way up.",
+    "generator": "scripts/extract-facts.mjs",
+    "biosVersion": "1.5",
+    "sources": [
+      {
+        "file": "BIOS.inc",
+        "sha256": "71bdfc46cf19dcae00ef7da0867d40245870efd0b9e724d03c8a577d1b651109"
+      },
+      {
+        "file": "Kernal.asm",
+        "sha256": "250abc617e108c5fa31b6b8cdb777e74130f53a2fe6c22582348dfb02effd756"
+      }
+    ],
+    "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
+  },
+  "version": {
+    "major": 1,
+    "minor": 5,
+    "string": "v1.5",
+    "source": "BIOS.inc:134-135",
+    "check": "GREP"
+  },
+  "splashMatchesVersion": true,
+  "strings": [
+    {
+      "symbol": "@SplashTitle",
+      "text": "-- 6502 BIOS v1.5 --",
+      "source": "Kernal.asm:3059",
+      "check": "GREP"
+    },
+    {
+      "symbol": "@SplashMenu",
+      "text": "ENTER=BASIC  ESC=MONITOR",
+      "source": "Kernal.asm:3060",
+      "check": "GREP"
+    }
+  ],
+  "menu": {
+    "timeoutSeconds": 5,
+    "tick": "100 ms per iteration, 50 iterations",
+    "enter": "ENTER ($0D) boots BASIC",
+    "escape": "ESC ($1B) boots the Monitor through BRK",
+    "timeout": "Auto-boots BASIC",
+    "note": "Any other key is consumed and costs one tick. Input arriving before the probe finishes sits unread in the ACIA and blocks the bytes behind it.",
+    "source": "Kernal.asm:738-765",
+    "check": "GREP"
+  },
+  "sequence": [
+    {
+      "step": "Reset the stack pointer to $FF",
+      "source": "Kernal.asm:704"
+    },
+    {
+      "step": "KernalInit — probe and initialise every card, interrupts still disabled",
+      "source": "Kernal.asm:706"
+    },
+    {
+      "step": "Beep — guarded, skipped when no SID is fitted",
+      "source": "Kernal.asm:708"
+    },
+    {
+      "step": "If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)",
+      "source": "Kernal.asm:711-714"
+    },
+    {
+      "step": "Halt if neither video nor serial is present — there is no console to boot into",
+      "source": "Kernal.asm:718-722"
+    },
+    {
+      "step": "cli, then draw the splash on whichever console this machine has",
+      "source": "Kernal.asm:725-738"
+    },
+    {
+      "step": "Wait ~5 s for ENTER or ESC; time out into BASIC",
+      "source": "Kernal.asm:740-765"
+    }
+  ]
+}

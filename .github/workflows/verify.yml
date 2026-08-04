@@ -4,7 +4,50 @@ on:
   push:
   pull_request:
 
+# The emulator CLI and cc65 are both built from source here. Neither ships as a
+# package the runner already has: the CLI lives inside the desktop app, and the
+# cc65 in every distro is still the 2.19 release from 2020.
+env:
+  # Pinned so a red build means the docs changed, not that an upstream did.
+  EMULATOR_REF: main
+  CC65_REF: master
+
 jobs:
+  # Cheap, dependency-free checks on the migrated assets. Split out from
+  # `verify` so a broken card reports in seconds rather than behind a cc65 build.
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      # The docs are a user's guide. This fails the build if the verification
+      # machinery that keeps them honest leaks back into the prose — see
+      # PLAN.md's "Voice & Style".
+      - name: Check the docs' voice
+        run: npm run check:voice
+
+      - name: Check the reference cards
+        run: npm run cards:check
+
+      # The migration is only evidence for retiring 6502-ASSETS if it is still
+      # true. This re-walks that repo and fails if it holds a path this repo does
+      # not account for. Drop the step once 6502-ASSETS is deleted (Phase 10
+      # archives it first, and an archived repo still checks out).
+      - name: Checkout 6502-ASSETS
+        uses: actions/checkout@v7
+        with:
+          repository: acwright/6502-ASSETS
+          path: .assets
+
+      - name: Check migration coverage
+        run: npm run migrate:check -- --source "$GITHUB_WORKSPACE/.assets"
+
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -20,9 +63,61 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # TODO(Phase 1): install the 6502 emulator CLI and cc65 on the runner,
-      # then run `npm run preflight` before the harness.
-      - name: Run sample harness
+      # --- The emulator CLI -------------------------------------------------
+      # `npm run build:cli` is a plain tsc pass producing Node-runnable JS, so
+      # --ignore-scripts (which skips Electron's ~100 MB postinstall download)
+      # is enough to build it.
+      - name: Checkout the emulator
+        uses: actions/checkout@v7
+        with:
+          repository: acwright/6502-EMULATOR
+          ref: ${{ env.EMULATOR_REF }}
+          path: .emulator
+
+      - name: Build the emulator CLI
+        working-directory: .emulator
+        run: |
+          npm ci --ignore-scripts
+          npm run build:cli
+
+      - name: Point the harness at it
+        run: echo "SIXFIVEOHTWO=node $GITHUB_WORKSPACE/.emulator/out/cli/index.js" >> "$GITHUB_ENV"
+
+      # --- cc65 -------------------------------------------------------------
+      # The recipe from 6502-BIOS/README.md: `bin` builds the tools, `none`
+      # builds the single target library `cl65 -t none` hands to the linker.
+      # Skipping cc65's thirty-odd other targets is what keeps this to a minute.
+      - name: Cache cc65
+        id: cc65-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cc65
+          key: cc65-${{ runner.os }}-${{ env.CC65_REF }}
+
+      - name: Build cc65
+        if: steps.cc65-cache.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 --branch "$CC65_REF" https://github.com/cc65/cc65.git .cc65-src
+          make -C .cc65-src -j"$(nproc)" bin PREFIX="$HOME/.cc65"
+          # Asking cc65 for one target by name skips the pass that would have
+          # created lib/, so make it first.
+          mkdir -p .cc65-src/lib
+          make -C .cc65-src -j"$(nproc)" none PREFIX="$HOME/.cc65"
+          make -C .cc65-src/src    install PREFIX="$HOME/.cc65"
+          make -C .cc65-src/libsrc install PREFIX="$HOME/.cc65"
+
+      - name: Put cc65 on PATH
+        run: |
+          echo "$HOME/.cc65/bin" >> "$GITHUB_PATH"
+          # BASIC.asm's `.macpack longbranch` is read from cc65's asminc, so the
+          # tools alone are not enough — point them at the installed share tree.
+          echo "CC65_HOME=$HOME/.cc65/share/cc65" >> "$GITHUB_ENV"
+
+      # --- Checks -----------------------------------------------------------
+      - name: Toolchain preflight
+        run: npm run preflight
+
+      - name: Run the sample harness
         run: npm run verify
 
       - name: Build docs

@@ -1,0 +1,7 @@
+# "Reaching the machine" — PEEK at the byte the machine fills in at switch-on.
+# Runs on a machine with a video card fitted, which is what an ACE is.
+console video
+screen ^VIDEO\s*$
+screen ^SOUND\s*$
+screen ^STORAGE\s*$
+screen ^BANKED RAM\s*$

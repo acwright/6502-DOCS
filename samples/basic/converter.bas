@@ -1,0 +1,5 @@
+10 DEF FN F(C) = C * 9 / 5 + 32
+20 PRINT "C", "F"
+30 FOR C = 0 TO 100 STEP 25
+40 PRINT C, FN F(C)
+50 NEXT C

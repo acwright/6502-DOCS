@@ -1,41 +1,77 @@
-# Welcome to the AC6502 Documentation
+# Welcome
 
-This is the user's and programmer's guide for the **AC6502** family of homebrew
-computers — ACE, COB, DEV, KIM, and VCS — one shared BIOS across five machines.
+This is your guide to the **ACE** — a whole 65C02 computer on one board, with
+its own keyboard built in, plus sound, joysticks and a disk. It boots in about
+five seconds, straight into BASIC, and it will still be doing exactly what you
+tell it in thirty years.
 
-This site is under construction. The chapters below will land as the
-documentation project proceeds through its phases:
+<PlaceholderImage
+  label="The ACE"
+  caption="An ACE on a desk, powered on, its built-in keyboard in front of you and a VGA monitor behind it showing the OK prompt."
+/>
 
-- **Getting started** — unboxing, setup, and your first ten minutes at the prompt
-- **The BASIC guide** — a full tutorial and reference for the on-board BASIC
-- **Cross-development** — building programs on a host machine with `cc65`
-- **The assembly guide** — programming the 65C02 directly against the Kernal API
-- **Quick reference cards** — printable, accurate reference sheets for every system
+There is no operating system to log into and nothing to install. You switch it
+on, you get this:
 
-In the meantime, the technical specifics for each machine live in their own
-repositories — see the links table below.
+```
+-- 6502 BIOS v1.5 --
+ENTER=BASIC  ESC=MONITOR
 
-## The family
+6502 BASIC V2.0
+30718 BYTES FREE
 
-| System | What it is |
+OK
+```
+
+`OK` means the machine is waiting for you. Type this and press <kbd>Enter</kbd>:
+
+```
+PRINT "HELLO"
+```
+
+```
+HELLO
+
+OK
+```
+
+That's it. That's the whole idea. Everything else in this guide is a bigger
+version of that.
+
+## What you can do with it
+
+- **Write programs in BASIC** — games, tunes, drawings, calculators. Type them
+  in, run them, save them to the memory card.
+- **Make noise.** Three voices of SID sound, the same chip that gave the
+  Commodore 64 its voice.
+- **Draw on the screen.** 40 columns by 24 rows, 16 colours, out to any VGA
+  monitor.
+- **Plug in joysticks.** Two Atari-style ports, which is all a good game needs.
+- **Go all the way down.** Underneath BASIC there's a machine-code Monitor, and
+  underneath that there's the bare 65C02. You can get to both.
+
+## Where to go next
+
+| If you… | Start here |
 |---|---|
-| [ACE](https://github.com/acwright/6502-ACE) | All-in-one single-board computer |
-| [COB](https://github.com/acwright/6502-COB) | Backplane and card-based system |
-| [DEV](https://github.com/acwright/6502-DEV) | Teensy-emulated CPU development vehicle |
-| [KIM](https://github.com/acwright/6502-KIM) | Minimal keypad/LCD machine |
-| [VCS](https://github.com/acwright/6502-VCS) | Cartridge-based console |
+| have an ACE in front of you and nothing plugged in | [Setting up](/getting-started/setup) |
+| have it plugged in and want to see it boot | [First power-on](/getting-started/first-boot) |
+| are at the `OK` prompt right now | [Your first ten minutes](/getting-started/first-ten-minutes) |
+| don't have one yet | [The emulator](/using/emulator) — it's a complete ACE, in your browser |
+| want to know what's on the board | [Your ACE](/your-ace) |
 
-## Sibling repositories
+Everything in this guide works the same on real hardware and in the emulator.
+If you don't have a machine yet, open the emulator in another tab and follow
+along — nothing here needs anything you can't get for free.
 
-| Repo | Purpose |
-|---|---|
-| [6502-BIOS](https://github.com/acwright/6502-BIOS) | The shared BIOS — Kernal, BASIC, Monitor |
-| [6502-EMULATOR](https://github.com/acwright/6502-EMULATOR) | Desktop and browser emulator |
-| [6502-PRG](https://github.com/acwright/6502-PRG) | Cross-dev program template |
-| [6502-CRT](https://github.com/acwright/6502-CRT) | Cross-dev cartridge template |
-| [6502-ASM](https://github.com/acwright/6502-ASM) | Assembly sample code |
-| [6502-BAS](https://github.com/acwright/6502-BAS) | BASIC sample code |
-| [bastok](https://github.com/acwright/bastok) | BASIC tokenizer |
-| [cffs](https://github.com/acwright/cffs) | CompactFlash image tool |
-| [bin2woz](https://github.com/acwright/bin2woz) | Wozmon upload helper |
-| [TMS9918-EDITOR](https://github.com/acwright/TMS9918-EDITOR) | Character/screen/sprite editor |
+## About the family
+
+The ACE is the finished article, but it isn't the only machine that runs this
+software. It's the last of five, and the other four are still around: the
+**COB** backplane, the **DEV** rig, the **VCS** console, and the **KIM** keypad.
+They're all open hardware, and they're all documented at the
+[back of this guide](/family/) if you'd like to build one.
+
+The KIM is the interesting one, because it isn't really a separate machine any
+more — three small boards turn your ACE *into* a KIM-1. That's
+[its own chapter](/addons/kim).

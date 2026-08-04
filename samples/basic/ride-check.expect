@@ -1,0 +1,6 @@
+# "Making decisions" — AND and OR on real conditions, and the -1/0 that a
+# comparison actually produces, printed where the reader can see it.
+expect ^YOU CAN RIDE$
+expect ^HEIGHT TEST GIVES-1$
+expect ^AGE TEST GIVES-1$
+absent ^NOT THIS TIME$

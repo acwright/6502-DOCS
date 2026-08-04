@@ -1,10 +1,13 @@
 6502-DOCS — Project Plan
 ========================
 
-A multi-phase plan for building the documentation site for the **AC6502** family of
-homebrew computers: a friendly user's and programmer's guide in the spirit of the
-Commodore 64 manuals, covering system usage, BASIC, cross-development, and assembly
-language.
+A multi-phase plan for building the documentation site for the **ACE** — the
+flagship computer of the **AC6502** family — in the spirit of the Commodore 64
+and VIC-20 manuals that came in the box: friendly, illustrated, fun to read,
+and genuinely useful while you're sitting at the machine. It covers using the
+computer, programming it in BASIC, setting up a cross-development environment,
+programming it in assembly, and the reference cards you keep next to the
+keyboard.
 
 - **Stack:** VitePress → GitHub Pages, no landing page (land directly in the docs)
 - **Theme:** black / white / greyscale, Bebas Neue display face
@@ -15,14 +18,17 @@ language.
 
 ## Table of Contents
 
+- [Course Correction (post-Phase 3)](#course-correction-post-phase-3)
+- [Who This Is For](#who-this-is-for)
 - [Guiding Principles](#guiding-principles)
+- [Voice & Style](#voice--style)
 - [Sources of Truth](#sources-of-truth)
 - [Verification Method](#verification-method)
 - [Phase Overview](#phase-overview)
 - [Phase 0 — Repository & Toolchain Foundation](#phase-0--repository--toolchain-foundation)
 - [Phase 1 — Fact Base & Verification Harness](#phase-1--fact-base--verification-harness)
 - [Phase 2 — ASSETS Migration](#phase-2--assets-migration)
-- [Phase 3 — The User's Guide](#phase-3--the-users-guide)
+- [Phase 3 — The User's Guide](#phase-3--the-users-guide) *(rewritten — see Course Correction)*
 - [Phase 4 — The BASIC Guide](#phase-4--the-basic-guide)
 - [Phase 5 — Cross-Development Environment](#phase-5--cross-development-environment)
 - [Phase 6 — The Assembly Guide](#phase-6--the-assembly-guide)
@@ -38,27 +44,195 @@ language.
 
 ---
 
+## Course Correction (post-Phase 3)
+
+Phases 0–3 shipped on the original plan and the result went wrong in two ways that
+this revision exists to fix. Recorded here so the correction doesn't quietly get
+undone later.
+
+**1. The site hedged across five machines instead of documenting one.** The AC6502
+family was built in stages, each machine verifying a piece of the architecture:
+COB (backplane + cards) proved the bus and the card model, DEV proved emulation
+and single-stepping, VCS unified the boards, KIM reused the Main Board as a
+KIM-1 homage — and then everything learned along the way was unified into the
+**ACE**. The ACE is the product. It is the machine you'd hand a friend, the one
+you'd ship if someone wanted to buy one, and it is fully specified: every
+peripheral, fitted. The original plan treated all five as peers, so every chapter
+qualified every sentence and the reader never got a straight answer about the
+machine in front of them.
+
+**2. The verification method leaked into the prose.** Accuracy is a process
+requirement, not subject matter. Phase 3 shipped sentences written to convince a
+reviewing agent that a claim was true — `RUN`-verified banners, `data/*.json`
+citations, `Kernal.asm:793` line references, "what's GREP-only" sections, sample
+programs whose payload was `PRINT "PASS"`. A user's guide has none of that. The
+harness stays; its vocabulary never reaches the page.
+
+**What changed:**
+
+| Before | After |
+|---|---|
+| Five co-equal machines, every chapter hedged | The ACE is *the* machine; the guide says "your ACE" and means it |
+| `/systems/{ace,cob,dev,kim,vcs}` as peers | Main guide is ACE-only; COB/DEV/VCS live in an appendix for DIY builders |
+| KIM as a fifth machine | KIM as an **ACE add-on** (Keypad Card + Keypad Helper + Keypad LCD Helper), with standalone builds as a footnote |
+| "Banked RAM and storage are optional" | The ACE ships with everything; those are builder's notes, not user-facing caveats |
+| Verification vocabulary in the prose | Verification vocabulary confined to `samples/`, `scripts/`, `ACCURACY.md` |
+| Samples that print `PASS` | Samples that do something a person would want to do |
+| Written through the serial console the harness drives | Written from the seat: on-board keyboard, VGA monitor, no cable |
+
+Phase 3's deliverables were rewritten against this revision before Phase 4 began.
+
+---
+
+## Who This Is For
+
+The reader has an **ACE** on the desk, or the **emulator** on their laptop. They
+did not build it. They may never have used a computer where you type a line and
+press Enter and something happens. They want to make the thing do something fun,
+and then they want to learn how it works.
+
+Three audiences, in priority order:
+
+1. **The person who was handed an ACE.** Wants to plug it in, see the prompt,
+   type a program, hear a noise, save a file. Never needs to know what a Kernal is.
+2. **The programmer.** Knows other languages, wants BASIC's shape, then wants the
+   65C02 and the Kernal API. Arrives via the BASIC and assembly guides.
+3. **The DIY builder.** Wants to build an ACE from the KiCad repo, or one of the
+   earlier machines. Served by the repos themselves plus the family appendix — a
+   pointer, not a parallel manual.
+
+If a sentence doesn't serve one of those three, it doesn't ship.
+
+---
+
 ## Guiding Principles
 
-1. **The docs teach; the READMEs specify.** Every repo README stays where it is and keeps
-   its technical, build-oriented role. The docs site is the narrative, tutorial-first
-   layer: what to type, why it works, what to build next. Where they overlap, the docs
-   link to the README rather than forking the text.
-2. **Nothing is claimed that has not been checked.** Every address, opcode, keyword,
-   pin, and sample program is verified against the BIOS source, the emulator, or the
-   KiCad schematics before it ships. See [Verification Method](#verification-method).
-3. **Every code sample runs.** Not "looks right" — *runs*, headless, in CI, on the real
-   emulator, with asserted output. A listing that cannot be verified does not go in.
-4. **One family, five machines.** The shared BIOS is the spine of the docs. Per-machine
-   differences are called out in dedicated system pages and in inline notes, never by
-   duplicating a chapter five times.
-5. **Print survives.** The quick reference cards remain first-class printable artefacts
-   in this repo, and their content also lives in the prose docs so nothing is
-   card-only.
+1. **The ACE is the machine.** The guide is written for someone sitting at an ACE
+   (or the emulator, which is a complete ACE). It says "your ACE", not "your
+   machine, depending on which one you have". Everything the ACE has, it has —
+   video, sound, storage, serial, joysticks, RTC, banked RAM. No hedging.
+2. **Friendly first.** This is the manual that came in the box. Short sentences,
+   plain words, a joke where a joke fits, and a thing to type on nearly every
+   page. If a paragraph reads like a datasheet, it belongs in a README.
+3. **The docs teach; the READMEs specify.** Every repo README stays where it is and
+   keeps its technical, build-oriented role. The docs site is the narrative,
+   tutorial-first layer: what to type, why it works, what to build next. Where they
+   overlap, the docs link to the README rather than forking the text.
+4. **Accuracy is invisible.** Nothing is claimed that has not been checked — and
+   the checking never appears on the page. See [Voice & Style](#voice--style),
+   which is binding.
+5. **Every code sample runs, and every code sample is worth running.** Not "looks
+   right" — *runs*, headless, in CI, on the real emulator, with asserted output.
+   And it does something a person would want to do: draw something, play
+   something, save something. The assertion lives in the `.expect` file, never in
+   the listing.
+6. **The rest of the family is an appendix.** COB, DEV, and VCS are how the ACE got
+   here, and they're excellent reference designs for anyone building their own
+   6502. They get a short page each, aimed at builders, at the back. KIM is
+   different: it's an **add-on** that turns an ACE into a KIM-1, so it gets a real
+   chapter in the main guide.
+7. **Print survives.** The quick reference cards remain first-class printable
+   artefacts in this repo, and their content also lives in the prose docs so
+   nothing is card-only.
+
+---
+
+## Voice & Style
+
+Binding rules for every page under `docs/`. Violations are bugs.
+
+### Write like this
+
+- **Second person, present tense.** "Type `PRINT 2+2` and press Enter." Not "the
+  user may enter an expression".
+- **Lead with the thing to do**, then explain what happened. The C64 manual's whole
+  trick: you're three keystrokes in before anyone defines a term.
+- **One idea per paragraph, and keep paragraphs short.** Four lines is plenty.
+- **Define a term the first time it's used, in half a sentence**, and don't use it
+  before then. "The *prompt* — the `OK` and the blinking cursor — is the machine
+  telling you it's your turn."
+- **Every chapter has something to type**, and the reader can see the result
+  without owning anything they don't already own.
+- **Sidebars and callouts carry the depth.** A VitePress `::: tip` / `::: details`
+  block is where "and here's what's really going on" goes, so the main line stays
+  readable. Hardware trivia, other machines in the family, and "if you're curious"
+  material all live in these.
+
+### Never write this
+
+| Banned | Why |
+|---|---|
+| "RUN-verified", "GREP-only", "SCHEM", "INSPECT", "verified against…" | Verification vocabulary. The reader did not ask for a chain of custody. |
+| `data/systems.json`, `data/hardware.json`, "generated from the fact base" | Internal build machinery. The reader doesn't know this repo exists. |
+| `Kernal.asm:793`, `BASIC.asm:8296`, `BIOS.inc:131` | Source citations belong in `ACCURACY.md` and in code comments. |
+| "This chapter draws a real line, on purpose…" | Meta-commentary about the documentation. |
+| `PRINT "PASS"` / `PRINT "FAIL"` in a shown listing | Test scaffolding masquerading as a program. |
+| "Phase 7", "Phase 8", "once `scripts/capture-screens.mjs` exists" | Project management. Placeholders say what the picture *will show*, nothing else. |
+| "on ACE and VCS's Main Board; the COB Backplane Pro adds…" | Five-machine hedging in a chapter about the ACE. |
+| "What the machine is, according to the machine" | Written for a robot. |
+
+### Write from the seat, not from the harness
+
+A systemic failure worth naming, because it produced six separate errors in the
+first pass (`ACCURACY.md` A14–A19). **The harness drives the serial console, so
+the prose got written through the serial console** — and the reader is not
+sitting there. A person at an ACE has the board's own 67-key keyboard and a VGA
+monitor, and usually no serial cable at all.
+
+Things that are true over serial and false at the machine:
+
+| Over serial | At the ACE |
+|---|---|
+| Lower case can be typed | Upper case only; Caps Lock does nothing |
+| A byte sent is a byte received | The screen drops every code above 126 and all but four control codes |
+| "Attach a keyboard" | The keyboard is soldered on |
+| "Attach a monitor" | Fair — but the machine is not headless by nature |
+
+Before shipping a claim about input or output, ask which console it was checked
+on, and whether that is the console the reader has. Where the two genuinely
+differ, the ACE's behaviour is the main line and serial goes in a
+`::: details` block.
+
+### Where the facts go instead
+
+The fact base under `data/` stays, and stays generated — it is how a table gets to
+be right without anyone retyping it. What changes is that the *page* never
+mentions it. A generated table just looks like a table. A number that came out of
+`BIOS.inc` just looks like a number.
+
+If a fact genuinely cannot be verified, it does not ship as a caveat on the page;
+it gets logged in `ACCURACY.md` and either resolved or cut. The reader never sees
+a "not RUN-verified" warning box.
+
+### Sample listings
+
+Every listing under `samples/` that a chapter displays must read as a program
+someone wrote on purpose:
+
+```basic
+10 CLS
+20 FOR N = 1 TO 12
+30 PRINT N; "X"; 7; "="; N * 7
+40 NEXT N
+```
+
+not
+
+```basic
+10 A = 6 * 7
+20 IF A = 42 THEN PRINT "PASS"
+```
+
+The harness asserts on the program's *real* output via `expect <regex>` in the
+sibling `.expect` file. The `pass` shorthand remains available for internal
+regression cases, which live under `samples/_checks/` and are never displayed.
 
 ---
 
 ## Sources of Truth
+
+**Internal only.** Nothing in this section or the next appears on the site. This is
+how the writing gets checked, not something the writing talks about.
 
 Ranked. When two disagree, the higher one wins and the lower one gets fixed.
 
@@ -96,12 +270,18 @@ Rules:
   included into the Markdown by path (VitePress code snippet import), and are executed
   by the harness. The prose can never drift from the tested file, because it *is* the
   tested file.
-- Each sample ends with a `PASS`/`FAIL` line (BASIC) or a known console signature
-  (assembly), as in `6502-BIOS/tests/` and `6502-EMULATOR/examples/06-test-suite.sh`.
+- A **displayed** sample asserts on its own real output (`expect <regex>` in the
+  sibling `.expect`). It never contains `PRINT "PASS"`. See
+  [Voice & Style](#voice--style).
+- Pure regression checks — the ones that exist only to turn CI red when the ROM
+  moves — live under `samples/_checks/`, are never displayed in a chapter, and may
+  use the `pass` shorthand freely.
 - Runs pin the clock (`--rtc 2026-01-01T00:00:00`) and bound everything with
   `--timeout`; the harness waits on patterns, never sleeps.
 - Video-dependent samples run with `--console video` and assert via `6502 dbg screen text`;
   the same call with `screen png` produces the screenshot the docs embed (Phase 8).
+- **The output of this method never appears in the docs.** Which check proved a
+  claim is recorded in `ACCURACY.md` and in `.expect` comments — not in a chapter.
 
 ---
 
@@ -184,8 +364,10 @@ against it instead of re-deriving it — and make the samples executable in CI.
      and errors, from `BASIC.asm`'s token table (GREP).
    - `data/monitor-commands.json` — from `Monitor.asm` (GREP).
    - `data/hardware.json` — `HW_PRESENT` bits, I/O slot base addresses, chip per slot.
-   - `data/systems.json` — the five machines: what's onboard, what's optional, what's
-     absent, board revisions (SCHEM + README, schematic wins).
+   - `data/systems.json` — the five machines. The ACE record describes the
+     computer **as shipped** (banked RAM and storage included; build-time
+     caveats in `builderNotes`); the other four carry what's onboard, optional,
+     absent, and their board revisions (SCHEM + README, schematic wins).
    - `data/errors.json` — BASIC and Monitor error strings, verbatim (GREP + RUN).
 2. **Diff the fact base against every existing doc** (READMEs, ASSETS HTML/PDF cards)
    and write `ACCURACY.md` — a living ledger of every discrepancy found, its source of
@@ -264,47 +446,98 @@ that repo can be dropped.
 
 ## Phase 3 — The User's Guide
 
-**Goal:** the C64-manual half — someone unboxes a machine, powers it on, and gets
-somewhere without knowing what a Kernal is.
+**Goal:** the manual that came in the box. Someone is handed an ACE (or opens the
+emulator), plugs it in, and within ten minutes has written a program, made a
+noise, and put something on the screen — without being told what a Kernal is.
 
 ### Chapters
 
-1. **Welcome / What is the AC6502?** — the family, the shared architecture, one BIOS,
-   what each machine is for. Photos of all five.
-2. **Choosing your machine** — comparison table generated from `data/systems.json`:
-   ACE (all-in-one SBC), COB (backplane + cards), DEV (Teensy-emulated CPU dev vehicle),
-   KIM (keypad/LCD minimal), VCS (cartridge console). What's built in, what's optional.
-3. **Setting up** — power, video (Pico9918 → VGA), audio (ARMSID), keyboard (PS/2 *and*
-   matrix, both live at once), joysticks, serial terminal, CompactFlash card.
-4. **First power-on** — the probe-and-boot sequence in plain language, the splash
-   (`-- 6502 BIOS v1.5 --` / `ENTER=BASIC ESC=MONITOR`), the ~5 s countdown, the beep,
-   and what a missing card does *not* do (graceful degradation, nothing hangs).
-5. **Your first ten minutes** — `PRINT`, arithmetic, a two-line `GOTO` loop, `LIST`,
-   `RUN`, `NEW`. Every line RUN-verified; screenshots from `dbg screen png`.
-6. **The keyboard** — layout, matrix, control keys, Ctrl+C to break, the reset button.
-7. **Storage** — CF cards, the 256 × 1 MB disk-bank model, `DISK`, `DIR`, `LOAD`, `SAVE`,
-   `DEL`, `FORMAT`, `BLOAD`/`BSAVE`, the 16-entry / 8.3 directory limit, and what to do
-   when there is no card (`NO DEVICE`).
-8. **Serial & XModem** — 19200 8-N-1, terminal setup, `LOAD`/`SAVE` with no filename,
-   the `XMODEM RX/TX READY` handshake and its ~60 s window.
-9. **The Monitor for users** — three ways in, what the `.` prompt is, `M`, `D`, `R`,
-   `G`, `X` back to BASIC, and the Wozmon easter egg at `$FF00`.
-10. **Sound & video basics** — `SOUND`, `VOL`, `CLS`, `LOCATE`, `COLOR`, the 40×24 text
-    screen, the 16 colours.
-11. **Using the emulator instead of hardware** — desktop app, the browser build at
-    `acwright.github.io/6502-EMULATOR`, loading programs, CF images.
-12. **Per-system pages** — one each for ACE, COB, DEV, KIM, VCS: what makes it different,
-    its boards/cards, its quirks, its quick reference card, link to its hardware repo.
-    KIM gets the keypad/LED chapters (including the two LED demos migrated from ASSETS);
-    VCS gets cartridges and joysticks; COB gets the card catalogue and slot map; DEV gets
-    the Teensy/vrEmu6502 workflow.
-13. **Troubleshooting** — no video, no beep, key repeat, CF not detected, `HW=$xx` from
-    `MEM` as the diagnostic, reading `HW_PRESENT` at `$030D`.
+1. **Welcome** — this is your ACE, here's what it can do, here's the first thing to
+   type. One page, warm, no architecture lecture. A photograph, the `OK` prompt,
+   and a two-line program that draws something. Links onward to Setting Up and to
+   the emulator for anyone without hardware yet.
+2. **Your ACE** — a friendly tour of the board: what each connector is, what each
+   chip does in one sentence, what the reset button does, where the CPU speed
+   jumper is. The spec table lives here, at the bottom, for people who want it.
+   Written as "here's what you've got", not "here's what you might have".
+3. **Setting up** — power (5 V barrel jack), the monitor (VGA), sound (RCA to
+   powered speakers), the keyboard (PS/2 or matrix — both work, both at once),
+   joysticks, the CompactFlash card, and the serial port if you want a terminal.
+   Order of operations, and what to do if a step doesn't take.
+4. **First power-on** — the splash, the `ENTER=BASIC  ESC=MONITOR` choice, the
+   five-second countdown, the beep, and the `OK` prompt. Plain language, no boot
+   sequence dump. What the machine is doing during that moment, in three
+   sentences, in a `::: details` block for the curious.
+5. **Your first ten minutes** — `PRINT`, arithmetic, `INPUT` and your name back at
+   you, a `FOR` loop that fills the screen, `LIST`, `RUN`, `NEW`, and stopping a
+   runaway program with **Esc**. Everything typed live; nothing loaded from disk.
+6. **The keyboard** — the layout, the keys that do something special (Esc, Ctrl+C,
+   the cursor keys, Ctrl codes), stopping a program, and the reset button.
+   **Esc is taught as the way to stop a program**; Ctrl+C is mentioned as the
+   equivalent that terminal users will reach for.
+7. **Sound and pictures** — `SOUND` and `VOL` (a tune, not a beep), `CLS`,
+   `LOCATE`, `COLOR`, the 40×24 screen and its 16 colours. Ends with a small
+   program that does both at once.
+8. **Storage** — the CompactFlash card, the 256 × 1 MB disk-bank model, `DIR`,
+   `LOAD`, `SAVE`, `DEL`, `DISK`, `FORMAT`, `BLOAD`/`BSAVE`, and the 16-file / 8.3
+   limits framed as "how much fits", not as a spec.
+9. **Serial and a terminal** — 19200 8-N-1, hooking a laptop up, why you'd bother
+   (a real keyboard, copy and paste, saving listings to a file), and moving files
+   with `LOAD`/`SAVE` over XModem.
+10. **The Monitor** — what it's for, the three ways in, the `.` prompt, `M`, `D`,
+    `R`, `G`, `X` back to BASIC, and the Wozmon easter egg at `$FF00` as the fun
+    payoff it is.
+11. **The emulator** — the browser build, the desktop app, loading programs and CF
+    images. Positioned as "an ACE you already own", so a reader with no hardware
+    can do every chapter in this guide.
+12. **Add-on: the KIM keypad** — the Keypad Card, Keypad Helper and Keypad LCD
+    Helper turn an ACE into a KIM-1: 24 keys, a 16×2 LCD, and the KC Monitor ROM
+    overlaying the top of the address space. Includes the two LED demos migrated
+    from ASSETS as worked programs, and closes with a short note on building a
+    KIM as a standalone machine.
+13. **When something's wrong** — no picture, no sound, no beep, card not found,
+    keys repeating, nothing at all. Symptom-first, one paragraph each. `MEM`'s
+    `HW=$xx` is introduced here as the "what does the machine think it has"
+    check, in a `::: details` block, not as the chapter's spine.
+
+### The rest of the family (appendix, `/family/`)
+
+Short pages, written for someone who wants to *build* one, not use one. Each is
+roughly a page: what it is, why it exists in the family's history, what boards it
+takes, and a prominent link to its KiCad repo and its reference card.
+
+- **COB** — Computer On a Backplane. The modular original; the best reference
+  design in the family if you're laying out your own 6502.
+- **DEV** — Development Environment Vehicle. Teensy-hosted CPU emulation, single-
+  stepping, clock control.
+- **VCS** — Video Computer System. Main Board + Input Board + Output Board,
+  cartridge-based.
+- **KIM standalone** — a short section at the end of the KIM add-on chapter,
+  covering the COB-based and Main-Board-based builds.
+
+### Tasks
+
+1. Rewrite every page shipped by the first pass of Phase 3 against
+   [Voice & Style](#voice--style). Delete `docs/systems/` and rebuild as
+   `docs/your-ace.md`, `docs/addons/kim.md`, and `docs/family/*`.
+2. Restructure `data/systems.json` so the ACE record describes the machine as
+   shipped — banked RAM and CompactFlash storage are part of the ACE, not
+   "optional" — with the Rev 1.0 RAM patch and the separate CF Adapter board
+   recorded as builder's notes rather than user-facing caveats.
+3. Rewrite the displayed samples so each one is a program worth running, and move
+   the `PASS`-style regression cases to `samples/_checks/`.
+4. Rebuild the sidebar: Introduction → Getting Started → Using Your ACE →
+   Add-ons → The Rest of the Family.
 
 ### Exit criteria
 
-Every command shown is RUN-verified; every hardware claim is SCHEM- or GREP-sourced;
-every system page cross-links to its KiCad repo and its card.
+- A reader with no prior context can go from "here is a box" to "I wrote a program
+  that made a noise" without meeting the word *Kernal*, a file path, or a source
+  line number.
+- Zero occurrences in `docs/` of the banned vocabulary in
+  [Voice & Style](#voice--style). Enforced by a lint check in `npm run verify`.
+- Every command shown still runs; every hardware claim still traces to the
+  schematics or the BIOS — recorded in `ACCURACY.md`, visible nowhere on the site.
 
 ---
 
@@ -312,6 +545,10 @@ every system page cross-links to its KiCad repo and its card.
 
 **Goal:** a complete, teachable BASIC manual — tutorial front, reference back, like the
 C64 *User's Guide* + *Programmer's Reference* in one.
+
+Same voice as Phase 3: this is the part of the C64 manual people actually read for
+fun. Every tutorial chapter ends with a program that does something, and the
+reference half is the part you flip to at 1 a.m. with the machine still on.
 
 ### Part I — Tutorial
 
@@ -344,8 +581,10 @@ C64 *User's Guide* + *Programmer's Reference* in one.
     reading a `LIST` after a crash.
 18. **Worked programs**, each a verified sample and each teaching one thing:
     guessing game (`INPUT`/`IF`), times table (`FOR`), a text-mode animation
-    (`LOCATE`/`PAUSE`), a joystick sprite mover, a sound demo, a CF file browser,
-    a KIM LED counter, an RTC clock display.
+    (`LOCATE`/`PAUSE`), a joystick sprite mover, a tune player, a CF file browser,
+    an RTC clock display, and a small game that pulls several of them together.
+    These are the pages people photocopy — they get titles, screenshots, and
+    "now change this line and see what happens" prompts.
 
 ### Part II — Reference
 
@@ -363,6 +602,26 @@ C64 *User's Guide* + *Programmer's Reference* in one.
 Every keyword entry has a passing sample; the error list is diffed against `BASIC.asm`;
 the `-1`/`0`, active-low joystick, and `FOR`-tests-at-`NEXT` traps each have an explicit
 worked example because each of them is a place the docs could quietly be wrong.
+
+### What shipped
+
+Eighteen tutorial chapters and three reference pages under `/basic/`, plus
+seventeen new displayed samples and a worked example for each of the 85
+keywords.
+
+Two notes for later phases:
+
+- **The keyword examples are not files.** 85 keywords would have meant 170 files
+  under `samples/`, drowning the listings a reader is meant to type. They live in
+  `data/basic-examples.json` — the one hand-authored file in `data/` — and the
+  harness runs every one of them as `reference/<KEYWORD>`. The `example` and
+  `output` arrays it asserts are the same two the reference page renders.
+- **The BIOS README's BASIC tables are worse than rank 4 suggested.** Typing all
+  85 keywords in turned up six confirmed errors (`ACCURACY.md` A21–A26),
+  including one — `NEXT var, var` — that is documented syntax the ROM rejects at
+  runtime. Corrected syntax now lives in `basic-examples.json`; the generated
+  `basic-keywords.json` still carries the README's text, and the two disagreeing
+  is the finding. Phase 9 fixes the README.
 
 ---
 
@@ -502,7 +761,8 @@ and *nothing lives only on a card*.
 | `keyboard-layout.html` | existing SVG + KLE JSON | SCHEM |
 | `keyboard-matrix.html` | recreated from `.numbers` | SCHEM |
 | `keypad-mapping.html` | recreated from `.numbers` | SCHEM |
-| `ace.html`, `cob.html`, `dev.html`, `kim.html`, `vcs.html` | rebuilt from the existing sheets | GREP + SCHEM + RUN |
+| `ace.html` | **the card**, rebuilt from the existing sheet — the one that ships with the machine | GREP + SCHEM + RUN |
+| `cob.html`, `dev.html`, `kim.html`, `vcs.html` | rebuilt from the existing sheets, linked from `/family/` | GREP + SCHEM + RUN |
 
 ### Tasks
 
@@ -549,10 +809,13 @@ Three tiers, in preference order:
    matrix, joystick bitmask, cartridge overlay, XModem handshake, CF disk-bank model,
    cross-dev toolchain flow. SVG so they stay crisp, diffable, and restyleable.
 3. **Placeholder it.** Anything needing a camera or a human — board photos, build shots,
-   cartridge labels in hand, the DEV rig, the KIM keypad — gets a styled placeholder:
+   cartridge labels in hand, the KIM keypad — gets a styled placeholder:
    `docs/public/images/placeholders/`, a greyscale frame with the caption and shot list
    printed on it, plus an entry in `IMAGES.md` (path, subject, framing, status). No blank
    spaces, no broken images, and a single checklist the owner can shoot against.
+   **A placeholder's on-page caption describes the picture, and nothing else** — no
+   phase numbers, no script names, no accuracy notes. The shot list, the tooling
+   and the status live in `IMAGES.md`, which the reader never sees.
 
 Existing renders in the KiCad repos' `Images/` directories (`6502-ACE.png` etc.) are
 migrated first — those cover the hero shot for each system page immediately.
@@ -631,10 +894,12 @@ Site live; zero broken links; ASSETS archived with every artefact accounted for.
 ## Appendix A — Proposed Site Map
 
 ```
-/                          Introduction (the landing page IS the guide)
-/getting-started/          setup, first boot, first ten minutes, troubleshooting
-/systems/                  ace · cob · dev · kim · vcs · comparison
-/using/                    keyboard · storage · serial · monitor · sound-and-video · emulator
+/                          Welcome (the landing page IS the guide)
+/your-ace                  a tour of the machine, and the spec table
+/getting-started/          setup · first-boot · first-ten-minutes · troubleshooting
+/using/                    keyboard · sound-and-video · storage · serial ·
+                           monitor · emulator
+/addons/                   kim (the keypad + LCD add-on, and standalone KIM builds)
 /basic/                    tutorial (18 chapters) · reference · errors · samples
 /crossdev/                 why · cc65 · tools · templates · makefile · linker ·
                            build-run-loop · debugging · testing · to-hardware · agents
@@ -643,7 +908,21 @@ Site live; zero broken links; ASSETS archived with every artefact accounted for.
                            cartridges · basic-interop · banking · idioms · projects
 /reference/                cards index · memory map · kernal table · character set ·
                            connectors · keyboard matrix · keypad map · glossary
+/family/                   the rest of the AC6502 family, for builders:
+                           index · cob · dev · vcs
 /resources/                links, community, further reading, credits
+```
+
+Sidebar order, which is the order a reader meets the site:
+
+```
+Introduction          Welcome · Your ACE
+Getting Started       Setting up · First power-on · Your first ten minutes ·
+                      When something's wrong
+Using Your ACE        The keyboard · Sound and pictures · Storage ·
+                      Serial and a terminal · The Monitor · The emulator
+Add-ons               The KIM keypad
+The Rest of the Family  Overview · COB · DEV · VCS
 ```
 
 Cards are served from `/cards/*.html` (raw print pages, outside the VitePress chrome)
@@ -657,8 +936,10 @@ Legend: **G** = generated by script · **D** = drawn SVG · **P** = placeholder 
 
 | Image | Kind | Notes |
 |---|---|---|
-| Family hero shot (all five machines) | P | Existing `6502-ASSETS/Images/6502.png` may serve |
-| ACE / COB / DEV / KIM / VCS board renders | — | Migrate from each KiCad repo's `Images/` |
+| **The ACE on a desk, powered on** | P | The site's single most important image — Welcome page |
+| ACE board, populated, from above | P | KiCad render available as an interim; a photograph is better |
+| Family line-up (all five machines) | P | Family appendix only. Existing `6502-ASSETS/Images/6502.png` may serve — see ACCURACY.md A9 |
+| COB / DEV / VCS board renders | — | Migrate from each KiCad repo's `Images/` |
 | Boot splash on screen | G | `--console video` + `dbg screen png` |
 | BASIC session (first ten minutes) | G | Scripted keystrokes |
 | Monitor session (`M`, `D`, `R`) | G | |
@@ -703,6 +984,12 @@ Found during this survey; seeds `ACCURACY.md`. Each is stated with its source of
 
 Findings 1–5 are confirmed. Finding 6 is the audit that Phase 7 opens with, and it is
 expected to generate the bulk of the ledger.
+
+`ACCURACY.md` also carries **A10–A13**, which are errors the first pass of Phase 3
+shipped in *this* repo — a sound-card claim contradicted by the machine, wrong
+power inputs, three controller firmwares conflated into one, and the ACE's banked
+RAM and storage marked optional. They are logged for the same reason as everything
+above: a ledger that only records other people's mistakes is not a ledger.
 
 ---
 

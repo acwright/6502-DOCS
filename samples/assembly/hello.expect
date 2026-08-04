@@ -1,0 +1,3 @@
+# "Hello world in assembly" — the first assembly chapter's program.
+
+expect ^HELLO FROM ASSEMBLY$

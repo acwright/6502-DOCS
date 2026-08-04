@@ -1,0 +1,6 @@
+# "Animation" — LOCATE draws it, PAUSE paces it, and printing a space over
+# the old position is what makes it move rather than smear.
+console video
+timeout 60s
+cycles 6000000
+screen ^\s*O\s*$

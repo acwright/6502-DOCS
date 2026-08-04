@@ -1,0 +1,266 @@
+{
+  "$meta": {
+    "title": "Monitor commands",
+    "description": "The Supermon-style command set, in dispatch-table order.",
+    "generator": "scripts/extract-facts.mjs",
+    "biosVersion": "1.5",
+    "sources": [
+      {
+        "file": "Monitor.asm",
+        "sha256": "9c0e44dbcb3d6ead5f3b1d68bbd9bb6d03f303fc84185f4edfe46a856f346fc7"
+      },
+      {
+        "file": "README.md",
+        "sha256": "ecc3c73ce93678e7aea277256e4e175dae83a4839cfd8f56bf258fe2e4e3e85e"
+      }
+    ],
+    "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
+  },
+  "prompt": ".",
+  "entryPoints": [
+    {
+      "name": "MonitorEntry",
+      "address": "$EE00",
+      "description": "Cold entry from the boot menu, or X back from BASIC"
+    },
+    {
+      "name": "MonitorBrkEntry",
+      "address": "$EE03",
+      "description": "BRK entry with the register display"
+    }
+  ],
+  "entryRoutes": [
+    "ESC at the boot splash",
+    "The BRK statement in BASIC",
+    "Any BRK opcode in user code"
+  ],
+  "wozmon": {
+    "address": "$FF00",
+    "fromMonitor": "G FF00",
+    "fromBasic": "SYS 65280",
+    "note": "The original Apple I monitor, kept as an easter egg.",
+    "source": "BIOS.cfg:7",
+    "check": "GREP"
+  },
+  "commands": [
+    {
+      "command": "X",
+      "handler": "MonCmdX",
+      "summary": "Exit to BASIC",
+      "source": "Monitor.asm:284",
+      "check": "GREP",
+      "readmeSyntax": "X",
+      "readmeDescription": "Exit to BASIC",
+      "readmeGroup": "File I/O & Utilities"
+    },
+    {
+      "command": "R",
+      "handler": "MonCmdR",
+      "summary": "Display CPU registers",
+      "source": "Monitor.asm:286",
+      "check": "GREP",
+      "readmeSyntax": "R",
+      "readmeDescription": "Display saved CPU registers: `PC=xxxx A=xx X=xx Y=xx SP=xx NV-BDIZC`",
+      "readmeGroup": "Memory Inspection"
+    },
+    {
+      "command": "M",
+      "handler": "MonCmdM",
+      "summary": "Memory dump (hex + ASCII, 8 bytes/row)",
+      "syntax": "M [addr] [addr]",
+      "notes": [
+        "Default: 8 lines (64 bytes). Remembers position for continuation."
+      ],
+      "source": "Monitor.asm:288",
+      "check": "GREP",
+      "readmeSyntax": "M [addr] [addr]",
+      "readmeDescription": "Hex + ASCII memory dump (8 bytes/line); bare `M` continues from last address",
+      "readmeGroup": "Memory Inspection"
+    },
+    {
+      "command": "D",
+      "handler": "MonCmdD",
+      "summary": "Disassemble 65C02 instructions",
+      "syntax": "D [addr] [addr]",
+      "notes": [
+        "Default: 20 lines. Remembers position for continuation."
+      ],
+      "source": "Monitor.asm:290",
+      "check": "GREP",
+      "readmeSyntax": "D [addr] [addr]",
+      "readmeDescription": "Disassemble 65C02 instructions (20 lines default); supports the full WDC 65C02 + Rockwell instruction set",
+      "readmeGroup": "Memory Inspection"
+    },
+    {
+      "command": ">",
+      "handler": "MonCmdDeposit",
+      "summary": "Deposit (write) bytes to memory",
+      "syntax": "> ADDR XX [XX XX ...]",
+      "source": "Monitor.asm:292",
+      "check": "GREP",
+      "readmeSyntax": "> addr byte [byte...]",
+      "readmeDescription": "Deposit (write) bytes starting at address",
+      "readmeGroup": "Memory Manipulation"
+    },
+    {
+      "command": "F",
+      "handler": "MonCmdFill",
+      "summary": "Fill memory range with a byte value",
+      "syntax": "F ADDR1 ADDR2 XX",
+      "source": "Monitor.asm:294",
+      "check": "GREP",
+      "readmeSyntax": "F addr addr byte",
+      "readmeDescription": "Fill memory range with a byte value",
+      "readmeGroup": "Memory Manipulation"
+    },
+    {
+      "command": "T",
+      "handler": "MonCmdTransfer",
+      "summary": "Copy memory block (handles overlapping regions)",
+      "syntax": "T SRC_START SRC_END DEST",
+      "source": "Monitor.asm:296",
+      "check": "GREP",
+      "readmeSyntax": "T addr addr dest",
+      "readmeDescription": "Transfer (copy) a memory block; handles overlapping regions",
+      "readmeGroup": "Memory Manipulation"
+    },
+    {
+      "command": "H",
+      "handler": "MonCmdHunt",
+      "summary": "Search for byte pattern in memory range",
+      "syntax": "H ADDR1 ADDR2 XX [XX XX ...]",
+      "notes": [
+        "Prints address of each match on its own line."
+      ],
+      "source": "Monitor.asm:298",
+      "check": "GREP",
+      "readmeSyntax": "H addr addr byte [byte...]",
+      "readmeDescription": "Hunt (search) for a byte pattern in a range",
+      "readmeGroup": "Memory Manipulation"
+    },
+    {
+      "command": "C",
+      "handler": "MonCmdCompare",
+      "summary": "Compare two memory regions",
+      "syntax": "C ADDR1 ADDR2 ADDR3",
+      "notes": [
+        "Compares [addr1,addr2] with block at addr3, prints differing addresses."
+      ],
+      "source": "Monitor.asm:300",
+      "check": "GREP",
+      "readmeSyntax": "C addr addr addr",
+      "readmeDescription": "Compare two memory regions; prints differing addresses",
+      "readmeGroup": "Memory Manipulation"
+    },
+    {
+      "command": "G",
+      "handler": "MonCmdGo",
+      "summary": "Go (JMP to address with full register restore via RTI)",
+      "syntax": "G [addr]",
+      "notes": [
+        "If addr given, sets BRK_PCL/PCH. Restores A, X, Y, P, SP via RTI.",
+        "Program runs until BRK returns to monitor or forever."
+      ],
+      "source": "Monitor.asm:302",
+      "check": "GREP",
+      "readmeSyntax": "G [addr]",
+      "readmeDescription": "Go — JMP to address (or saved PC); restores all registers via RTI",
+      "readmeGroup": "Execution Control"
+    },
+    {
+      "command": "J",
+      "handler": "MonCmdJsr",
+      "summary": "Call subroutine and return to monitor on RTS",
+      "syntax": "J [addr]",
+      "notes": [
+        "Pushes monitor return address, restores A/X/Y, JMPs to target.",
+        "When target does RTS, saves registers and re-enters monitor."
+      ],
+      "source": "Monitor.asm:304",
+      "check": "GREP",
+      "readmeSyntax": "J [addr]",
+      "readmeDescription": "JSR — call a subroutine; RTS returns to the monitor with register display",
+      "readmeGroup": "Execution Control"
+    },
+    {
+      "command": ";",
+      "handler": "MonCmdModRegs",
+      "summary": "Modify saved CPU registers",
+      "syntax": "; PC xxxx A xx X xx Y xx SP xx P xx",
+      "notes": [
+        "Any subset, any order. Labels: PC, A, X, Y, SP, P"
+      ],
+      "source": "Monitor.asm:306",
+      "check": "GREP",
+      "readmeSyntax": "; PC xxxx A xx X xx ...",
+      "readmeDescription": "Modify saved registers (any subset, any order)",
+      "readmeGroup": "Execution Control"
+    },
+    {
+      "command": "L",
+      "handler": "MonCmdLoad",
+      "summary": "Load from CF (with quoted filename) or XModem (without)",
+      "syntax": "L [\"FILE\"] [ADDR]",
+      "notes": [
+        "CF path:     L \"FILENAME\" [ADDR] — load file to addr (default $0800)",
+        "Serial path: L [ADDR]            — receive via XModem to addr (default $0800)"
+      ],
+      "source": "Monitor.asm:308",
+      "check": "GREP",
+      "readmeSyntax": "L \"file\" [addr]",
+      "readmeDescription": "Load from CompactFlash (with filename) or XModem (without) to address (default `$0800`). Loading at the default address lets `X` hand the program straight to BASIC, ready to `RUN`",
+      "readmeGroup": "File I/O & Utilities"
+    },
+    {
+      "command": "S",
+      "handler": "MonCmdSave",
+      "summary": "Save to CF (with quoted filename) or XModem (without)",
+      "syntax": "S [\"FILE\"] ADDR1 ADDR2",
+      "notes": [
+        "CF path:     S \"FILENAME\" ADDR1 ADDR2 — save [addr1,addr2) to file",
+        "Serial path: S ADDR1 ADDR2            — send [addr1,addr2) via XModem"
+      ],
+      "source": "Monitor.asm:310",
+      "check": "GREP",
+      "readmeSyntax": "S \"file\" addr addr",
+      "readmeDescription": "Save to CompactFlash (with filename) or XModem (without)",
+      "readmeGroup": "File I/O & Utilities"
+    },
+    {
+      "command": "@",
+      "handler": "MonCmdDir",
+      "summary": "Display CF directory listing",
+      "syntax": "@",
+      "source": "Monitor.asm:312",
+      "check": "GREP",
+      "readmeSyntax": "@",
+      "readmeDescription": "List current disk's directory (prints `DISK n` header)",
+      "readmeGroup": "File I/O & Utilities"
+    },
+    {
+      "command": "N",
+      "handler": "MonCmdNum",
+      "summary": "Number base conversion",
+      "syntax": "N $XXXX  or  N +DDDDD  or  N %BBBBBBBBBBBBBBBB",
+      "notes": [
+        "Output: $XXXX  +DDDDD  %BBBBBBBBBBBBBBBB"
+      ],
+      "source": "Monitor.asm:314",
+      "check": "GREP",
+      "readmeSyntax": "N value",
+      "readmeDescription": "Number conversion — hex (`$xx`), decimal (`+ddd`), or binary (`%bbbb`) input shown in all three bases",
+      "readmeGroup": "File I/O & Utilities"
+    },
+    {
+      "command": "#",
+      "handler": "MonCmdDisk",
+      "summary": "Select / report the current CF disk bank",
+      "syntax": "# NN   (hex disk 00-FF selects); # alone reports the current disk",
+      "source": "Monitor.asm:316",
+      "check": "GREP",
+      "readmeSyntax": "# NN",
+      "readmeDescription": "Select CF disk bank `NN` (hex 00–FF); `#` alone reports the current disk",
+      "readmeGroup": "File I/O & Utilities"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+# "The clock that keeps going" — SETDATE/SETTIME then reading them back.
+expect ^2026-08-03$
+expect ^09:30:\d\d$

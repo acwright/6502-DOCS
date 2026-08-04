@@ -108,3 +108,36 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/**
+ * Styled placeholder for an image that doesn't exist yet — Phase 8 (Images &
+ * Diagrams) replaces these with real photos, screenshots or SVGs. Every
+ * instance has a matching entry in IMAGES.md, so "no blank spaces, no broken
+ * images" holds even before the shot exists.
+ */
+.placeholder-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 12em;
+  margin: 1.5em 0;
+  padding: 1.5em;
+  border: 2px dashed var(--vp-c-default-3);
+  color: var(--vp-c-default-2);
+  background: var(--vp-c-default-soft);
+  text-align: center;
+}
+
+.placeholder-image .placeholder-label {
+  font-family: 'Bebas Neue', var(--vp-font-family-base);
+  letter-spacing: 0.04em;
+  font-size: 1.1em;
+  color: var(--vp-c-default-1);
+}
+
+.placeholder-image .placeholder-caption {
+  font-size: 0.9em;
+  max-width: 32em;
+}

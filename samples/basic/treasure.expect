@@ -1,0 +1,11 @@
+# "Treasure grid" — the last project, pulling the guide together: an array
+# for the map, a subroutine that draws it, INPUT for the digs, and IF to
+# decide. From a freshly booted machine the treasure is at square 9 —
+# row 3, column 1.
+wait (OK|\?)
+send 1\r
+send 1\r
+send 3\r
+send 1\r
+expect ^NOTHING THERE$
+expect ^TREASURE\. FOUND IN 2 DIGS\.$

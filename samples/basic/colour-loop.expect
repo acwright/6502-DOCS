@@ -1,0 +1,8 @@
+# "Sound and pictures" — fifteen colours and fifteen notes in one loop.
+# Nothing reaches the console when the console is the screen, so the last
+# frame is asserted against the screen buffer.
+
+console video
+timeout 40s
+cycles 4000000
+screen COLOUR 15

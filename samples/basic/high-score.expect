@@ -1,0 +1,5 @@
+# "Storage" — BSAVE/BLOAD as a game would use them: park a byte, write it to
+# the card, wipe it, read it back. Runs against a real CompactFlash image.
+
+console storage
+expect ^HIGH SCORE IS 42$

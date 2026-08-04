@@ -1,0 +1,701 @@
+{
+  "$meta": {
+    "title": "BASIC keyword examples",
+    "description": "Hand-authored, machine-checked. Unlike its siblings in this directory this file is NOT generated: what a keyword is for, and the shortest example worth printing, are writing decisions. Everything factual about them is still checked — scripts/verify-samples.mjs types every `example` into the emulator and asserts every line of `output` verbatim, so the reference cannot print output the machine does not produce.",
+    "schema": {
+      "syntax": "The form the reference prints. Corrects the BIOS README where the README is wrong — see ACCURACY.md A20-A26.",
+      "summary": "One sentence, reader-facing.",
+      "example": "Lines to type. A block starting with a line number is typed in and RUN; anything else runs as it is entered.",
+      "output": "Exact console lines, asserted verbatim.",
+      "result": "Prose, used instead of `output` when the result is real but not fixed (a clock, a random number).",
+      "expect": "Extra regexes, for the not-fixed cases.",
+      "absent": "Regexes that must not appear.",
+      "screen": "Regexes matched against the screen — implies console video.",
+      "console": "serial (default), video, or storage.",
+      "sends": "Input sent after the example, for the ones that ask a question.",
+      "errors": "Errors this keyword can raise.",
+      "see": "Related keywords."
+    }
+  },
+
+  "keywords": {
+    "PRINT": {
+      "syntax": "PRINT [item] [;|, item ...]",
+      "summary": "Show numbers and text. `;` joins items tightly, `,` moves to the next 14-column zone, and a trailing `;` or `,` holds the cursor on the line.",
+      "example": ["PRINT \"TOTAL:\"; 6 * 7"],
+      "output": ["TOTAL: 42"],
+      "errors": ["SYNTAX"],
+      "see": ["TAB", "SPC", "POS"]
+    },
+    "LET": {
+      "syntax": "[LET] var = expr",
+      "summary": "Give a variable a value. `LET` is optional and almost nobody types it.",
+      "example": ["LET P = 3", "PRINT P * 100"],
+      "output": [" 300"],
+      "errors": ["SYNTAX", "TYPE MISMATCH"]
+    },
+    "REM": {
+      "syntax": "REM [text]",
+      "summary": "A remark. Everything after `REM` on the line is for people, not the machine.",
+      "example": ["10 REM SCORE KEEPER", "20 S = 100", "30 PRINT S"],
+      "output": [" 100"]
+    },
+    "END": {
+      "syntax": "END",
+      "summary": "Stop the program and return to the prompt. Variables keep their values.",
+      "example": ["10 PRINT \"DONE\"", "20 END", "30 PRINT \"NEVER\""],
+      "output": ["DONE"],
+      "absent": ["^NEVER$"],
+      "see": ["STOP"]
+    },
+    "STOP": {
+      "syntax": "STOP",
+      "summary": "Pause the program and say where it stopped. `CONT` picks it up again.",
+      "example": ["10 PRINT \"FIRST\"", "20 STOP", "30 PRINT \"SECOND\""],
+      "output": ["FIRST", "BREAK IN 20"],
+      "see": ["CONT", "END"]
+    },
+    "CONT": {
+      "syntax": "CONT",
+      "summary": "Carry on from a `STOP` or a stopped program, at the line after the one it stopped on. Editing any line first makes it impossible.",
+      "example": ["10 PRINT \"A\"", "20 STOP", "30 PRINT \"B\""],
+      "sends": ["CONT\\r"],
+      "output": ["A", "BREAK IN 20", "B"],
+      "errors": ["CAN'T CONTINUE"],
+      "see": ["STOP"]
+    },
+    "RUN": {
+      "run": false,
+      "syntax": "RUN [linenum]",
+      "summary": "Run the program from the top, or from a line number if you give one. Clears the variables first.",
+      "example": ["10 PRINT \"ONE\"", "20 PRINT \"TWO\"", "30 PRINT \"THREE\""],
+      "sends": ["RUN 20\\r"],
+      "output": ["TWO", "THREE"],
+      "see": ["GOTO", "LIST"]
+    },
+    "LIST": {
+      "run": false,
+      "syntax": "LIST",
+      "summary": "Show the program you have. It takes no line number — `LIST` lists the lot.",
+      "example": ["10 PRINT \"HELLO\"", "20 GOTO 10"],
+      "sends": ["LIST\\r"],
+      "output": ["10 PRINT \"HELLO\"", "20 GOTO 10"],
+      "errors": ["SYNTAX"]
+    },
+    "NEW": {
+      "run": false,
+      "syntax": "NEW",
+      "summary": "Throw the program away and clear the variables. There is no undo.",
+      "example": ["10 PRINT \"HELLO\"", "NEW", "PRINT FRE(0)"],
+      "output": [" 30718"],
+      "result": "30718 bytes free — the same as a machine that has just been switched on, because the program is gone.",
+      "see": ["CLR", "FRE"]
+    },
+    "CLR": {
+      "syntax": "CLR",
+      "summary": "Clear the variables, arrays and strings but keep the program.",
+      "example": ["A = 5", "CLR", "PRINT A"],
+      "output": [" 0"],
+      "see": ["NEW", "FRE"]
+    },
+
+    "GOTO": {
+      "syntax": "GOTO linenum",
+      "summary": "Jump to a line and carry on from there.",
+      "example": ["10 PRINT \"HELLO\"", "20 GOTO 40", "30 PRINT \"SKIPPED\"", "40 PRINT \"END\""],
+      "output": ["HELLO", "END"],
+      "absent": ["^SKIPPED$"],
+      "errors": ["UNDEF'D STATEMENT"]
+    },
+    "GOSUB": {
+      "syntax": "GOSUB linenum",
+      "summary": "Jump to a subroutine, remembering where you came from. `RETURN` comes back.",
+      "example": [
+        "10 GOSUB 100",
+        "20 PRINT \"BACK\"",
+        "30 END",
+        "100 PRINT \"IN THE SUBROUTINE\"",
+        "110 RETURN"
+      ],
+      "output": ["IN THE SUBROUTINE", "BACK"],
+      "errors": ["UNDEF'D STATEMENT", "OUT OF MEMORY"],
+      "see": ["RETURN", "ON"]
+    },
+    "RETURN": {
+      "syntax": "RETURN",
+      "summary": "Go back to the line after the `GOSUB` that called this subroutine.",
+      "example": ["10 GOSUB 100", "20 END", "100 PRINT \"AND BACK\"", "110 RETURN"],
+      "output": ["AND BACK"],
+      "errors": ["RETURN WITHOUT GOSUB"],
+      "see": ["GOSUB"]
+    },
+    "ON": {
+      "syntax": "ON expr GOTO l1 [,l2 ...]   |   ON expr GOSUB l1 [,l2 ...]",
+      "summary": "Pick a destination by number: 1 takes the first line in the list, 2 the second. Out of range falls through to the next line.",
+      "example": [
+        "10 N = 2",
+        "20 ON N GOSUB 100, 200",
+        "30 END",
+        "100 PRINT \"FIRST\"",
+        "110 RETURN",
+        "200 PRINT \"SECOND\"",
+        "210 RETURN"
+      ],
+      "output": ["SECOND"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["GOTO", "GOSUB"]
+    },
+    "IF": {
+      "syntax": "IF expr THEN stmt|linenum [ELSE stmt|linenum]",
+      "summary": "Do something only when a test holds. `THEN 100` is short for `THEN GOTO 100`.",
+      "example": ["10 A = 7", "20 IF A > 5 THEN PRINT \"BIG\" ELSE PRINT \"SMALL\""],
+      "output": ["BIG"],
+      "see": ["THEN", "ELSE", "AND", "OR", "NOT"]
+    },
+    "THEN": {
+      "syntax": "IF expr THEN stmt|linenum",
+      "summary": "The part of `IF` that says what to do when the test holds.",
+      "example": ["10 IF 2 + 2 = 4 THEN PRINT \"ARITHMETIC WORKS\""],
+      "output": ["ARITHMETIC WORKS"],
+      "see": ["IF"]
+    },
+    "ELSE": {
+      "syntax": "IF expr THEN stmt ELSE stmt",
+      "summary": "What to do when the test does not hold.",
+      "example": ["10 IF 1 = 2 THEN PRINT \"YES\" ELSE PRINT \"NO\""],
+      "output": ["NO"],
+      "see": ["IF"]
+    },
+
+    "FOR": {
+      "syntax": "FOR var = start TO limit [STEP step]",
+      "summary": "Count from one number to another, running everything up to `NEXT` each time round.",
+      "example": ["10 FOR N = 1 TO 4", "20 PRINT N; \" SQUARED IS\"; N * N", "30 NEXT N"],
+      "output": [" 1 SQUARED IS 1", " 4 SQUARED IS 16"],
+      "errors": ["OUT OF MEMORY"],
+      "see": ["NEXT", "STEP", "TO"]
+    },
+    "NEXT": {
+      "syntax": "NEXT [var]",
+      "summary": "End of a loop: add the step and go round again. One variable only — `NEXT J, I` is not accepted, so close each loop with its own `NEXT`.",
+      "example": ["10 FOR I = 1 TO 2", "20 FOR J = 1 TO 2", "30 PRINT I; J", "40 NEXT J", "50 NEXT I"],
+      "output": [" 1 1", " 2 2"],
+      "errors": ["NEXT WITHOUT FOR"],
+      "see": ["FOR"]
+    },
+    "TO": {
+      "syntax": "FOR var = start TO limit",
+      "summary": "The part of `FOR` that says where to count to.",
+      "example": ["10 FOR N = 3 TO 5", "20 PRINT N;", "30 NEXT N"],
+      "output": [" 3 4 5"],
+      "see": ["FOR"]
+    },
+    "STEP": {
+      "syntax": "FOR var = start TO limit STEP step",
+      "summary": "How much to add each time round. Negative counts down.",
+      "example": ["10 FOR N = 10 TO 1 STEP -3", "20 PRINT N;", "30 NEXT N"],
+      "output": [" 10 7 4 1"],
+      "see": ["FOR"]
+    },
+
+    "DIM": {
+      "syntax": "DIM var(size) [, var(size) ...]",
+      "summary": "Make an array. One dimension only, and you get elements `0` to `size` — so `DIM S(9)` is ten of them.",
+      "example": ["10 DIM S(3)", "20 S(0) = 10", "30 S(3) = 40", "40 PRINT S(0); S(3)"],
+      "output": [" 10 40"],
+      "errors": ["BAD SUBSCRIPT", "REDIM'D ARRAY", "OUT OF MEMORY"]
+    },
+    "DATA": {
+      "syntax": "DATA item [, item ...]",
+      "summary": "A list of values baked into the program for `READ` to work through. Skipped when the program runs past it.",
+      "example": ["10 DATA 262, 294, 330", "20 READ A, B, C", "30 PRINT A; B; C"],
+      "output": [" 262 294 330"],
+      "see": ["READ", "RESTORE"]
+    },
+    "READ": {
+      "syntax": "READ var [, var ...]",
+      "summary": "Take the next value from the `DATA` lists and put it in a variable.",
+      "example": ["10 DATA 10, 20", "20 READ X", "30 READ Y", "40 PRINT X + Y"],
+      "output": [" 30"],
+      "errors": ["OUT OF DATA", "TYPE MISMATCH"],
+      "see": ["DATA", "RESTORE"]
+    },
+    "RESTORE": {
+      "syntax": "RESTORE",
+      "summary": "Go back to the first `DATA` item, so you can read the list again.",
+      "example": ["10 DATA 5, 6", "20 READ A", "30 RESTORE", "40 READ B", "50 PRINT A; B"],
+      "output": [" 5 5"],
+      "see": ["DATA", "READ"]
+    },
+    "DEF": {
+      "syntax": "DEF FN name(var) = expr",
+      "summary": "Define your own one-line function.",
+      "example": ["10 DEF FN F(C) = C * 9 / 5 + 32", "20 PRINT FN F(100)"],
+      "output": [" 212"],
+      "see": ["FN"]
+    },
+    "FN": {
+      "syntax": "FN name(expr)",
+      "summary": "Call a function you defined with `DEF`.",
+      "example": ["10 DEF FN D(N) = N * 2", "20 PRINT FN D(21)"],
+      "output": [" 42"],
+      "errors": ["UNDEF'D STATEMENT"],
+      "see": ["DEF"]
+    },
+    "INPUT": {
+      "syntax": "INPUT [\"prompt\";] var [, var ...]",
+      "summary": "Stop and wait for the person at the keyboard to type something. Only works inside a program.",
+      "example": ["10 INPUT \"HOW OLD ARE YOU\"; A", "20 PRINT \"IN DOG YEARS:\"; A * 7"],
+      "wait": "(OK|\\?)",
+      "sends": ["9\\r"],
+      "output": ["IN DOG YEARS: 63"],
+      "errors": ["ILLEGAL DIRECT", "REDO FROM START", "EXTRA IGNORED"]
+    },
+
+    "AND": {
+      "syntax": "a AND b",
+      "summary": "True when both sides are true — and, underneath, a bit-by-bit AND of two whole numbers.",
+      "example": ["PRINT (5 > 3) AND (2 > 1)", "PRINT 12 AND 10"],
+      "output": ["-1", " 8"],
+      "see": ["OR", "NOT"]
+    },
+    "OR": {
+      "syntax": "a OR b",
+      "summary": "True when either side is true — and, underneath, a bit-by-bit OR.",
+      "example": ["PRINT (1 > 2) OR (3 > 2)", "PRINT 12 OR 10"],
+      "output": ["-1", " 14"],
+      "see": ["AND", "NOT"]
+    },
+    "NOT": {
+      "syntax": "NOT expr",
+      "summary": "Flips every bit, which turns true (`-1`) into false (`0`) — but `NOT 1` is `-2`, not `0`, so use it on comparisons rather than on counts.",
+      "example": ["PRINT NOT (1 = 2)", "PRINT NOT 1"],
+      "output": ["-1", "-2"],
+      "see": ["AND", "OR"]
+    },
+
+    "TAB": {
+      "syntax": "TAB(n)",
+      "summary": "Inside `PRINT`, move to column `n` of the line.",
+      "example": ["PRINT \"NAME\"; TAB(12); \"SCORE\""],
+      "output": ["NAME        SCORE"],
+      "see": ["PRINT", "SPC", "POS"]
+    },
+    "SPC": {
+      "syntax": "SPC(n)",
+      "summary": "Inside `PRINT`, print `n` spaces from wherever the cursor is.",
+      "example": ["PRINT \"A\"; SPC(5); \"B\""],
+      "output": ["A     B"],
+      "see": ["PRINT", "TAB"]
+    },
+    "POS": {
+      "syntax": "POS(x)",
+      "summary": "Which column the cursor is on. The argument is ignored; give it `0`.",
+      "example": ["PRINT \"AB\"; POS(0)"],
+      "output": ["AB 2"],
+      "see": ["PRINT", "TAB"]
+    },
+
+    "SGN": {
+      "syntax": "SGN(x)",
+      "summary": "`-1` for a negative number, `0` for zero, `1` for a positive one.",
+      "example": ["PRINT SGN(-4); SGN(0); SGN(9)"],
+      "output": ["-1 0 1"]
+    },
+    "INT": {
+      "syntax": "INT(x)",
+      "summary": "Round down to a whole number — down towards minus infinity, so `INT(-3.7)` is `-4`.",
+      "example": ["PRINT INT(3.7); INT(-3.7)"],
+      "output": [" 3-4"]
+    },
+    "ABS": {
+      "syntax": "ABS(x)",
+      "summary": "The size of a number, ignoring its sign.",
+      "example": ["PRINT ABS(-5); ABS(5)"],
+      "output": [" 5 5"]
+    },
+    "SQR": {
+      "syntax": "SQR(x)",
+      "summary": "Square root.",
+      "example": ["PRINT SQR(144)"],
+      "output": [" 12"],
+      "errors": ["ILLEGAL QUANTITY"]
+    },
+    "RND": {
+      "syntax": "RND(x)",
+      "summary": "A random number from 0 up to (but not including) 1. A negative argument reseeds from that number, so the same seed replays the same sequence.",
+      "example": ["10 FOR N = 1 TO 3", "20 PRINT INT(RND(1) * 6) + 1;", "30 NEXT N"],
+      "result": "Three dice rolls, each from 1 to 6.",
+      "expect": ["^( [1-6]){3}\\s*$"]
+    },
+    "LOG": {
+      "syntax": "LOG(x)",
+      "summary": "Natural logarithm.",
+      "example": ["PRINT LOG(1)"],
+      "output": [" 0"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["EXP"]
+    },
+    "EXP": {
+      "syntax": "EXP(x)",
+      "summary": "`e` raised to the power `x`.",
+      "example": ["PRINT EXP(1)"],
+      "output": [" 2.71828183"],
+      "errors": ["OVERFLOW"],
+      "see": ["LOG"]
+    },
+    "SIN": {
+      "syntax": "SIN(x)",
+      "summary": "Sine of an angle in radians.",
+      "example": ["PRINT SIN(0)"],
+      "output": [" 0"],
+      "see": ["COS", "TAN", "ATN"]
+    },
+    "COS": {
+      "syntax": "COS(x)",
+      "summary": "Cosine of an angle in radians.",
+      "example": ["PRINT COS(0)"],
+      "output": [" 1"],
+      "see": ["SIN", "TAN", "ATN"]
+    },
+    "TAN": {
+      "syntax": "TAN(x)",
+      "summary": "Tangent of an angle in radians.",
+      "example": ["PRINT TAN(0)"],
+      "output": [" 0"],
+      "see": ["SIN", "COS", "ATN"]
+    },
+    "ATN": {
+      "syntax": "ATN(x)",
+      "summary": "Arctangent, in radians. `ATN(1) * 4` is a serviceable π.",
+      "example": ["PRINT ATN(1) * 4"],
+      "output": [" 3.14159265"],
+      "see": ["SIN", "COS", "TAN"]
+    },
+    "MIN": {
+      "syntax": "MIN(a, b)",
+      "summary": "The smaller of two numbers.",
+      "example": ["PRINT MIN(3, 7)"],
+      "output": [" 3"],
+      "see": ["MAX"]
+    },
+    "MAX": {
+      "syntax": "MAX(a, b)",
+      "summary": "The larger of two numbers.",
+      "example": ["PRINT MAX(3, 7)"],
+      "output": [" 7"],
+      "see": ["MIN"]
+    },
+    "HEX": {
+      "syntax": "HEX(n)",
+      "summary": "A number written in hexadecimal, always four digits with a `$` in front. `n` is 0 to 65535.",
+      "example": ["PRINT HEX(255); \" \"; HEX(4096)"],
+      "output": ["$00FF $1000"],
+      "errors": ["ILLEGAL QUANTITY"]
+    },
+    "FRE": {
+      "syntax": "FRE(x)",
+      "summary": "How many bytes are left for variables, arrays and strings. The argument is ignored.",
+      "example": ["NEW", "PRINT FRE(0)"],
+      "output": [" 30718"],
+      "see": ["MEM", "CLR"]
+    },
+
+    "LEN": {
+      "syntax": "LEN(s$)",
+      "summary": "How many characters are in a string.",
+      "example": ["PRINT LEN(\"HELLO\")"],
+      "output": [" 5"]
+    },
+    "LEFT$": {
+      "syntax": "LEFT$(s$, n)",
+      "summary": "The first `n` characters of a string.",
+      "example": ["PRINT LEFT$(\"HELLO\", 2)"],
+      "output": ["HE"],
+      "see": ["RIGHT$", "MID$"]
+    },
+    "RIGHT$": {
+      "syntax": "RIGHT$(s$, n)",
+      "summary": "The last `n` characters of a string.",
+      "example": ["PRINT RIGHT$(\"HELLO\", 3)"],
+      "output": ["LLO"],
+      "see": ["LEFT$", "MID$"]
+    },
+    "MID$": {
+      "syntax": "MID$(s$, start [, len])",
+      "summary": "Characters from the middle of a string, counting from 1. Leave `len` out to take the rest.",
+      "example": ["PRINT MID$(\"HELLO\", 2, 3)", "PRINT MID$(\"HELLO\", 3)"],
+      "output": ["ELL", "LLO"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["LEFT$", "RIGHT$"]
+    },
+    "CHR$": {
+      "syntax": "CHR$(n)",
+      "summary": "The character with code `n`.",
+      "example": ["PRINT CHR$(72); CHR$(73)"],
+      "output": ["HI"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["ASC"]
+    },
+    "ASC": {
+      "syntax": "ASC(s$)",
+      "summary": "The code of the first character of a string.",
+      "example": ["PRINT ASC(\"A\")"],
+      "output": [" 65"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["CHR$"]
+    },
+    "STR$": {
+      "syntax": "STR$(n)",
+      "summary": "A number turned into a string — keeping the leading space that `PRINT` puts where a minus sign would go.",
+      "example": ["PRINT \"[\" + STR$(42) + \"]\""],
+      "output": ["[ 42]"],
+      "see": ["VAL"]
+    },
+    "VAL": {
+      "syntax": "VAL(s$)",
+      "summary": "A string turned into a number. Reads as far as it can and gives `0` if that is nowhere.",
+      "example": ["PRINT VAL(\"3.5\"); VAL(\"12ABC\"); VAL(\"ABC\")"],
+      "output": [" 3.5 12 0"],
+      "see": ["STR$"]
+    },
+
+    "PEEK": {
+      "syntax": "PEEK(addr)",
+      "summary": "Read one byte of memory, 0 to 255.",
+      "example": ["PRINT PEEK(781)"],
+      "result": "The byte at address 781 — the machine's record of which cards are fitted.",
+      "expect": ["^ \\d+\\s*$"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["POKE", "BANK"]
+    },
+    "POKE": {
+      "syntax": "POKE addr, value",
+      "summary": "Write one byte of memory. `value` is 0 to 255.",
+      "example": ["POKE 2560, 42", "PRINT PEEK(2560)"],
+      "output": [" 42"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["PEEK"]
+    },
+    "SYS": {
+      "syntax": "SYS addr",
+      "summary": "Call machine code at an address and come back when it returns.",
+      "example": ["POKE 2560, 96", "SYS 2560", "PRINT \"BACK FROM MACHINE CODE\""],
+      "output": ["BACK FROM MACHINE CODE"],
+      "see": ["POKE"]
+    },
+    "WAIT": {
+      "syntax": "WAIT addr, mask",
+      "summary": "Hold the program until reading `addr` and ANDing it with `mask` gives something other than zero. Nothing else happens while it waits.",
+      "example": ["POKE 2560, 1", "WAIT 2560, 1", "PRINT \"BIT IS SET\""],
+      "output": ["BIT IS SET"],
+      "see": ["PEEK"]
+    },
+    "BANK": {
+      "syntax": "BANK n",
+      "summary": "Choose which bank of extra RAM appears in the window at 32768.",
+      "example": ["BANK 1", "POKE 32768, 42", "BANK 0", "PRINT PEEK(32768)", "BANK 1", "PRINT PEEK(32768)"],
+      "output": [" 0", " 42"],
+      "see": ["PEEK", "POKE"]
+    },
+    "MEM": {
+      "syntax": "MEM",
+      "summary": "Print free memory, which cards the machine found, and the current disk. A statement, not a function — `PRINT MEM` is a syntax error.",
+      "example": ["MEM"],
+      "result": "Free bytes, the fitted-hardware byte, and the selected disk.",
+      "expect": ["BYTES FREE", "^DISK \\d+\\s*$"],
+      "see": ["FRE"]
+    },
+    "BRK": {
+      "syntax": "BRK",
+      "summary": "Drop into the machine-code Monitor. `X` at the Monitor's `.` prompt comes back to BASIC.",
+      "example": ["BRK"],
+      "wait": "6502 MONITOR",
+      "result": "The Monitor starts and shows the registers.",
+      "expect": ["6502 MONITOR"],
+      "see": ["SYS"]
+    },
+    "PAUSE": {
+      "syntax": "PAUSE n",
+      "summary": "Do nothing for `n` hundredths of a second.",
+      "example": ["10 PRINT \"WAIT FOR IT\"", "20 PAUSE 50", "30 PRINT \"THERE\""],
+      "output": ["WAIT FOR IT", "THERE"]
+    },
+
+    "CLS": {
+      "syntax": "CLS",
+      "summary": "Clear the screen and put the cursor at the top left.",
+      "example": ["10 CLS", "20 PRINT \"A FRESH SCREEN\""],
+      "console": "video",
+      "screen": ["^A FRESH SCREEN\\s*$"],
+      "see": ["LOCATE", "COLOR"]
+    },
+    "LOCATE": {
+      "syntax": "LOCATE row, col",
+      "summary": "Put the cursor somewhere. Rows are 0 to 23 down the screen, columns 0 to 39 across.",
+      "example": ["10 CLS", "20 LOCATE 5, 10", "30 PRINT \"OVER HERE\""],
+      "console": "video",
+      "screen": ["^\\s{10}OVER HERE\\s*$"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["CLS", "COLOR"]
+    },
+    "COLOR": {
+      "syntax": "COLOR fg, bg",
+      "summary": "Set the text and background colours, each 0 to 15, for everything printed from now on.",
+      "example": ["10 CLS", "20 COLOR 1, 15", "30 PRINT \"DARK ON WHITE\""],
+      "console": "video",
+      "screen": ["^DARK ON WHITE\\s*$"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["CLS", "LOCATE"]
+    },
+    "SOUND": {
+      "syntax": "SOUND voice, freq, dur",
+      "summary": "Play a note: `voice` 1 to 3, `freq` in hertz, `dur` in hundredths of a second. The program waits for the note to finish.",
+      "example": ["10 VOL 15", "20 SOUND 1, 262, 20", "30 SOUND 1, 330, 20", "40 SOUND 1, 392, 20"],
+      "result": "Three notes — the bottom of a C major chord.",
+      "timeout": "40s",
+      "absent": ["ERROR"],
+      "see": ["VOL"]
+    },
+    "VOL": {
+      "syntax": "VOL n",
+      "summary": "Set the overall volume, 0 to 15.",
+      "example": ["10 VOL 8", "20 SOUND 1, 440, 10", "30 PRINT \"THAT WAS A CONCERT A\""],
+      "output": ["THAT WAS A CONCERT A"],
+      "see": ["SOUND"]
+    },
+    "JOY": {
+      "syntax": "JOY(n)",
+      "summary": "Read joystick 1 or 2. The bits are **active low** — a bit that reads `0` is a direction being pushed, so test with `= 0`, not with `<> 0`.",
+      "example": ["PRINT JOY(1)"],
+      "result": "255 with nothing being pushed: every bit high.",
+      "expect": ["^ 255\\s*$"],
+      "see": ["INKEY"]
+    },
+    "INKEY": {
+      "syntax": "INKEY",
+      "summary": "The code of a key being pressed right now, or `0` if none. Does not wait — put it in a loop.",
+      "example": ["PRINT INKEY"],
+      "output": [" 0"],
+      "see": ["INPUT", "JOY"]
+    },
+
+    "TIME": {
+      "syntax": "TIME",
+      "summary": "Print the time of day from the battery-backed clock.",
+      "example": ["TIME"],
+      "result": "The time, as `HH:MM:SS`.",
+      "expect": ["^\\d\\d:\\d\\d:\\d\\d\\s*$"],
+      "see": ["SETTIME", "DATE"]
+    },
+    "DATE": {
+      "syntax": "DATE",
+      "summary": "Print today's date from the battery-backed clock.",
+      "example": ["SETDATE 20, 26, 8, 3", "DATE"],
+      "output": ["2026-08-03"],
+      "see": ["SETDATE", "TIME"]
+    },
+    "SETTIME": {
+      "syntax": "SETTIME hh, mm, ss",
+      "summary": "Set the clock. It keeps running with the power off.",
+      "example": ["SETTIME 12, 30, 0", "TIME"],
+      "result": "The clock now reads half past twelve.",
+      "expect": ["^12:30:\\d\\d\\s*$"],
+      "see": ["TIME"]
+    },
+    "SETDATE": {
+      "syntax": "SETDATE cc, yy, mm, dd",
+      "summary": "Set the date: century, year within it, month, day. 2026 is `20, 26`.",
+      "example": ["SETDATE 20, 26, 12, 25", "DATE"],
+      "output": ["2026-12-25"],
+      "see": ["DATE"]
+    },
+    "NVRAM": {
+      "syntax": "NVRAM addr, value   |   NVRAM(addr)",
+      "summary": "256 bytes of memory on the clock card that survive a power cut. A statement to write one, a function to read one.",
+      "example": ["NVRAM 0, 123", "PRINT NVRAM(0)"],
+      "output": [" 123"],
+      "errors": ["ILLEGAL QUANTITY"]
+    },
+
+    "DIR": {
+      "syntax": "DIR",
+      "summary": "List the files on the current disk, with their sizes in bytes.",
+      "example": ["DIR"],
+      "console": "storage",
+      "output": ["DISK 0", "HELLO   .TXT 6"],
+      "see": ["DISK", "LOAD", "SAVE"]
+    },
+    "SAVE": {
+      "run": false,
+      "syntax": "SAVE \"name\"   |   SAVE",
+      "summary": "Write the program to the card. Bare `SAVE` sends it over the serial port instead, by XModem.",
+      "example": ["10 PRINT \"KEEP ME\"", "SAVE \"KEEPER\"", "DIR"],
+      "console": "storage",
+      "output": ["KEEPER  .    18"],
+      "errors": ["SAVE"],
+      "see": ["LOAD", "DIR"]
+    },
+    "LOAD": {
+      "run": false,
+      "syntax": "LOAD \"name\"   |   LOAD",
+      "summary": "Read a program back off the card, replacing whatever is in memory. Bare `LOAD` receives one over the serial port by XModem.",
+      "example": ["10 PRINT \"KEEP ME\"", "SAVE \"KEEPER\"", "NEW", "LOAD \"KEEPER\"", "RUN"],
+      "console": "storage",
+      "output": ["KEEP ME"],
+      "errors": ["LOAD"],
+      "see": ["SAVE", "DIR"]
+    },
+    "DEL": {
+      "syntax": "DEL \"name\"",
+      "summary": "Delete a file from the current disk.",
+      "example": ["DEL \"HELLO.TXT\"", "DIR"],
+      "console": "storage",
+      "output": ["DISK 0"],
+      "absent": ["HELLO\\s+\\.TXT"],
+      "see": ["DIR"]
+    },
+    "DISK": {
+      "syntax": "DISK n",
+      "summary": "Choose which of the card's 256 one-megabyte disks to work with.",
+      "example": ["DISK 3", "MEM"],
+      "console": "storage",
+      "output": ["DISK 3"],
+      "errors": ["SYNTAX", "ILLEGAL QUANTITY"],
+      "see": ["DIR", "FORMAT"]
+    },
+    "FORMAT": {
+      "syntax": "FORMAT",
+      "summary": "Erase the current disk and start it fresh. Asks first.",
+      "example": ["FORMAT"],
+      "console": "storage",
+      "wait": "(OK|\\(Y/N\\))",
+      "sends": ["Y\\r"],
+      "result": "It asks before erasing anything.",
+      "expect": ["ERASE DISK 0\\? \\(Y/N\\)"],
+      "see": ["DISK", "DIR"]
+    },
+    "BSAVE": {
+      "syntax": "BSAVE addr, len, \"name\"",
+      "summary": "Write raw bytes straight from memory to a file — a high score, a screen, a level.",
+      "example": ["POKE 2560, 42", "BSAVE 2560, 1, \"SCORE.DAT\"", "DIR"],
+      "console": "storage",
+      "output": ["SCORE   .DAT 1"],
+      "see": ["BLOAD"]
+    },
+    "BLOAD": {
+      "syntax": "BLOAD addr, \"name\"",
+      "summary": "Read a file of raw bytes straight back into memory.",
+      "example": [
+        "POKE 2560, 42",
+        "BSAVE 2560, 1, \"SCORE.DAT\"",
+        "POKE 2560, 0",
+        "BLOAD 2560, \"SCORE.DAT\"",
+        "PRINT PEEK(2560)"
+      ],
+      "console": "storage",
+      "output": [" 42"],
+      "see": ["BSAVE"]
+    }
+  }
+}

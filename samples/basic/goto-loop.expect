@@ -1,0 +1,8 @@
+# The classic two-line GOTO loop for "Your first ten minutes" (Phase 3).
+# It never reaches OK on its own, so `wait` matches the first repeat instead —
+# once that's seen the loop is proven running, and the harness's next case
+# resets the machine from its snapshot regardless of what this one left
+# running in the background.
+
+wait HELLO
+expect ^HELLO$

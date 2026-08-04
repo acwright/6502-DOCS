@@ -1,0 +1,15 @@
+# "A guessing game" — the first project: INPUT, IF, and a loop that keeps
+# going until the player is right.
+#
+# The machine picks with RND, which starts from the same place every time an
+# ACE is switched on — so from a freshly booted machine the number is 52, and
+# this binary search finds it in five.
+wait (OK|\?)
+send 50\r
+send 75\r
+send 62\r
+send 56\r
+send 52\r
+expect ^TOO LOW$
+expect ^TOO HIGH$
+expect ^GOT IT IN 5 GUESSES$

@@ -1,0 +1,553 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   card.css — the shared print stylesheet for every AC6502 reference card.
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Extracted from the inline <style> blocks of the original 6502-ASSETS sheets,
+   which each carried their own ~250-line copy of nearly the same CSS. Those
+   copies had drifted into two size regimes and pulled their fonts from Google
+   Fonts, so they rendered wrong offline. Both problems are fixed here.
+
+   USAGE
+   -----
+   <link rel="stylesheet" href="card.css">   (or "../card.css" from archive/)
+   <body class="card">            dense reference sheet — 6.5pt tables
+   <body class="card placard">    display placard    — 9pt tables, read at arm's length
+
+   Column widths are per-card, so they are custom properties rather than rules:
+   <body class="card" style="--w-cmd: 36%; --w-syn: 40%">
+
+   PRINTING
+   --------
+   Letter, 100% scale, margins off, background graphics ON. The page furniture
+   (black header and footer bars) is part of the artwork; `print-color-adjust:
+   exact` keeps browsers from helpfully stripping it.
+
+   Fonts are self-hosted from ../fonts/ — no network request, so a card printed
+   from a laptop with no internet looks identical to one printed online.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('../fonts/BebasNeue-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: block;
+  src: url('../fonts/SourceCodePro-Variable.woff2') format('woff2');
+}
+
+/* ── Design tokens ────────────────────────────────────────────────────────
+   Greyscale only, matching the docs site: ink, paper, and the greys between.
+   ──────────────────────────────────────────────────────────────────────── */
+.card {
+  --c-ink: #111;
+  --c-paper: #fff;
+  --c-bar: #111;          /* header / footer bars */
+  --c-bar-dim: #666;      /* footer text */
+  --c-bar-side: #888;     /* header side-info text */
+  --c-sec: #333;          /* section title bar */
+  --c-rule: #999;         /* table head rule */
+  --c-rule-light: #e0e0e0;
+  --c-zebra: #f7f7f7;
+  --c-th: #e8e8e8;
+  --c-box: #f2f2f2;
+  --c-body: #333;
+  --c-desk: #888;         /* screen-only backdrop behind the page */
+  --c-screen: #1a1a1a;    /* terminal / code block background */
+  --c-screen-fg: #ccc;
+
+  --f-display: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  --f-body: Arial, Helvetica, sans-serif;
+  --f-mono: 'Source Code Pro', ui-monospace, Menlo, Consolas, monospace;
+
+  /* Column widths — overridden per card, these are the common defaults. */
+  --w-cmd: 22%;
+  --w-syn: 38%;
+  --w-addr: 13%;
+  --w-label: 28%;
+
+  /* ── Compact regime (default): dense reference sheets ── */
+  --fs-h1: 34pt;
+  --fs-side: 11pt;
+  --fs-sec: 9.5pt;
+  --fs-table: 6.5pt;
+  --fs-th: 7pt;
+  --fs-mono: 6.5pt;
+  --fs-code: 6.3pt;
+  --fs-codeblock: 6.3pt;
+  --fs-note: 6.5pt;
+  --fs-note-strong: 7pt;
+  --fs-reg: 7pt;
+
+  --lh-table: 1.25;
+  --lh-note: 1.4;
+
+  --pad-hdr: 0.18in 0.4in 0.14in;
+  --pad-body: 0.13in 0.32in 0.1in;
+  --pad-sec: 1.5px 6px 1px;
+  --pad-th: 0.8px 3.5px;
+  --pad-td: 0.9px 3.5px;
+  --pad-note: 2.5px 5px;
+  --pad-reg: 4px 8px;
+
+  --gap-col: 0.2in;
+  --gap-sec: 0.053in;
+  --gap-sec-title: 1px;
+  --gap-note: 0.04in;
+
+  --ls-sec: 2px;
+  --bw-note: 2.5pt;
+
+  /* Sections in the compact regime are kept whole; in the placard regime they
+     are allowed to flow across the column break so the page fills evenly. */
+  --break-section: avoid;
+  --break-inner: avoid;
+}
+
+/* ── Placard regime: larger type, balanced fill, read at arm's length ──── */
+.card.placard {
+  --fs-h1: 40pt;
+  --fs-side: 12.5pt;
+  --fs-sec: 12pt;
+  --fs-table: 9pt;
+  --fs-th: 9pt;
+  --fs-mono: 8.5pt;
+  --fs-code: 8.5pt;
+  --fs-codeblock: 8.3pt;
+  --fs-note: 9pt;
+  --fs-note-strong: 10pt;
+  --fs-reg: 10pt;
+
+  --lh-table: 1.45;
+  --lh-note: 1.55;
+
+  --pad-hdr: 0.22in 0.4in 0.18in;
+  --pad-body: 0.2in 0.36in 0.16in;
+  --pad-sec: 3px 9px 2px;
+  --pad-th: 2.5px 6px;
+  --pad-td: 2.8px 6px;
+  --pad-note: 6px 10px;
+  --pad-reg: 6px 10px;
+
+  --gap-col: 0.3in;
+  --gap-sec: 0.13in;
+  --gap-sec-title: 5px;
+  --gap-note: 0.1in;
+
+  --ls-sec: 2.5px;
+  --bw-note: 3pt;
+
+  --break-section: auto;
+  --break-inner: auto;
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+.card *,
+.card *::before,
+.card *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body.card {
+  background: var(--c-desk);
+  font-family: var(--f-body);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+@page {
+  size: letter;
+  margin: 0;
+}
+
+/* ── Page shell ─────────────────────────────────────────────────────────── */
+.card .page {
+  width: 8.5in;
+  min-height: 11in;
+  height: 11in;
+  background: var(--c-paper);
+  margin: 0.25in auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  page-break-after: always;
+}
+
+.card .page:last-child {
+  page-break-after: auto;
+}
+
+@media print {
+  body.card {
+    background: var(--c-paper);
+  }
+  .card .page {
+    margin: 0;
+    box-shadow: none;
+  }
+  .card .pg-body {
+    overflow: hidden;
+  }
+}
+
+/* ── Page header ────────────────────────────────────────────────────────── */
+.card .pg-header {
+  background: var(--c-bar);
+  color: var(--c-paper);
+  padding: var(--pad-hdr);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.card .pg-header h1 {
+  font-family: var(--f-display);
+  font-size: var(--fs-h1);
+  letter-spacing: 2px;
+  line-height: 1;
+  color: var(--c-paper);
+}
+
+.card .pg-header .side-info {
+  font-family: var(--f-display);
+  font-size: var(--fs-side);
+  letter-spacing: 2px;
+  color: var(--c-bar-side);
+  text-align: right;
+  line-height: 1.4;
+}
+
+/* ── Content area ───────────────────────────────────────────────────────── */
+.card .pg-body {
+  flex: 1;
+  padding: var(--pad-body);
+  columns: 2;
+  column-gap: var(--gap-col);
+  column-fill: auto;
+  height: calc(11in - 0.85in - 0.28in); /* minus header and footer */
+  overflow: hidden;
+}
+
+/* Single-column pages (wide tables, diagrams, keyboard layouts). */
+.card .pg-body.one-col {
+  columns: 1;
+}
+
+/* ── Page footer ────────────────────────────────────────────────────────── */
+.card .pg-footer {
+  background: var(--c-bar);
+  padding: 0.05in 0.4in;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.card .pg-footer span {
+  font-family: var(--f-display);
+  font-size: 8pt;
+  letter-spacing: 1.5px;
+  color: var(--c-bar-dim);
+}
+
+.card .pg-footer .pg-num {
+  color: var(--c-paper);
+  font-size: 9pt;
+}
+
+/* ── Sections ───────────────────────────────────────────────────────────── */
+.card .section {
+  break-inside: var(--break-section);
+  margin-bottom: var(--gap-sec);
+}
+
+.card .sec-title {
+  font-family: var(--f-display);
+  font-size: var(--fs-sec);
+  letter-spacing: var(--ls-sec);
+  color: var(--c-paper);
+  background: var(--c-sec);
+  padding: var(--pad-sec);
+  display: block;
+  margin-bottom: var(--gap-sec-title);
+  break-after: avoid;
+}
+
+/* Force the next block to the top of the following column. */
+.card .col-break {
+  break-before: column;
+}
+
+/* ── Tables ─────────────────────────────────────────────────────────────── */
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-table);
+  line-height: var(--lh-table);
+  break-inside: var(--break-inner);
+}
+
+.card thead th {
+  font-family: var(--f-display);
+  font-size: var(--fs-th);
+  letter-spacing: 1px;
+  background: var(--c-th);
+  color: var(--c-sec);
+  padding: var(--pad-th);
+  text-align: left;
+  border-bottom: 0.75pt solid var(--c-rule);
+  white-space: nowrap;
+}
+
+.card tbody tr:nth-child(even) td {
+  background: var(--c-zebra);
+}
+
+.card td {
+  padding: var(--pad-td);
+  vertical-align: top;
+  font-size: var(--fs-table);
+  border-bottom: 0.4pt solid var(--c-rule-light);
+  color: #222;
+}
+
+.card tr:last-child td {
+  border-bottom: none;
+}
+
+/* Walk-through sheets centre their cells vertically against the step chips. */
+.card.va-middle td {
+  vertical-align: middle;
+}
+
+/* Cell roles. Widths come from the per-card custom properties above. */
+.card .td-cmd {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: var(--fs-mono);
+  color: #000;
+  white-space: nowrap;
+  width: var(--w-cmd);
+}
+
+.card .td-syn {
+  font-family: var(--f-mono);
+  font-size: var(--fs-mono);
+  color: var(--c-body);
+  width: var(--w-syn);
+}
+
+/* Some sheets set syntax cells in bold, nowrap. Opt in per card. */
+.card .td-syn.strong {
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+}
+
+.card .td-addr {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: var(--fs-mono);
+  color: #000;
+  white-space: nowrap;
+  width: var(--w-addr);
+}
+
+.card .td-label {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: var(--fs-mono);
+  color: #000;
+  white-space: nowrap;
+  width: var(--w-label);
+}
+
+.card .td-desc {
+  color: var(--c-body);
+  font-size: var(--fs-table);
+}
+
+/* Numbered step column — a filled Bebas chip down the left of a walk-through. */
+.card .td-step {
+  font-family: var(--f-display);
+  font-size: calc(var(--fs-table) + 2pt);
+  color: var(--c-paper);
+  background: var(--c-sec) !important;
+  text-align: center;
+  white-space: nowrap;
+  width: 1.6em;
+  padding: var(--pad-td);
+  vertical-align: middle;
+}
+
+/* Hex-dump tables: address gutter, data cells, and empty-slot placeholders. */
+.card .td-hex {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: var(--fs-table);
+  color: #000;
+  text-align: center;
+  padding: 2.8px 4px;
+  white-space: nowrap;
+}
+
+.card .td-hex-data {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: var(--fs-table);
+  color: #555;
+  text-align: center;
+  padding: 2.8px 4px;
+  white-space: nowrap;
+}
+
+.card .td-hex-empty {
+  font-family: var(--f-mono);
+  font-size: var(--fs-table);
+  color: #ccc;
+  background: #f8f8f8 !important;
+  text-align: center;
+  padding: 2.8px 4px;
+}
+
+.card thead th.th-hex {
+  text-align: center;
+  padding: 2.5px 4px;
+}
+
+.card .td-addr-data {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: var(--fs-mono);
+  color: #555;
+  white-space: nowrap;
+  width: 16%;
+}
+
+/* ── Note box ───────────────────────────────────────────────────────────── */
+.card .note-box {
+  background: var(--c-box);
+  border-left: var(--bw-note) solid #555;
+  padding: var(--pad-note);
+  font-size: var(--fs-note);
+  color: var(--c-body);
+  line-height: var(--lh-note);
+  break-inside: var(--break-inner);
+  margin-bottom: var(--gap-note);
+}
+
+.card .note-box strong {
+  color: var(--c-ink);
+  font-family: var(--f-display);
+  font-size: var(--fs-note-strong);
+  letter-spacing: 0.5px;
+}
+
+/* ── Boxed monospace block (entry points, register lists) ───────────────── */
+.card .entry-box {
+  background: var(--c-box);
+  border: 0.5pt solid #ccc;
+  padding: 3px 6px;
+  font-size: var(--fs-note);
+  font-family: var(--f-mono);
+  color: var(--c-ink);
+  margin-bottom: 4px;
+  break-inside: var(--break-inner);
+}
+
+/* ── Terminal-style blocks ──────────────────────────────────────────────── */
+.card .reg-display {
+  font-family: var(--f-mono);
+  font-size: var(--fs-reg);
+  background: var(--c-screen);
+  color: var(--c-screen-fg);
+  padding: var(--pad-reg);
+  margin: 2px 0 4px;
+  letter-spacing: 0.5px;
+  break-inside: var(--break-inner);
+}
+
+.card .code-block {
+  font-family: var(--f-mono);
+  font-size: var(--fs-codeblock);
+  background: var(--c-screen);
+  color: var(--c-screen-fg);
+  padding: 8px 11px;
+  line-height: 1.55;
+  white-space: pre;
+  overflow: hidden;
+  break-inside: var(--break-inner);
+  margin-bottom: 0.08in;
+}
+
+/* Syntax roles inside .code-block — greyscale, no hue. */
+.card .code-block .cm {
+  color: #808080;
+}
+
+.card .code-block .lbl {
+  color: #eee;
+  font-weight: 600;
+}
+
+/* ── Inline code ────────────────────────────────────────────────────────── */
+.card code {
+  font-family: var(--f-mono);
+  font-size: var(--fs-code);
+  font-weight: 600;
+  color: var(--c-ink);
+}
+
+/* ── Figures (SVG diagrams, charset renders) ────────────────────────────── */
+.card figure {
+  break-inside: var(--break-inner);
+  margin-bottom: var(--gap-note);
+}
+
+.card figure img,
+.card figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.card figcaption {
+  font-size: var(--fs-note);
+  color: var(--c-body);
+  line-height: var(--lh-note);
+  padding-top: 2px;
+}
+
+/* ── Screen-only print hint ─────────────────────────────────────────────────
+   Cards are opened in a browser far more often than they are printed. A single
+   banner tells the reader how to print it correctly; it never appears on paper.
+   ────────────────────────────────────────────────────────────────────────── */
+.card .print-hint {
+  width: 8.5in;
+  margin: 0.25in auto -0.1in;
+  padding: 6px 10px;
+  background: var(--c-ink);
+  color: #bbb;
+  font-family: var(--f-display);
+  font-size: 10pt;
+  letter-spacing: 1.5px;
+}
+
+.card .print-hint a {
+  color: #fff;
+}
+
+@media print {
+  .card .print-hint {
+    display: none;
+  }
+}

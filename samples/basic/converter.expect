@@ -1,0 +1,4 @@
+# "Making your own functions" — DEF FN used the way a formula wants to be used.
+expect ^C\s+F$
+expect ^ 0\s+32$
+expect ^ 100\s+212$

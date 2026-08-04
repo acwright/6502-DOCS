@@ -1,0 +1,5 @@
+# "Subroutines" — ON ... GOSUB picking one of three.
+wait (OK|\?)
+send 2\r
+expect ^WHY DID THE 6502 CROSS THE BUS$
+absent ^HELLO THERE$
