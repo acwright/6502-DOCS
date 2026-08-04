@@ -1,8 +1,6 @@
-# The proving case for the video path: CLS, LOCATE and COLOR do nothing at all
-# on a machine with no video card (their arguments are still consumed), so
-# anything that draws has to be asserted against the screen, not the console.
-#
-# `screen` implies `console video`, which puts this case on its own machine.
+# "Sound and pictures" — CLS, COLOR and LOCATE put a line in the middle of
+# the screen. Nothing reaches the console stream when the console is the
+# video card, so this one is asserted against the screen buffer itself.
 
 console video
-screen ^\s+SCREEN OK\s*$
+screen ^\s+HELLO FROM YOUR ACE\s*$

@@ -1,0 +1,4 @@
+# "PRINT in depth" — the comma's 14-column zones next to TAB's absolute column.
+expect ^ITEM\s+PRICE$
+expect ^BREAD\s+1\.2$
+expect ^TOTAL\s+2\.05$

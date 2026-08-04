@@ -11,11 +11,38 @@ A listing that cannot be verified does not go in.
 
 | Path | What it is |
 |---|---|
-| `basic/` | BASIC listings, typed into the machine as source and `RUN` |
-| `assembly/` | ca65 sources, assembled with `cl65` and loaded as a `.prg` |
-| `lib/` | `6502.cfg` (linker config) and `6502.inc` (**generated** — see below) |
+| `basic/` | BASIC listings shown in a chapter, typed into the machine as source and `RUN` |
+| `assembly/` | ca65 sources shown in a chapter, assembled with `cl65` and loaded as a `.prg` |
+| `_checks/` | Regression cases that are **never shown** in the docs |
 | `_harness/` | Cases that test the harness itself, not the machine |
+| `lib/` | `6502.cfg` (linker config) and `6502.inc` (**generated** — see below) |
 | `build/` | Assembler output and boot snapshots. Git-ignored, rebuilt every run. |
+
+### Shown versus not shown
+
+A sample under `basic/` or `assembly/` appears on a page, so it has to read as a
+program somebody wrote on purpose — it draws something, plays something, saves
+something. It asserts on its own real output with `expect`. **It never contains
+`PRINT "PASS"`.** See PLAN.md's *Voice & Style*, which is binding.
+
+`_checks/` is where the pure regression cases live: memory-map spot checks, the
+truth-value convention, the storage command surface. Those exist to turn CI red
+when the ROM moves, nobody reads them, and they may use the `pass` shorthand
+freely.
+
+## Cases that are not files
+
+The BASIC reference carries a worked example for every keyword, and 170 files
+for 85 one-liners would bury the samples that a reader is actually meant to
+type. Those live in [`../data/basic-examples.json`](../data/basic-examples.json)
+instead, and the harness discovers them alongside everything here — they report
+as `reference/<KEYWORD>`.
+
+An entry gives `example` lines and `output` lines. The lines are typed into the
+machine and the output is asserted verbatim, and both arrays are what the
+reference page renders, so the page cannot show output the machine did not
+produce. `console`, `sends`, `wait`, `timeout`, `absent` and `screen` mean what
+they mean below; `run: false` suppresses the automatic `RUN`.
 
 ## Adding a sample
 
@@ -27,6 +54,9 @@ A listing that cannot be verified does not go in.
 4. Include it in the prose with VitePress's snippet import:
    `<<< @/../samples/basic/name.bas`
 
+If the case is a regression check rather than something a reader would enjoy
+running, put it in `_checks/` and skip step 4.
+
 ## The `.expect` format
 
 One directive per line; `#` starts a comment. A case must assert something.
@@ -35,7 +65,7 @@ One directive per line; `#` starts a comment. A case must assert something.
 |---|---|
 | `expect <regex>` | Console output must match |
 | `absent <regex>` | Console output must not match |
-| `pass` | Shorthand for `expect ^PASS$` + `absent ^FAIL$` |
+| `pass` | Shorthand for `expect ^PASS$` + `absent ^FAIL$` — `_checks/` only |
 | `screen <regex>` | `dbg screen text` must match — implies `console video` |
 | `console serial\|video\|storage` | Which machine to run on (default `serial`) |
 | `wait <regex>` | What `RUN` waits for before asserting (default `OK`, serial only) |
@@ -104,6 +134,6 @@ regenerate.
 
 Reader-facing projects use the equivalent file shipped with the
 [`6502-PRG`](https://github.com/acwright/6502-PRG) and
-[`6502-CRT`](https://github.com/acwright/6502-CRT) templates, which Phase 5
-documents. The two are derived from the same machine; diffing them is a
-Phase 9 task tracked in [`ACCURACY.md`](../ACCURACY.md).
+[`6502-CRT`](https://github.com/acwright/6502-CRT) templates. The two are
+derived from the same machine; diffing them is tracked in
+[`ACCURACY.md`](../ACCURACY.md).

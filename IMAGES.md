@@ -1,12 +1,15 @@
 # IMAGES.md — the shot list and status ledger
 
-Every image the docs want, whether it exists yet or not. [Phase 8](PLAN.md#phase-8--images--diagrams)
-owns the capture pipeline (`scripts/capture-screens.mjs`, hand-drawn SVGs, and
-the placeholder generator this file was seeded from); this ledger exists so
-that "no chapter ships with an unlabelled gap" is checkable rather than
-assumed. [Phase 3](PLAN.md#phase-3--the-users-guide) placeholders every image
-its chapters want and records each one here — none of the real capture work
-happens in this pass.
+Every image the docs want, whether it exists yet or not.
+[Phase 8](PLAN.md#phase-8--images--diagrams) owns the capture pipeline
+(`scripts/capture-screens.mjs`, hand-drawn SVGs, and the placeholder generator
+this file was seeded from); this ledger exists so that "no chapter ships with an
+unlabelled gap" is checkable rather than assumed.
+
+**This file is a working note.** A placeholder's on-page caption describes the
+picture and nothing else — no phase numbers, no script names, no accuracy
+findings. All of that lives here, where the reader never sees it. See
+[PLAN.md's *Voice & Style*](PLAN.md#voice--style).
 
 ## How to read this table
 
@@ -21,22 +24,38 @@ happens in this pass.
 
 | Image | Kind | Where it's used | Status | Notes |
 |---|---|---|---|---|
-| Family hero shot (all five machines) | P | `docs/index.md` (Ch.1 Welcome) | placeholder | The real photo (`docs/public/images/6502.png`, migrated in Phase 2) shows a stale `6502 BASIC v1.0` banner — [ACCURACY.md A9](ACCURACY.md#a9--the-family-hero-photo-shows-a-two-major-versions-stale-banner) — and stays unreferenced until Phase 8 resolves it (reshoot, crop, or caption as historical). |
-| ACE board render | P | `docs/systems/ace.md` | placeholder | `~/Developer/Kicad/6502-ACE/Images/6502-ACE.png` exists and can be migrated in Phase 8. |
-| COB board render | P | `docs/systems/cob.md` | placeholder | `~/Developer/Kicad/6502-COB/Images/6502-COB.png` exists. |
-| DEV board render | P | `docs/systems/dev.md` | placeholder | `~/Developer/Kicad/6502-DEV/Images/6502-DEV.png` exists. |
-| KIM board render | P | `docs/systems/kim.md` | placeholder | `~/Developer/Kicad/6502-KIM/Images/6502-KIM.png` exists. |
-| VCS board render | P | `docs/systems/vcs.md` | placeholder | `~/Developer/Kicad/6502-VCS/Images/6502-VCS.png` exists. |
-| Boot splash on screen | G | `docs/getting-started/first-boot.md` (Ch.4) | placeholder | `6502 run --console video` + `dbg screen png`, once `scripts/capture-screens.mjs` exists. |
-| BASIC session (first ten minutes) | G | `docs/getting-started/first-ten-minutes.md` (Ch.5) | placeholder | Scripted keystrokes against `samples/basic/first-program.bas` and `goto-loop.bas`. |
-| Monitor session (`M`, `D`, `R`) | G | `docs/using/monitor.md` (Ch.9) | placeholder | |
-| Wozmon screen | G | `docs/using/monitor.md` (Ch.9) | placeholder | |
-| Keyboard layout diagram | D | `docs/using/keyboard.md` (Ch.6) | placeholder | `assets/keyboard/keyboard-layout.svg` exists (migrated in Phase 2) but is a design source under `assets/`, not yet copied into `docs/public/` — wiring it into a servable page is `cards/keyboard-layout.html` in Phase 7, per PLAN.md. Placeholdered here rather than reached into early. |
-| CF disk-bank / directory model | D | `docs/using/storage.md` (Ch.7) | placeholder | |
-| XModem handshake | D | `docs/using/serial.md` (Ch.8) | placeholder | |
-| Joystick bitmask (active low) | D | `docs/using/emulator.md` / systems pages | placeholder | |
+| The ACE, on a desk, powered on | P | `docs/index.md` — Welcome | placeholder | **The single most important shot on the site.** A real ACE, cabled, with a VGA monitor showing the `OK` prompt. Nothing else on the page carries the "this is a real object you can own" message. |
+| The ACE board, from above | P | `docs/your-ace.md` | placeholder | `~/Developer/Kicad/6502-ACE/Images/6502-ACE.png` exists and can be migrated as an interim render; a photograph of a populated board is better, because the chapter is a guided tour of physical parts. |
+| Everything connected | P | `docs/getting-started/setup.md` | placeholder | Cables labelled: power, VGA, audio, keyboard, joysticks, serial. |
+| The boot screen | G | `docs/getting-started/first-boot.md` | placeholder | `6502 run --console video` + `dbg screen png`. The transcript on the page is already checked; only the picture is missing. |
+| Text on screen | G | `docs/using/sound-and-video.md` | placeholder | Capture `samples/basic/screen-text.bas` on a video console. |
+| Wozmon | G | `docs/using/monitor.md` | placeholder | The dot prompt, `G FF00`, the backslash, and a short `FF00.FF0F` dump. |
+| The ACE keyboard layout | D | `docs/using/keyboard.md` | placeholder | `assets/keyboard/keyboard-layout.svg` exists (design source, not yet in `docs/public/`). Wiring it into a servable page is `cards/keyboard-layout.html` in Phase 7. |
+| A laptop driving an ACE | P | `docs/using/serial.md` | placeholder | Both screens visible, showing the same prompt. |
+| An ACE wearing its KIM boards | P | `docs/addons/kim.md` | placeholder | The three-board stack in the cartridge slot, LCD lit and showing an address/byte pair. |
+| The whole family | P | `docs/family/index.md` | placeholder | COB, DEV, VCS, KIM, ACE lined up oldest to newest. `docs/public/images/6502.png` (migrated in Phase 2) is the only existing family photo and shows a stale `6502 BASIC v1.0` banner — [ACCURACY.md A9](ACCURACY.md#a9--the-family-hero-photo-shows-a-two-major-versions-stale-banner). Unreferenced until Phase 8 reshoots, crops below the text, or captions it as historical. |
+| Fifteen colours | G | `docs/basic/sound-and-pictures.md` | placeholder | Capture `samples/basic/colour-loop.bas` on a video console mid-run. The one shot on the site that shows the palette. |
+| The joystick bits | D | `docs/basic/controls.md` | placeholder | Eight labelled boxes for one byte, making the active-low convention visible. Was listed under "wanted but not yet placed"; the BASIC guide now reserves a slot for it. |
+| Treasure grid | G | `docs/basic/projects.md` | placeholder | Capture `samples/basic/treasure.bas` at the winning move. The payoff shot for the whole BASIC guide. |
+| Where BASIC keeps things | D | `docs/basic/inside.md` | placeholder | Program/variables/arrays growing up from 2048, strings growing down from 32768, `FRE(0)` labelling the gap. |
+| A populated COB | P | `docs/family/cob.md` | placeholder | `~/Developer/Kicad/6502-COB/Images/6502-COB.png` exists; a side-on photo showing several cards at once is better for this page. |
+| The DEV rig | P | `docs/family/dev.md` | placeholder | `~/Developer/Kicad/6502-DEV/Images/6502-DEV.png` exists. Wants the four control buttons legible. |
+| The VCS | P | `docs/family/vcs.md` | placeholder | `~/Developer/Kicad/6502-VCS/Images/6502-VCS.png` exists. Wants a cartridge half-inserted. |
 
-Everything else in PLAN.md's Appendix B (assembling a machine, CF card
-insertion, cartridge in hand, DEV rig, KIM keypad close-up, EEPROM burning)
-belongs to Phases 4-8's chapters, not Phase 3's, and is left for Phase 8 to
-seed when those pages exist.
+## Wanted but not yet placed
+
+Diagrams the chapters would be better for, which no page currently reserves a
+slot for. Add the `<PlaceholderImage>` when the drawing is close enough to be
+worth announcing:
+
+| Image | Kind | Would go in |
+|---|---|---|
+| CF disk-bank / directory model | D | `docs/using/storage.md` |
+| XModem handshake | D | `docs/using/serial.md` |
+| Memory map | D | The assembly guide |
+| Cartridge ROM overlay (`$C000–$FFFF`) | D | `docs/addons/kim.md`, the assembly guide |
+| KIM keypad close-up | P | `docs/addons/kim.md` |
+| Cartridge + label in hand | P | `docs/family/vcs.md` |
+
+Everything else in PLAN.md's Appendix B belongs to the chapters Phases 5–8 have
+yet to write.

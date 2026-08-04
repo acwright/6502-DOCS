@@ -2,20 +2,20 @@
 import { data as facts } from '../.vitepress/data/facts.data.mts'
 </script>
 
-# The Monitor for users
+# The Monitor
 
-Underneath BASIC, every machine has a machine-code monitor — a much lower-level
-tool, closer to the metal than anything BASIC exposes. You don't need it for
-BASIC programming, but it's how you look at what BASIC (or anything else)
-actually did to memory, and it's the entry point into machine code — the
-assembly guide, a later phase of this site, lives on the other side of it.
+Underneath BASIC there's a second program in the ROM that lets you look at the
+machine's memory directly, byte by byte, and run code that isn't BASIC at all.
 
-## Getting there
+You don't need it. You can write games for years without opening it. But it's
+where you go when you want to know what's *really* happening, and it's the door
+into machine code.
 
-Two real ways in, both RUN-verified, and both land on the same register
-dump:
+## Getting in
 
-**`BRK` from BASIC** — type `BRK` at the `OK` prompt:
+Three ways, all landing in the same place:
+
+**From BASIC**, type `BRK`:
 
 ```
 BRK
@@ -25,24 +25,18 @@ PC=E9D3 A=00 X=FF Y=68 SP=FA ---B-IZC
 .
 ```
 
-**`ESC` at the boot splash** — before BASIC starts, at the
-`ENTER=BASIC  ESC=MONITOR` line (see [First power-on](/getting-started/first-boot)):
+**At startup**, press <kbd>Esc</kbd> at the `ENTER=BASIC  ESC=MONITOR` line
+instead of <kbd>Enter</kbd>.
 
-```
-6502 MONITOR v1.1
-BRK AT $A490
-PC=A492 A=1B X=00 Y=18 SP=FC ---B-IZC
-.
-```
+**From your own machine code**, by executing a `BRK` instruction — which is how
+you use it as a debugger.
 
-Either way you land at the Monitor's prompt: a single `.`. The register line
-is the CPU's state at the moment of entry — `PC`, `A`, `X`, `Y`, `SP`, and the
-processor flags spelled out letter by letter (`N V - B D I Z C`, with a `-`
-where the flag reads clear). A `BRK` opcode encountered in *your own* running
-machine code lands here exactly the same way — this is the mechanism the
-Kernal's `Break` handler (`Kernal.asm:3069`) uses for all three.
+That single `.` is the Monitor's prompt, the way `OK` is BASIC's. The line
+above it is the state of the processor at the moment you arrived: where it was
+(`PC`), what was in its three registers (`A`, `X`, `Y`), and its flags. Don't
+worry about it yet.
 
-`X` goes back to BASIC:
+`X` takes you back to BASIC, with your program intact:
 
 ```
 X
@@ -50,15 +44,33 @@ X
 OK
 ```
 
-## Commands
+## Looking at memory
 
-Every command below is generated from
-[`data/monitor-commands.json`](https://github.com/acwright/6502-DOCS/blob/main/data/monitor-commands.json),
-extracted from `Monitor.asm`'s own dispatch table — not retyped from a
-README.
+`M` for memory, with an address in hexadecimal:
+
+```
+M 0800
+.:0800 00 00 00 00 00 00 00 00 ........
+.:0808 00 00 00 00 00 00 00 00 ........
+.:0810 00 00 00 00 00 00 00 00 ........
+```
+
+Address on the left, eight bytes in hex, then the same bytes as characters on
+the right — which is how you spot text in among the numbers.
+
+`D` disassembles instead, turning bytes back into 65C02 instructions:
+
+```
+D FF00
+.,FF00  A9 1B     LDA #$1B
+.,FF02  C9 08     CMP #$08
+.,FF04  F0 18     BEQ $FF1E
+```
+
+## Everything it does
 
 <table>
-  <thead><tr><th>Command</th><th>Syntax</th><th>What it does</th></tr></thead>
+  <thead><tr><th>Command</th><th>Type</th><th>What it does</th></tr></thead>
   <tbody>
     <tr v-for="cmd in facts.monitorCommands.commands" :key="cmd.command">
       <td><code>{{ cmd.command }}</code></td>
@@ -68,46 +80,50 @@ README.
   </tbody>
 </table>
 
-Three worth calling out by name, all RUN-verified above and below:
+The two you'll reach for besides `M` and `D` are `R`, which reprints that
+register line, and the two ways of running code:
 
-- **`M [addr] [addr]`** — hex + ASCII memory dump, 8 bytes a row:
-  ```
-  M 1000
-  .:1000 00 00 00 00 00 00 00 00 ........
-  .:1008 00 00 00 00 00 00 00 00 ........
-  ```
-- **`D [addr] [addr]`** — disassembles the full WDC 65C02 + Rockwell
-  instruction set:
-  ```
-  D 1000
-  .,1000  00        BRK
-  .,1001  00        BRK
-  ```
-  (Zero page RAM disassembles as a string of `BRK`s because it's all zero
-  bytes at boot — `$00` is the `BRK` opcode. Nothing broken; that's what
-  unwritten memory looks like.)
-- **`R`** — reprints the register line above without re-entering.
-- **`G [addr]`** — jump to an address, restoring `A`/`X`/`Y`/flags/`SP` via
-  `RTI` first. With no address, resumes wherever the saved `PC` points.
+- **`J addr`** calls the code at that address like a subroutine. When it
+  finishes, you land back at the `.` prompt with the registers on show. This is
+  the one to use.
+- **`G addr`** jumps there and hands the machine over completely, interrupts
+  and all. Nothing brings you back except a `BRK` in the code you jumped to —
+  and because interrupts are off, the keyboard has stopped working, so if the
+  code doesn't return you'll be reaching for the reset button.
 
-## The Wozmon easter egg
+::: tip Zeros disassemble as BRK
+Point `D` at empty memory and you get page after page of `BRK`. Nothing is
+broken — the byte `$00` *is* the `BRK` instruction, and unwritten memory is all
+zeros.
+:::
 
-`G FF00` (or, from BASIC, `SYS 65280` — the same address, decimal) jumps into
-the **original Apple I monitor**, kept byte-for-byte as an easter egg at
-`$FF00` (`BIOS.cfg:7`). RUN-verified — its prompt is a literal backslash,
-distinct from this Monitor's `.`:
+## The easter egg
+
+Type `J FF00`:
 
 ```
-G FF00
+J FF00
 \
 ```
 
-From there it's Woz's own monitor: `<addr>.<addr>` to examine a range,
-`<addr>:<byte> <byte>...` to deposit, `<addr>R` to run. It predates this
-machine by 45 years and none of its own commands overlap with the ones
-above.
+That backslash is the prompt of **Wozmon** — Steve Wozniak's monitor for the
+Apple I, written in 1976, kept here byte for byte because it deserves to
+survive. It's 256 bytes long and it does three things:
+
+- `FF00.FF0F` — show a range of memory
+- `0300: A9 01 60` — put bytes into memory
+- `0300R` — run from an address
+
+It predates this machine by nearly fifty years and shares none of its commands.
+Press reset when you've had enough — your BASIC program will still be there.
+
+::: warning Use `J`, not `G`
+`G FF00` prints the backslash and then ignores everything you type. Wozmon
+needs the keyboard, and `G` turns interrupts off on its way out — so the
+keystrokes never arrive. `J` leaves them on.
+:::
 
 <PlaceholderImage
-  label="Monitor session"
-  caption="M, D, R and the Wozmon easter egg, captured with dbg screen png once scripts/capture-screens.mjs exists (Phase 8). The transcripts above are already RUN-verified; only the screenshots are pending."
+  label="Wozmon"
+  caption="A screen showing the jump from the Monitor's dot prompt into Wozmon's backslash, and a short memory dump underneath."
 />

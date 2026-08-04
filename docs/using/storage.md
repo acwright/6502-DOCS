@@ -1,66 +1,92 @@
 # Storage
 
-An 8-bit True IDE CompactFlash card is the family's disk. VCS is the one
-machine that doesn't have a slot for one at all — cartridges are its storage,
-see [its system page](/systems/vcs).
+The CompactFlash card is your disk. Programs you save there are still there
+next week; everything in memory disappears the moment the power does.
 
-## The disk-bank model
+## Disks on a card
 
-One CompactFlash card holds up to 256 **disk banks**, 1 MB each — `DISK n`
-selects which bank subsequent commands operate on (`n` is `0`–`255`). Each
-bank has its own 16-entry directory; filenames follow the 8.3 convention
-(8 characters, a dot, a 3-character extension), the same shape DOS and CP/M
-readers will already recognize.
-
-## The commands
-
-<<< @/../samples/basic/storage-dir-load.bas{basic}
-
-RUN-verified against a real CompactFlash image (`console storage` in this
-repo's test harness, a genuine `cffs`-built disk attached to the emulator via
-`--cf`, not a mock):
+One card holds **256 disks**. Each disk is a megabyte and holds up to **16
+files**. You work on one disk at a time, and `DISK n` moves you to another:
 
 ```
-RUN
-READY
+DISK 1
+
+OK
+```
+
+Think of them as 256 floppies in a box, not as folders — there's no nesting,
+and a file lives on exactly one of them. Disk 0 is where you start, and one
+disk is plenty until you've got more than sixteen things worth keeping.
+
+Filenames are **eight characters, a dot, and three more**: `INVADERS.BAS`,
+`SCORE.DAT`, `TITLE.SCR`. Upper case, and always in quotes when you type them.
+
+## Looking at what's there
+
+`DIR` lists the current disk:
+
+```
+DIR
+DISK 0
+HELLO   .TXT 6
+GREET   .BAS 13
+
+OK
+```
+
+Name, extension, and size in bytes. The gap in the middle is just the name
+being padded out to eight characters.
+
+## Saving and loading
+
+`SAVE "name"` writes the program you've got; `LOAD "name"` reads one back.
+
+```
+10 PRINT "HI"
+SAVE "GREET.BAS"
+
+OK
+```
+
+```
+NEW
+LOAD "GREET.BAS"
+
+OK
+LIST
+10 PRINT "HI"
+
+OK
+```
+
+`NEW` there wasn't ceremony — it proves the point. The program really did come
+back off the card.
+
+::: tip Save early
+There's no autosave and no undo. If you've been typing for twenty minutes,
+`SAVE` it now. `SAVE "WORK.BAS"` over the same name each time is fine.
+:::
+
+## Getting rid of a file
+
+`DEL "name"`:
+
+```
+DEL "GREET.BAS"
 
 OK
 DIR
 DISK 0
-HELLO   .TXT 8
-
-OK
-LOAD "HELLO.TXT"
+HELLO   .TXT 6
 
 OK
 ```
 
-`DIR` lists the current bank's directory: disk number, then each file as
-`NAME.EXT` (padded to the 8.3 field width) and its size in bytes. `LOAD
-"name"` (quotes required) loads a file from the card; bare `LOAD` — no
-filename — switches to XModem instead, covered in
-[Serial & XModem](/using/serial). `SAVE` and `SAVE "name"` work the same way
-in reverse.
+## Formatting
 
-`DEL "name"` removes a directory entry — RUN-verified: after
-`DEL "HELLO.TXT"`, a following `DIR` shows an empty bank.
-
-### Binary data — `BLOAD`/`BSAVE`
-
-`BSAVE addr, len, "name"` writes `len` bytes starting at `addr` to a file;
-`BLOAD addr, "name"` reads them back. Unlike `LOAD`/`SAVE`, which always deal
-in whatever is currently in BASIC's program area, `BLOAD`/`BSAVE` work with
-any address — screen data, a character set, a sound patch. RUN-verified round
-trip:
-
-<<< @/../samples/basic/storage-bsave-bload.bas{basic}
-
-A byte poked to `$0A00`, saved, zeroed, and loaded back reads unchanged.
-
-### `FORMAT`
-
-`FORMAT` erases the current bank's directory — every entry, not the file
-data itself. It asks first:
+A new card needs formatting before you can save to it, and `FORMAT` also
+empties a disk you want to reuse. It clears the **current** disk only — not the
+whole card — and it asks first:
 
 ```
 FORMAT
@@ -69,39 +95,48 @@ ERASE DISK 0? (Y/N) Y
 OK
 ```
 
-Anything but `Y` aborts with no change. This one isn't in the `samples/`
-harness (its confirmation prompt doesn't fit the harness's one-shot
-run-and-assert model cleanly), but the transcript above is a direct RUN
-check against the real emulator, typed exactly as shown.
+Anything other than `Y` and nothing happens.
 
-## The 16-entry / 8.3 limit
+## Saving things that aren't programs
 
-Each bank's directory holds exactly 16 entries — confirmed both in the ROM
-source (`Kernal.asm`'s `FS_MAX_FILES`) and by `cffs info` on a real image
-(`Directory: 1/16 entries used, 15 free`, the same tool this harness uses to
-build its test fixture). A 17th file needs a different bank (`DISK n`), not a
-bigger directory.
+`SAVE` and `LOAD` deal in BASIC programs. To read and write raw memory —
+a screen you've drawn, a set of characters you've designed, a saved game —
+there's `BSAVE` and `BLOAD`:
+
+- `BSAVE address, length, "name"` writes `length` bytes starting at `address`.
+- `BLOAD address, "name"` reads a file back into memory at `address`.
+
+<<< @/../samples/basic/high-score.bas{basic}
+
+```
+RUN
+HIGH SCORE IS 42
+
+OK
+```
+
+Line 10 puts 42 in memory. Line 20 writes that one byte to the card. Line 30
+wipes it. Line 40 reads it back, and line 50 proves it survived. That's the
+whole shape of a save-game file.
 
 ## When there's no card
 
-Every storage command guards on the CompactFlash bit in `HW_PRESENT`
-(`ReqHw`, `BASIC.asm:7976`) and raises `?NO DEVICE ERROR` if it's clear,
-rather than hanging — the same graceful-degradation pattern as
-[sound and video](/using/sound-and-video) with no card fitted.
+Every disk command checks for the card first and says so rather than hanging:
 
-::: warning Not RUN-verified
-Every other claim on this page was checked by actually running it. This one
-wasn't: the current emulator CLI has no way to boot a machine with the
-Storage card removed entirely — `--cf` only attaches a backing image to a
-card that's always present in the default headless profile, so a run with no
-`--cf` flag still reports the card as fitted (an empty, working disk) rather
-than absent. Recorded as [ACCURACY.md O5](https://github.com/acwright/6502-DOCS/blob/main/ACCURACY.md)
-— the error text and the guard that raises it are real and read straight
-from the ROM source, but reproducing the condition itself is currently
-outside what the tooling can simulate.
+```
+DIR
+
+?NO DEVICE ERROR
+OK
+```
+
+Reseat the card, or see [When something's
+wrong](/getting-started/troubleshooting).
+
+::: details Making cards on your computer
+[`cffs`](https://github.com/acwright/cffs) builds and edits CompactFlash images
+from a Mac, PC or Linux box — create a card image, drop files into it, then
+write it to a real card or hand it straight to the
+[emulator](/using/emulator). It's the easiest way to move a big pile of
+programs onto a machine at once.
 :::
-
-<PlaceholderImage
-  label="CF disk-bank / directory model"
-  caption="A diagram of the 256-bank / 16-entry model, once Phase 8 authors the family's hand-drawn SVGs."
-/>

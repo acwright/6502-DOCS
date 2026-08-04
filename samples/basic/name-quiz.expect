@@ -1,0 +1,8 @@
+# "Asking questions" — two INPUTs, one of each type.
+# INPUT prints its own `?` and stops, so the wait pattern matches either that
+# or the prompt coming back at the end.
+wait (OK|\?)
+send ADA\r
+send 30\r
+expect ^HELLO ADA, IN TEN YEARS$
+expect ^YOU WILL BE 40$

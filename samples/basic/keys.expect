@@ -1,0 +1,10 @@
+# "Reading the keyboard" — INKEY in a polling loop, five keys deep.
+wait (OK|PRESS)
+send A
+send B
+send C
+send D
+send E
+expect ^ 1 YOU PRESSED A \(CODE 65\)$
+expect ^ 5 YOU PRESSED E \(CODE 69\)$
+expect ^THAT IS FIVE$

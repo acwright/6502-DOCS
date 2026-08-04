@@ -1,0 +1,10 @@
+# "Your first ten minutes" — the first stored program in the guide.
+#
+# INPUT stops the program and prints its own `?` prompt, so the wait pattern
+# has to match either that or the OK prompt: RUN lands on the `?`, and the
+# answer below lands on OK.
+
+wait (OK|\?)
+send ADA\r
+expect ^HELLO, ADA$
+expect ^WELCOME TO YOUR ACE\.$

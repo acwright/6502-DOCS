@@ -1,0 +1,10 @@
+# DIR and LOAD against a real CompactFlash image. Internal regression check —
+# the Storage chapter shows these as typed transcripts, not as a sample file,
+# because there is no program to RUN. `console storage` boots with the
+# harness's fixture attached, seeded with one file: HELLO.TXT.
+
+console storage
+send DIR\r
+send LOAD "HELLO.TXT"\r
+expect ^READY$
+expect HELLO\s*\.TXT

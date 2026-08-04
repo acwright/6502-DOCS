@@ -1,0 +1,4 @@
+# "Sound" — a melody held in DATA, with 0,0 to stop and 1 for a rest.
+timeout 60s
+expect ^TWINKLE TWINKLE$
+expect ^THE END$

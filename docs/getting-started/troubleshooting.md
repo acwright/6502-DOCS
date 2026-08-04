@@ -2,90 +2,127 @@
 import { data as facts } from '../.vitepress/data/facts.data.mts'
 </script>
 
-# Troubleshooting
+# When something's wrong
 
-Most "something's wrong" questions about this family have the same first
-step: read `HW_PRESENT` and see what the Reset probe actually found. The
-probe runs before the splash even prints (see
-[First power-on](/getting-started/first-boot)), and it is the single source
-of truth for what's fitted — trust it over guessing from symptoms.
+Symptom first. Find yours below.
 
-## Start here: `MEM`
+## Nothing on the screen at all
 
-Type `MEM` at the `OK` prompt:
+Work through these in order:
+
+1. **Is the power light on?** No light means no 5 V. Check the supply is
+   centre-positive and actually delivering 5 V.
+2. **Is the monitor on the right input?** VGA monitors are cheerfully silent
+   about being on the wrong channel.
+3. **Try the serial port.** If you have a USB-to-serial adapter, plug it in,
+   open a terminal at 19200 8-N-1, and press reset. If the splash appears
+   there, the computer is fine and the problem is the video path — cable,
+   monitor, or the video module not seated.
+4. **Press reset and listen.** A beep means the machine got as far as booting.
+
+If there is genuinely nothing — no picture, no beep, no serial output — the
+machine may have stopped before the splash because it couldn't find *any*
+console. Get a serial cable on it; that's the fastest way to find out what it
+thinks is going on.
+
+## No sound
+
+- Is the RCA lead going to something **powered**? The ACE puts out line level,
+  not enough to drive a bare speaker.
+- Have you set the volume? `VOL 15` at the prompt, then `SOUND 1, 440, 50`.
+  You should get a beep.
+- If the startup beep is missing too, the sound chip isn't being seen — check
+  it's seated properly in its socket, and the right way round.
+
+## No beep at startup, but everything else works
+
+Same cause as above, and it's harmless: the machine skips the beep when it
+can't find a sound chip rather than complaining about it. Everything else works
+normally.
+
+## The memory card isn't found
+
+`DIR` says `?NO DEVICE ERROR` instead of listing files.
+
+- Reseat the card. It should click in without force.
+- Try a different card. Very large and very new CF cards sometimes don't
+  support the 8-bit True IDE mode the ACE uses; anything from about 128 MB to
+  8 GB is a safe bet.
+- Check the CF adapter board is fully seated on the Storage header.
+
+If `DIR` lists nothing but doesn't error, the card is fine and just empty —
+`FORMAT` it and you're away. See [Storage](/using/storage).
+
+## Keys repeating, or keys getting missed
+
+Press reset first: the keyboard controller sets itself up at power-on and very
+occasionally gets it wrong, and a reset makes it start over. Your program
+survives, so this costs you nothing.
+
+If one particular key is unreliable, it's the switch rather than the computer —
+mechanical switches can be cleaned or replaced.
+
+If you're using a PS/2 keyboard in place of the built-in one, try a different
+keyboard: some USB keyboards with passive PS/2 adapters are only half-hearted
+about supporting it.
+
+## A program won't stop
+
+Press <kbd>Esc</kbd>. If that doesn't do it — because the program is stuck in
+machine code rather than BASIC — press reset. Your BASIC program is still in
+memory afterwards.
+
+## `?SYNTAX ERROR`
+
+BASIC didn't understand the line. Nine times out of ten it's a typo:
+
+```
+PRIMT "HI"
+
+?SYNTAX ERROR
+OK
+```
+
+The other time, it's a keyword that doesn't exist in this BASIC. `LIST` and
+look at the line carefully.
+
+## Asking the machine what it thinks it has
+
+There's one command that tells you what the ACE found when it looked itself
+over at startup. Type `MEM`:
 
 ```
 MEM
- 30718 BYTES FREE  HW=$7F
+ 30718 BYTES FREE  HW=$FF
+DISK 0
 
 OK
 ```
 
-`HW=$xx` is {{ facts.hardware.hwPresent.description }} From BASIC, the same
-byte is `{{ facts.hardware.hwPresent.readFromBasic }}` — RUN-verified
-identical: a machine with every card except video reports `HW=$7F` from
-`MEM` and `127` from `PRINT PEEK(781)`, the same number in hex and decimal.
+`HW=$FF` is a full house — everything present and accounted for. Anything less
+means one of the pieces wasn't found, and the number tells you which:
 
-## Reading the bits
+::: details Reading the HW number
+It's a hexadecimal number, and each bit stands for one part of the machine. Add
+up the values for everything that's there:
 
 <table>
-  <thead><tr><th>Bit</th><th>Mask</th><th>Card</th></tr></thead>
+  <thead><tr><th>Value</th><th>Part</th></tr></thead>
   <tbody>
-    <tr v-for="slot in facts.hardware.slots" :key="slot.symbol">
-      <td>{{ slot.bit }}</td>
+    <tr v-for="slot in [...facts.hardware.slots].reverse()" :key="slot.symbol">
       <td><code>{{ slot.maskHex }}</code></td>
       <td>{{ slot.card }}</td>
     </tr>
   </tbody>
 </table>
 
-A `0` bit means the probe didn't find that card — not that it's broken,
-necessarily, just absent as far as the BIOS can tell. Work through the table
-against what you expect to be fitted.
+So `HW=$7F` is everything except video — which is exactly what you'd expect on
+a machine being driven over a serial cable with no monitor attached. And
+`HW=$FF` is everything.
+:::
 
-## No video
+## Still stuck
 
-Bit 7 clear (`HW=$7F` or lower, video bit missing from the mask). This is
-the *default* condition of a headless serial connection — not a fault.
-Confirm the Pico9918/VGA cable and monitor before assuming a hardware
-problem; if you expect video and the bit is clear, the BIOS never saw the
-card. See [Setting up](/getting-started/setup)'s video section.
-
-## No beep at boot
-
-The startup beep is skipped — not failed — when no sound card is fitted
-(bit 6, `$40`). Check `HW=$xx` for that bit before assuming the ARMSID or
-its socket is bad.
-
-## CF card not detected
-
-Bit 3 (`$08`) clear means every storage command will raise `?NO DEVICE
-ERROR` rather than hang — see [Storage](/using/storage). Reseat the card and
-check the adapter/Storage Card is in the slot the family's hardware probe
-expects (`data/hardware.json`'s slot table, generated straight from the BIOS
-source).
-
-## Key repeat or missed keys
-
-Both a PS/2 keyboard and a matrix keyboard feed the same input path at
-once ([The keyboard](/using/keyboard)) — most repeat or drop issues trace
-back to the controller's negotiation with the PS/2 device at power-on rather
-than the matrix side. A reset (see that same chapter) re-runs the whole
-probe and negotiation from scratch.
-
-## Nothing at all — no console, no response
-
-The one condition the BIOS can't route around: if neither a video card nor a
-serial connection is present, there's no console to boot into, and the BIOS
-halts before the splash rather than running blind
-(`data/boot.json`'s boot sequence, step 5). If you're seeing genuinely
-nothing — no splash, no beep, no serial output — confirm at least one of
-those two paths is actually connected before suspecting the board itself.
-
-## Still stuck?
-
-Every hardware claim in this guide is sourced from either the BIOS itself
-(`GREP`) or the KiCad schematics (`SCHEM`) — see each system's own page under
-**Systems** for what's on your specific board, and
-[data/hardware.json](https://github.com/acwright/6502-DOCS/blob/main/data/hardware.json)
-for the full I/O slot table this page is generated from.
+The hardware itself — schematics, board revisions, bill of materials — is all
+in the [6502-ACE repository](https://github.com/acwright/6502-ACE). If you're
+chasing something at the board level, that's where to look.

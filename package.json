@@ -1,7 +1,7 @@
 {
   "name": "6502-docs",
   "version": "0.1.0",
-  "description": "User's and programmer's guide for the AC6502 family of homebrew computers.",
+  "description": "User's and programmer's guide for the ACE, flagship of the AC6502 family.",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -18,7 +18,8 @@
     "migrate:check": "node scripts/migrate-assets.mjs --check",
     "cards:check": "node scripts/check-cards.mjs",
     "preflight": "node scripts/preflight.mjs",
-    "verify": "node scripts/verify-samples.mjs"
+    "check:voice": "node scripts/check-voice.mjs",
+    "verify": "node scripts/check-voice.mjs && node scripts/verify-samples.mjs"
   },
   "devDependencies": {
     "@shikijs/core": "^2.5.0",

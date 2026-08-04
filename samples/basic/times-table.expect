@@ -1,0 +1,7 @@
+# "Your first ten minutes" — the FOR loop that fills the screen.
+# Pins the leading-space number convention as a side effect: PRINT puts a
+# space where a minus sign would go, so `1` comes out as " 1 ".
+
+expect ^THE SEVEN TIMES TABLE$
+expect ^ 1 X 7 = 7$
+expect ^ 12 X 7 = 84$

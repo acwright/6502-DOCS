@@ -9,9 +9,9 @@ function loadGrammar(name: string) {
 }
 
 export default defineConfig({
-  title: 'AC6502 Documentation',
+  title: 'ACE Documentation',
   description:
-    "The user's and programmer's guide to the AC6502 family of homebrew computers.",
+    "The user's and programmer's guide to the ACE — a whole 65C02 computer on one board.",
   lang: 'en-US',
   base: '/6502-DOCS/',
   cleanUrls: true,
@@ -50,37 +50,74 @@ export default defineConfig({
     sidebar: [
       {
         text: 'Introduction',
-        items: [{ text: 'Welcome', link: '/' }]
+        items: [
+          { text: 'Welcome', link: '/' },
+          { text: 'Your ACE', link: '/your-ace' }
+        ]
       },
       {
         text: 'Getting Started',
         items: [
-          { text: 'Choosing your machine', link: '/systems/comparison' },
           { text: 'Setting up', link: '/getting-started/setup' },
           { text: 'First power-on', link: '/getting-started/first-boot' },
           { text: 'Your first ten minutes', link: '/getting-started/first-ten-minutes' },
-          { text: 'Troubleshooting', link: '/getting-started/troubleshooting' }
+          { text: "When something's wrong", link: '/getting-started/troubleshooting' }
         ]
       },
       {
-        text: 'Systems',
-        items: [
-          { text: 'ACE', link: '/systems/ace' },
-          { text: 'COB', link: '/systems/cob' },
-          { text: 'DEV', link: '/systems/dev' },
-          { text: 'KIM', link: '/systems/kim' },
-          { text: 'VCS', link: '/systems/vcs' }
-        ]
-      },
-      {
-        text: 'Using the Machine',
+        text: 'Using Your ACE',
         items: [
           { text: 'The keyboard', link: '/using/keyboard' },
+          { text: 'Sound and video', link: '/using/sound-and-video' },
           { text: 'Storage', link: '/using/storage' },
-          { text: 'Serial & XModem', link: '/using/serial' },
+          { text: 'Serial and a terminal', link: '/using/serial' },
           { text: 'The Monitor', link: '/using/monitor' },
-          { text: 'Sound & video', link: '/using/sound-and-video' },
-          { text: 'Using the emulator', link: '/using/emulator' }
+          { text: 'The emulator', link: '/using/emulator' }
+        ]
+      },
+      {
+        text: 'Add-ons',
+        items: [{ text: 'The KIM keypad', link: '/addons/kim' }]
+      },
+      {
+        text: 'Programming in BASIC',
+        items: [
+          { text: 'Where to start', link: '/basic/' },
+          { text: 'Typing it in', link: '/basic/typing-it-in' },
+          { text: 'Numbers and variables', link: '/basic/numbers-and-variables' },
+          { text: 'Showing things', link: '/basic/print' },
+          { text: 'Asking questions', link: '/basic/input' },
+          { text: 'Making decisions', link: '/basic/decisions' },
+          { text: 'Going round again', link: '/basic/loops' },
+          { text: 'Subroutines', link: '/basic/subroutines' },
+          { text: 'Arrays', link: '/basic/arrays' },
+          { text: 'Working with words', link: '/basic/strings' },
+          { text: 'Lists in the program', link: '/basic/data' },
+          { text: 'Your own functions', link: '/basic/functions' },
+          { text: 'Sound and pictures', link: '/basic/sound-and-pictures' },
+          { text: 'Sticks and keys', link: '/basic/controls' },
+          { text: 'Saving your work', link: '/basic/files' },
+          { text: 'Time and memory that lasts', link: '/basic/clock' },
+          { text: 'Reaching the machine', link: '/basic/machine' },
+          { text: 'When it goes wrong', link: '/basic/debugging' },
+          { text: 'Programs worth typing', link: '/basic/projects' }
+        ]
+      },
+      {
+        text: 'BASIC Reference',
+        items: [
+          { text: 'Every keyword', link: '/basic/reference' },
+          { text: 'Every error message', link: '/basic/errors' },
+          { text: 'What BASIC does with your memory', link: '/basic/inside' }
+        ]
+      },
+      {
+        text: 'The Rest of the Family',
+        items: [
+          { text: 'Overview', link: '/family/' },
+          { text: 'COB', link: '/family/cob' },
+          { text: 'DEV', link: '/family/dev' },
+          { text: 'VCS', link: '/family/vcs' }
         ]
       }
     ],

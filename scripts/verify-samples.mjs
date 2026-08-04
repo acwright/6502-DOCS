@@ -25,6 +25,11 @@ import { emulatorCommand } from './preflight.mjs'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SAMPLES = join(ROOT, 'samples')
 const BUILD = join(SAMPLES, 'build')
+// The keyword reference's worked examples. Hand-authored rather than extracted,
+// because "what is this keyword for" is a writing job — but every one of them is
+// typed into the machine here, and the output the reference prints is the output
+// the machine gave.
+const EXAMPLES = join(ROOT, 'data', 'basic-examples.json')
 // A prepared CompactFlash image for `console storage` cases, built fresh by
 // `buildStorageFixture()` before any machine boots — not checked into git,
 // same treatment as the assembled .prg files below.
@@ -74,6 +79,67 @@ function discover(dir = SAMPLES) {
       path,
       kind: ext.slice(1),
       spec: parseExpect(expect)
+    })
+  }
+
+  return cases.sort((a, b) => a.name.localeCompare(b.name))
+}
+
+/**
+ * Turn every entry in the keyword-examples manifest into a case.
+ *
+ * The manifest is what the reference page renders: an entry's `example` lines
+ * are the listing a reader sees and `output` is the result printed under it.
+ * Both are asserted here, line for line, so the reference cannot claim output
+ * the machine does not produce.
+ *
+ * A block whose first line starts with a digit is a stored program — typed in,
+ * then `RUN`. Anything else is typed at the prompt and runs as it is entered.
+ */
+function discoverExamples() {
+  if (!existsSync(EXAMPLES)) return []
+
+  const manifest = JSON.parse(readFileSync(EXAMPLES, 'utf-8'))
+  const cases = []
+
+  for (const [keyword, entry] of Object.entries(manifest.keywords ?? {})) {
+    const lines = entry.example ?? []
+    if (!lines.length) continue
+
+    const where = `data/basic-examples.json (${keyword})`
+    const spec = {
+      console: entry.console ?? 'serial',
+      timeout: entry.timeout ?? DEFAULT_TIMEOUT,
+      wait: entry.wait ?? 'OK',
+      cycles: entry.cycles ?? DEFAULT_SETTLE_CYCLES,
+      sends: entry.sends ?? [],
+      // Every printed line the reference shows is asserted verbatim.
+      expect: (entry.output ?? []).map((line) => ({
+        pattern: `^${escapeRegExp(line)}\\s*$`,
+        where
+      })),
+      absent: (entry.absent ?? []).map((pattern) => ({ pattern, where })),
+      screen: (entry.screen ?? []).map((pattern) => ({ pattern, where })),
+      expectFailure: false,
+      file: where
+    }
+
+    for (const pattern of entry.expect ?? []) spec.expect.push({ pattern, where })
+    if (spec.screen.length) spec.console = 'video'
+
+    if (!spec.expect.length && !spec.absent.length && !spec.screen.length) {
+      throw new Error(`${where}: asserts nothing — give it an "output" or an "expect"`)
+    }
+
+    cases.push({
+      name: `reference/${keyword}`,
+      kind: 'example',
+      lines,
+      // A stored program has to be RUN; a line typed at the prompt already ran.
+      // `run: false` covers the entries that type a program in only to do
+      // something else with it — LIST it, NEW it, load it back off a card.
+      runs: entry.run ?? /^\s*\d/.test(lines[0]),
+      spec
     })
   }
 
@@ -347,23 +413,32 @@ function runCase(machine, caseFile) {
     return machine.dbg(['send', text, '--wait', waitFor, '--timeout', spec.timeout])
   }
 
-  if (caseFile.kind === 'bas') {
-    // Type the listing in. A stored program line prints nothing back, so each
-    // line waits for its own echo rather than for OK.
-    for (const line of readFileSync(caseFile.path, 'utf-8').split('\n')) {
+  if (caseFile.kind === 'bas' || caseFile.kind === 'example') {
+    const source = caseFile.lines ?? readFileSync(caseFile.path, 'utf-8').split('\n')
+
+    for (const line of source) {
       const trimmed = line.trim()
       if (!trimmed) continue
-      output += send(`${trimmed}\\r`, '^' + escapeRegExp(trimmed.split(/\s+/)[0])).out
+      // A stored program line prints nothing back, so it waits for its own echo.
+      // A line typed at the prompt runs there and then, so it waits for the
+      // prompt to come back.
+      const waitFor = /^\d/.test(trimmed)
+        ? '^' + escapeRegExp(trimmed.split(/\s+/)[0])
+        : spec.wait
+      output += send(`${trimmed}\\r`, waitFor).out
     }
   } else {
     const prg = caseFile.kind === 'asm' ? buildAssembly(caseFile) : caseFile.path
     machine.dbg(['load', 'program', prg], { required: true })
   }
 
-  const run = send('RUN\\r', spec.wait)
-  output += run.out
-  if (run.status !== 0) {
-    return { ok: false, output, reason: `RUN never matched /${spec.wait}/ within ${spec.timeout}` }
+  // An example typed at the prompt has already run by the time it is entered.
+  if (caseFile.runs !== false) {
+    const run = send('RUN\\r', spec.wait)
+    output += run.out
+    if (run.status !== 0) {
+      return { ok: false, output, reason: `RUN never matched /${spec.wait}/ within ${spec.timeout}` }
+    }
   }
 
   for (const text of spec.sends) {
@@ -442,7 +517,7 @@ async function main() {
     return
   }
 
-  let cases = discover()
+  let cases = [...discover(), ...discoverExamples()]
   if (filters.length) {
     cases = cases.filter((c) => filters.some((f) => c.name.includes(f)))
   }

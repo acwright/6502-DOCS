@@ -26,6 +26,7 @@ const FILES = [
   ['memoryMap', 'memory-map.json'],
   ['hardware', 'hardware.json'],
   ['basicKeywords', 'basic-keywords.json'],
+  ['basicExamples', 'basic-examples.json'],
   ['monitorCommands', 'monitor-commands.json'],
   ['errors', 'errors.json'],
   ['systems', 'systems.json']
@@ -39,6 +40,7 @@ export interface Facts {
   memoryMap: any
   hardware: any
   basicKeywords: any
+  basicExamples: any
   monitorCommands: any
   errors: any
   systems: any

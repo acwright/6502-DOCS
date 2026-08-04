@@ -1,0 +1,5 @@
+# "Arrays" — five scores read into DIMmed storage, then totalled.
+expect ^ROUND 1 SCORED 12$
+expect ^ROUND 5 SCORED 20$
+expect ^TOTAL 110$
+expect ^AVERAGE 22$

@@ -1,5 +1,0 @@
-# SOUND/VOL with no sound card fitted, for the Sound & video chapter
-# (Phase 3). Neither statement guards on HW_SID or raises an error — proving
-# a game that beeps on a hit keeps playing on a machine with no speaker.
-
-pass

@@ -1,112 +1,77 @@
-<script setup>
-import { data as facts } from './.vitepress/data/facts.data.mts'
-</script>
+# Welcome
 
-# Welcome to the AC6502 Documentation
-
-This is the user's and programmer's guide for the **AC6502** family of homebrew
-computers — ACE, COB, DEV, KIM, and VCS.
-
-Five machines, five very different shapes — a single-board all-in-one, a
-backplane you build up one card at a time, a Teensy-hosted development rig, a
-KIM-1-style keypad-and-LCD minimal machine, and a cartridge console — but they
-all run **one shared BIOS**. The same Kernal jump table, the same BASIC
-dialect, the same Monitor commands, work identically wherever you're sitting.
-What changes from machine to machine is which cards are fitted, not what the
-software can assume: every card the BIOS supports announces itself through a
-hardware probe at boot (`HW_PRESENT`, more in
-[Troubleshooting](/getting-started/troubleshooting)), and code that checks
-before it uses a peripheral runs unmodified across the whole family.
+This is your guide to the **ACE** — a whole 65C02 computer on one board, with
+its own keyboard built in, plus sound, joysticks and a disk. It boots in about
+five seconds, straight into BASIC, and it will still be doing exactly what you
+tell it in thirty years.
 
 <PlaceholderImage
-  label="The family, all five machines"
-  caption="ACE, COB, DEV, KIM and VCS side by side. The one real photo of a machine currently in this repo (docs/public/images/6502.png) shows a stale BIOS banner and stays out of the docs until Phase 8 resolves it — see ACCURACY.md, finding A9."
+  label="The ACE"
+  caption="An ACE on a desk, powered on, its built-in keyboard in front of you and a VGA monitor behind it showing the OK prompt."
 />
 
-If you're deciding which one describes your build (or which one to build),
-[Choosing your machine](/systems/comparison) has the comparison table. If you
-already have one on the bench, [Setting up](/getting-started/setup) is the
-next stop.
+There is no operating system to log into and nothing to install. You switch it
+on, you get this:
 
-This site is under construction. The chapters below will land as the
-documentation project proceeds through its phases:
+```
+-- 6502 BIOS v1.5 --
+ENTER=BASIC  ESC=MONITOR
 
-- **Getting started** — unboxing, setup, and your first ten minutes at the prompt
-- **The BASIC guide** — a full tutorial and reference for the on-board BASIC
-- **Cross-development** — building programs on a host machine with `cc65`
-- **The assembly guide** — programming the 65C02 directly against the Kernal API
-- **Quick reference cards** — printable, accurate reference sheets for every system
+6502 BASIC V2.0
+30718 BYTES FREE
 
-In the meantime, the technical specifics for each machine live in their own
-repositories — see the links table below.
+OK
+```
 
-## The family
+`OK` means the machine is waiting for you. Type this and press <kbd>Enter</kbd>:
 
-<table>
-  <thead>
-    <tr><th>System</th><th>What it is</th><th>Form factor</th></tr>
-  </thead>
-  <tbody>
-    <tr v-for="system in facts.systems.systems" :key="system.id">
-      <td><a :href="system.repo">{{ system.name }}</a></td>
-      <td>{{ system.fullName }} — {{ system.tagline }}</td>
-      <td>{{ system.formFactor }}</td>
-    </tr>
-  </tbody>
-</table>
+```
+PRINT "HELLO"
+```
 
-## What the machine is, according to the machine
+```
+HELLO
 
-Everything below is generated at build time from the fact base in
-[`data/`](https://github.com/acwright/6502-DOCS/tree/main/data), which is
-extracted from the BIOS source by `npm run facts`. No number on this site is
-typed in by hand.
+OK
+```
 
-Baseline: **BIOS v{{ facts.biosVersion }}**, splash
-`{{ facts.boot.strings.find(s => s.symbol === '@SplashTitle')?.text }}`.
+That's it. That's the whole idea. Everything else in this guide is a bigger
+version of that.
 
-| The fact base holds | |
-|---|--:|
-| Kernal jump-table slots (published) | {{ facts.kernal.publishedSlots }} |
-| Kernal jump-table slots (reserved) | {{ facts.kernal.reserved.count }} |
-| BASIC statements | {{ facts.basicKeywords.counts.statements }} |
-| BASIC functions | {{ facts.basicKeywords.counts.functions }} |
-| BASIC syntax keywords and operators | {{ facts.basicKeywords.counts.keywords }} |
-| BASIC error messages | {{ facts.errors.basic.errors.length }} |
-| Monitor commands | {{ facts.monitorCommands.commands.length }} |
-| I/O slots | {{ facts.hardware.slots.length }} |
+## What you can do with it
 
-### The eight I/O slots
+- **Write programs in BASIC** — games, tunes, drawings, calculators. Type them
+  in, run them, save them to the memory card.
+- **Make noise.** Three voices of SID sound, the same chip that gave the
+  Commodore 64 its voice.
+- **Draw on the screen.** 40 columns by 24 rows, 16 colours, out to any VGA
+  monitor.
+- **Plug in joysticks.** Two Atari-style ports, which is all a good game needs.
+- **Go all the way down.** Underneath BASIC there's a machine-code Monitor, and
+  underneath that there's the bare 65C02. You can get to both.
 
-`HW_PRESENT` at {{ facts.hardware.hwPresent.address }} records which of these the
-Reset probe found. `MEM` prints it as `HW=$xx`.
+## Where to go next
 
-<table>
-  <thead>
-    <tr><th>Slot</th><th>Range</th><th>Bit</th><th>Card</th><th>Chip</th></tr>
-  </thead>
-  <tbody>
-    <tr v-for="slot in facts.hardware.slots" :key="slot.symbol">
-      <td>{{ slot.slot }}</td>
-      <td><code>{{ slot.start }}–{{ slot.end }}</code></td>
-      <td><code>{{ slot.mask }}</code></td>
-      <td>{{ slot.card }}</td>
-      <td>{{ slot.chip }}</td>
-    </tr>
-  </tbody>
-</table>
-
-## Sibling repositories
-
-| Repo | Purpose |
+| If you… | Start here |
 |---|---|
-| [6502-BIOS](https://github.com/acwright/6502-BIOS) | The shared BIOS — Kernal, BASIC, Monitor |
-| [6502-EMULATOR](https://github.com/acwright/6502-EMULATOR) | Desktop and browser emulator |
-| [6502-PRG](https://github.com/acwright/6502-PRG) | Cross-dev program template |
-| [6502-CRT](https://github.com/acwright/6502-CRT) | Cross-dev cartridge template |
-| [6502-ASM](https://github.com/acwright/6502-ASM) | Assembly sample code |
-| [6502-BAS](https://github.com/acwright/6502-BAS) | BASIC sample code |
-| [bastok](https://github.com/acwright/bastok) | BASIC tokenizer |
-| [cffs](https://github.com/acwright/cffs) | CompactFlash image tool |
-| [bin2woz](https://github.com/acwright/bin2woz) | Wozmon upload helper |
-| [TMS9918-EDITOR](https://github.com/acwright/TMS9918-EDITOR) | Character/screen/sprite editor |
+| have an ACE in front of you and nothing plugged in | [Setting up](/getting-started/setup) |
+| have it plugged in and want to see it boot | [First power-on](/getting-started/first-boot) |
+| are at the `OK` prompt right now | [Your first ten minutes](/getting-started/first-ten-minutes) |
+| don't have one yet | [The emulator](/using/emulator) — it's a complete ACE, in your browser |
+| want to know what's on the board | [Your ACE](/your-ace) |
+
+Everything in this guide works the same on real hardware and in the emulator.
+If you don't have a machine yet, open the emulator in another tab and follow
+along — nothing here needs anything you can't get for free.
+
+## About the family
+
+The ACE is the finished article, but it isn't the only machine that runs this
+software. It's the last of five, and the other four are still around: the
+**COB** backplane, the **DEV** rig, the **VCS** console, and the **KIM** keypad.
+They're all open hardware, and they're all documented at the
+[back of this guide](/family/) if you'd like to build one.
+
+The KIM is the interesting one, because it isn't really a separate machine any
+more — three small boards turn your ACE *into* a KIM-1. That's
+[its own chapter](/addons/kim).

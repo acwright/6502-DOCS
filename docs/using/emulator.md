@@ -1,70 +1,98 @@
-# Using the emulator instead of hardware
+# The emulator
 
-You don't need a physical board to use anything in this guide. The
-[6502-EMULATOR](https://github.com/acwright/6502-EMULATOR) runs the exact
-same BIOS, and every code sample on this entire site is `RUN`-verified
-against it — not a simulation of the real thing, the thing this documentation
-actually checks its claims against.
+An ACE you already own. Same ROM, same BASIC, same everything — it just runs on
+your laptop instead of your desk.
 
-## Two ways to run it
+Use it to try the machine before you build one, to work on a program when the
+real one's in another room, or to test something without hunting for a
+CompactFlash card.
 
-**In the browser**, no install: <https://acwright.github.io/6502-EMULATOR/>.
-Good for trying BASIC or the Monitor without installing anything.
+## In the browser
 
-**As a desktop app** (macOS, Windows, Linux), an Electron application with a
-window, serial port picker, CompactFlash image loader, and a debug server.
-This is also how you get the command-line tool used throughout this site:
-**Settings → Command Line → Install**. After that, `6502` is on your `PATH`.
+<https://acwright.github.io/6502-EMULATOR/>
 
-## Loading programs and CF images
+Nothing to install. Open it, and you get the splash and the `OK` prompt in a
+tab. Everything in this guide works there.
 
-- **A program**: drag a `.prg`/`.bin` build onto the window, or from the
-  command line, `6502 run build/game.prg` opens the desktop app with it
-  already loaded.
-- **A CompactFlash image**: the Storage panel's file picker loads a `.img`
-  built by [`cffs`](https://github.com/acwright/cffs) — the same tool this
-  site's own test harness uses to build the fixture behind
-  [Storage](/using/storage)'s samples. A selected image persists across
-  restarts; an **✕** button reverts to the default.
-- **A serial connection**: pick a host serial port and baud (`19200`,
-  `8-N-1` — see [Serial & XModem](/using/serial)) and connect, in the app or
-  the browser build alike.
+## On your desktop
 
-## Headless — the mode this whole site runs on
+There's a proper application for macOS, Windows and Linux, and it's the better
+option if you're going to use it much: it can attach a CompactFlash image,
+connect to a real serial port, keep a debug server running, and remember your
+settings.
 
-`6502 run --headless` runs with no window at all, console wired to stdin and
-stdout — scriptable, and exactly what `npm run verify` in this repo does for
-every sample:
+Grab it from the
+[6502-EMULATOR releases page](https://github.com/acwright/6502-EMULATOR).
+
+## The toolbar
+
+Everything happens from the row of buttons across the top:
+
+| Button | What it does |
+|---|---|
+| **CPU chip** | Load a ROM, in place of the built-in BIOS |
+| **Document+** | Load a cartridge |
+| **Document$** | Load a program (`.prg` / `.bas`) into memory |
+| **▶ / ■** | Run or stop the machine |
+| **↺** | Reset — exactly like the button on a real ACE. Memory survives. |
+| **⏻** | Power cycle — the cold start. Memory is cleared. |
+| **1 MHz / 2 MHz** | Switch CPU speed |
+| **Clipboard** | Paste text in as keystrokes |
+| **⚙** | Settings |
+
+Settings has the same file rows, plus what's currently loaded and an **✕** to
+unload it again.
+
+::: tip Pasting a program in
+Ordinary ⌘V / Ctrl+V won't work, because the emulator sends every keystroke
+straight to the machine. Use the **Clipboard** button instead: paste your
+listing into the box it opens, and the emulator types it in for you. It's the
+quickest way to try anything longer than a couple of lines.
+:::
+
+## Attaching a card
+
+**Settings → CF Card**. In the desktop app, **Select…** picks a `.img` file —
+the sort [`cffs`](https://github.com/acwright/cffs) builds — and it stays
+attached across restarts. In the browser, **Load** uploads one and **Export**
+downloads the current card so you can keep it.
+
+Once it's attached, `DIR`, `LOAD` and `SAVE` work exactly as they do on
+hardware, and what you save is written back to the image. The **✕** goes back
+to the emulator's own blank card.
+
+The **NVRAM** row works the same way, for the 256 battery-backed bytes.
+
+## Talking to real hardware
+
+The desktop app can open one of your computer's serial ports. Pick the port,
+set it to 19200 8-N-1, connect — and now the emulated ACE is on the other end
+of a real serial cable. Which means you can use it as the terminal for a real
+ACE, or move files between the two with XModem. See
+[Serial and a terminal](/using/serial).
+
+## Fullscreen
+
+<kbd>F11</kbd>, or <kbd>⌘</kbd>+<kbd>Return</kbd> on a Mac. The picture keeps
+its 4:3 shape whatever the window is doing.
+
+## Running it from the command line
+
+The desktop app installs a `6502` command (**Settings → Command Line →
+Install**). It's how you'd fold the emulator into a build:
 
 ```
-6502 run --headless build/game.prg
-6502 run --headless --exit-on 'OK[^]*OK' --timeout 10s
+6502 run --headless mygame.prg
 ```
 
-Add `--cf disk.img` to attach storage, `--console video` to get a video
-console instead of serial, `--rtc <iso8601>` to pin the clock so a run
-produces byte-identical output every time — the same flag this repo's
-harness uses (`--rtc 2026-01-01T00:00:00`) so a run on a laptop and a run in
-CI land on the same machine.
+`--headless` runs with no window at all, wired to your terminal. Useful flags:
 
-## Debugging
+| Flag | What it does |
+|---|---|
+| `--cf disk.img` | Attach a card image |
+| `--console video` | Use the video screen instead of the serial console |
+| `--freq 2` | Run the CPU at 2 MHz |
+| `--timeout 30s` | Stop after a while, whatever happens |
 
-`--debug` serves a JSON-RPC protocol (WebSocket and HTTP, loopback-only) that
-`6502 dbg <command>` talks to: read/write registers and memory, set
-breakpoints and watchpoints, step, disassemble, save and restore whole-machine
-snapshots, and — the mechanism behind every screenshot this site will ever
-publish — read the screen as text or a PNG. This is also how the storage
-harness works: boot once, snapshot at the `OK` prompt, restore per test case
-rather than rebooting, so [Storage](/using/storage)'s samples run in
-milliseconds instead of reboot after reboot.
-
-## Driving it from an AI agent
-
-The emulator's own
-[`docs/AGENTS.md`](https://github.com/acwright/6502-EMULATOR/blob/main/docs/AGENTS.md)
-documents the exact method this repo's `scripts/verify-samples.mjs` follows:
-boot once, snapshot, restore per case, wait on a pattern rather than sleeping,
-bound everything with a timeout, and branch on exit codes. It's a genuine
-differentiator of this ecosystem — every claim in this documentation was
-checked by an agent driving this same interface, not eyeballed once and
-written down.
+There's a debugger in there too — breakpoints, single-stepping, memory
+watching, screenshots — which the assembly chapters of this guide use heavily.

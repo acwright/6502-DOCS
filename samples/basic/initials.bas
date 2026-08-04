@@ -1,0 +1,10 @@
+10 F$ = "ADA"
+20 L$ = "LOVELACE"
+30 PRINT "NAME:   "; F$; " "; L$
+40 PRINT "LETTERS:"; LEN(F$) + LEN(L$)
+50 PRINT "INITIALS: "; LEFT$(F$, 1); "."; LEFT$(L$, 1); "."
+60 PRINT "BACKWARDS: ";
+70 FOR N = LEN(L$) TO 1 STEP -1
+80 PRINT MID$(L$, N, 1);
+90 NEXT N
+100 PRINT

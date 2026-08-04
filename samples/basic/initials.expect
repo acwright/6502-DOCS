@@ -1,0 +1,5 @@
+# "Working with words" — LEN, LEFT$ and MID$ in a loop that walks backwards.
+expect ^NAME:   ADA LOVELACE$
+expect ^LETTERS: 11$
+expect ^INITIALS: A\.L\.$
+expect ^BACKWARDS: ECALEVOL$

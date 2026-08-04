@@ -26,6 +26,12 @@ jobs:
         with:
           node-version: 22
 
+      # The docs are a user's guide. This fails the build if the verification
+      # machinery that keeps them honest leaks back into the prose — see
+      # PLAN.md's "Voice & Style".
+      - name: Check the docs' voice
+        run: npm run check:voice
+
       - name: Check the reference cards
         run: npm run cards:check
 

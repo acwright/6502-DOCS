@@ -1,0 +1,8 @@
+# "Files" — DIR from inside a program, then LOAD by name.
+# Answering with a bare Enter takes the "nothing chosen" path, which is the
+# branch that can be asserted without depending on what is on the card.
+console storage
+wait (OK|\?)
+send \r
+expect HELLO\s+\.TXT
+expect ^NOTHING LOADED$

@@ -1,73 +1,186 @@
 # Your first ten minutes
 
-You're at the `OK` prompt (see [First power-on](/getting-started/first-boot)
-if you're not there yet). Everything below is typed at that prompt, and every
-line of it is a real, `RUN`-verified file in this repo — the prose can't drift
-from what the machine actually does, because it *is* what the machine actually
-does.
+You're at the `OK` prompt. Everything below gets typed there, one line at a
+time, <kbd>Enter</kbd> after each. Nothing to install, nothing to load.
 
-## `PRINT` and arithmetic
+## Doing sums
 
-<<< @/../samples/basic/first-program.bas{basic}
-
-Type each line exactly as shown, pressing <kbd>Enter</kbd> after each one —
-line numbers are how BASIC knows where a line goes, not decoration. Then:
+Type a line starting with `PRINT` and BASIC works it out and shows you:
 
 ```
-RUN
-HELLO
-PASS
-```
+PRINT 12 * 12
+ 144
 
-`10 PRINT "HELLO"` prints a literal string. `20 A = 6 * 7` does the arithmetic
-and stores it — BASIC variables are single letters (`A`–`Z`) or a letter
-followed by `$` for strings, more on that in the BASIC guide. `30` and `40`
-are the same idea as a spreadsheet formula: a condition, then what to do if
-it's true.
-
-## `LIST`, `RUN`, `NEW`
-
-`LIST` prints the program currently in memory, exactly as you typed it —
-useful after you've been editing lines out of order, or just want to see what
-you've built so far:
-
-```
-LIST
-10 PRINT "HELLO"
-20 A = 6 * 7
-30 IF A = 42 THEN PRINT "PASS"
-40 IF A <> 42 THEN PRINT "FAIL"
 OK
 ```
 
-`RUN` executes it from the top, every time — it doesn't remember where a
-previous run stopped. `NEW` clears the program and every variable, starting
-completely fresh; there's no undo, so `LIST` first if you're not sure.
+```
+PRINT 10 / 3
+ 3.33333333
 
-## The two-line loop
+OK
+```
+
+Use `*` for multiply and `/` for divide — there are no `×` or `÷` keys.
+Brackets work the way you'd hope, and so does the usual precedence:
+
+```
+PRINT 2 + 2 * 3
+ 8
+
+OK
+```
+
+::: tip That leading space
+`144` came back as ` 144`, with a space in front. BASIC always leaves room for
+a minus sign, so positive numbers look indented and negative ones line up
+underneath them. It's not a bug and you'll stop noticing it in about a day.
+:::
+
+## Remembering things
+
+A **variable** is a name that holds a value. Names are a single letter, and a
+letter with a `$` after it holds text instead of a number:
+
+```
+A = 5
+PRINT A * A
+ 25
+
+OK
+```
+
+```
+N$ = "ADA"
+PRINT "HELLO, "; N$
+HELLO, ADA
+
+OK
+```
+
+The `;` glues the two pieces together with nothing in between. Use `,` instead
+and BASIC spaces them out into columns.
+
+## Your first program
+
+So far every line has run the moment you pressed Enter. Put a **line number**
+in front and BASIC stores the line instead of running it:
+
+<<< @/../samples/basic/hello-name.bas{basic}
+
+Type those four lines. Nothing appears to happen — that's right, the program is
+being remembered, not run. Now type `RUN`:
+
+```
+RUN
+WHAT IS YOUR NAME? ADA
+HELLO, ADA
+WELCOME TO YOUR ACE.
+
+OK
+```
+
+Line 10 asks the question. The `;` on the end of it keeps the cursor on the
+same line, which is why the `?` from `INPUT` lands right after it. Line 20
+waits for you to type something and puts it in `N$`. Lines 30 and 40 say hello.
+
+The numbers are how BASIC knows what order to run things in — and they go up in
+tens so you've got room to slip a line in later. `RUN` it again; it does the
+same thing, every time.
+
+## `LIST`, `RUN`, `NEW`
+
+Three commands you'll use constantly:
+
+- **`LIST`** shows you the program you've got.
+- **`RUN`** runs it from the top.
+- **`NEW`** throws it away and starts fresh. There's no undo, so `LIST` first
+  if you're not sure.
+
+```
+LIST
+10 PRINT "WHAT IS YOUR NAME";
+20 INPUT N$
+30 PRINT "HELLO, "; N$
+40 PRINT "WELCOME TO YOUR ACE."
+
+OK
+```
+
+To change a line, just type it again with the same number — the new one
+replaces the old. To delete a line, type its number on its own.
+
+## Making it repeat
+
+`NEW`, then type this one in:
+
+<<< @/../samples/basic/times-table.bas{basic}
+
+```
+RUN
+THE SEVEN TIMES TABLE
+ 1 X 7 = 7
+ 2 X 7 = 14
+ 3 X 7 = 21
+ 4 X 7 = 28
+ 5 X 7 = 35
+ 6 X 7 = 42
+ 7 X 7 = 49
+ 8 X 7 = 56
+ 9 X 7 = 63
+ 10 X 7 = 70
+ 11 X 7 = 77
+ 12 X 7 = 84
+
+OK
+```
+
+`FOR N = 1 TO 12` and `NEXT N` are a loop: everything between them happens
+twelve times, with `N` counting up as it goes. Change the `7` in line 30 to
+whatever you like and `RUN` it again.
+
+## Stopping a runaway program
+
+Now the important one. Type:
 
 <<< @/../samples/basic/goto-loop.bas{basic}
 
-This is the classic: `10` prints, `20` sends control back to `10`, forever.
-`RUN` it and watch `HELLO` scroll the screen without end — this is
-`GOTO`, the plainest possible control-flow statement in BASIC, and also the
-easiest one to lose control of. Nothing about it is broken; it's supposed to
-run forever, and the machine has no way to know you didn't mean it to.
+`GOTO 10` sends BASIC back to line 10, which prints, which sends it back to
+line 10, forever. `RUN` it and watch `HELLO` fill the screen and keep going.
 
-To get your prompt back, press <kbd>Ctrl</kbd>+<kbd>C</kbd> — covered properly
-in [The keyboard](/using/keyboard). Then `LIST` it to confirm it's still there,
-and `NEW` when you're done with it.
+**Press <kbd>Esc</kbd>.**
 
-<PlaceholderImage
-  label="BASIC session, first ten minutes"
-  caption="Scripted keystrokes through first-program.bas and goto-loop.bas, captured with `dbg screen png` once scripts/capture-screens.mjs exists (Phase 8). The transcript above is already RUN-verified; only the screenshot is pending."
-/>
+```
+HELLO
+HELLO
+HELLO
+...
+BREAK IN 10
 
-## Where this goes next
+OK
+```
 
-This chapter is deliberately small — just enough to prove the machine is
-alive and doing what you type. The full language — every statement, every
-function, the `-1`/`0` truth convention, arrays, strings, files, and eighteen
-worked programs — is [The BASIC Guide]'s own phase of this site, not this one.
+That's your prompt back. `BREAK IN 10` just names the line it was on when you
+interrupted it.
 
-[The BASIC Guide]: https://github.com/acwright/6502-DOCS/blob/main/PLAN.md#phase-4--the-basic-guide
+<kbd>Esc</kbd> is the one to remember — it's how you get out of anything.
+Nothing is lost: `LIST` shows the program is still there, and `CONT` picks it
+up again where it stopped.
+
+::: tip Ctrl+C works too
+<kbd>Ctrl</kbd>+<kbd>C</kbd> does exactly the same thing, which is handy if
+you're driving the machine from a terminal program where <kbd>Esc</kbd> means
+something to the terminal itself.
+:::
+
+## Ten minutes, done
+
+You've done sums, stored a value, written a program, made it loop, and stopped
+it. That's most of what programming is.
+
+Where next:
+
+- [Sound and video](/using/sound-and-video) — make it play a tune and draw on
+  the screen.
+- [Storage](/using/storage) — save that program so it's still there tomorrow.
+- [The keyboard](/using/keyboard) — the rest of the keys that do something.

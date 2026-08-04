@@ -1,5 +1,5 @@
-; The proving case for the assembly path: assemble with cl65, load the .prg,
-; RUN it from BASIC, assert what it prints.
+; Hello world, in 65C02 assembly: assemble with cl65, load the .prg, RUN it
+; from BASIC.
 ;
 ; Console output goes through Chrout, which routes to video or serial by
 ; IO_MODE — so this same program prints on a machine with a video card and on
@@ -25,5 +25,4 @@ Start:
   rts
 
 Message:
-  .byte "HELLO FROM ASSEMBLY", CHAR_CR, CHAR_LF
-  .byte "PASS", CHAR_CR, CHAR_LF, $00
+  .byte "HELLO FROM ASSEMBLY", CHAR_CR, CHAR_LF, $00

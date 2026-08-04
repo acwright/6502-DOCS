@@ -1,83 +1,82 @@
-<script setup>
-import { data as facts } from '../.vitepress/data/facts.data.mts'
-</script>
-
 # First power-on
 
-Apply power (see [Setting up](/getting-started/setup) if you haven't wired
-everything up yet) and this is what happens, in order — straight from
-[`data/boot.json`](https://github.com/acwright/6502-DOCS/blob/main/data/boot.json),
-which is extracted from the BIOS source rather than described from memory:
-
-<ol>
-  <li v-for="step in facts.boot.sequence" :key="step.step">{{ step.step }}</li>
-</ol>
-
-RUN-verified: booting the emulator headless with nothing but a carriage
-return waiting at the splash produces exactly this transcript —
+Switch it on. You'll hear a short beep, and the screen says:
 
 ```
 -- 6502 BIOS v1.5 --
 ENTER=BASIC  ESC=MONITOR
+```
 
+You have about five seconds to choose.
+
+- Press <kbd>Enter</kbd> — or just wait — and you get **BASIC**. This is what
+  you want, nearly always.
+- Press <kbd>Esc</kbd> and you get the **Monitor** instead: a much lower-level
+  tool for looking at memory directly. It's [a whole chapter](/using/monitor) of
+  its own, and nothing is lost by ignoring it for now.
+
+Take the default, and a moment later:
+
+```
 6502 BASIC V2.0
 30718 BYTES FREE
 
 OK
 ```
 
-Three version numbers ship in that one ROM, and none of them are the same
-number: the **BIOS** is v1.5 (the splash line), **BASIC** is V2.0 (the banner
-after it), and the **Monitor** — which you reach with `ESC` instead of
-`ENTER` — is its own v1.1, not shown until you go there. Don't assume one
-number covers all three.
-
-## The splash and the countdown
-
-<table>
-  <thead><tr><th>What you see</th><th>What it means</th></tr></thead>
-  <tbody>
-    <tr>
-      <td><code>{{ facts.boot.strings[0].text }}</code></td>
-      <td>The BIOS version. Matches <code>{{ facts.biosVersion }}</code> in
-        this fact base, checked against the BIOS source on every build.</td>
-    </tr>
-    <tr>
-      <td><code>{{ facts.boot.strings[1].text }}</code></td>
-      <td>Your choice. Press <kbd>Enter</kbd> for BASIC, <kbd>Esc</kbd> for
-        the Monitor.</td>
-    </tr>
-  </tbody>
-</table>
-
-You have about **{{ facts.boot.menu.timeoutSeconds }} seconds** to choose
-before it auto-boots BASIC for you — {{ facts.boot.menu.tick }}. A beep
-sounds at boot if a sound card is fitted (silently skipped if not — see
-below). {{ facts.boot.menu.note }}
-
-That last point matters more than it looks: if you're driving the machine
-over a serial terminal and you start typing before the splash finishes
-printing, those keystrokes get eaten one tick at a time rather than queued up
-for BASIC. Wait for the prompt.
-
-## What a missing card does *not* do
-
-Nothing hangs. The Reset probe (step 2 above) checks every I/O slot before
-the splash ever prints, and the BIOS routes around whatever it doesn't find:
-no sound card means the beep is skipped, no video card means the console goes
-to serial instead, no CompactFlash means storage commands report `NO DEVICE`
-instead of freezing. This isn't a special case written for the docs — it's
-the *default* condition of every headless run in this repo's own
-`samples/` test harness, which boots with no video card at all and still
-reaches `OK` over serial every single time `npm run verify` runs.
-
-The one thing that *does* stop the machine cold: if neither a video card nor
-a serial connection is present, there's no console to boot into at all, and
-the BIOS halts rather than run blind. See
-[Troubleshooting](/getting-started/troubleshooting) for reading `HW_PRESENT`
-to see exactly what the probe found.
-
 <PlaceholderImage
-  label="Boot splash, on screen"
-  caption="`6502 run --console video` + `dbg screen png`, once scripts/capture-screens.mjs exists (Phase 8). Text is already RUN-verified above; only the screenshot itself is pending."
+  label="The boot screen"
+  caption="A VGA monitor showing the BIOS splash line, the BASIC banner, and the OK prompt with the cursor blinking under it."
 />
+
+## The `OK` prompt
+
+`OK` is the machine saying *your turn*. Anything you type now gets read when
+you press <kbd>Enter</kbd>. There's no shell, no file manager, no desktop —
+this prompt is the computer.
+
+**30718 bytes free** is how much room your programs have. It's about thirty
+kilobytes, which in BASIC is a lot: a substantial game fits in half of it.
+
+::: details Three version numbers, all different
+The ROM contains three pieces of software and they don't share a version
+number. The **BIOS** is v1.5 — that's the top line. **BASIC** is V2.0 — the
+banner underneath. The **Monitor** is v1.1, and doesn't announce itself until
+you go there. Don't be alarmed when they disagree; they're meant to.
+:::
+
+## What just happened
+
+In the second or so before the splash appeared, the ACE checked itself over:
+what video hardware is there, is a sound chip fitted, is there a memory card in
+the slot, is the clock running. Then it set up whatever it found, drew the
+splash on the screen it had just configured, and handed over to you.
+
+That check is why the machine doesn't sulk when something's missing. No sound
+chip and the beep is simply skipped. No memory card and the disk commands say
+so politely instead of hanging. No monitor at all and the whole console moves
+over to the serial port, so a laptop and a USB-to-serial cable is a complete
+way to use the machine.
+
+The one thing it can't work around: with *neither* a screen nor a serial
+connection there's nowhere to put the prompt, so it stops rather than running
+blind. If you're seeing nothing at all, that's the first thing to check — see
+[When something's wrong](/getting-started/troubleshooting).
+
+## Try it
+
+You're at the prompt. Type this:
+
+```
+PRINT 12 * 12
+```
+
+```
+ 144
+
+OK
+```
+
+The machine is a calculator, among other things. Now go on to
+[Your first ten minutes](/getting-started/first-ten-minutes) and make it do
+something bigger.

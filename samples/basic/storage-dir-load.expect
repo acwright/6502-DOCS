@@ -1,9 +1,0 @@
-# DIR and LOAD against a real CompactFlash image, for the Storage chapter
-# (Phase 3). `console storage` boots with scripts/verify-samples.mjs's
-# fixture attached, seeded with one file: HELLO.TXT.
-
-console storage
-send DIR\r
-send LOAD "HELLO.TXT"\r
-expect ^READY$
-expect HELLO\s*\.TXT
