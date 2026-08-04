@@ -45,7 +45,7 @@ operation, put it somewhere BASIC is not using — the top of memory, with
 `BAS_MEMSIZ` lowered to match — or load it from a `.prg` as below.
 :::
 
-## The other way round: a `.prg`
+## The other way around: a `.prg`
 
 For anything longer than a few dozen bytes, assemble properly and let `LOAD` do
 the work. That is what the twelve-byte stub at the front of every program in

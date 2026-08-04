@@ -42,11 +42,20 @@ nothing. Compare *warm start*.
 holding up to sixteen files. `DISK n` selects one. Nothing to do with a
 spinning disk.
 
+**ECM** — enhanced color mode. The *F18A* setting that turns pattern bits into
+color numbers, so a tile or a sprite can show four or eight colors instead of
+one. See [Colors](/f18a/color).
+
+**F18A** — a second, hidden feature set inside the *Pico9918*: two tile layers,
+hardware scrolling, 64 programmable colors, flipping sprites, a bitmap layer and
+a small processor of its own. Locked at power-on, and available on hardware
+only. See [F18A mode](/f18a/).
+
 **GPIO** — general-purpose input and output, the sixteen pins of the 65C22
 VIA. The joysticks and the keyboard use them; so can you.
 
 **immediate mode** — typing a line without a number in front, so it runs
-straight away. Compare *program mode*.
+right away. Compare *program mode*.
 See [Typing it in](/basic/typing-it-in).
 
 **jump table** — the first 256 bytes of the Kernal, a fixed list of three-byte
@@ -64,7 +73,7 @@ display, and a monitor ROM.
 
 **Monitor** — the machine-code monitor in ROM, reached with `BRK` or by
 pressing <kbd>Esc</kbd> at boot. Lets you look at memory, disassemble it,
-change it and run it. Its prompt is a full stop.
+change it and run it. Its prompt is a period.
 See [The Monitor](/using/monitor).
 
 **null modem** — a serial cable or adapter that crosses transmit and receive.
@@ -75,7 +84,8 @@ needs one. See [Connectors](/reference/connectors).
 one place a program can leave something behind with the power off.
 
 **Pico9918** — the video chip. A Raspberry Pi Pico behaving as a TMS9918A, the
-1979 part from the ColecoVision and the MSX, with a VGA socket on it.
+1979 part from the ColecoVision and the MSX, with a VGA socket on it. It also
+carries the *F18A* feature set, switched off until a program unlocks it.
 
 **program mode** — typing a line *with* a number in front, so it is stored
 rather than run. `RUN` runs what is stored. Compare *immediate mode*.

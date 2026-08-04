@@ -3,7 +3,7 @@
 You're at the `OK` prompt. Everything below gets typed there, one line at a
 time, <kbd>Enter</kbd> after each. Nothing to install, nothing to load.
 
-## Doing sums
+## Doing math
 
 Type a line starting with `PRINT` and BASIC works it out and shows you:
 
@@ -22,7 +22,7 @@ OK
 ```
 
 Use `*` for multiply and `/` for divide — there are no `×` or `÷` keys.
-Brackets work the way you'd hope, and so does the usual precedence:
+Parentheses work the way you'd hope, and so does the usual precedence:
 
 ```
 PRINT 2 + 2 * 3
@@ -182,7 +182,7 @@ something to the terminal itself.
 
 ## Ten minutes, done
 
-You've done sums, stored a value, written a program, made it loop, and stopped
+You've done math, stored a value, written a program, made it loop, and stopped
 it. That's most of what programming is.
 
 Where next:

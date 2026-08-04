@@ -99,7 +99,7 @@ letters.
 at zero still runs the body once, because the limit is tested at `NEXT`. Guard
 it with an `IF` in front.
 
-**A joystick test written the natural way round.** `IF (J AND 16) THEN` is true
+**A joystick test written the natural way around.** `IF (J AND 16) THEN` is true
 when the player *isn't* pushing up. It wants `= 0` on the end.
 
 **`AND` and `OR` used on counts instead of comparisons.** `IF N AND 10` is doing

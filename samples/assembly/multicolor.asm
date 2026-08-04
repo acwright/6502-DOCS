@@ -17,13 +17,13 @@ BasicStartup: .byte $0A, $08, $0A, $00, $A5, $32, $30, $36, $30, $00, $00, $00
 ; =============================================================================
 ;   TMS9918 Multicolor Mode Demo ($080C)
 ; =============================================================================
-;   Fills the screen with randomly coloured 4x4 pixel blocks, then waits for
+;   Fills the screen with randomly colored 4x4 pixel blocks, then waits for
 ;   a key press, restores text mode, and returns to BASIC.
 ;
 ;   MULTICOLOR MODE
 ;   ---------------
 ;   Selected by M1=0, M2=1, M3=0 (R1 bit 3 set).  The display is 64 x 48
-;   blocks of 4 x 4 pixels.  There is no colour table — colour comes straight
+;   blocks of 4 x 4 pixels.  There is no color table — color comes straight
 ;   out of the pattern table, one nibble per block (high nibble = left block,
 ;   low nibble = right block).
 ;
@@ -82,7 +82,7 @@ Start:
   jsr InitMode                      ; Mode registers, display still blanked
   jsr HideSprites
   jsr FillNames                     ; Name table -> linear framebuffer layout
-  jsr FillPatterns                  ; Pattern table -> random block colours
+  jsr FillPatterns                  ; Pattern table -> random block colors
   jsr ShowDisplay
   cli
 
@@ -168,10 +168,10 @@ FillNames:
   rts
 
 ; =============================================================================
-;   FillPatterns — Paint every 4x4 block a random colour
+;   FillPatterns — Paint every 4x4 block a random color
 ; =============================================================================
 ;   1536 bytes = 6 x 256.  Each byte holds two blocks: high nibble = left,
-;   low nibble = right.  Colour 0 is transparent and shows the backdrop.
+;   low nibble = right.  Color 0 is transparent and shows the backdrop.
 
 FillPatterns:
   lda #<MC_PATTERN
@@ -267,6 +267,6 @@ VdpRegs:
   .byte $01                         ; R4: pattern table      @ $0800
   .byte $0E                         ; R5: sprite attributes  @ $0700
   .byte $01                         ; R6: sprite patterns    @ $0800
-  .byte TMS_BLACK                   ; R7: backdrop colour
+  .byte TMS_BLACK                   ; R7: backdrop color
 
 NoVideoMsg: .asciiz "No video card present."

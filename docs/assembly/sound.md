@@ -79,7 +79,7 @@ voice numbers is how you get chords.
 `SidPlayNote` wants the low byte in X and the high byte in Y, and the index has
 to live somewhere while both are being loaded. Splitting the table means one
 `ldx Index` covers both fetches; keeping it as words would mean doubling the
-index every time round.
+index every time through.
 :::
 
 ## The registers underneath

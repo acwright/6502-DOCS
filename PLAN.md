@@ -10,8 +10,8 @@ programming it in assembly, and the reference cards you keep next to the
 keyboard.
 
 - **Stack:** VitePress → GitHub Pages, no landing page (land directly in the docs)
-- **Theme:** black / white / greyscale, Bebas Neue display face
-- **Licence:** MIT
+- **Theme:** black / white / grayscale, Bebas Neue display face
+- **License:** MIT
 - **Repo:** `acwright/6502-DOCS`, published at `https://acwright.github.io/6502-DOCS/`
 
 ---
@@ -34,6 +34,7 @@ keyboard.
 - [Phase 6 — The Assembly Guide](#phase-6--the-assembly-guide)
 - [Phase 7 — Quick Reference Cards](#phase-7--quick-reference-cards)
 - [Phase 8 — Images & Diagrams](#phase-8--images--diagrams)
+- [Phase 8.5 — F18A Mode](#phase-85--f18a-mode)
 - [Phase 9 — Cross-Repo Accuracy Pass & Backlinks](#phase-9--cross-repo-accuracy-pass--backlinks)
 - [Phase 10 — Launch & ASSETS Retirement](#phase-10--launch--assets-retirement)
 - [Appendix A — Proposed Site Map](#appendix-a--proposed-site-map)
@@ -190,7 +191,7 @@ Things that are true over serial and false at the machine:
 
 Before shipping a claim about input or output, ask which console it was checked
 on, and whether that is the console the reader has. Where the two genuinely
-differ, the ACE's behaviour is the main line and serial goes in a
+differ, the ACE's behavior is the main line and serial goes in a
 `::: details` block.
 
 ### Where the facts go instead
@@ -239,8 +240,8 @@ Ranked. When two disagree, the higher one wins and the lower one gets fixed.
 | Rank | Source | Location | Authoritative for |
 |------|--------|----------|-------------------|
 | 1 | **BIOS source** | `~/Developer/Assembly/6502-BIOS` (`BIOS.inc`, `Kernal.asm`, `BASIC.asm`, `Monitor.asm`) | Kernal jump table, memory map, BASIC dialect, Monitor commands, version number, `HW_PRESENT` bits |
-| 1 | **KiCad schematics** | `~/Developer/Kicad/6502-{ACE,COB,DEV,KIM,VCS}/Schematics` | Pinouts, connectors, address decoding, part numbers, jumper/switch behaviour |
-| 2 | **Emulator** | `~/Developer/NodeJS/6502-EMULATOR` (v2.5.1, CLI installed at `/usr/local/bin/6502`) | Observable runtime behaviour — boot text, prompts, error messages, timing, sample output |
+| 1 | **KiCad schematics** | `~/Developer/Kicad/6502-{ACE,COB,DEV,KIM,VCS}/Schematics` | Pinouts, connectors, address decoding, part numbers, jumper/switch behavior |
+| 2 | **Emulator** | `~/Developer/NodeJS/6502-EMULATOR` (v2.5.1, CLI installed at `/usr/local/bin/6502`) | Observable runtime behavior — boot text, prompts, error messages, timing, sample output |
 | 3 | **Template projects** | `6502-PRG`, `6502-CRT` (`Makefile`, `6502.cfg`, `6502.inc`) | The canonical cross-dev build, link config, and include file |
 | 3 | **Tooling repos** | `bastok`, `cffs`, `bin2woz`, `TMS9918-EDITOR` | Tool CLIs and file formats |
 | 4 | **Existing READMEs / ASSETS docs** | everywhere | Starting drafts only — treated as *claims to verify*, not facts |
@@ -298,6 +299,7 @@ Rules:
 | 6 | The Assembly Guide | 1, 5 | L |
 | 7 | Quick reference cards | 2, 3, 4, 6 | M |
 | 8 | Images & diagrams | 2, 3 | M (runs alongside 3–7) |
+| 8.5 | F18A mode | 6 | M (unplanned — see below) |
 | 9 | Cross-repo accuracy pass & backlinks | 3–7 | M |
 | 10 | Launch & ASSETS retirement | all | S |
 
@@ -308,7 +310,7 @@ order; 8 runs continuously beside them.
 
 ## Phase 0 — Repository & Toolchain Foundation
 
-**Goal:** an empty-but-deployable site with the right shell, theme, and licence.
+**Goal:** an empty-but-deployable site with the right shell, theme, and license.
 
 ### Tasks
 
@@ -318,13 +320,13 @@ order; 8 runs continuously beside them.
 3. **No landing page.** Configure so `/` lands directly on the guide's first page —
    `rewrites` mapping `guide/index.md` → `index.md`, or a root `index.md` that *is*
    the introduction (no `layout: home`). Sidebar visible from the first paint.
-4. **Theme:** custom VitePress theme extension, greyscale-only palette.
-   - Ink/paper inverted pair for light and dark, greys for chrome, no accent hue.
+4. **Theme:** custom VitePress theme extension, grayscale-only palette.
+   - Ink/paper inverted pair for light and dark, grays for chrome, no accent hue.
    - Self-host **Bebas Neue** (woff2 in `public/fonts/`) — no external font CDN, so
      the site works offline and on Pages without a third-party request. Bebas Neue for
      headings/nav/display; a legible body face for prose; a monospace face for code
      (Source Code Pro, to match the existing reference sheets).
-   - Code blocks: greyscale syntax theme (VitePress `markdown.theme` override), plus a
+   - Code blocks: grayscale syntax theme (VitePress `markdown.theme` override), plus a
      `basic` and `6502asm` language registration so listings highlight.
 5. `LICENSE` — MIT.
 6. `README.md` for this repo — what the site is, how to run it locally (`npm run docs:dev`),
@@ -343,7 +345,7 @@ two workflows, one placeholder page.
 
 - `npm run docs:build` succeeds; `npm run docs:dev` serves at `/`, and `/` is the guide
   (no marketing hero).
-- Pages deploy is green and the URL renders in Bebas Neue, greyscale, light and dark.
+- Pages deploy is green and the URL renders in Bebas Neue, grayscale, light and dark.
 
 ---
 
@@ -380,7 +382,7 @@ against it instead of re-deriving it — and make the samples executable in CI.
      `.expect` file of asserted console lines or a `PASS` contract.
    - Video cases: `--console video`, asserted with `dbg screen text`.
    - Exits non-zero on any failure; prints an `ok`/`FAIL` line per case.
-   - Modelled directly on `6502-EMULATOR/examples/06-test-suite.sh` and
+   - Modeled directly on `6502-EMULATOR/examples/06-test-suite.sh` and
      `6502-BIOS/tests/run.mjs`.
 4. **Toolchain preflight** `scripts/preflight.mjs` — checks `6502`, `cl65` (and that it
    accepts `.setcpu "W65C02"`), `node >= 22`, and optionally `bastok`, `cffs`, `bin2woz`.
@@ -476,11 +478,12 @@ noise, and put something on the screen — without being told what a Kernal is.
    **Esc is taught as the way to stop a program**; Ctrl+C is mentioned as the
    equivalent that terminal users will reach for.
 7. **Sound and video** — `SOUND` and `VOL` (a tune, not a beep), `CLS`,
-   `LOCATE`, `COLOR`, the 40×24 screen and its 16 colours. Ends with a small
-   program that does both at once. *(Renamed from "Sound and pictures" —
-   Phase 4 gave that name to its own BASIC-guide chapter on the same
-   statements, and the two need to read as different chapters, not a
-   duplicate.)*
+   `LOCATE`, `COLOR`, the 40×24 screen and its 16 colors. Ends with a small
+   program that does both at once. *(Was "Sound and pictures" until the voice
+   audit: "pictures" reads British, and the docs are written in American
+   English. The BASIC-guide chapter on the same statements was renamed with it,
+   so both now carry this title — same words, different depth, different
+   sections, distinct URLs.)*
 8. **Storage** — the CompactFlash card, the 256 × 1 MB disk-bank model, `DIR`,
    `LOAD`, `SAVE`, `DEL`, `DISK`, `FORMAT`, `BLOAD`/`BSAVE`, and the 16-file / 8.3
    limits framed as "how much fits", not as a spec.
@@ -671,7 +674,7 @@ on macOS, Linux, and Windows.
     paste via `bin2woz`, EEPROM via `minipro`, cartridge burning.
 11. **BASIC in a cross-dev workflow** — write the listing as text, `bastok` it, `cffs` it,
     run it; keep listings diffable in git.
-12. **Driving the emulator from an AI agent** — link and summarise
+12. **Driving the emulator from an AI agent** — link and summarize
     `6502-EMULATOR/docs/AGENTS.md`; it's a genuine differentiator of this ecosystem.
 
 ### Exit criteria
@@ -728,7 +731,7 @@ machines, with the Kernal as the platform API.
 5. **The Kernal API** — the full 51-slot jump table from `data/kernal.json`, each with
    entry/exit registers, side effects, and a runnable snippet. Grouped: console, video,
    sound, storage/filesystem, serial/XModem, RTC/NVRAM, keyboard/joystick, system.
-   Front and centre: *call the slot, not the implementation*.
+   Front and center: *call the slot, not the implementation*.
 6. **Hello world in assembly** — from the `6502-PRG` template, assembled, loaded, run,
    with the console output asserted.
 7. **Console I/O** — `Chrout`, `Chrin` (non-blocking, carry-flagged), `PrintStr`,
@@ -760,7 +763,7 @@ machines, with the Kernal as the platform API.
 17. **Mixing BASIC and assembly** — `SYS`, the `10 SYS 2060` stub, passing values through
     `POKE`/`PEEK`, and the "don't edit the BASIC line of a `.prg`" rule.
 18. **Banked RAM** — `BANK n`, the `$8000–$83FE` window, and using it for data.
-19. **Optimisation & idioms** — zero-page indirect, the Rockwell bit ops, `WAI` for IRQ
+19. **Optimization & idioms** — zero-page indirect, the Rockwell bit ops, `WAI` for IRQ
     sync, self-modifying code, timing with the VIA T1 via `SysDelay`.
 20. **Worked projects** — port the `6502-ASM` samples (Hello World, KIM LED counter, KIM
     KITT scanner, the three TMS demos) into full annotated walk-throughs, each assembled
@@ -841,8 +844,8 @@ and *nothing lives only on a card*.
    wrong (Appendix C). Every listing on every card gets typed into the emulator and must
    produce the output the card claims, or it gets fixed or replaced.
 2. Rebuild each card on the shared `cards/card.css` from Phase 2 — same visual language
-   as today's sheets (black header bar, Bebas Neue, letter pages, print-exact colours),
-   but greyscale-consistent with the site and with self-hosted fonts.
+   as today's sheets (black header bar, Bebas Neue, letter pages, print-exact colors),
+   but grayscale-consistent with the site and with self-hosted fonts.
 3. **Port every card's content into the prose docs**, per the prompt: the card becomes a
    condensed *summary* of a chapter that stands on its own, never the only home of a fact.
    Cross-link both directions.
@@ -909,13 +912,13 @@ Three tiers, in preference order:
    `scripts/capture-screens.mjs` so every screenshot is reproducible and regenerable when
    the ROM changes. This covers boot splash, BASIC session, Monitor session, character
    set, TMS graphics demos, game screens.
-2. **Draw it.** Diagrams authored as hand-written **SVG** (greyscale, Bebas Neue labels,
+2. **Draw it.** Diagrams authored as hand-written **SVG** (grayscale, Bebas Neue labels,
    theme-aware): memory map, boot flow, I/O slot map, backplane/card layout, keyboard
    matrix, joystick bitmask, cartridge overlay, XModem handshake, CF disk-bank model,
    cross-dev toolchain flow. SVG so they stay crisp, diffable, and restyleable.
 3. **Placeholder it.** Anything needing a camera or a human — board photos, build shots,
    cartridge labels in hand, the KIM keypad — gets a styled placeholder:
-   `docs/public/images/placeholders/`, a greyscale frame with the caption and shot list
+   `docs/public/images/placeholders/`, a grayscale frame with the caption and shot list
    printed on it, plus an entry in `IMAGES.md` (path, subject, framing, status). No blank
    spaces, no broken images, and a single checklist the owner can shoot against.
    **A placeholder's on-page caption describes the picture, and nothing else** — no
@@ -932,7 +935,7 @@ migrated first — those cover the hero shot for each system page immediately.
 
 ### Exit criteria
 
-Every chapter has at least one image or diagram; no chapter ships with an unlabelled gap;
+Every chapter has at least one image or diagram; no chapter ships with an unlabeled gap;
 `IMAGES.md` accounts for every placeholder with what would replace it.
 
 ### What shipped
@@ -957,7 +960,7 @@ Five notes for later phases:
   `npm run verify` fails if a checked-in drawing no longer matches what the data
   draws, exactly as it does for the six generated cards. Hand-drawing the memory
   map would have been faster once and wrong from the next ROM release onwards.
-  They carry no colour at all: every shape is `currentColor` at a fixed opacity,
+  They carry no color at all: every shape is `currentColor` at a fixed opacity,
   which is what lets one file serve both themes, and is why `<Diagram>` inlines
   the SVG instead of linking it.
 - **Screenshots are deliberately not drift-checked.** They are reproducible —
@@ -966,7 +969,7 @@ Five notes for later phases:
   asserting on an encoder. `npm run screens` after a ROM change is a step in the
   Phase 10 maintenance list rather than a gate.
 - **One shot the plan wanted does not exist.** Appendix B asks for a picture of
-  the palette from the BASIC colour loop. That program paints one colour at a
+  the palette from the BASIC color loop. That program paints one color at a
   time over the same two words, so no frame of it holds more than one, and the
   loop finishes between two debug commands, so a mid-run frame is not reliably
   reachable either. The chapter ships the frame it ends on, captioned for what
@@ -990,6 +993,99 @@ the family index, the third of the three routes that entry offered. **A44 is
 new**: the ACE photograph, now the first image on the site, has a hand-written
 `BIOS V1.0` label on its EPROM. No caption reads a version off it, and the real
 fix is a re-shoot in `6502-ACE`, which makes it a Phase 9 item.
+
+---
+
+## Phase 8.5 — F18A Mode
+
+**Goal:** document the video card's hidden enhanced mode properly — because
+almost nobody else has, and because a game written for an ACE will want it.
+
+Unplanned. It exists because the Pico9918 carries a second personality that
+appears in no README and no source in this ecosystem, so nothing in Phases 0–8
+could have found it. Numbered 8.5 rather than 11 because it belongs with the
+video chapters and has to land before Phase 9 goes and edits the sibling repos.
+
+### Why it needed a section rather than a paragraph
+
+Three of this plan's standing assumptions do not hold for this subject, and each
+one had to be handled rather than waved at.
+
+1. **There is no local source of truth.** Every other fact on this site traces
+   to `BIOS.inc`, a schematic, or the emulator. F18A mode is defined by Matthew
+   Hagerty's F18A and by the Pico9918 firmware, neither of which lives here.
+2. **It cannot be run.** The emulator is a faithful TMS9918A and masks register
+   writes to 0–7 (`6502-EMULATOR/src/core/IO/Video.ts:279`), which is correct
+   behavior and makes almost every claim in the section unverifiable by the
+   method the rest of the site is built on.
+3. **The upstream documentation is thin and partly wrong.** Three documents
+   exist, they disagree, and the most discoverable of the three is the least
+   accurate.
+
+### What shipped
+
+Eight pages under `/f18a/` as their own sidebar section, `data/f18a.json`, a
+generated register card, and two samples.
+
+- **`data/f18a.json`** — every enhanced register with its bit fields, all
+  sixteen status registers, the attribute bytes, the palette defaults, the
+  color-mode and paging tables, the GPU's memory map and instruction set. The
+  second hand-authored file in `data/` after `basic-examples.json`, and the
+  first that cannot be regenerated from anything. Bit order is normalized to
+  D7-first on the way in — Hagerty numbers the most significant bit as 0 — and
+  that conversion lives in the JSON so the card and the chapter cannot disagree
+  about which end a bit is.
+- **`/f18a/registers` and `cards/f18a-registers.html`** both generate from it,
+  drift-checked by `npm run verify` exactly like the other six generated cards.
+- **`samples/assembly/f18a-detect.asm`** and **`samples/basic/f18a-detect.bas`**
+  are the only two runnable cases the subject admits, and they are worth
+  running: each asserts the *stock* branch, which is the branch that executes on
+  every machine that is not an ACE with the enhanced firmware. Both restore the
+  three registers the attempt clobbers, and both `.expect` files assert the
+  prompt is still readable afterwards — which is the actual bug a careless
+  detection routine ships.
+
+### The four notes worth carrying forward
+
+- **The three source documents disagree, and A46–A49 record how.** The forum
+  documentation describes scroll-limit registers at VR50–53 and a fixed map at
+  VR10; neither shipped, and both addresses have entirely different meanings in
+  the register sheets (A46). The Pico9918 reference tabulates the enhanced color
+  modes one step too high — 16 colors from 4 bitplanes where the hardware gives
+  8 from 3 (A47). VR31's priority bit is described two ways by its own author in
+  two consecutive firmware revisions (A49). A46, A47 and A49 are resolved on the
+  evidence; **A48 is two claims that cannot be settled without hardware** and
+  ships on the page as open questions rather than as facts.
+- **"Accuracy is invisible" needed one exception, and it is a small one.** The
+  reader is told, once, on the section index, that F18A mode runs on hardware
+  only and the emulator does not have it. That is a fact about the machine, not
+  about this repo's method — a reader who types the detector into the emulator
+  and gets the plain answer needs to know why. Which document a claim came from
+  stays where it belongs, in `ACCURACY.md`. Where two sources genuinely conflict
+  the page says so, because the alternative is printing a coin flip as a fact.
+- **The three upstream files are gone from the repo.** The register spreadsheet,
+  the forum PDF and an agent-written summary of them sat in the root while this
+  was written and were deleted once `data/f18a.json` and the chapters carried
+  everything. The summary was the most dangerous of the three — it swapped the
+  two tile layers' scroll registers and read VR29's pattern-plane spacing as
+  page selects — which is the argument for not keeping derived documents around
+  next to the thing derived from them.
+- **No screenshots, and none possible.** Every other chapter's pictures come out
+  of the emulator. This section ships with none, and `IMAGES.md` records that as
+  deliberate rather than pending. A photograph of a real ACE running a
+  two-layer scroll would be the single most valuable image on the site, and it
+  needs hardware and a camera.
+
+### Left undone
+
+- **No worked graphics program.** The section teaches the registers and shows
+  fragments; it does not ship an assembled two-layer scrolling demo, because
+  nothing here could run it and an unrunnable listing is exactly what
+  [Voice & Style](#voice--style) exists to keep out. The first one written on
+  real hardware should become a sample with a hand-verified note, the way
+  `test.sh` is.
+- **A48 stays open** until somebody writes four palette entries on an ACE and
+  looks at the screen.
 
 ---
 
@@ -1067,6 +1163,9 @@ Site live; zero broken links; ASSETS archived with every artefact accounted for.
 /assembly/                 65c02 · memory-map · kernal · console · video · sound ·
                            input · storage · serial · rtc · interrupts · detection ·
                            cartridges · basic-interop · banking · idioms · projects
+/f18a/                     the video card's hidden mode:
+                           index · unlocking · color · sprites · scrolling ·
+                           bitmap · gpu · registers
 /reference/                cards index · memory map · kernal table · character set ·
                            connectors · keyboard matrix · keypad map · glossary
 /family/                   the rest of the AC6502 family, for builders:
@@ -1082,6 +1181,9 @@ Getting Started       Setting up · First power-on · Your first ten minutes ·
                       When something's wrong
 Using Your ACE        The keyboard · Sound and video · Storage ·
                       Serial and a terminal · The Monitor · The emulator
+F18A Mode             What F18A mode is · Turning it on · Colors · Sprites ·
+                      Scrolling and layers · The bitmap layer · The GPU ·
+                      Every register
 Add-ons               The KIM keypad
 The Rest of the Family  Overview · COB · DEV · VCS
 ```
@@ -1173,7 +1275,11 @@ Curated, in a `/resources/` page and inline where relevant.
 - [minipro / TL866](https://gitlab.com/DavidGriffith/minipro)
 
 **Hardware in this family**
-- [Pico9918](https://github.com/visrealm/pico9918) — the TMS9918A replacement
+- [Pico9918](https://github.com/visrealm/pico9918) — the TMS9918A replacement, and
+  its [F18A Programmer's Reference](https://github.com/visrealm/pico9918/wiki/F18A-Programmers-Reference),
+  which is the authority for F18A mode on an ACE
+- [F18A](https://github.com/dnotq/f18a) — Matthew Hagerty's FPGA 9918A, whose
+  enhanced feature set the Pico9918 implements
 - [vrEmu6502](https://github.com/visrealm/vrEmu6502) — the CPU core the DEV board runs
 - [TMS9918A datasheet](http://www.bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf)
 - ARMSID / SID 6581 — [SID datasheet](http://www.waitingforfriday.com/?p=661) and register reference

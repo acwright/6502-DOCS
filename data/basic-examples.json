@@ -169,7 +169,7 @@
 
     "FOR": {
       "syntax": "FOR var = start TO limit [STEP step]",
-      "summary": "Count from one number to another, running everything up to `NEXT` each time round.",
+      "summary": "Count from one number to another, running everything up to `NEXT` each time through.",
       "example": ["10 FOR N = 1 TO 4", "20 PRINT N; \" SQUARED IS\"; N * N", "30 NEXT N"],
       "output": [" 1 SQUARED IS 1", " 4 SQUARED IS 16"],
       "errors": ["OUT OF MEMORY"],
@@ -177,7 +177,7 @@
     },
     "NEXT": {
       "syntax": "NEXT [var]",
-      "summary": "End of a loop: add the step and go round again. One variable only — `NEXT J, I` is not accepted, so close each loop with its own `NEXT`.",
+      "summary": "End of a loop: add the step and go around again. One variable only — `NEXT J, I` is not accepted, so close each loop with its own `NEXT`.",
       "example": ["10 FOR I = 1 TO 2", "20 FOR J = 1 TO 2", "30 PRINT I; J", "40 NEXT J", "50 NEXT I"],
       "output": [" 1 1", " 2 2"],
       "errors": ["NEXT WITHOUT FOR"],
@@ -192,7 +192,7 @@
     },
     "STEP": {
       "syntax": "FOR var = start TO limit STEP step",
-      "summary": "How much to add each time round. Negative counts down.",
+      "summary": "How much to add each time through. Negative counts down.",
       "example": ["10 FOR N = 10 TO 1 STEP -3", "20 PRINT N;", "30 NEXT N"],
       "output": [" 10 7 4 1"],
       "see": ["FOR"]
@@ -541,7 +541,7 @@
     },
     "COLOR": {
       "syntax": "COLOR fg, bg",
-      "summary": "Set the text and background colours, each 0 to 15, for everything printed from now on.",
+      "summary": "Set the text and background colors, each 0 to 15, for everything printed from now on.",
       "example": ["10 CLS", "20 COLOR 1, 15", "30 PRINT \"DARK ON WHITE\""],
       "console": "video",
       "screen": ["^DARK ON WHITE\\s*$"],

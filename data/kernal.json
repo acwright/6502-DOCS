@@ -19,7 +19,7 @@
     "count": 32,
     "start": "$A09F",
     "end": "$A0FE",
-    "behaviour": "Each reserved slot jumps to UnimplementedStub, which is a bare RTS.",
+    "behavior": "Each reserved slot jumps to UnimplementedStub, which is a bare RTS.",
     "source": "Kernal.asm:96",
     "check": "GREP"
   },

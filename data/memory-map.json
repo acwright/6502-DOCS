@@ -450,7 +450,7 @@
         {
           "symbol": "BAS_WARM",
           "address": "$036F",
-          "description": "Warm-start magic ($A5 = previously initialised)",
+          "description": "Warm-start magic ($A5 = previously initialized)",
           "source": "BIOS.inc:106"
         },
         {

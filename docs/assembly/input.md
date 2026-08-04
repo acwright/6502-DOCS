@@ -48,7 +48,7 @@ So the test for "up is held" is that the bit came back **zero**:
 ```
 
 Get this backwards and your game runs in every direction at once until someone
-touches the stick, which is at least an easy bug to recognise.
+touches the stick, which is at least an easy bug to recognize.
 
 ::: tip Diagonals are free
 Two bits can be low at the same time, so testing them one at a time gets you

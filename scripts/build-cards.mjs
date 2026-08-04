@@ -190,7 +190,7 @@ function lowerFirst(text) {
  *
  * The generated keywords file carries the BIOS README's text, and Phase 4
  * found six places where that text is wrong — a `NEXT var, var` form the ROM
- * rejects, seven syntax lines pasted from the neighbouring entry (ACCURACY.md
+ * rejects, seven syntax lines pasted from the neighboring entry (ACCURACY.md
  * A21–A26). The examples file is the hand-authored, machine-run correction,
  * and it is what the chapters print. A card that disagreed with the chapter it
  * condenses would be worse than no card.
@@ -358,10 +358,10 @@ const ERROR_CAUSE = {
   "REDIM'D ARRAY": 'DIM used twice on the same array',
   'DIVISION BY ZERO': 'A divide with zero on the bottom',
   'ILLEGAL DIRECT': 'A statement that only works inside a program, typed at the prompt',
-  'TYPE MISMATCH': 'A string where a number belongs, or the other way round',
+  'TYPE MISMATCH': 'A string where a number belongs, or the other way around',
   'STRING TOO LONG': 'A string over 255 characters',
   'FORMULA TOO COMPLEX': 'An expression nested deeper than the evaluator can hold',
-  'ILLEGAL QUANTITY': 'A number outside what the statement accepts — voice 0, volume 16, colour 16',
+  'ILLEGAL QUANTITY': 'A number outside what the statement accepts — voice 0, volume 16, color 16',
   'RETURN WITHOUT GOSUB': 'A RETURN reached without a GOSUB to come back from',
   'NEXT WITHOUT FOR': 'A NEXT with no FOR open — or a comma list after it, which is not accepted',
   'OUT OF DATA': 'READ ran past the last DATA item. RESTORE goes back to the start',
@@ -542,6 +542,124 @@ function kernalJumpTable() {
         ]
       },
       { heading: 'Kernal Jump Table', sections: half(4, 9) }
+    ]
+  })
+}
+
+// ---------------------------------------------------------------------------
+// F18A registers
+// ---------------------------------------------------------------------------
+
+/**
+ * The one card in the set whose data does not come from this ecosystem at all.
+ *
+ * `f18a.json` is transcribed from Matthew Hagerty's F18A register sheet and
+ * Troy Schrapel's Pico9918 reference, because the enhanced mode of the ACE's
+ * video card is defined by those and by nothing in any repo here. It is also
+ * the one card describing something the emulator cannot run, which is exactly
+ * why it wants to be on paper: the reader checking it is sitting in front of
+ * real hardware with no way to ask the machine.
+ *
+ * Bit order is flipped on the way in — Hagerty numbers the most significant
+ * bit as 0 — and that conversion lives in the JSON, not here, so the card and
+ * the chapter cannot disagree about which end a bit is.
+ */
+function f18aRegisters() {
+  const f18a = facts('f18a.json')
+
+  const bitRows = (bits) =>
+    bits.map((b) => [
+      addr(esc(b.bits)),
+      label(esc(b.name)),
+      desc(rich(b.description) + (b.pico ? ' <em>(Pico9918)</em>' : b.enhanced ? ' <em>(needs unlocking)</em>' : ''))
+    ])
+
+  /** One register: a heading row, then a row per bit field, or just the summary. */
+  const regBlock = (r) => {
+    const head = `<div class="reg-head"><strong>VR${r.reg}</strong> <span class="reg-hex">${esc(r.hex)} / ctrl ${esc(r.ctrl)}</span> &mdash; ${esc(r.name)}${r.pico ? ' <em>(Pico9918)</em>' : ''}</div>`
+    const body = r.bits
+      ? table([], bitRows(r.bits))
+      : `<div class="reg-sum">${rich(r.summary)}</div>`
+    return head + '\n' + body
+  }
+
+  const standard = f18a.registers.filter((r) => r.standard)
+  const enhanced = f18a.registers.filter((r) => !r.standard)
+
+  const statusRows = f18a.statusRegisters.map((s) => [
+    addr(`SR${s.sr}`),
+    desc(rich(s.summary) + (s.pico ? ' <em>(Pico9918)</em>' : s.f18aOnly ? ' <em>(F18A only)</em>' : ''))
+  ])
+
+  const modeRows = f18a.modes.map((m) => [
+    label(esc(m.name)),
+    desc(`M1 ${m.m1} &middot; M2 ${m.m2} &middot; M3 ${m.m3} &middot; M4 ${m.m4}`)
+  ])
+
+  const ecmRows = f18a.colorModes.map((m) => [
+    label(m.ecm === 0 ? 'Original' : `ECM${m.ecm}`),
+    desc(`${m.colors} colors per tile, ${m.spriteColors} per sprite &middot; ${m.planes} plane${m.planes > 1 ? 's' : ''} &middot; ${m.patternTable} pattern table &middot; ${m.palettes} palettes`)
+  ])
+
+  const attrBlock = (a) =>
+    section(a.title, table([], bitRows(a.bits)))
+
+  return card({
+    file: 'f18a-registers.html',
+    title: 'F18A Mode — Register Reference',
+    side: SIDE('F18A mode &middot; Pico9918'),
+    subtitle: 'F18A MODE — REGISTERS',
+    style: '--w-addr: 22%; --w-label: 22%',
+    pages: [
+      {
+        heading: 'F18A Mode — Registers',
+        sections: [
+          section('Unlocking',
+            note('Write $1C to VR57. Twice, consecutively.',
+              `${esc(f18a.unlock.why)} Any other register write between the two cancels it. ` +
+              `<strong>${esc(f18a.unlock.hazard)}</strong>`),
+            note('Writing a register.',
+              'Value to <code>$9C01</code>, then the register number with bit 7 set. ' +
+              'Registers 0&ndash;7 always; 8&ndash;63 only once unlocked.'),
+            note('Which card is this?',
+              `Status register 1 reads <code>$E0</code> on a real F18A and <code>$E8</code> on a ` +
+              `Pico9918. Select it with VR15, read <code>$9C01</code>, then <strong>put VR15 back to 0</strong>.`),
+            note('Bit order.',
+              'D7 is the most significant bit here. Hagerty&rsquo;s own documents number the ' +
+              'most significant bit as 0, so his tables read mirrored against these.')),
+          section('Display modes', table([], modeRows)),
+          flowSection('Registers 0–7 (always available)',
+            standard.map(regBlock).join('\n'))
+        ]
+      },
+      {
+        heading: 'F18A Mode — Registers',
+        sections: [
+          flowSection('Registers 10–34 (unlocked only)',
+            enhanced.filter((r) => r.reg <= 34).map(regBlock).join('\n'))
+        ]
+      },
+      {
+        heading: 'F18A Mode — Registers',
+        sections: [
+          flowSection('Registers 35–63 (unlocked only)',
+            enhanced.filter((r) => r.reg >= 35).map(regBlock).join('\n'))
+        ]
+      },
+      {
+        heading: 'F18A Mode — Status & Attributes',
+        sections: [
+          section('Status registers', table([], statusRows)),
+          section('Enhanced color modes', table([], ecmRows)),
+          attrBlock(f18a.attributes.spriteUnlocked),
+          attrBlock(f18a.attributes.tile),
+          section('Before you trust this',
+            note('It cannot be checked here.',
+              'F18A mode exists on hardware only. Everything on this card is transcribed from ' +
+              'Matthew Hagerty&rsquo;s F18A register sheet and the Pico9918 reference; where those ' +
+              'two disagree, the guide says so and this card follows the guide.'))
+        ]
+      }
     ]
   })
 }
@@ -850,7 +968,8 @@ function main() {
     kernalJumpTable(),
     memoryMap(),
     characterMap(),
-    keyboardLayout()
+    keyboardLayout(),
+    f18aRegisters()
   ]
 
   let stale = 0

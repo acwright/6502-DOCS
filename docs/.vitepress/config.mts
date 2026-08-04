@@ -42,9 +42,9 @@ export default defineConfig({
   },
 
   markdown: {
-    // Greyscale-only code blocks: token colours come from CSS variables
-    // defined in theme/style.css, not from a hard-coded colour theme.
-    theme: createCssVariablesTheme({ name: 'greyscale', variablePrefix: '--shiki-' }),
+    // Grayscale-only code blocks: token colors come from CSS variables
+    // defined in theme/style.css, not from a hard-coded color theme.
+    theme: createCssVariablesTheme({ name: 'grayscale', variablePrefix: '--shiki-' }),
     languages: [loadGrammar('basic'), loadGrammar('6502asm', ['ca65', 'asm'])],
 
     // The cards under `public/cards/` are standalone pages, not VitePress
@@ -129,13 +129,13 @@ export default defineConfig({
           { text: 'Showing things', link: '/basic/print' },
           { text: 'Asking questions', link: '/basic/input' },
           { text: 'Making decisions', link: '/basic/decisions' },
-          { text: 'Going round again', link: '/basic/loops' },
+          { text: 'Going around again', link: '/basic/loops' },
           { text: 'Subroutines', link: '/basic/subroutines' },
           { text: 'Arrays', link: '/basic/arrays' },
           { text: 'Working with words', link: '/basic/strings' },
           { text: 'Lists in the program', link: '/basic/data' },
           { text: 'Your own functions', link: '/basic/functions' },
-          { text: 'Sound and pictures', link: '/basic/sound-and-pictures' },
+          { text: 'Sound and video', link: '/basic/sound-and-video' },
           { text: 'Sticks and keys', link: '/basic/controls' },
           { text: 'Saving your work', link: '/basic/files' },
           { text: 'Time and memory that lasts', link: '/basic/clock' },
@@ -198,6 +198,20 @@ export default defineConfig({
           { text: 'Banked RAM', link: '/assembly/banking' },
           { text: 'Idioms and speed', link: '/assembly/idioms' },
           { text: 'Worked projects', link: '/assembly/projects' }
+        ]
+      },
+      {
+        text: 'F18A Mode',
+        collapsed: true,
+        items: [
+          { text: 'What F18A mode is', link: '/f18a/' },
+          { text: 'Turning it on', link: '/f18a/unlocking' },
+          { text: 'Colors', link: '/f18a/color' },
+          { text: 'Sprites', link: '/f18a/sprites' },
+          { text: 'Scrolling and layers', link: '/f18a/scrolling' },
+          { text: 'The bitmap layer', link: '/f18a/bitmap' },
+          { text: 'The GPU', link: '/f18a/gpu' },
+          { text: 'Every register', link: '/f18a/registers' }
         ]
       },
       {

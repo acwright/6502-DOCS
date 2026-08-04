@@ -1,0 +1,787 @@
+{
+  "$meta": {
+    "title": "F18A enhanced VDP registers",
+    "description": "Hand-authored from upstream sources, because there is no local source of truth for this one: the ACE's video card is a Pico9918, and its F18A personality is defined by Matthew Hagerty's F18A HDL and by the Pico9918 firmware, neither of which lives in this ecosystem. Unlike every other file in this directory it therefore cannot be regenerated, and unlike every other file in this directory almost none of it can be checked by running it — the emulator is a stock TMS9918A and masks register writes to 0-7. What can be checked is checked: the detection samples run in CI and assert the stock-VDP path.",
+    "sources": [
+      {
+        "id": "hdl",
+        "title": "F18A register-use spreadsheet, sheets V1.9 and V1.8",
+        "author": "Matthew Hagerty",
+        "authority": "The shipped F18A register map. Where anything disagrees with the F18A forum documentation, this wins — the forum posts were written during development and several registers moved afterwards."
+      },
+      {
+        "id": "forum",
+        "title": "F18A documentation (collected forum posts)",
+        "author": "Matthew Hagerty",
+        "authority": "The only narrative explanation of why the parts work the way they do — unlocking, the bitplane scheme, the paging model, the PIX instruction. Its register numbers are dev-era and several are stale; its explanations are not."
+      },
+      {
+        "id": "pico",
+        "title": "Pico9918 F18A Programmer's Reference wiki",
+        "author": "Troy Schrapel",
+        "authority": "The authority for an ACE, because an ACE has a Pico9918 and not an F18A. Adds registers the F18A never had and drops hardware the F18A had."
+      }
+    ],
+    "bitNumbering": "D7 is the most significant bit, matching the rest of this site and the Pico9918 reference. Hagerty's own documents number bits the other way round, so his tables read mirrored against these.",
+    "unresolved": "Claims the three sources disagree about are carried in the `conflict` field of whatever they belong to, and recorded in ACCURACY.md. None of them is silently resolved."
+  },
+
+  "device": {
+    "name": "F18A mode",
+    "hardware": "Pico9918",
+    "emulates": "F18A v1.9 (status register 14 reports $1A)",
+    "port": {
+      "data": "$9C00",
+      "control": "$9C01",
+      "status": "$9C01",
+      "note": "The same two addresses the stock card uses. Everything below is reached through them."
+    }
+  },
+
+  "unlock": {
+    "register": 57,
+    "value": "$1C",
+    "writes": 2,
+    "summary": "Write $1C to register 57, twice, with no other card access in between.",
+    "why": "Register 57 is register 1 on a stock TMS9918A, which only looks at the low three bits of a register number. $1C written to register 1 means 4 KB of VRAM, display blanked, interrupts off, both mode bits set at once — an illegal combination that makes the chip useless. No working program would write it once, let alone twice in a row.",
+    "hazard": "On a stock card those two writes land in register 1 and blank the screen. Set register 1 back to something sane immediately afterwards, whether or not the unlock took.",
+    "cancels": "Any other register write between the two cancels the sequence.",
+    "relock": [
+      "Write anything to register 57 again.",
+      "Write a value with bit 7 set to register 50. Registers return to power-on defaults and the palette survives.",
+      "Write $C0 to register 50 to reset the palette as well (Pico9918)."
+    ]
+  },
+
+  "identity": {
+    "statusRegister": 1,
+    "values": [
+      { "value": "$E0", "means": "a real F18A" },
+      { "value": "$E8", "means": "an F18A personality running on something else — on an ACE, the Pico9918" }
+    ],
+    "note": "Bits 7-5 are the identity field; 111 is the F18A. Bit 3 is the emulation marker. Reading status register 1 needs the card unlocked first, because register 15 is an enhanced register.",
+    "gpuProbe": {
+      "summary": "The test everyone uses. Six bytes of TMS9900 machine code that erase their own first instruction.",
+      "bytes": ["$04", "$E0", "$3F", "$00", "$03", "$40"],
+      "address": "$3F00",
+      "disassembly": [
+        "$3F00  04E0 3F00   CLR  @>3F00",
+        "$3F04  0340        IDLE"
+      ],
+      "result": "$3F00 reads back $00 if a GPU ran the code, and $04 — the top byte of the CLR opcode, untouched — if nothing did.",
+      "hazard": "Registers 54 and 55 are registers 6 and 7 on a stock card, so a failed probe leaves the sprite pattern table address and the screen colors wrong. Put them back."
+    }
+  },
+
+  "registers": [
+    {
+      "reg": 0,
+      "hex": "$00",
+      "ctrl": "$80",
+      "name": "Mode control 1",
+      "standard": true,
+      "summary": "Mode bits, plus the horizontal interrupt enable.",
+      "bits": [
+        { "bits": "D7-D5", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D4", "name": "IE1", "description": "Horizontal interrupt enable — pairs with register 19", "enhanced": true },
+        { "bits": "D3", "name": "M5", "description": "Extended row mode", "pico": true },
+        { "bits": "D2", "name": "M4", "description": "80-column text mode", "enhanced": true },
+        { "bits": "D1", "name": "M3", "description": "Graphics II mode" },
+        { "bits": "D0", "name": "EVD", "description": "External video enable" }
+      ]
+    },
+    {
+      "reg": 1,
+      "hex": "$01",
+      "ctrl": "$81",
+      "name": "Mode control 2",
+      "standard": true,
+      "summary": "VRAM size, display enable, vertical interrupt, mode bits, sprite size.",
+      "bits": [
+        { "bits": "D7", "name": "RAM", "description": "VRAM size — 0 = 4 KB, 1 = 16 KB" },
+        { "bits": "D6", "name": "BL", "description": "Display — 0 = blanked, 1 = active" },
+        { "bits": "D5", "name": "IE0", "description": "Vertical interrupt enable" },
+        { "bits": "D4", "name": "M1", "description": "Text mode" },
+        { "bits": "D3", "name": "M2", "description": "Multicolor mode" },
+        { "bits": "D2", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D1", "name": "SIZE", "description": "Sprite size — 0 = 8×8, 1 = 16×16" },
+        { "bits": "D0", "name": "MAG", "description": "Sprite magnification — 0 = 1×, 1 = 2×" }
+      ]
+    },
+    {
+      "reg": 2,
+      "hex": "$02",
+      "ctrl": "$82",
+      "name": "Name table base address",
+      "standard": true,
+      "summary": "Tile layer 1 name table, on a 1 KB boundary. Address = (VR2 & $0F) << 10.",
+      "bits": [
+        { "bits": "D7-D4", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D3-D0", "name": "A13-A10", "description": "Name table base" }
+      ],
+      "notes": [
+        "768 bytes per page at 24 rows, 960 bytes at 30 rows.",
+        "When paged scrolling is on, the extra pages are found by flipping bits in this address rather than by another register."
+      ]
+    },
+    {
+      "reg": 3,
+      "hex": "$03",
+      "ctrl": "$83",
+      "name": "Color table base address",
+      "standard": true,
+      "summary": "On a 64-byte boundary. Becomes the tile attribute table in the enhanced color modes.",
+      "notes": [
+        "32 bytes in the original color mode.",
+        "256 bytes as a tile attribute table, one entry per pattern.",
+        "768 bytes to 4 KB in position-attribute mode, depending on page sizes."
+      ]
+    },
+    {
+      "reg": 4,
+      "hex": "$04",
+      "ctrl": "$84",
+      "name": "Pattern generator base address",
+      "standard": true,
+      "summary": "On a 2 KB boundary. Shared by both tile layers.",
+      "notes": [
+        "2 KB for 256 patterns in the original color mode.",
+        "4 KB in 2-bit color, 6 KB in 3-bit color — the extra bitplanes follow the first."
+      ]
+    },
+    {
+      "reg": 5,
+      "hex": "$05",
+      "ctrl": "$85",
+      "name": "Sprite attribute table base address",
+      "standard": true,
+      "summary": "On a 128-byte boundary. 32 sprites, four bytes each."
+    },
+    {
+      "reg": 6,
+      "hex": "$06",
+      "ctrl": "$86",
+      "name": "Sprite pattern generator base address",
+      "standard": true,
+      "summary": "On a 2 KB boundary. 4 KB in 2-bit color, 6 KB in 3-bit color."
+    },
+    {
+      "reg": 7,
+      "hex": "$07",
+      "ctrl": "$87",
+      "name": "Foreground / background color",
+      "standard": true,
+      "summary": "Text color in the high nibble, backdrop in the low nibble."
+    },
+
+    {
+      "reg": 10,
+      "hex": "$0A",
+      "ctrl": "$8A",
+      "name": "Name table 2 base address",
+      "summary": "Tile layer 2's name table, same format as register 2.",
+      "bits": [
+        { "bits": "D7-D4", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D3-D0", "name": "A13-A10", "description": "Tile layer 2 name table base" }
+      ],
+      "conflict": "The forum documentation gives this register to a \"fixed map\" — a bitmap saying which tiles scroll — and describes it as 7 bits on a 128-byte boundary. The fixed map did not ship; the register became tile layer 2's name table."
+    },
+    {
+      "reg": 11,
+      "hex": "$0B",
+      "ctrl": "$8B",
+      "name": "Color table 2 base address",
+      "summary": "Tile layer 2's color / attribute table, same format and same rules as register 3."
+    },
+    {
+      "reg": 15,
+      "hex": "$0F",
+      "ctrl": "$8F",
+      "name": "Status register select and counter control",
+      "summary": "Picks which of the sixteen status registers the status port returns, and drives the on-card timer.",
+      "bits": [
+        { "bits": "D7", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D6", "name": "CNT_RST", "description": "Reset the counter" },
+        { "bits": "D5", "name": "CNT_SNAP", "description": "Latch the counter so it can be read, without stopping it" },
+        { "bits": "D4", "name": "CNT_START", "description": "1 = run, 0 = stop" },
+        { "bits": "D3-D0", "name": "SR_SEL", "description": "Status register 0-15 the next status read returns" }
+      ],
+      "notes": [
+        "Selecting 0 gives the stock status byte, with the usual side effects: the interrupt flag clears, the collision and fifth-sprite bits reset, and palette write mode ends.",
+        "Selecting anything else returns that register with none of those side effects — which is also the trap. Leave the selection pointing somewhere else and the machine's own interrupt handler reads the wrong byte and never acknowledges the interrupt."
+      ]
+    },
+    {
+      "reg": 19,
+      "hex": "$13",
+      "ctrl": "$93",
+      "name": "Horizontal interrupt scan line",
+      "summary": "Raise an interrupt when the beam reaches this line. 0 disables it.",
+      "notes": [
+        "Register 0's IE1 bit must be set as well.",
+        "There is only one interrupt line, so a handler has to work out which of the two fired by reading status register 1."
+      ]
+    },
+    {
+      "reg": 24,
+      "hex": "$18",
+      "ctrl": "$98",
+      "name": "Palette select",
+      "summary": "Which 16-color block of the 64 palette registers each layer draws from, in the lower color modes.",
+      "bits": [
+        { "bits": "D7-D6", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D5-D4", "name": "SPS", "description": "Sprite palette select, 0-3" },
+        { "bits": "D3-D2", "name": "T2PS", "description": "Tile layer 2 palette select, 0-3" },
+        { "bits": "D1-D0", "name": "T1PS", "description": "Tile layer 1 palette select, 0-3" }
+      ],
+      "notes": [
+        "The selected value is shifted up four bits and combined with the color index to make the six-bit palette address.",
+        "Unused for tiles and sprites in 2-bit color, where the pattern supplies those bits instead."
+      ]
+    },
+    {
+      "reg": 25,
+      "hex": "$19",
+      "ctrl": "$99",
+      "name": "Tile layer 2 horizontal scroll",
+      "summary": "Whole tiles in the high five bits, pixels within a tile in the low three.",
+      "bits": [
+        { "bits": "D7-D3", "name": "HTO", "description": "Horizontal tile offset, 0-31" },
+        { "bits": "D2-D0", "name": "HPO", "description": "Horizontal pixel offset, 0-7" }
+      ]
+    },
+    {
+      "reg": 26,
+      "hex": "$1A",
+      "ctrl": "$9A",
+      "name": "Tile layer 2 vertical scroll",
+      "summary": "0-255 pixels, added straight to the Y position. Past the bottom of the display it wraps, or swaps page if vertical paging is on."
+    },
+    {
+      "reg": 27,
+      "hex": "$1B",
+      "ctrl": "$9B",
+      "name": "Tile layer 1 horizontal scroll",
+      "summary": "Same format as register 25, for the main tile layer.",
+      "bits": [
+        { "bits": "D7-D3", "name": "HTO", "description": "Horizontal tile offset, 0-31" },
+        { "bits": "D2-D0", "name": "HPO", "description": "Horizontal pixel offset, 0-7" }
+      ]
+    },
+    {
+      "reg": 28,
+      "hex": "$1C",
+      "ctrl": "$9C",
+      "name": "Tile layer 1 vertical scroll",
+      "summary": "Same as register 26, for the main tile layer."
+    },
+    {
+      "reg": 29,
+      "hex": "$1D",
+      "ctrl": "$9D",
+      "name": "Page sizes and pattern plane spacing",
+      "summary": "How wide and tall each tile layer's virtual screen is, and how far apart the extra color bitplanes sit.",
+      "bits": [
+        { "bits": "D7-D6", "name": "SPGS", "description": "Sprite pattern plane spacing — 00 = 2 KB, 01 = 1 KB, 10 = 512 B, 11 = 256 B" },
+        { "bits": "D5", "name": "HPSIZE2", "description": "Tile layer 2 horizontal pages — 0 = one, 1 = two (64 tiles wide)" },
+        { "bits": "D4", "name": "VPSIZE2", "description": "Tile layer 2 vertical pages" },
+        { "bits": "D3-D2", "name": "TPGS", "description": "Tile pattern plane spacing, same encoding as SPGS" },
+        { "bits": "D1", "name": "HPSIZE1", "description": "Tile layer 1 horizontal pages" },
+        { "bits": "D0", "name": "VPSIZE1", "description": "Tile layer 1 vertical pages" }
+      ],
+      "notes": [
+        "Plane spacing is 0x800 >> the two-bit value.",
+        "The page-size bits are what turn a scroll register from wrapping in place into scrolling onto new ground."
+      ],
+      "conflict": "The forum documentation puts the page-size bits in register 30 alongside a horizontal banner size, and uses register 29 for page-start bits. Neither arrangement shipped."
+    },
+    {
+      "reg": 30,
+      "hex": "$1E",
+      "ctrl": "$9E",
+      "name": "Maximum sprites per scan line",
+      "summary": "How many sprites the card will draw on one line before it gives up. The stock chip's answer is four.",
+      "bits": [
+        { "bits": "D7-D5", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D4-D0", "name": "SPRTMAX", "description": "Sprites per scan line" }
+      ],
+      "notes": [
+        "The Pico9918 defaults to 31. Writing 0 restores that default.",
+        "On a real F18A, writing 0 restores whatever the card's jumper says."
+      ]
+    },
+    {
+      "reg": 31,
+      "hex": "$1F",
+      "ctrl": "$9F",
+      "name": "Bitmap layer control",
+      "summary": "The whole of the bitmap layer's behavior in one byte.",
+      "bits": [
+        { "bits": "D7", "name": "BML_EN", "description": "Enable the bitmap layer" },
+        { "bits": "D6", "name": "BML_PRI", "description": "0 = below the tile layers, 1 = above them" },
+        { "bits": "D5", "name": "BML_TRANS", "description": "Treat pixel value 0 as transparent" },
+        { "bits": "D4", "name": "BML_FAT", "description": "0 = 1×1 pixels, four colors; 1 = 2×1 pixels, sixteen colors" },
+        { "bits": "D3-D0", "name": "BML_PAL", "description": "Palette select — shifted up two bits and combined with the pixel value" }
+      ],
+      "conflict": "The v1.8 sheet calls D6 priority over sprites, the v1.9 sheet calls it priority over tiles. The v1.9 reading is the one the layer-priority rules bear out: the bitmap layer is never drawn above a sprite."
+    },
+    {
+      "reg": 32,
+      "hex": "$20",
+      "ctrl": "$A0",
+      "name": "Bitmap layer base address",
+      "summary": "Where the bitmap lives in VRAM. Address = VR32 << 6, so a 64-byte boundary."
+    },
+    {
+      "reg": 33,
+      "hex": "$21",
+      "ctrl": "$A1",
+      "name": "Bitmap layer X position",
+      "summary": "0-255. The bitmap moves independently of everything else, and scroll registers do not touch it."
+    },
+    {
+      "reg": 34,
+      "hex": "$22",
+      "ctrl": "$A2",
+      "name": "Bitmap layer Y position",
+      "summary": "The first scan line the bitmap is drawn on. Nothing above it."
+    },
+    {
+      "reg": 35,
+      "hex": "$23",
+      "ctrl": "$A3",
+      "name": "Bitmap layer width",
+      "summary": "Width of one bitmap row, in bytes. Every byte is four pixels wide whichever pixel format is selected.",
+      "conflict": "The Pico9918 reference states the encoding as \"0 = 64 bytes, otherwise VR35 >> 2\". Hagerty's sheets call the register plain \"bitmap width\". Untested here either way."
+    },
+    {
+      "reg": 36,
+      "hex": "$24",
+      "ctrl": "$A4",
+      "name": "Bitmap layer height",
+      "summary": "How many rows are drawn, starting from the row in register 34."
+    },
+    {
+      "reg": 47,
+      "hex": "$2F",
+      "ctrl": "$AF",
+      "name": "Palette control and data-port mode",
+      "summary": "Points the data port at palette memory instead of VRAM, and says which entry.",
+      "bits": [
+        { "bits": "D7", "name": "DPM", "description": "Data port mode — 0 = writes go to VRAM, 1 = writes go to the palette" },
+        { "bits": "D6", "name": "AUTO", "description": "Step to the next palette entry after each complete entry" },
+        { "bits": "D5-D0", "name": "PAL_IDX", "description": "Palette entry, 0-63" }
+      ],
+      "notes": [
+        "One entry is two writes to the data port.",
+        "Without auto-increment, palette mode ends by itself after those two writes.",
+        "With auto-increment it stays on until you clear it, or until the index rolls over past 63, or until any status register is read."
+      ]
+    },
+    {
+      "reg": 48,
+      "hex": "$30",
+      "ctrl": "$B0",
+      "name": "VRAM address increment",
+      "summary": "Signed byte added to the VRAM address after every read or write. Default 1.",
+      "notes": [
+        "$FF steps backwards. 0 holds the address still. 2 and up skip — one write per pixel row, say, instead of one per byte."
+      ]
+    },
+    {
+      "reg": 49,
+      "hex": "$31",
+      "ctrl": "$B1",
+      "name": "Enhanced color modes and display options",
+      "summary": "Turns on tile layer 2, 30-row mode, and the enhanced color modes for tiles and sprites separately.",
+      "bits": [
+        { "bits": "D7", "name": "T2_EN", "description": "Enable tile layer 2" },
+        { "bits": "D6", "name": "ROW30", "description": "0 = 24 rows, 1 = 30 rows (240 lines)" },
+        { "bits": "D5-D4", "name": "ECMT", "description": "Tile color mode — 0 = original, 1 / 2 / 3 = one, two or three bits per pixel" },
+        { "bits": "D3", "name": "Y_REAL", "description": "Sprite Y is the real coordinate rather than the stock chip's off-by-one" },
+        { "bits": "D2", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D1-D0", "name": "ECMS", "description": "Sprite color mode, same encoding as ECMT" }
+      ],
+      "notes": [
+        "D2 was a sprite-linking enable in v1.8, letting a sprite follow a parent sprite. It was dropped for v1.9 and is not in the Pico9918."
+      ]
+    },
+    {
+      "reg": 50,
+      "hex": "$32",
+      "ctrl": "$B2",
+      "name": "General control and GPU triggers",
+      "summary": "The odds and ends: reset, GPU triggers, layer disable, sprite reporting, scan lines, attribute mode, layer priority.",
+      "bits": [
+        { "bits": "D7", "name": "VR_RST", "description": "Reset — relocks the card and restores register defaults; the palette survives" },
+        { "bits": "D6", "name": "GPU_HTRIG", "description": "Run the GPU at the start of every scan line" },
+        { "bits": "D5", "name": "GPU_VTRIG", "description": "Run the GPU once per frame" },
+        { "bits": "D4", "name": "TL1_OFF", "description": "Turn off tile layer 1 — sprites, the bitmap layer and tile layer 2 carry on" },
+        { "bits": "D3", "name": "RPT_MAX", "description": "0 = report the fifth sprite the stock way, 1 = report against register 30's limit" },
+        { "bits": "D2", "name": "SCANLINES", "description": "Dim every other line for a CRT look" },
+        { "bits": "D1", "name": "POS_ATTR", "description": "0 = attributes per pattern name, 1 = attributes per screen position" },
+        { "bits": "D0", "name": "T2_PRI", "description": "0 = tile layer 2 always on top, 1 = tile layer 2 obeys per-tile priority" }
+      ],
+      "notes": [
+        "Writing $C0 resets the palette as well (Pico9918)."
+      ],
+      "conflict": "The forum documentation uses registers 50-53 as scroll-limit registers defining a window that scrolling cannot leave. That design did not ship in this form."
+    },
+    {
+      "reg": 51,
+      "hex": "$33",
+      "ctrl": "$B3",
+      "name": "Maximum sprites per frame",
+      "summary": "The highest sprite the card will process at all, 0-32. Default 32.",
+      "bits": [
+        { "bits": "D7-D6", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D5-D0", "name": "STOPSPRT", "description": "Sprites processed per frame" }
+      ],
+      "notes": [
+        "Independent of register 30, which is a per-line limit.",
+        "It is also the only way to stop sprite processing early in 30-row mode, where the $D0 terminator is a legal Y coordinate."
+      ]
+    },
+    {
+      "reg": 54,
+      "hex": "$36",
+      "ctrl": "$B6",
+      "name": "GPU program counter, high byte",
+      "summary": "Default $40, which points at the GPU's own RAM."
+    },
+    {
+      "reg": 55,
+      "hex": "$37",
+      "ctrl": "$B7",
+      "name": "GPU program counter, low byte",
+      "summary": "Writing this loads the program counter and starts the GPU running. It is the trigger, not just the low byte."
+    },
+    {
+      "reg": 56,
+      "hex": "$38",
+      "ctrl": "$B8",
+      "name": "GPU control and status",
+      "summary": "Write 0 to load the program counter without running; write 1 to start. Reading it says whether the GPU is running.",
+      "bits": [
+        { "bits": "D7-D1", "name": "—", "description": "Reserved, write 0" },
+        { "bits": "D0", "name": "GPU OP", "description": "Write: 0 = reset and load the PC, 1 = run. Read: 1 = running" }
+      ]
+    },
+    {
+      "reg": 57,
+      "hex": "$39",
+      "ctrl": "$B9",
+      "name": "Unlock",
+      "summary": "Write $1C twice in a row to unlock. Any write to it once unlocked locks it again."
+    },
+    {
+      "reg": 58,
+      "hex": "$3A",
+      "ctrl": "$BA",
+      "name": "Configuration option index",
+      "pico": true,
+      "summary": "Selects a card configuration option. Writing it also mirrors that option's current value into status register 12.",
+      "notes": [
+        "On a real F18A v1.8 this register was a GROM clock divider, which has nothing to do with the Pico9918's use of it."
+      ]
+    },
+    {
+      "reg": 59,
+      "hex": "$3B",
+      "ctrl": "$BB",
+      "name": "Configuration option value",
+      "pico": true,
+      "summary": "Writes the option selected by register 58. Options below index 8 are read-only hardware facts and refuse writes."
+    },
+    {
+      "reg": 63,
+      "hex": "$3F",
+      "ctrl": "$BF",
+      "name": "Firmware update control",
+      "pico": true,
+      "summary": "How the card's own configuration tool updates its firmware through the video port.",
+      "bits": [
+        { "bits": "D7", "name": "EXEC", "description": "Perform the operation" },
+        { "bits": "D6", "name": "OP", "description": "0 = verify, 1 = write" },
+        { "bits": "D5-D0", "name": "PAGE", "description": "256-byte page" }
+      ],
+      "notes": [
+        "Reads one 512-byte frame at a time, and refuses to run while the GPU is running."
+      ]
+    }
+  ],
+
+  "statusRegisters": [
+    {
+      "sr": 0,
+      "name": "Standard status",
+      "always": true,
+      "summary": "The stock TMS9918A status byte, and the only one a locked card will give you.",
+      "bits": [
+        { "bits": "D7", "name": "INT", "description": "Vertical interrupt — cleared by this read" },
+        { "bits": "D6", "name": "5S", "description": "Too many sprites on a line" },
+        { "bits": "D5", "name": "C", "description": "Sprites collided" },
+        { "bits": "D4-D0", "name": "NUM", "description": "Which sprite" }
+      ],
+      "notes": ["Reading it clears the interrupt flag, resets the collision and fifth-sprite bits, and ends palette write mode."]
+    },
+    {
+      "sr": 1,
+      "name": "Identity and horizontal interrupt",
+      "summary": "What the card is, and whether the horizontal interrupt fired.",
+      "bits": [
+        { "bits": "D7-D5", "name": "ID", "description": "111 = F18A" },
+        { "bits": "D4", "name": "—", "description": "Reserved" },
+        { "bits": "D3", "name": "EMU", "description": "1 = an F18A personality rather than F18A silicon" },
+        { "bits": "D2", "name": "—", "description": "Reserved" },
+        { "bits": "D1", "name": "BLANK", "description": "In a blanking period right now" },
+        { "bits": "D0", "name": "HF", "description": "Horizontal interrupt fired — stays set until this register is read" }
+      ]
+    },
+    { "sr": 2, "name": "GPU status", "summary": "D7 is set while the GPU is running. D6-D0 are seven bits the GPU program can set for the 6502 to read." },
+    { "sr": 3, "name": "Current scan line", "summary": "Where the beam is. 0 outside the active display." },
+    { "sr": 4, "name": "Nanosecond counter, low", "f18aOnly": true, "summary": "0-999. Not documented for the Pico9918." },
+    { "sr": 5, "name": "Nanosecond counter, high", "f18aOnly": true, "summary": "The top two bits of the nanosecond count." },
+    { "sr": 6, "name": "Microsecond counter, low", "summary": "0-999." },
+    { "sr": 7, "name": "Microsecond counter, high", "summary": "The top two bits." },
+    { "sr": 8, "name": "Millisecond counter, low", "summary": "0-999." },
+    { "sr": 9, "name": "Millisecond counter, high", "summary": "The top two bits." },
+    { "sr": 10, "name": "Second counter, low", "summary": "0-65535." },
+    { "sr": 11, "name": "Second counter, high", "summary": "The high byte of the second count." },
+    { "sr": 12, "name": "Configuration mirror", "pico": true, "summary": "The value of whichever option register 58 last selected." },
+    { "sr": 13, "name": "Temperature", "pico": true, "summary": "The Pico's core temperature, four counts per degree C. Updated every 64 frames." },
+    { "sr": 14, "name": "Version", "summary": "Major and minor version, a nibble each. An ACE reads $1A." },
+    { "sr": 15, "name": "Select mirror", "summary": "Reads back the status register selection written to register 15." }
+  ],
+
+  "colorModes": [
+    { "ecm": 0, "bpp": 0, "colors": 2, "spriteColors": 1, "planes": 1, "patternTable": "2 KB", "palettes": "4 of 16", "description": "The stock chip. Pattern bits say where the ink goes, and the color comes from somewhere else entirely." },
+    { "ecm": 1, "bpp": 1, "colors": 2, "spriteColors": 1, "planes": 1, "patternTable": "2 KB", "palettes": "32 of 2", "description": "Pattern bits become color indexes. Same one plane, but every tile picks its own pair out of 64 colors." },
+    { "ecm": 2, "bpp": 2, "colors": 4, "spriteColors": 3, "planes": 2, "patternTable": "4 KB", "palettes": "16 of 4", "description": "A second plane 2 KB along. Four colors in every 8×8 tile and every sprite." },
+    { "ecm": 3, "bpp": 3, "colors": 8, "spriteColors": 7, "planes": 3, "patternTable": "6 KB", "palettes": "8 of 8", "description": "A third plane. Eight colors per tile, per sprite, with no cell-color rule anywhere in sight." }
+  ],
+
+  "colorModeNote": "Sprite color 0 is always transparent, so a sprite shows one fewer color than a tile in the same mode. Tiles choose, per tile, whether index 0 is transparent or a real color.",
+
+  "colorModeConflict": "The Pico9918 reference tabulates these one step higher — 4, 8 and 16 colors from 2, 3 and 4 bitplanes. The F18A's own HDL, its register sheets and its author's worked examples all give 2, 4 and 8 from 1, 2 and 3 planes, and the pattern-table sizes only add up that way. The lower set is what this site documents.",
+
+  "paletteAddress": [
+    { "mode": "Original", "bits": ["VR24 PS0", "VR24 PS1", "attr 0", "attr 1", "attr 2", "attr 3"] },
+    { "mode": "1-bit (ECM1)", "bits": ["VR24 PS0", "attr 0", "attr 1", "attr 2", "attr 3", "pattern 0"] },
+    { "mode": "2-bit (ECM2)", "bits": ["attr 0", "attr 1", "attr 2", "attr 3", "pattern 1", "pattern 0"] },
+    { "mode": "3-bit (ECM3)", "bits": ["attr 0", "attr 1", "attr 2", "pattern 2", "pattern 1", "pattern 0"] }
+  ],
+
+  "palette": {
+    "entries": 64,
+    "depth": "12-bit, four bits each of red, green and blue — 4096 colors",
+    "format": "Two bytes per entry. One carries red in its low nibble, the other green and blue in its two nibbles.",
+    "picoFormat": "The Pico9918 puts an alpha nibble in the spare four bits, and documents $F there as fully opaque.",
+    "writeOrderConflict": "Hagerty's worked example sends the red byte first and the green-blue byte second. The Pico9918 reference describes the opposite order. Both cannot be right and neither can be checked here — write four entries, look at the screen, and believe your eyes.",
+    "survivesReset": "Palette changes outlive a soft reset. Only a power cycle, or an explicit palette reset, puts the default colors back.",
+    "defaults": [
+      { "palette": 0, "name": "The TMS9918A's own sixteen", "colors": [
+        { "index": 0, "name": "Transparent", "rgb": "000" },
+        { "index": 1, "name": "Black", "rgb": "000" },
+        { "index": 2, "name": "Medium green", "rgb": "2C3" },
+        { "index": 3, "name": "Light green", "rgb": "5D6" },
+        { "index": 4, "name": "Dark blue", "rgb": "54F" },
+        { "index": 5, "name": "Light blue", "rgb": "76F" },
+        { "index": 6, "name": "Dark red", "rgb": "D54" },
+        { "index": 7, "name": "Cyan", "rgb": "4EF" },
+        { "index": 8, "name": "Medium red", "rgb": "F54" },
+        { "index": 9, "name": "Light red", "rgb": "F76" },
+        { "index": 10, "name": "Dark yellow", "rgb": "DC3" },
+        { "index": 11, "name": "Light yellow", "rgb": "ED6" },
+        { "index": 12, "name": "Dark green", "rgb": "2B2" },
+        { "index": 13, "name": "Magenta", "rgb": "C5C" },
+        { "index": 14, "name": "Gray", "rgb": "CCC" },
+        { "index": 15, "name": "White", "rgb": "FFF" }
+      ] },
+      { "palette": 1, "name": "The same sixteen, arranged for 1-bit color", "description": "Every even entry black, every odd entry one of the stock colors, so a two-color tile is one color on black without touching the palette." },
+      { "palette": 2, "name": "IBM CGA", "colors": [
+        { "index": 0, "name": "Black", "rgb": "000" },
+        { "index": 1, "name": "Blue", "rgb": "00A" },
+        { "index": 2, "name": "Green", "rgb": "0A0" },
+        { "index": 3, "name": "Cyan", "rgb": "0AA" },
+        { "index": 4, "name": "Red", "rgb": "A00" },
+        { "index": 5, "name": "Magenta", "rgb": "A0A" },
+        { "index": 6, "name": "Brown", "rgb": "A50" },
+        { "index": 7, "name": "Light gray", "rgb": "AAA" },
+        { "index": 8, "name": "Gray", "rgb": "555" },
+        { "index": 9, "name": "Light blue", "rgb": "55F" },
+        { "index": 10, "name": "Light green", "rgb": "5F5" },
+        { "index": 11, "name": "Light cyan", "rgb": "5FF" },
+        { "index": 12, "name": "Light red", "rgb": "F55" },
+        { "index": 13, "name": "Light magenta", "rgb": "F5F" },
+        { "index": 14, "name": "Yellow", "rgb": "FF5" },
+        { "index": 15, "name": "White", "rgb": "FFF" }
+      ] },
+      { "palette": 3, "name": "CGA arranged for 1-bit color", "description": "The same trick as palette 1, over the CGA colors." }
+    ]
+  },
+
+  "attributes": {
+    "spriteLocked": {
+      "title": "Sprite attribute byte, card locked",
+      "bits": [
+        { "bits": "D7", "name": "EC", "description": "Early clock — shift the sprite 32 pixels left" },
+        { "bits": "D6-D4", "name": "—", "description": "Unused on a stock chip" },
+        { "bits": "D3-D0", "name": "COLOR", "description": "One of sixteen colors" }
+      ]
+    },
+    "spriteUnlocked": {
+      "title": "Sprite attribute byte, card unlocked",
+      "bits": [
+        { "bits": "D7", "name": "EC", "description": "Early clock, unchanged" },
+        { "bits": "D6", "name": "FLIP X", "description": "Mirror the sprite horizontally" },
+        { "bits": "D5", "name": "FLIP Y", "description": "Mirror it vertically" },
+        { "bits": "D4", "name": "SIZE", "description": "Per-sprite size — 0 takes register 1's global setting, 1 forces 16×16" },
+        { "bits": "D3-D0", "name": "PS", "description": "Color, or palette select in the enhanced color modes" }
+      ],
+      "conflict": "The Pico9918 reference calls D4 an opaque-sprite flag in 16×16 mode rather than a size override. Both documents agree the bit is new and that it concerns 16×16 sprites; they do not agree on what it does."
+    },
+    "tile": {
+      "title": "Tile attribute byte, enhanced color modes",
+      "note": "In the enhanced color modes the color table stops being a color table. Each entry becomes an attribute byte for one pattern — or for one screen position, with position attributes on.",
+      "bits": [
+        { "bits": "D7", "name": "PRI", "description": "This tile draws over sprites" },
+        { "bits": "D6", "name": "FLIP X", "description": "Mirror the tile horizontally" },
+        { "bits": "D5", "name": "FLIP Y", "description": "Mirror it vertically" },
+        { "bits": "D4", "name": "TRANS", "description": "Color index 0 is transparent rather than a color" },
+        { "bits": "D3-D0", "name": "PS", "description": "Palette select" }
+      ]
+    },
+    "textPosition": {
+      "title": "Attribute byte in 40- and 80-column text, position attributes on",
+      "bits": [
+        { "bits": "D7-D4", "name": "FG", "description": "Foreground color for this cell" },
+        { "bits": "D3-D0", "name": "BG", "description": "Background color for this cell" }
+      ]
+    }
+  },
+
+  "priority": {
+    "summary": "Priority is worked out per pixel, not per layer, so one tile layer can be both in front of and behind the same sprite on one line.",
+    "stages": [
+      "Tile layer 1 supplies a pixel.",
+      "Tile layer 2 replaces it wherever layer 2 is not transparent.",
+      "That pixel carries a priority flag if the tile's PRI bit is set, or if it came from layer 2 while T2_PRI is clear.",
+      "The bitmap layer replaces it where the bitmap is enabled, in range and not transparent, and either has priority or the tile pixel was transparent. A bitmap pixel clears the priority flag.",
+      "A sprite wins unless the surviving pixel has priority."
+    ],
+    "rules": [
+      "The bitmap layer is never drawn over a sprite. Its priority bit positions it against tiles only.",
+      "A transparent pixel has no priority to assert, so everything below shows through regardless of the PRI bit.",
+      "T2_PRI is backwards from what its name suggests: clear it and layer 2 sits above sprites unconditionally.",
+      "Between sprites nothing has changed — the lowest-numbered sprite still wins."
+    ]
+  },
+
+  "paging": {
+    "summary": "Each name table page is 1 KB. Extra pages are found by flipping address bits, not by another base register.",
+    "bits": [
+      { "kind": "Horizontal page", "toggle": "$400", "effect": "A second page 1 KB above the first — a virtual screen 64 tiles wide" },
+      { "kind": "Vertical page", "toggle": "$800", "effect": "A second page 2 KB above the first — seamless wrap top to bottom" }
+    ],
+    "layouts": [
+      { "h": 0, "v": 0, "pages": 1, "behavior": "Both directions wrap in place" },
+      { "h": 1, "v": 0, "pages": 2, "behavior": "Scrolls sideways onto page 1; wraps vertically" },
+      { "h": 0, "v": 1, "pages": 2, "behavior": "Scrolls vertically onto page 1; wraps sideways" },
+      { "h": 1, "v": 1, "pages": 4, "behavior": "A 64 × 48 tile field, no wrapping at all" }
+    ],
+    "colorTable": "The color table follows the name table's page bits by itself. Set its base once and leave it alone.",
+    "patternTable": "One pattern table serves every page, and both tile layers.",
+    "note": "In 30-row mode a page is 960 bytes rather than 768, so only 64 bytes go spare between pages instead of 256 — which is why pages sit on 1 KB boundaries at all."
+  },
+
+  "gpu": {
+    "summary": "A TMS9900 inside the video card, with its own RAM, direct access to VRAM, the palette and every VDP register, and a pixel-plotting instruction the 9900 never had.",
+    "memoryMap": [
+      { "range": "$0000-$3FFF", "size": "16 KB", "what": "VRAM — the same 16 KB the 6502 reaches through the data port" },
+      { "range": "$4000-$47FF", "size": "2 KB", "what": "GRAM — the GPU's own RAM, where its code normally lives" },
+      { "range": "$5000-$507F", "size": "128 B", "what": "Palette RAM, 64 entries of two bytes, word access only" },
+      { "range": "$6000-$603F", "size": "64 B", "what": "The VDP registers, readable and writable" },
+      { "range": "$7000", "size": "1 B", "what": "Current scan line" },
+      { "range": "$7001", "size": "1 B", "what": "Blanking status" },
+      { "range": "$B000-$B00F", "size": "16 B", "what": "The status registers" }
+    ],
+    "picoMemoryMap": [
+      { "range": "$6040-$6FFF", "size": "~4 KB", "what": "More GPU RAM" },
+      { "range": "$7002-$AFFF", "size": "~16 KB", "what": "More GPU RAM" },
+      { "range": "$B010-$FFFF", "size": "~20 KB", "what": "More GPU RAM" }
+    ],
+    "picoMemoryNote": "A real F18A leaves everything outside its defined regions unimplemented. The Pico9918 backs the whole 64 KB with RAM, so roughly 40 KB of scratch space exists that F18A code cannot assume.",
+    "f18aOnlyMemory": [
+      { "range": "$8000", "what": "A 32-bit free-running counter on the F18A. On the Pico9918 this address is the DMA trigger instead." },
+      { "range": "$9000", "what": "A 32-bit random number generator (F18A)" },
+      { "range": "$A000", "what": "The F18A version (F18A)" }
+    ],
+    "newInstructions": [
+      { "name": "CALL", "opcode": "$0C80", "encoding": "0000 1100 10Ts SSSS", "what": "Call a subroutine, pushing the return address" },
+      { "name": "RET", "opcode": "$0C00", "encoding": "0000 1100 0000 0000", "what": "Return, popping it back" },
+      { "name": "PUSH", "opcode": "$0D00", "encoding": "0000 1101 00Ts SSSS", "what": "Push a word" },
+      { "name": "POP", "opcode": "$0F00", "encoding": "0000 1111 00Td DDDD", "what": "Pop a word" },
+      { "name": "SLC", "opcode": "$0E00", "encoding": "0000 1110 00Ts SSSS", "what": "Shift left circular" }
+    ],
+    "changedInstructions": [
+      { "name": "XOP", "becomes": "PIX", "opcode": "$2C00", "what": "Plot, read, test or address a pixel in one instruction" },
+      { "name": "IDLE", "becomes": "IDLE", "opcode": "$0340", "what": "Stop until the next trigger. Safe here, unlike on a real 9900 in a computer" },
+      { "name": "RTWP", "becomes": "RTWP", "opcode": "$0380", "what": "R14 to the program counter, R15 to the flags. R13 is not used" },
+      { "name": "CKON", "becomes": "SPI enable", "opcode": "$03A0", "what": "F18A only — chip select low on its flash chip", "f18aOnly": true },
+      { "name": "CKOF", "becomes": "SPI disable", "opcode": "$03C0", "what": "F18A only — chip select high", "f18aOnly": true },
+      { "name": "LDCR", "becomes": "SPI out", "opcode": "$3000", "what": "F18A only — write a byte to flash", "f18aOnly": true },
+      { "name": "STCR", "becomes": "SPI in", "opcode": "$3400", "what": "F18A only — read a byte from flash", "f18aOnly": true }
+    ],
+    "unimplemented": ["SBO", "SBZ", "TB", "BLWP", "STWP", "LWPI", "LIMI", "RSET", "LREX"],
+    "unimplementedWhy": "There is no workspace pointer, no interrupt system and no CRU, so the instructions that use them are gone. An unknown opcode does nothing at all rather than derailing the GPU.",
+    "stack": "R15 is the stack pointer. Set it before the first CALL or PUSH — $47FE, the top of GPU RAM, is the conventional value. The stack grows down and is always words on even addresses.",
+    "pix": {
+      "summary": "One instruction that reads, writes, conditionally writes, or merely locates a pixel, given X and Y.",
+      "sourceOperand": "X and Y as two bytes, X in the high byte, both 0-255. Any addressing mode.",
+      "destinationFormat": "MAxxRWCE xxOOxxPP",
+      "fields": [
+        { "field": "M", "what": "1 = work out a Graphics II address instead of a bitmap-layer one" },
+        { "field": "A", "what": "1 = return the address rather than touching the pixel" },
+        { "field": "R", "what": "1 = read the current pixel back into PP, after any write" },
+        { "field": "W", "what": "1 = do not write" },
+        { "field": "C", "what": "1 = write only if the comparison in E holds" },
+        { "field": "E", "what": "1 = write only where the pixel equals OO; 0 = only where it does not" },
+        { "field": "OO", "what": "The pixel value to compare against" },
+        { "field": "PP", "what": "The pixel value to write, and where a read comes back" }
+      ],
+      "why": "The address arithmetic it replaces is eight instructions of bit-twiddling in the TI Editor/Assembler manual. In hardware it is an adder and some wiring."
+    },
+    "dma": {
+      "pico": true,
+      "summary": "A block copier the Pico9918 adds, driven by a command block at $8000 and triggered by touching that address.",
+      "fields": [
+        { "offset": "+$00", "size": "2", "field": "Source", "what": "Source address, high byte first" },
+        { "offset": "+$02", "size": "2", "field": "Destination", "what": "Destination address, high byte first" },
+        { "offset": "+$04", "size": "1", "field": "Width", "what": "Bytes per row" },
+        { "offset": "+$05", "size": "1", "field": "Height", "what": "Rows" },
+        { "offset": "+$06", "size": "1", "field": "Stride", "what": "Row width in VRAM" },
+        { "offset": "+$07", "size": "1", "field": "Params", "what": "D0 = hold the source address, D1 = write the destination backwards" },
+        { "offset": "+$08", "size": "1", "field": "Status", "what": "0 when it is done" }
+      ]
+    },
+    "triggers": [
+      "Writing register 55 starts it once, at that address.",
+      "Register 50's GPU_HTRIG starts it at the top of every scan line.",
+      "Register 50's GPU_VTRIG starts it once per frame."
+    ],
+    "f18aOnlyFeatures": [
+      "A serial flash chip the GPU can read and write, holding the FPGA bit stream, the default palettes and about 22 character sets. Writing the wrong part of it bricks the card.",
+      "A small catalog of preloaded routines in that flash: block copy, font load, and three for reading the catalog itself.",
+      "A hardware random number generator and a free-running 32-bit counter in the GPU's address space."
+    ]
+  },
+
+  "modes": [
+    { "name": "Graphics I", "m1": 0, "m2": 0, "m3": 0, "m4": 0 },
+    { "name": "Graphics II", "m1": 0, "m2": 0, "m3": 1, "m4": 0 },
+    { "name": "Multicolor", "m1": 0, "m2": 1, "m3": 0, "m4": 0 },
+    { "name": "Text, 40 column", "m1": 1, "m2": 0, "m3": 0, "m4": 0 },
+    { "name": "Text, 80 column", "m1": 1, "m2": 0, "m3": 0, "m4": 1 }
+  ]
+}

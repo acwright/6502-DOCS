@@ -48,7 +48,7 @@ in the loop.
 pattern you name. No window, no waiting, output you can pipe into something
 else.
 
-Neither is a simulation of the ACE's behaviour. It is the same ROM your machine
+Neither is a simulation of the ACE's behavior. It is the same ROM your machine
 runs, the same BASIC, the same Kernal, the same 65C02.
 
 ## What you still go to the machine for
@@ -57,7 +57,7 @@ Cross-development does not replace the ACE; it feeds it.
 
 - **Feel.** Whether a game is fun, whether a key repeat rate is right, whether
   the sound is annoying after two minutes. No terminal tells you.
-- **The real screen.** Colour on a CRT or a VGA panel is not colour in a
+- **The real screen.** Color on a CRT or a VGA panel is not color in a
   screenshot.
 - **Real peripherals.** Your joysticks, your card, your cable.
 - **The last mile.** A program that works in the emulator and not on the ACE is

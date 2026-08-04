@@ -49,13 +49,13 @@ is the first thing the next chapter is about.
 | [Showing things](/basic/print) | `PRINT` properly: columns, tabs, and neat output |
 | [Asking questions](/basic/input) | `INPUT`, and what happens when the answer is nonsense |
 | [Making decisions](/basic/decisions) | `IF`, `THEN`, `ELSE`, and the truth trap |
-| [Going round again](/basic/loops) | `FOR`, `NEXT`, `STEP` |
+| [Going around again](/basic/loops) | `FOR`, `NEXT`, `STEP` |
 | [Subroutines](/basic/subroutines) | `GOSUB`, `RETURN`, and menus with `ON` |
 | [Arrays](/basic/arrays) | `DIM`, and holding a lot of numbers at once |
 | [Working with words](/basic/strings) | Cutting up and gluing together text |
 | [Lists in the program](/basic/data) | `DATA`, `READ`, `RESTORE` |
 | [Your own functions](/basic/functions) | `DEF FN` |
-| [Sound and pictures](/basic/sound-and-pictures) | `CLS`, `LOCATE`, `COLOR`, `SOUND`, `VOL` |
+| [Sound and video](/basic/sound-and-video) | `CLS`, `LOCATE`, `COLOR`, `SOUND`, `VOL` |
 | [Sticks and keys](/basic/controls) | `INKEY`, `JOY`, `PAUSE`, `WAIT` |
 | [Saving your work](/basic/files) | `SAVE`, `LOAD`, `BSAVE`, and the memory card |
 | [Time and memory that lasts](/basic/clock) | `TIME`, `DATE`, `NVRAM` |

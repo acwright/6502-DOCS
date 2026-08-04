@@ -8,7 +8,7 @@ is crowded.
 
 | What | Connector | Where it goes |
 |---|---|---|
-| **Power** | 5 V barrel jack | 5 V DC, 2–3 A. Centre positive |
+| **Power** | 5 V barrel jack | 5 V DC, 2–3 A. Center positive |
 | **Video** | VGA | Any monitor that takes VGA. 640 × 480 |
 | **Audio L / R** | Two RCA jacks | Powered speakers, or a hi-fi input |
 | **Serial** | DB-9 male | A laptop, through a null-modem cable |

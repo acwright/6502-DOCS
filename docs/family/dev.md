@@ -4,7 +4,7 @@ The machine with no processor in it.
 
 <Figure
   src="/images/photos/dev.jpg"
-  alt="Two boards side by side on a plate: one with a Teensy module and a row of four buttons, the other carrying a small colour LCD."
+  alt="Two boards side by side on a plate: one with a Teensy module and a row of four buttons, the other carrying a small color LCD."
   caption="The DEV rig: the board with the buttons runs the processor, the board with the screen shows you what it did."
 />
 
@@ -39,7 +39,7 @@ than the 6502 bus. There's also a bus connector and a card slot wired up for
 driving genuine hardware, though nothing in the firmware uses them yet; they're
 there for anyone who wants to take it further.
 
-The **DEV Output Board** is a second Teensy driving a 2.4" colour LCD, emulating
+The **DEV Output Board** is a second Teensy driving a 2.4" color LCD, emulating
 the video and sound chips. The DEV board streams the same audio-visual data over
 USB at the same time, so a browser can display the output in parallel — which is
 where the [emulator](/using/emulator) started life.

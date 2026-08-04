@@ -53,7 +53,7 @@ reproducible rather than a story about something that happened once.
 
 **It's fast, and it can skip its own boot.** Around 11 MHz unpaced, and a
 snapshot turns a five-second boot into a millisecond restore. An agent can
-afford to run the program after every edit, which is the behaviour you want.
+afford to run the program after every edit, which is the behavior you want.
 
 **There's no session to lose.** Each `6502 dbg` command connects, does one
 thing, prints, and exits. An agent has nowhere to keep a port number between
@@ -84,7 +84,7 @@ one-shot commands with exit codes happen to be exactly what an agent can use.
 
 ## The traps worth passing along
 
-Each of these is real machine or firmware behaviour rather than an emulator
+Each of these is real machine or firmware behavior rather than an emulator
 quirk, and each has cost somebody an hour:
 
 **Wait for a prompt before typing.** Input delivered before the BIOS has

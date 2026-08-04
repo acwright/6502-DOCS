@@ -150,7 +150,7 @@ written, and it makes the program unreadable and impossible to put in a
 cartridge. Reach for it last, comment it heavily, and remember it does not work
 from ROM.
 
-## Measure, then optimise
+## Measure, then optimize
 
 The debugger will tell you where the time actually goes: break, run a known
 number of frames, and compare the cycle counts —

@@ -44,6 +44,23 @@ const RULES = [
     name: 'test scaffolding in a listing',
     pattern: /PRINT "(PASS|FAIL)"/,
     why: 'a shown program should do something worth doing'
+  },
+  // The machine and its author are American, and so is the voice. This drifted
+  // once already: the site shipped "colour" on nine chapters and "COLOUR" in a
+  // sample, three lines from a `COLOR` statement the ROM actually spells that
+  // way. The BIOS source is written in British English and its prose is lifted
+  // wholesale into the fact base, so the pull is constant — `extract-facts.mjs`
+  // americanizes on the way out, and these two rules catch what is typed here.
+  {
+    name: 'British spelling',
+    pattern:
+      /\b(colours?|colour(ed|ing|ful)|behaviours?|centres?|centred|licence|greys?|greyscale|maths|amongst|whilst|neighbours?|neighbouring|labell(ed|ing)|modell(ed|ing)|catalogues?|chequer(ed|board)|aluminium|programme|(initiali|recogni|reali|optimi|summari|organi|analy|customi|standardi|prioriti|emphasi|speciali|utili|visuali)s(e|es|ed|ing|ation))\b/i,
+    why: 'the docs are written in American English — color, behavior, center, gray, initialize'
+  },
+  {
+    name: 'British idiom',
+    pattern: /\b(way round|time round|round again|straight away|full stop\b(?! character)|fortnight|rubbish|ticked a box|doing sums)\b/i,
+    why: 'say it the American way — the other way around, each time through, right away, period'
   }
 ]
 

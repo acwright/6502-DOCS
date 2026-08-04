@@ -58,7 +58,7 @@ OK
 
 The command doesn't come back until you close the window, which is exactly what
 you want from a build step: assemble, look at it, close it, back to the shell.
-`--detach` hands the terminal back straight away if you'd rather.
+`--detach` hands the terminal back right away if you'd rather.
 
 That's the whole loop. Edit, `cl65`, `6502 run`, repeat.
 

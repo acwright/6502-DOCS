@@ -38,6 +38,11 @@ looks the same as one printed online.
 | 📄 **[Monitor Reference](/cards/monitor-reference.html)** | All seventeen commands, the register display, and `G` versus `J` | [The Monitor](/using/monitor) |
 | 📄 **[Kernal Jump Table](/cards/kernal-jump-table.html)** | All 53 published entry points with their registers, grouped by job | [The Kernal](/assembly/kernal) |
 | 📄 **[Character Set](/cards/character-map.html)** | All 256 glyphs drawn from the ROM's own bytes, with names, and what `PRINT` can actually reach | [The character set](/reference/character-set) |
+| 📄 **[F18A Registers](/cards/f18a-registers.html)** | Every enhanced register on the video card, bit by bit, plus the status registers and the attribute bytes | [Every register](/f18a/registers) |
+
+That last one is the sheet to have printed rather than open in a tab: F18A mode
+runs on real hardware only, so the machine you are testing it on is not the
+machine you would be reading it on.
 
 ## The KIM add-on
 

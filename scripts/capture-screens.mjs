@@ -24,8 +24,8 @@
  * prompt.
  *
  * The video card puts out 320×240. That is scaled up by an exact factor with
- * nearest-neighbour sampling, because a character cell is eight hard pixels and
- * smoothing it into grey porridge is the one thing a screenshot of this machine
+ * nearest-neighbor sampling, because a character cell is eight hard pixels and
+ * smoothing it into gray porridge is the one thing a screenshot of this machine
  * must not do.
  */
 
@@ -85,11 +85,11 @@ const SHOTS = [
     program: 'samples/basic/screen-text.bas'
   },
   {
-    name: 'colours',
-    subject: 'The colour loop as it leaves the screen: the last of its fifteen colours, on the black it set.',
-    where: 'docs/basic/sound-and-pictures.md',
-    program: 'samples/basic/colour-loop.bas',
-    // The loop paints one colour at a time over the same two words, so no
+    name: 'colors',
+    subject: 'The color loop as it leaves the screen: the last of its fifteen colors, on the black it set.',
+    where: 'docs/basic/sound-and-video.md',
+    program: 'samples/basic/color-loop.bas',
+    // The loop paints one color at a time over the same two words, so no
     // frame of it ever holds the whole palette. What a shot can show is where
     // it finishes. The picture of the palette is the Graphics I demo.
     settle: 4_000_000
@@ -127,7 +127,7 @@ const SHOTS = [
   },
   {
     name: 'graphics-1',
-    subject: 'Graphics Mode I: thirty-two colour pairs, one per row of the pattern table.',
+    subject: 'Graphics Mode I: thirty-two color pairs, one per row of the pattern table.',
     where: 'docs/assembly/graphics.md',
     program: 'samples/assembly/graphics-1.asm',
     // Caught while it waits for a key. Press one and it puts text mode back,
@@ -136,14 +136,14 @@ const SHOTS = [
   },
   {
     name: 'graphics-2',
-    subject: 'Graphics Mode II, with a colour for every eight pixels.',
+    subject: 'Graphics Mode II, with a color for every eight pixels.',
     where: 'docs/assembly/graphics.md',
     program: 'samples/assembly/graphics-2.asm',
     settle: 8_000_000
   },
   {
     name: 'multicolor',
-    subject: 'Multicolor mode: 64×48 fat pixels, fifteen colours, no attribute clash.',
+    subject: 'Multicolor mode: 64×48 fat pixels, fifteen colors, no attribute clash.',
     where: 'docs/assembly/graphics.md',
     program: 'samples/assembly/multicolor.asm',
     settle: 8_000_000

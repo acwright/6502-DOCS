@@ -125,7 +125,7 @@ a chip.
 [TMS9918-EDITOR](https://acwright.github.io/TMS9918-EDITOR/) runs in a browser —
 nothing to install. Draw 8×8 character patterns, lay out screens, animate
 sprites, and export the result as `ca65` assembly, BASIC `DATA` statements, raw
-binary, or a PNG. It knows all five of the video chip's modes and their colour
+binary, or a PNG. It knows all five of the video chip's modes and their color
 rules, which is a great deal easier than working them out from a datasheet with
 graph paper.
 

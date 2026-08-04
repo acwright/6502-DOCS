@@ -717,7 +717,7 @@
     "check": "GREP"
   },
   "colors": {
-    "description": "Text mode has one foreground/background pair for the whole screen, set with (foreground << 4) | background — there is no per-character colour until a graphics mode’s colour table comes into play.",
+    "description": "Text mode has one foreground/background pair for the whole screen, set with (foreground << 4) | background — there is no per-character color until a graphics mode’s color table comes into play.",
     "entries": [
       {
         "index": 0,
@@ -806,7 +806,7 @@
       {
         "index": 14,
         "symbol": "TMS_GRAY",
-        "name": "Grey",
+        "name": "Gray",
         "hex": "#CCCCCC"
       },
       {

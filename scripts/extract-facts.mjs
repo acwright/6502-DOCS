@@ -47,6 +47,63 @@ const DATA_DIR = join(ROOT, 'data')
 const DEFAULT_BIOS = join(homedir(), 'Developer', 'Assembly', '6502-BIOS')
 
 // ---------------------------------------------------------------------------
+// Spelling
+// ---------------------------------------------------------------------------
+
+// Most of the prose in the fact base is lifted verbatim from the BIOS source
+// and its README, and those are written in British English — "initialised",
+// "colours". The docs are written in American English, and a table that says
+// "colours" three rows above a chapter that says "colors" reads as two
+// different people. Rather than ask the reader to live with that, or ask the
+// BIOS to change its house style, every string in the output goes through this
+// on the way out.
+//
+// Whole words only, so identifiers are safe: `TMS_GRAY` and `BAS_WARM` have no
+// word boundary where the pattern would need one, and no BIOS symbol is a bare
+// British word.
+const BRITISH = {
+  behaviour: 'behavior',
+  centre: 'center',
+  centred: 'centered',
+  colour: 'color',
+  coloured: 'colored',
+  colours: 'colors',
+  grey: 'gray',
+  initialise: 'initialize',
+  initialised: 'initialized',
+  initialises: 'initializes',
+  initialising: 'initializing',
+  initialisation: 'initialization',
+  labelled: 'labeled',
+  recognise: 'recognize',
+  recognised: 'recognized',
+  recognises: 'recognizes',
+  uninitialised: 'uninitialized'
+}
+
+const BRITISH_RE = new RegExp(`\\b(${Object.keys(BRITISH).join('|')})\\b`, 'gi')
+
+/** Match the replacement to the case of what it replaces: Colour → Color. */
+function americanize(text) {
+  return text.replace(BRITISH_RE, (word) => {
+    const us = BRITISH[word.toLowerCase()]
+    if (word === word.toUpperCase()) return us.toUpperCase()
+    if (word[0] === word[0].toUpperCase()) return us[0].toUpperCase() + us.slice(1)
+    return us
+  })
+}
+
+/** Americanize every string in a tree of plain objects, arrays and scalars. */
+function americanizeDeep(value) {
+  if (typeof value === 'string') return americanize(value)
+  if (Array.isArray(value)) return value.map(americanizeDeep)
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, americanizeDeep(v)]))
+  }
+  return value
+}
+
+// ---------------------------------------------------------------------------
 // Kernal jump table  ($A000-$A0FF)
 // ---------------------------------------------------------------------------
 
@@ -144,7 +201,7 @@ function readReservedRange(lines) {
     count: repeat ? Number(repeat[1]) : 0,
     start: hex(parseInt(range[1], 16)),
     end: hex(parseInt(range[2], 16)),
-    behaviour: 'Each reserved slot jumps to UnimplementedStub, which is a bare RTS.',
+    behavior: 'Each reserved slot jumps to UnimplementedStub, which is a bare RTS.',
     source: `Kernal.asm:${header + 1}`,
     check: 'GREP'
   }
@@ -329,7 +386,7 @@ const SLOT_CHIPS = {
   HW_VID: { slot: 8, chip: 'TMS9918A / Pico9918', card: 'Video Card / VGA Card' }
 }
 
-// The TMS9918's sixteen text-mode colours: index, the `TMS_*` symbol every
+// The TMS9918's sixteen text-mode colors: index, the `TMS_*` symbol every
 // assembly sample uses (`6502-PRG/6502.inc`, and `renderInclude` below), a
 // name a reader can say out loud, and the RGB the emulator renders it as
 // (`6502-EMULATOR/src/core/IO/Video.ts`, `TMS_PALETTE` — the chip's own output
@@ -337,7 +394,7 @@ const SLOT_CHIPS = {
 // VGA monitor", not a hardware constant). Indices 0, 1, 4 and 15 are
 // screenshot-verified against a running machine (`ACCURACY.md` A45); the rest
 // share its rendering path.
-const TMS9918_COLOURS = [
+const TMS9918_COLORS = [
   ['TRANSPARENT', 'Transparent', '#000000'],
   ['BLACK', 'Black', '#000000'],
   ['MED_GREEN', 'Medium green', '#21C942'],
@@ -352,7 +409,7 @@ const TMS9918_COLOURS = [
   ['LT_YELLOW', 'Light yellow', '#E5CE80'],
   ['DK_GREEN', 'Dark green', '#21B03C'],
   ['MAGENTA', 'Magenta', '#C95BBA'],
-  ['GRAY', 'Grey', '#CCCCCC'],
+  ['GRAY', 'Gray', '#CCCCCC'],
   ['WHITE', 'White', '#FFFFFF']
 ]
 
@@ -412,9 +469,9 @@ function extractHardware(src) {
     colors: {
       description:
         'Text mode has one foreground/background pair for the whole screen, set with ' +
-        '(foreground << 4) | background — there is no per-character colour until a ' +
-        'graphics mode’s colour table comes into play.',
-      entries: TMS9918_COLOURS.map(([symbol, name, hex], index) => ({
+        '(foreground << 4) | background — there is no per-character color until a ' +
+        'graphics mode’s color table comes into play.',
+      entries: TMS9918_COLORS.map(([symbol, name, hex], index) => ({
         index,
         symbol: `TMS_${symbol}`,
         name,
@@ -498,7 +555,7 @@ function extractBasicKeywords(src) {
   return {
     $meta: meta(
       'BASIC keywords',
-      'Every keyword the tokenizer recognises, with its token and dispatch. ' +
+      'Every keyword the tokenizer recognizes, with its token and dispatch. ' +
         'Token, name and dispatch are GREP-verified against BASIC.asm; syntax and ' +
         'description are lifted from the BIOS README (rank 4) and stay verified:false ' +
         'until a RUN-backed sample proves them in Phase 4.',
@@ -1023,7 +1080,7 @@ function extractBoot(src) {
     },
     sequence: [
       { step: 'Reset the stack pointer to $FF', source: 'Kernal.asm:704' },
-      { step: 'KernalInit — probe and initialise every card, interrupts still disabled', source: 'Kernal.asm:706' },
+      { step: 'KernalInit — probe and initialize every card, interrupts still disabled', source: 'Kernal.asm:706' },
       { step: 'Beep — guarded, skipped when no SID is fitted', source: 'Kernal.asm:708' },
       { step: 'If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)', source: 'Kernal.asm:711-714' },
       { step: 'Halt if neither video nor serial is present — there is no console to boot into', source: 'Kernal.asm:718-722' },
@@ -1155,7 +1212,7 @@ function renderInclude(facts) {
     equate(name, value, comment, ' =')
   }
 
-  block('TMS9918 colours (for VideoSetColor: (foreground << 4) | background)')
+  block('TMS9918 colors (for VideoSetColor: (foreground << 4) | background)')
   for (const c of facts.hardware.colors.entries) {
     equate(c.symbol, `$${c.index.toString(16).toUpperCase()}`, c.name, ' =')
   }
@@ -1213,7 +1270,7 @@ function main() {
 
   BIOS_VERSION = `${versionEquate(src.inc, 'BIOS_VERSION_MAJOR')}.${versionEquate(src.inc, 'BIOS_VERSION_MINOR')}`
 
-  const outputs = {
+  const outputs = americanizeDeep({
     'boot.json': extractBoot(src),
     'kernal.json': extractKernal(src),
     'memory-map.json': extractMemoryMap(src),
@@ -1222,7 +1279,7 @@ function main() {
     'monitor-commands.json': extractMonitorCommands(src),
     'errors.json': extractErrors(src),
     'charset.json': extractCharset(src)
-  }
+  })
 
   mkdirSync(DATA_DIR, { recursive: true })
 
@@ -1230,7 +1287,7 @@ function main() {
     label: `data/${name}`,
     path: join(DATA_DIR, name),
     content: JSON.stringify(value, null, 2) + '\n',
-    note: summarise(name, value)
+    note: summarize(name, value)
   }))
 
   const include = renderInclude({
@@ -1271,7 +1328,7 @@ function main() {
   if (check) console.log(`\nfact base current against BIOS v${BIOS_VERSION}`)
 }
 
-function summarise(name, value) {
+function summarize(name, value) {
   if (name === 'kernal.json') return `${value.publishedSlots} published + ${value.reserved.count} reserved slots`
   if (name === 'basic-keywords.json') return `${value.counts.total} keywords`
   if (name === 'monitor-commands.json') return `${value.commands.length} commands`

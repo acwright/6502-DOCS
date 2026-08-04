@@ -208,7 +208,7 @@ asserting on a PNG encoder.
 
 **Diagrams** (`docs/.vitepress/diagrams/`) are drawn by
 `scripts/build-diagrams.mjs`, nine of the fifteen straight out of `data/`. They
-carry no colour: every shape is `currentColor` at a fixed opacity, which is what
+carry no color: every shape is `currentColor` at a fixed opacity, which is what
 lets one file serve the light and the dark theme. That is also why they are
 inlined into the page by `<Diagram>` rather than linked as an `<img>` — an
 `<img>` is a separate document and cannot see the site's variables. Style them
@@ -269,7 +269,7 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 
 | Repo | Purpose |
 |---|---|
-| [6502-BIOS](https://github.com/acwright/6502-BIOS) | Shared BIOS — Kernal, BASIC, Monitor. Source of truth for software behaviour. |
+| [6502-BIOS](https://github.com/acwright/6502-BIOS) | Shared BIOS — Kernal, BASIC, Monitor. Source of truth for software behavior. |
 | [6502-EMULATOR](https://github.com/acwright/6502-EMULATOR) | Desktop/browser emulator and CLI used to verify every sample in these docs. |
 | [6502-ACE](https://github.com/acwright/6502-ACE) | **The machine this site documents.** All-in-one single-board computer. |
 | [6502-COB](https://github.com/acwright/6502-COB) | Backplane and card-based system. Builder-facing. |
@@ -285,6 +285,6 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 | [bin2woz](https://github.com/acwright/bin2woz) | Binary → Wozmon paste-able upload helper. |
 | [TMS9918-EDITOR](https://github.com/acwright/TMS9918-EDITOR) | Character/screen/sprite editor. |
 
-## Licence
+## License
 
 [MIT](LICENSE).

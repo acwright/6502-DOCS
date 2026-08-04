@@ -45,7 +45,7 @@ version of that.
   in, run them, save them to the memory card.
 - **Make noise.** Three voices of SID sound, the same chip that gave the
   Commodore 64 its voice.
-- **Draw on the screen.** 40 columns by 24 rows, 16 colours, out to any VGA
+- **Draw on the screen.** 40 columns by 24 rows, 16 colors, out to any VGA
   monitor.
 - **Plug in joysticks.** Two Atari-style ports, which is all a good game needs.
 - **Go all the way down.** Underneath BASIC there's a machine-code Monitor, and

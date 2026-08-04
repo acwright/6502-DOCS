@@ -83,7 +83,7 @@ prompt still there.
 | `$A000–$A0FF` | The Kernal jump table |
 
 The machine is fully awake by the time you get control: hardware probed,
-interrupts on, console chosen, keyboard live. You do not initialise anything.
+interrupts on, console chosen, keyboard live. You do not initialize anything.
 
 ::: tip Zero page is not a formality
 `lda $40` is a byte shorter and a cycle faster than `lda $0440`, and indirect
@@ -103,7 +103,7 @@ address space:
 | `$FFFA–$FFFF` | The CPU's NMI, RESET and IRQ vectors — now yours to supply |
 
 Because the reset vector is yours, the cartridge is what boots. Nothing has
-initialised the machine yet, so the first thing it does is:
+initialized the machine yet, so the first thing it does is:
 
 ```asm
 CartReset:

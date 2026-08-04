@@ -10,7 +10,7 @@ are not about the ACE at all.
 |---|---|---|
 | Hello world | [Hello world](/assembly/hello) | The startup stub, and how four lines print |
 | Reading a line | [Console](/assembly/console) | Polling for keys without blocking |
-| A framed sign | [The screen](/assembly/video) | Positioning characters, and the colour byte |
+| A framed sign | [The screen](/assembly/video) | Positioning characters, and the color byte |
 | The graphics demos | [The graphics modes](/assembly/graphics) | Setting the card's registers yourself |
 | A little fanfare | [Sound](/assembly/sound) | Parallel tables, and frequency at build time |
 | Reading the sticks | [The keyboard and the sticks](/assembly/input) | Active-low bits, and a mask table |
@@ -31,7 +31,7 @@ complete programs in this whole guide: eight LEDs wired to a port, and enough
 code to make them do something.
 
 They matter here because they are the shape of *every* hardware program.
-Nothing is initialised, nothing is printed, nothing is checked. A value is
+Nothing is initialized, nothing is printed, nothing is checked. A value is
 written to an address and a wire changes.
 
 ### A binary counter
@@ -79,7 +79,7 @@ Loop:
   jsr SysDelay
   ply
   iny
-  cpy #14                       ; fourteen steps, then round again
+  cpy #14                       ; fourteen steps, then around again
   bne Loop
   bra Start
 

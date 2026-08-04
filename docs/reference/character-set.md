@@ -100,7 +100,7 @@ shape you like and then print `A`.
 | `$B0`–`$B2` | Light, medium and dark shading — the three densities |
 | `$B3`–`$DA` | Box drawing, single and double lined |
 | `$DB`–`$DF` | Solid blocks: full, half, quarters |
-| `$E0`–`$FE` | Greek letters and maths symbols |
+| `$E0`–`$FE` | Greek letters and math symbols |
 | `$FF` | A blank, distinct from space only in that it is a different code |
 
 ## Where it lives

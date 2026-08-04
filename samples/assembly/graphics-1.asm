@@ -18,7 +18,7 @@ BasicStartup: .byte $0A, $08, $0A, $00, $A5, $32, $30, $36, $30, $00, $00, $00
 ;   TMS9918 Graphics Mode I Demo ($080C)
 ; =============================================================================
 ;   Builds a character set of 256 identical checkerboard patterns, gives the
-;   colour table 32 different foreground/background pairs, and fills the
+;   color table 32 different foreground/background pairs, and fills the
 ;   screen with random characters.  Waits for a key press, restores text mode,
 ;   and returns to BASIC.
 ;
@@ -28,12 +28,12 @@ BasicStartup: .byte $0A, $08, $0A, $00, $A5, $32, $30, $36, $30, $00, $00, $00
 ;   32 x 24 cells of 8 x 8 pixels.  Each name table entry selects one of 256
 ;   patterns from the 2 KB pattern table.
 ;
-;   Colour is coarse: the 32-byte colour table holds one entry per *group of
+;   Color is coarse: the 32-byte color table holds one entry per *group of
 ;   eight* patterns (high nibble = foreground, low nibble = background), so
 ;   characters $00-$07 share entry 0, $08-$0F share entry 1, and so on.
-;   That gives exactly 32 colour combinations per screen — which is what this
+;   That gives exactly 32 color combinations per screen — which is what this
 ;   demo shows off.  Since every pattern is the same checkerboard, the only
-;   thing that varies across the screen is the colour pair.
+;   thing that varies across the screen is the color pair.
 ; =============================================================================
 
 ; --- Zero page (safe user range is $3A-$FF) ---
@@ -46,7 +46,7 @@ GFX_CELLS       = GFX_COLS * GFX_ROWS   ; 768 name table entries
 
 ; --- VRAM layout ---
 G1_NAME         = $0000             ; Name table         ($0000-$02FF, 768 bytes)
-G1_COLOR        = $0300             ; Colour table       ($0300-$031F, 32 bytes)
+G1_COLOR        = $0300             ; Color table       ($0300-$031F, 32 bytes)
 G1_SPR_ATTR     = $0700             ; Sprite attributes  ($0700-$077F)
 G1_PATTERN      = $0800             ; Pattern table      ($0800-$0FFF, 2048 bytes)
 
@@ -173,7 +173,7 @@ FillColors:
 ; =============================================================================
 ;   FillNames — Put a random character in every screen cell
 ; =============================================================================
-;   768 bytes = 3 x 256.  A random character code picks a random colour group.
+;   768 bytes = 3 x 256.  A random character code picks a random color group.
 
 FillNames:
   lda #<G1_NAME
@@ -265,14 +265,14 @@ VdpRegs:
   .byte $00                         ; R0: M3=0, no external video
   .byte R1_BLANK                    ; R1: 16K, blanked, Graphics Mode I
   .byte $00                         ; R2: name table         @ $0000
-  .byte $0C                         ; R3: colour table       @ $0300
+  .byte $0C                         ; R3: color table       @ $0300
   .byte $01                         ; R4: pattern table      @ $0800
   .byte $0E                         ; R5: sprite attributes  @ $0700
   .byte $01                         ; R6: sprite patterns    @ $0800
-  .byte TMS_BLACK                   ; R7: backdrop colour
+  .byte TMS_BLACK                   ; R7: backdrop color
 
 ; The one and only character: a single-pixel checkerboard filling the 8x8 cell,
-; so every cell reads as one textured tile in its own two colours.
+; so every cell reads as one textured tile in its own two colors.
 ;
 ; The 1x1 grain matters — Multicolor mode cannot draw anything finer than a 4x4
 ; block, so resolving this texture at all confirms the VDP really is in Graphics
@@ -287,8 +287,8 @@ Checker:
   .byte %01010101
   .byte %10101010
 
-; 32 colour table entries — (foreground << 4) | background.
-; Entry n colours characters (n * 8) through (n * 8 + 7).
+; 32 color table entries — (foreground << 4) | background.
+; Entry n colors characters (n * 8) through (n * 8 + 7).
 Colors:
   .byte (TMS_WHITE     << 4) | TMS_BLACK        ; chars $00-$07
   .byte (TMS_BLACK     << 4) | TMS_WHITE        ; chars $08-$0F

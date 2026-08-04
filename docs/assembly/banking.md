@@ -72,7 +72,7 @@ window you would need a buffer in program RAM and two passes.
 
 `BANK n` sets the low window's latch and nothing else, so `PEEK` and `POKE` at
 32768 upwards reach whichever bank is selected. That means a BASIC program can
-prepare a bank and a machine-code routine can read it, or the other way round —
+prepare a bank and a machine-code routine can read it, or the other way around —
 they are looking at the same hardware.
 
 `BANK` also checks that the RAM card is actually fitted and stops with an error

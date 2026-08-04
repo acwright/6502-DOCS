@@ -1,0 +1,16 @@
+# "Turning it on" — what kind of video card is this?
+#
+# The emulator is a stock TMS9918A and masks register writes to 0-7, so this
+# case proves the branch a stock card takes: the probe survives, nothing is
+# claimed that is not there, and the three registers the attempt clobbered are
+# put back. That last part is what makes the assertion worth making — the
+# screen still works afterwards, which is exactly what goes wrong when a
+# detection routine skips the restore.
+#
+# The F18A branches cannot be reached here. They need the real card.
+
+console video
+send \r
+
+screen ^VIDEO: TMS9918A, NO F18A MODE\s*$
+screen ^OK\s*$

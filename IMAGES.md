@@ -64,7 +64,7 @@ page today, via `<PlaceholderImage>`) · `pending` (not placed on any page).
 | An ACE wearing its KIM boards | P | `docs/addons/kim.md` | **done** | `photos/kim.jpg`. |
 | The keypad, close up | P | `docs/reference/keypad-map.md` | **done** | `photos/kim-keypad.jpg`, a crop of the same photograph. |
 | An earlier machine, on a desk | P | `docs/family/index.md` | **done** | `photos/family-desk.jpg`, from `docs/public/images/6502.png`. Its monitor reads `6502 BASIC v1.0`, two major versions stale — [A9](ACCURACY.md#a9--the-family-hero-photo-shows-a-two-major-versions-stale-banner) offered three ways out and this is the third: it runs as a captioned historical shot, on the family page, where "this is not the machine you have" is the subject rather than a caveat. |
-| Fifteen colours | G | `docs/basic/sound-and-pictures.md` | **done, with a caveat** | `screens/colours.png`. **It is not the palette shot the plan wanted.** `colour-loop.bas` paints one colour at a time over the same two words, so no frame of it ever holds more than one, and the machine finishes the loop in the time it takes to issue the next debug command — a mid-run frame is not reliably reachable. What ships is where it ends. The site's picture of the palette is the Graphics I demo. |
+| Fifteen colors | G | `docs/basic/sound-and-video.md` | **done, with a caveat** | `screens/colors.png`. **It is not the palette shot the plan wanted.** `color-loop.bas` paints one color at a time over the same two words, so no frame of it ever holds more than one, and the machine finishes the loop in the time it takes to issue the next debug command — a mid-run frame is not reliably reachable. What ships is where it ends. The site's picture of the palette is the Graphics I demo. |
 | The joystick bits | D | `docs/basic/controls.md`, `docs/assembly/input.md` | **done** | `joystick-bits.svg`, drawn from `data/hardware.json` — including the test line, so the diagram cannot disagree with the chapter about active low. |
 | Treasure grid | G | `docs/basic/projects.md` | **done** | `screens/treasure.png`, played to the winning dig with the same four answers the harness sends. |
 | Where BASIC keeps things | D | `docs/basic/inside.md` | **done** | `basic-memory.svg`. |
@@ -114,8 +114,20 @@ was written before the reference half existed. They fall into three groups:
 - **Chapters whose subject is a listing** — most of `basic/` and `crossdev/`.
   The thing to look at is the program, and every one of them has one.
 - **Chapters where a diagram would be a restatement** — `assembly/console.md`,
-  `assembly/detection.md`, `basic/loops.md` and their neighbours. A box saying
+  `assembly/detection.md`, `basic/loops.md` and their neighbors. A box saying
   "call the routine" teaches nothing the sentence above it did not.
+
+- **The eight `/f18a/` chapters, for a different reason.** Every screenshot on
+  this site comes out of the emulator, and the emulator is a stock TMS9918A —
+  there is no F18A mode in it to photograph. Nothing here is pending a script.
+
+  What would actually fill these pages is a camera pointed at an ACE with the
+  enhanced firmware: a two-layer scroll with the status bar sitting still, a row
+  of 31 sprites not flickering, an eight-color sprite next to its one-color
+  self, and the palette as it really renders. That is the highest-value unshot
+  list on the site and it needs hardware, so it is recorded here rather than
+  left as eight empty frames. A placeholder would be worse than nothing: it
+  would imply a script is coming.
 
 The rule this leaves behind, which is the useful part: **a picture ships when it
 shows something the prose cannot say as quickly** — a shape, a layout, a piece

@@ -60,7 +60,7 @@ once.
 
 ## The argument is only borrowed
 
-The name inside the brackets is private to the function. This works fine even
+The name inside the parentheses is private to the function. This works fine even
 though there's already a `C` in the program:
 
 ```
@@ -98,4 +98,4 @@ OK
 One definition, five uses, and a table you can widen by changing one number in
 line 30.
 
-Next: [making it look and sound like something](/basic/sound-and-pictures).
+Next: [making it look and sound like something](/basic/sound-and-video).

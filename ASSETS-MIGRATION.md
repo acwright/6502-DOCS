@@ -27,7 +27,7 @@ npm run migrate:check   # verify coverage and drift; writes nothing
 repo. It walks the real `6502-ASSETS` tree on every run and fails if it finds a
 file the manifest does not name, or names one that no longer exists. The
 inventory table below is generated from that same manifest, so a ✅ in it means
-the file is on disk right now — not that somebody ticked a box once.
+the file is on disk right now — not that somebody checked a box once.
 
 `npm run migrate:check` runs in CI against a **fresh clone** of `6502-ASSETS`, so
 the day that repo gains a file, the build says so. The fresh clone matters: the

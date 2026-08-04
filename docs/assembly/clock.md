@@ -2,7 +2,7 @@
 
 The clock card carries a DS1511Y: a real-time clock with its own battery, and
 256 bytes of memory that survive being switched off. The battery is why your
-ACE knows the date after a fortnight in a cupboard, and the 256 bytes are the
+ACE knows the date after two weeks in a closet, and the 256 bytes are the
 best place to keep a high score.
 
 ## Reading the time
@@ -63,10 +63,10 @@ A "have they seen the tutorial" flag is one bit.
   jsr RtcWriteNVRAM
 ```
 
-::: warning A fresh card holds rubbish, not zero
+::: warning A fresh card holds garbage, not zero
 Battery-backed memory that has never been written contains whatever it powered
 up with. Do not trust byte 0 to be 0. The usual answer is a two-byte signature
-of your own — write something recognisable alongside your data, and treat
+of your own — write something recognizable alongside your data, and treat
 everything as unset until you read it back.
 :::
 

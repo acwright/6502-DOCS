@@ -53,7 +53,7 @@ First Power-On:
 "Apply power (see Setting up if you haven't wired everything up yet) and this is what happens, in order — straight from data/boot.json, which is extracted from the BIOS source rather than described from memory:
 
 Reset the stack pointer to $FF
-KernalInit — probe and initialise every card, interrupts still disabled
+KernalInit — probe and initialize every card, interrupts still disabled
 Beep — guarded, skipped when no SID is fitted
 If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)
 Halt if neither video nor serial is present — there is no console to boot into

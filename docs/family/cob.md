@@ -10,7 +10,7 @@ The first machine in the family, and still the best one to build if you want to
 
 <Figure
   src="/images/photos/cob.jpg"
-  alt="A backplane seen from the side with about a dozen cards standing upright in its slots, each labelled along its top edge."
+  alt="A backplane seen from the side with about a dozen cards standing upright in its slots, each labeled along its top edge."
   caption="A COB with its cards in. Every card is one job — processor, memory, video, sound, storage — and every card comes out."
 />
 
@@ -40,7 +40,7 @@ Power comes in on a DC barrel jack; the Backplane Pro Rev 1.1 adds an on-board
 power switch and moves to all through-hole parts, which makes it a much
 friendlier first build.
 
-## The card catalogue
+## The card catalog
 
 <table>
   <thead><tr><th>Card</th><th>What it adds</th></tr></thead>

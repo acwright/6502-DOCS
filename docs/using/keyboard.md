@@ -6,7 +6,7 @@ line. This chapter is the rest.
 
 <Figure
   src="/images/photos/ace-keyboard.jpg"
-  alt="The ACE's keyboard: five rows of white and dark grey keycaps soldered to the board, with Esc, Insert, Delete and arrow keys down the right-hand side."
+  alt="The ACE's keyboard: five rows of white and dark gray keycaps soldered to the board, with Esc, Insert, Delete and arrow keys down the right-hand side."
   caption="Soldered to the board, so there is nothing to plug in and nothing to set up."
 />
 
@@ -17,7 +17,7 @@ line. This chapter is the rest.
 
 ## Everything is in capitals
 
-The ACE types in upper case, full stop. There is no lower case from the
+The ACE types in upper case, period. There is no lower case from the
 keyboard — hold <kbd>Shift</kbd> and you get the symbol on a number key, but a
 letter is a capital either way. <kbd>Caps Lock</kbd> is a real key with a real
 switch under it, and it does nothing at all.
@@ -108,7 +108,7 @@ build a menu or a game that reads the arrows.
 
 ::: details What `PRINT CHR$()` can and can't do
 `PRINT CHR$(13)` gives you a new line, and `CHR$(7)` rings the bell. Beyond
-those, the screen ignores what it's sent: control codes it doesn't recognise
+those, the screen ignores what it's sent: control codes it doesn't recognize
 are dropped, and so is anything above character 126 — so `PRINT CHR$(219)`
 puts nothing on the screen, even though there is a solid block at that position
 in the character set. Reaching the upper half of the character set means going

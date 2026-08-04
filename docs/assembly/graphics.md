@@ -5,16 +5,16 @@ pixels, and getting into them means setting the card's eight mode registers
 yourself — the Kernal has no calls for it, because there is no one right way to
 lay out a screen.
 
-All three are 256 × 192 pixels. What differs is how much colour you can afford
+All three are 256 × 192 pixels. What differs is how much color you can afford
 and how much memory it costs.
 
 | Mode | Cells | What you get |
 |---|---|---|
-| **Graphics I** | 32 × 24 of 8 × 8 | 256 patterns, and one colour pair per *group of eight* patterns |
-| **Graphics II** | 32 × 24 of 8 × 8 | Every cell its own pattern, and a colour pair for every pixel row |
-| **Multicolor** | 64 × 48 blocks of 4 × 4 | Straight colour, no patterns to think about, chunky pixels |
+| **Graphics I** | 32 × 24 of 8 × 8 | 256 patterns, and one color pair per *group of eight* patterns |
+| **Graphics II** | 32 × 24 of 8 × 8 | Every cell its own pattern, and a color pair for every pixel row |
+| **Multicolor** | 64 × 48 blocks of 4 × 4 | Straight color, no patterns to think about, chunky pixels |
 
-Sprites work in all three: 32 of them, 8 × 8 or 16 × 16, one colour each, moved
+Sprites work in all three: 32 of them, 8 × 8 or 16 × 16, one color each, moved
 by writing a coordinate.
 
 ## Getting into one
@@ -25,7 +25,7 @@ The recipe is the same every time:
    while you load, so nothing flickers.
 2. **Write the eight mode registers** — screen mode, and where in the card's
    16 KB each table lives.
-3. **Fill the tables**: patterns, colours, names, and a sprite list that is at
+3. **Fill the tables**: patterns, colors, names, and a sprite list that is at
    least terminated.
 4. **Un-blank.**
 
@@ -42,17 +42,17 @@ interrupt.
 
 ## Graphics I
 
-The plain one. 256 patterns of 8 × 8, and a 32-byte colour table: one entry per
+The plain one. 256 patterns of 8 × 8, and a 32-byte color table: one entry per
 eight patterns, foreground in the high nibble, background in the low. That is
-exactly 32 colour combinations on screen, which this demo shows off by giving
-every pattern the same checkerboard and letting only the colour vary.
+exactly 32 color combinations on screen, which this demo shows off by giving
+every pattern the same checkerboard and letting only the color vary.
 
 <<< @/../samples/assembly/graphics-1.asm{asm}
 
 <Figure
   src="/images/screens/graphics-1.png"
-  alt="A screen filled with a grid of chequered cells in many different two-colour combinations."
-  caption="Every cell is the same checkerboard pattern. All that varies is the colour pair — thirty-two of them, which is the whole of what this mode gives you."
+  alt="A screen filled with a grid of checkered cells in many different two-color combinations."
+  caption="Every cell is the same checkerboard pattern. All that varies is the color pair — thirty-two of them, which is the whole of what this mode gives you."
   screen
 />
 
@@ -73,7 +73,7 @@ Worth noticing in that listing:
 
 The same shape with the tables grown to 6144 bytes each, split into three
 horizontal thirds of eight rows, each third indexing its own 2 KB slice. Every
-one of the 768 cells can have its own pattern *and* a colour pair per pixel
+one of the 768 cells can have its own pattern *and* a color pair per pixel
 row, which is what makes proper pictures possible.
 
 The catch is in registers 3 and 4: in this mode their low bits are an AND mask
@@ -87,15 +87,15 @@ Graphics II bug, and the symptom is a screen that repeats every third.
 
 <Figure
   src="/images/screens/graphics-2.png"
-  alt="A screen densely filled with small coloured chequered blocks, finer and more varied than the Graphics I screen."
-  caption="Graphics II, filled with random patterns. Each cell has its own pattern and its own colour for every pixel row, which is what makes a real picture possible."
+  alt="A screen densely filled with small colored checkered blocks, finer and more varied than the Graphics I screen."
+  caption="Graphics II, filled with random patterns. Each cell has its own pattern and its own color for every pixel row, which is what makes a real picture possible."
   screen
 />
 
 ## Multicolor
 
-No patterns and no colour table: the pattern table *is* the picture, one nibble
-per 4 × 4 block. 64 × 48 blocks, sixteen colours, and you paint by writing
+No patterns and no color table: the pattern table *is* the picture, one nibble
+per 4 × 4 block. 64 × 48 blocks, sixteen colors, and you paint by writing
 bytes.
 
 There is one trick to it. Each name-table cell covers 2 × 2 blocks and so uses
@@ -110,8 +110,8 @@ plain 1536-byte framebuffer that you can fill from top to bottom.
 
 <Figure
   src="/images/screens/multicolor.png"
-  alt="A screen of small square blocks of colour arranged in a fine random grid, sixteen colours in play."
-  caption="64 × 48 fat pixels, any colour anywhere. Nothing here is a character."
+  alt="A screen of small square blocks of color arranged in a fine random grid, sixteen colors in play."
+  caption="64 × 48 fat pixels, any color anywhere. Nothing here is a character."
   screen
 />
 
@@ -124,15 +124,26 @@ characters, screens and sprites, and export the tables as assembler source you
 
 The workflow that goes with it:
 
-1. Draw in the editor, export the pattern and colour tables.
+1. Draw in the editor, export the pattern and color tables.
 2. `.include` them, or `.incbin` the raw bytes into their own segment.
 3. Copy them into the card at start-up, table by table.
 
 ::: tip 16 KB is the ceiling
 The card has 16 KB of its own memory and your program never sees it directly —
 everything goes through those two addresses, a byte at a time. Graphics II uses
-12 KB of it for pattern and colour tables alone, so plan the layout before you
+12 KB of it for pattern and color tables alone, so plan the layout before you
 start rather than after.
 :::
+
+## There is more in that card than this
+
+Everything above is the TMS9918A, and the TMS9918A is what the card is
+pretending to be. The Pico9918 in an ACE also carries the **F18A** feature set —
+a second tile layer, hardware scrolling, 64 programmable colors out of 4096,
+sprites that flip and do not flicker, a bitmap layer, and a processor of its own
+— all of it switched off until a program asks for it.
+
+It runs on hardware only; the emulator is a faithful 9918A and does not have it.
+[F18A mode](/f18a/) is the section on the whole of it.
 
 Next: [making a noise](/assembly/sound).

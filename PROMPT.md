@@ -5,7 +5,7 @@ The goal for this project is to create a documentation site for my 6502 family o
 project and write the plan to PLAN.md in this repo. These docs should focus on system usage, programming in BASIC, setting up a cross dev enviroment (cc65, Makefile; see template projects), and programming in assembly for the systems. You should include helpful links
 to websites that can assist in developing programs for this system. Images in the docs would be a nice thing to see. If you see an opportunity for an image in the docs that does not yet exist, placeholder it. If you can create it then do so.
 
-Currently the documentation for the project is fragmented amongst README's or other documents in the various project repos. I don't want to abandon these README's as they serve a more technical purpose. If you spot inaccuracies in any README you
+Currently the documentation for the project is fragmented among README's or other documents in the various project repos. I don't want to abandon these README's as they serve a more technical purpose. If you spot inaccuracies in any README you
 encounter be sure to fix it as we go.
 
 There are various documents in the ASSETS repo that need to be replicated as HTML or moved to this repo. The ASSETS repo will be dropped from Github after the DOCS repo is live. Some of the documents in the ASSETS repo were

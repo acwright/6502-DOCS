@@ -1,4 +1,4 @@
-# Going round again
+# Going around again
 
 A loop is how you get a lot done with a little typing.
 

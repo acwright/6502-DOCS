@@ -168,7 +168,7 @@ BAS_MEMSIZ          := $0367    ; through $0368 — End of usable memory (= $800
 BAS_CURLIN          := $0369    ; through $036A — Currently executing line ($FFFF=direct mode)
 BAS_OLDLIN          := $036B    ; through $036C — Saved line for CONT
 BAS_OLDTEXT         := $036D    ; through $036E — Saved text ptr for CONT
-BAS_WARM            := $036F    ; Warm-start magic ($A5 = previously initialised)
+BAS_WARM            := $036F    ; Warm-start magic ($A5 = previously initialized)
 BAS_POSX            := $0370    ; PRINT column counter (0-39 video / 0-79 serial)
 BAS_INPSAV          := $0371    ; through $0372 — Saved TXTPTR across INPUT REDO retry
 BAS_FNPTR           := $0373    ; through $0374 — FN variable slot addr held across FnCall's expression evaluations (out of ZP so FrmEvl/Garbag cannot touch it)
@@ -330,7 +330,7 @@ VID_ROWS             = 24       ; Screen height in rows
 VID_NAME_TABLE       = $0000    ; VRAM name table (40x24 = 960 bytes)
 VID_PATTERN_TABLE    = $0800    ; VRAM pattern table (2048 bytes)
 
-; --- TMS9918 colours (for VideoSetColor: (foreground << 4) | background) ---
+; --- TMS9918 colors (for VideoSetColor: (foreground << 4) | background) ---
 TMS_TRANSPARENT      = $0       ; Transparent
 TMS_BLACK            = $1       ; Black
 TMS_MED_GREEN        = $2       ; Medium green
@@ -345,7 +345,7 @@ TMS_DK_YELLOW        = $A       ; Dark yellow
 TMS_LT_YELLOW        = $B       ; Light yellow
 TMS_DK_GREEN         = $C       ; Dark green
 TMS_MAGENTA          = $D       ; Magenta
-TMS_GRAY             = $E       ; Grey
+TMS_GRAY             = $E       ; Gray
 TMS_WHITE            = $F       ; White
 
 ; --- Joystick bits (active low: a held direction reads 0) ---

@@ -149,7 +149,7 @@ SCORE: 100
 OK
 ```
 
-## Doing sums
+## Doing math
 
 The usual five, in the usual order — powers first, then multiply and divide,
 then add and subtract:
@@ -176,7 +176,7 @@ PRINT 2 ^ 10
 OK
 ```
 
-Brackets work the way you'd hope. When in doubt, put them in.
+Parentheses work the way you'd hope. When in doubt, put them in.
 
 ## Try this
 

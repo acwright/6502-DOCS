@@ -13,7 +13,7 @@
  *
  * Output goes to `docs/.vitepress/diagrams/`, not to `public/`: the
  * `<Diagram>` component inlines the file into the page so the drawing inherits
- * the reader's theme. Nothing here carries a colour. Shapes are `currentColor`
+ * the reader's theme. Nothing here carries a color. Shapes are `currentColor`
  * at a few fixed opacities, text is `currentColor`, and light and dark come out
  * of the same file.
  *
@@ -82,7 +82,7 @@ const path = (d, cls = 'dg-l', extra = '') => `<path class="${cls}" d="${d}"${ex
 /** Round to a tenth: shorter files, and no float noise in the diffs. */
 const r = (n) => Math.round(n * 10) / 10
 
-/** A box with a label centred in it, and an optional second line under it. */
+/** A box with a label centered in it, and an optional second line under it. */
 function box(x, y, w, h, label, { sub = null, cls = 'dg-r', labelCls = 'dg-t', rx = 3 } = {}) {
   const cy = y + h / 2
   const out = [rect(x, y, w, h, cls, ` rx="${rx}"`)]
@@ -159,7 +159,7 @@ function memoryMap() {
 
   const body = [text(X, TOP - 12, 'The 64K address space', 'dg-t')]
 
-  // One address per boundary, at the line it belongs to. Labelling both ends of
+  // One address per boundary, at the line it belongs to. Labeling both ends of
   // every band puts two addresses within a few pixels of each other wherever a
   // band is short, and the map stops being readable exactly where it is
   // densest.
@@ -734,7 +734,7 @@ function printZones() {
     const from = X + z * ZONE * CELL
     const to = Math.min(X + (z + 1) * ZONE * CELL, X + COLUMNS * CELL)
     body.push(path(`M${r(from)} ${r(TOP - 8)} V${r(TOP - 14)} H${r(to)} V${r(TOP - 8)}`, 'dg-l'))
-    // Labelled by number rather than by width: the third zone is fourteen
+    // Labeled by number rather than by width: the third zone is fourteen
     // columns like the others, but the screen ends inside it, so a "14 columns"
     // label over a twelve-column bracket would be its own small lie.
     body.push(text((from + to) / 2, TOP - 20, `zone ${z + 1}`, 'dg-n', 'middle'))

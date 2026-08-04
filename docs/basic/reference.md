@@ -66,7 +66,7 @@ straight in. The output printed under each one is what the machine prints.
 
 ## Operator precedence
 
-Highest first. Anything on the same row goes left to right, and brackets beat
+Highest first. Anything on the same row goes left to right, and parentheses beat
 all of it.
 
 <table>

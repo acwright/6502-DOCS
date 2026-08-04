@@ -7,7 +7,7 @@
 // The `.svg` that came with the layout is unusable: keyboard-layout-editor.com's
 // SVG export draws the keycaps and **omits every legend**, so it is 40 KB of
 // blank rectangles. Only the `.png` carried the labels, and both consumers want
-// something that prints at the printer's resolution and follows the greyscale.
+// something that prints at the printer's resolution and follows the grayscale.
 //
 // So the picture is drawn from the JSON, which is the actual source: KLE puts
 // one unit at 54 px, keys are 52 px with a 1 px margin, and a bare object

@@ -42,10 +42,10 @@
           <tr><td class="td-cmd">IF</td><td class="td-syn">IF expr THEN stmt|linenum [ELSE stmt|linenum]</td><td class="td-desc">Do something only when a test holds. <code>THEN 100</code> is short for <code>THEN GOTO 100</code>.</td></tr>
           <tr><td class="td-cmd">THEN</td><td class="td-syn">IF expr THEN stmt|linenum</td><td class="td-desc">The part of <code>IF</code> that says what to do when the test holds.</td></tr>
           <tr><td class="td-cmd">ELSE</td><td class="td-syn">IF expr THEN stmt ELSE stmt</td><td class="td-desc">What to do when the test does not hold.</td></tr>
-          <tr><td class="td-cmd">FOR</td><td class="td-syn">FOR var = start TO limit [STEP step]</td><td class="td-desc">Count from one number to another, running everything up to <code>NEXT</code> each time round.</td></tr>
+          <tr><td class="td-cmd">FOR</td><td class="td-syn">FOR var = start TO limit [STEP step]</td><td class="td-desc">Count from one number to another, running everything up to <code>NEXT</code> each time through.</td></tr>
           <tr><td class="td-cmd">TO</td><td class="td-syn">FOR var = start TO limit</td><td class="td-desc">The part of <code>FOR</code> that says where to count to.</td></tr>
-          <tr><td class="td-cmd">STEP</td><td class="td-syn">FOR var = start TO limit STEP step</td><td class="td-desc">How much to add each time round. Negative counts down.</td></tr>
-          <tr><td class="td-cmd">NEXT</td><td class="td-syn">NEXT [var]</td><td class="td-desc">End of a loop: add the step and go round again. One variable only — <code>NEXT J, I</code> is not accepted, so close each loop with its own <code>NEXT</code>.</td></tr>
+          <tr><td class="td-cmd">STEP</td><td class="td-syn">FOR var = start TO limit STEP step</td><td class="td-desc">How much to add each time through. Negative counts down.</td></tr>
+          <tr><td class="td-cmd">NEXT</td><td class="td-syn">NEXT [var]</td><td class="td-desc">End of a loop: add the step and go around again. One variable only — <code>NEXT J, I</code> is not accepted, so close each loop with its own <code>NEXT</code>.</td></tr>
           <tr><td class="td-cmd">DEF</td><td class="td-syn">DEF FN name(var) = expr</td><td class="td-desc">Define your own one-line function.</td></tr>
           <tr><td class="td-cmd">FN</td><td class="td-syn">FN name(expr)</td><td class="td-desc">Call a function you defined with <code>DEF</code>.</td></tr>
           <tr><td class="td-cmd">END</td><td class="td-syn">END</td><td class="td-desc">Stop the program and return to the prompt. Variables keep their values.</td></tr>
@@ -78,7 +78,7 @@
         <tbody>
           <tr><td class="td-cmd">CLS</td><td class="td-syn">CLS</td><td class="td-desc">Clear the screen and put the cursor at the top left.</td></tr>
           <tr><td class="td-cmd">LOCATE</td><td class="td-syn">LOCATE row, col</td><td class="td-desc">Put the cursor somewhere. Rows are 0 to 23 down the screen, columns 0 to 39 across.</td></tr>
-          <tr><td class="td-cmd">COLOR</td><td class="td-syn">COLOR fg, bg</td><td class="td-desc">Set the text and background colours, each 0 to 15, for everything printed from now on.</td></tr>
+          <tr><td class="td-cmd">COLOR</td><td class="td-syn">COLOR fg, bg</td><td class="td-desc">Set the text and background colors, each 0 to 15, for everything printed from now on.</td></tr>
           <tr><td class="td-cmd">SOUND</td><td class="td-syn">SOUND voice, freq, dur</td><td class="td-desc">Play a note: <code>voice</code> 1 to 3, <code>freq</code> in hertz, <code>dur</code> in hundredths of a second. The program waits for the note to finish.</td></tr>
           <tr><td class="td-cmd">VOL</td><td class="td-syn">VOL n</td><td class="td-desc">Set the overall volume, 0 to 15.</td></tr>
           <tr><td class="td-cmd">INKEY</td><td class="td-syn">INKEY</td><td class="td-desc">The code of a key being pressed right now, or <code>0</code> if none. Does not wait — put it in a loop.</td></tr>
@@ -223,10 +223,10 @@
           <tr><td class="td-cmd">?REDIM'D ARRAY ERROR</td><td class="td-desc">DIM used twice on the same array</td></tr>
           <tr><td class="td-cmd">?DIVISION BY ZERO ERROR</td><td class="td-desc">A divide with zero on the bottom</td></tr>
           <tr><td class="td-cmd">?ILLEGAL DIRECT ERROR</td><td class="td-desc">A statement that only works inside a program, typed at the prompt</td></tr>
-          <tr><td class="td-cmd">?TYPE MISMATCH ERROR</td><td class="td-desc">A string where a number belongs, or the other way round</td></tr>
+          <tr><td class="td-cmd">?TYPE MISMATCH ERROR</td><td class="td-desc">A string where a number belongs, or the other way around</td></tr>
           <tr><td class="td-cmd">?STRING TOO LONG ERROR</td><td class="td-desc">A string over 255 characters</td></tr>
           <tr><td class="td-cmd">?FORMULA TOO COMPLEX ERROR</td><td class="td-desc">An expression nested deeper than the evaluator can hold</td></tr>
-          <tr><td class="td-cmd">?ILLEGAL QUANTITY ERROR</td><td class="td-desc">A number outside what the statement accepts — voice 0, volume 16, colour 16</td></tr>
+          <tr><td class="td-cmd">?ILLEGAL QUANTITY ERROR</td><td class="td-desc">A number outside what the statement accepts — voice 0, volume 16, color 16</td></tr>
           <tr><td class="td-cmd">?RETURN WITHOUT GOSUB ERROR</td><td class="td-desc">A RETURN reached without a GOSUB to come back from</td></tr>
           <tr><td class="td-cmd">?NEXT WITHOUT FOR ERROR</td><td class="td-desc">A NEXT with no FOR open — or a comma list after it, which is not accepted</td></tr>
           <tr><td class="td-cmd">?OUT OF DATA ERROR</td><td class="td-desc">READ ran past the last DATA item. RESTORE goes back to the start</td></tr>

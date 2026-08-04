@@ -1,4 +1,4 @@
-# "Sound and pictures" — CLS, COLOR and LOCATE put a line in the middle of
+# "Sound and video" — CLS, COLOR and LOCATE put a line in the middle of
 # the screen. Nothing reaches the console stream when the console is the
 # video card, so this one is asserted against the screen buffer itself.
 

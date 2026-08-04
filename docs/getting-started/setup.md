@@ -5,7 +5,7 @@ find — the ACE has one built in. Switch the power on **last**.
 
 <PlaceholderImage
   label="Everything connected"
-  caption="An ACE with all its cables attached, each one labelled: power, VGA, audio, keyboard, joysticks, serial."
+  caption="An ACE with all its cables attached, each one labeled: power, VGA, audio, keyboard, joysticks, serial."
 />
 
 ## 1. The monitor
@@ -63,7 +63,7 @@ The **CompactFlash card** slides into the adapter on the Storage header. Any CF
 card works; the ACE uses the first 256 MB of it and ignores the rest, so
 there's no point buying a big one.
 
-It's keyed, so it won't go in the wrong way round — if it's fighting you, turn
+It's keyed, so it won't go in the wrong way around — if it's fighting you, turn
 it over rather than pushing harder.
 
 A brand-new card needs formatting before you can save to it. That's one command
@@ -81,7 +81,7 @@ the monitor at all.
 
 ## 7. Power
 
-**5 V DC** into the barrel jack, centre positive, 1 A or better. A 5 V 2 A
+**5 V DC** into the barrel jack, center positive, 1 A or better. A 5 V 2 A
 supply with a barrel-jack lead is the comfortable choice. There's a power
 switch on the board, next to the jack.
 

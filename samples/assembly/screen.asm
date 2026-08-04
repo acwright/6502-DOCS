@@ -73,7 +73,7 @@ Start:
   inc Row
   jsr DrawRow
 
-  ldx #16                       ; centred in the box
+  ldx #16                       ; centered in the box
   ldy #BOX_TOP + 2
   jsr VideoSetCursor
   ldy #0

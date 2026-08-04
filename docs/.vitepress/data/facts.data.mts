@@ -30,7 +30,8 @@ const FILES = [
   ['monitorCommands', 'monitor-commands.json'],
   ['errors', 'errors.json'],
   ['charset', 'charset.json'],
-  ['systems', 'systems.json']
+  ['systems', 'systems.json'],
+  ['f18a', 'f18a.json']
 ] as const
 
 export declare const data: Facts
@@ -46,6 +47,7 @@ export interface Facts {
   errors: any
   charset: any
   systems: any
+  f18a: any
   /** BIOS release the whole fact base was extracted from, e.g. "1.5". */
   biosVersion: string
 }

@@ -19,8 +19,8 @@
 }
 
 /**
- * Greyscale palette — ink/paper inverted pair for light and dark, greys for
- * chrome, no accent hue. "Brand" variables are repurposed as the ink colour.
+ * Grayscale palette — ink/paper inverted pair for light and dark, grays for
+ * chrome, no accent hue. "Brand" variables are repurposed as the ink color.
  */
 :root {
   --ac-ink: #111111;
@@ -41,7 +41,7 @@
   --vp-font-family-mono: 'Source Code Pro', ui-monospace, 'SFMono-Regular', Menlo,
     Consolas, monospace;
 
-  /* Shiki (css-variables theme) — greyscale tokens, light mode */
+  /* Shiki (css-variables theme) — grayscale tokens, light mode */
   --shiki-foreground: #1a1a1a;
   --shiki-background: #f6f6f6;
   --shiki-token-constant: #1a1a1a;
@@ -72,7 +72,7 @@
   --vp-c-default-3: #8f8f8f;
   --vp-c-default-soft: rgba(255, 255, 255, 0.08);
 
-  /* Shiki (css-variables theme) — greyscale tokens, dark mode */
+  /* Shiki (css-variables theme) — grayscale tokens, dark mode */
   --shiki-foreground: #f2f2f2;
   --shiki-background: #1a1a1a;
   --shiki-token-constant: #f2f2f2;
@@ -102,12 +102,12 @@
 }
 
 /**
- * Centre the site title against the wordmark beside it.
+ * Center the site title against the wordmark beside it.
  *
- * The nav bar centres its items by line box, and Bebas Neue's line box is not
+ * The nav bar centers its items by line box, and Bebas Neue's line box is not
  * symmetric about its capitals: per 16px em it asks for 14px of ascent and 5px
  * of descent while its capitals are only 11.6px tall, so the letters sit above
- * the middle of the box they are centred in. The `6502` PNG is cropped tight
+ * the middle of the box they are centered in. The `6502` PNG is cropped tight
  * to its glyphs, so the two are directly comparable — and "ACE DOCUMENTATION"
  * came out about 1.1px high of it.
  *
@@ -121,7 +121,7 @@
   top: 0.07em;
 }
 
-/* No accent hue anywhere: links read as underlined ink, not a colour swap. */
+/* No accent hue anywhere: links read as underlined ink, not a color swap. */
 .vp-doc a {
   color: var(--vp-c-brand-1);
   text-decoration: underline;
@@ -162,7 +162,7 @@
 
 /**
  * Diagrams, drawn by the diagram builder and inlined into the page rather than
- * linked as an <img>, so they inherit the reader's ink colour: every shape in
+ * linked as an <img>, so they inherit the reader's ink color: every shape in
  * them is `currentColor` at some opacity, which is what makes one file work in
  * both the light and the dark theme.
  */
@@ -327,22 +327,22 @@
 }
 
 /**
- * The sixteen TMS9918 text-mode colours, rendered by <ColourChart>. This is
- * the one place actual colour is deliberate against the site's otherwise
- * greyscale chrome — the swatch's colour is the entire content of the row, the
- * same way a screenshot is shown in colour rather than converted to match the
+ * The sixteen TMS9918 text-mode colors, rendered by <ColorChart>. This is
+ * the one place actual color is deliberate against the site's otherwise
+ * grayscale chrome — the swatch's color is the entire content of the row, the
+ * same way a screenshot is shown in color rather than converted to match the
  * theme.
  */
-.colour-chart {
+.color-chart {
   width: auto;
   margin: 1.5em 0 0.5em;
 }
 
-.colour-chart .colour-chart-index {
+.color-chart .color-chart-index {
   text-align: right;
 }
 
-.colour-swatch {
+.color-swatch {
   display: inline-block;
   width: 1.4em;
   height: 1.4em;
@@ -351,7 +351,7 @@
   border-radius: 2px;
 }
 
-.colour-chart-note {
+.color-chart-note {
   font-size: 0.9em;
   color: var(--vp-c-text-2);
 }

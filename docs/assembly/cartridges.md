@@ -29,7 +29,7 @@ this section. That is the trade, and for a finished program it is a good one.
 ## Booting
 
 Because the reset vector is inside your ROM, **your code is what the processor
-runs first**. Nothing has been initialised. The stack pointer is undefined,
+runs first**. Nothing has been initialized. The stack pointer is undefined,
 interrupts are off, no card has been probed, and there is no console.
 
 The first four instructions are therefore always the same:

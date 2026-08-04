@@ -26,7 +26,7 @@ OK
 
 <Figure
   src="/images/screens/boot-splash.png"
-  alt="A screen showing two centred lines: dash dash 6502 BIOS v1.5 dash dash, and below it ENTER=BASIC  ESC=MONITOR."
+  alt="A screen showing two centered lines: dash dash 6502 BIOS v1.5 dash dash, and below it ENTER=BASIC  ESC=MONITOR."
   caption="The five seconds you get to choose. Do nothing and BASIC starts."
   screen
 />

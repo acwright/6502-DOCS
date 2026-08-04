@@ -3,7 +3,7 @@
  * A drawing from `docs/.vitepress/diagrams/`, inlined into the page.
  *
  * Inlined rather than linked as an `<img>` on purpose: the drawings carry no
- * colour of their own — every shape is `currentColor` at some opacity — so
+ * color of their own — every shape is `currentColor` at some opacity — so
  * putting the markup in the page is what lets one file serve both the light and
  * the dark theme. An `<img>` would be a separate document and could not see the
  * site's variables.

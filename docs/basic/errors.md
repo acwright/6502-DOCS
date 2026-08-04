@@ -11,7 +11,7 @@ const cures = {
   "REDIM'D ARRAY": ['The same array was DIMmed twice.', 'Usually a DIM inside a loop or in a subroutine that gets called more than once. DIM each array once, near the top.'],
   'DIVISION BY ZERO': ['Something was divided by zero.', 'Check the divisor with an IF before you divide by a variable.'],
   'ILLEGAL DIRECT': ['A statement that only works inside a program was typed at the prompt.', 'INPUT is the one you will meet. Give the line a number and RUN it.'],
-  'TYPE MISMATCH': ['A string where a number belongs, or the other way round.', 'Nearly always a missing or stray $.'],
+  'TYPE MISMATCH': ['A string where a number belongs, or the other way around.', 'Nearly always a missing or stray $.'],
   'STRING TOO LONG': ['A string went past 255 characters.', 'Usually a loop that keeps adding to the same string.'],
   'FORMULA TOO COMPLEX': ['An expression nested deeper than BASIC can follow.', 'Break it into two lines with a variable in between.'],
   'ILLEGAL QUANTITY': ['An argument outside what the function or statement allows.', 'A negative SQR, a CHR$ over 255, a LOCATE row past 23, a HEX over 65535, a negative ON.'],

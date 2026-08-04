@@ -16,7 +16,7 @@
 BasicStartup:
   .byte $0A, $08, $0A, $00, $A5, $32, $30, $36, $30, $00, $00, $00
 
-; Entry point ($080C). The machine is fully initialised by the time this runs:
+; Entry point ($080C). The machine is fully initialized by the time this runs:
 ; hardware probed, interrupts enabled, console chosen. Return to BASIC with RTS.
 Start:
   lda #<Message

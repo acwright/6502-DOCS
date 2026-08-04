@@ -1,0 +1,18 @@
+# "What F18A mode is" — asking the video card whether it has a hidden mode.
+#
+# The emulator is a stock TMS9918A: it masks register numbers to 0-7, exactly
+# as the real chip does, so the probe survives and the program takes the plain
+# branch. That is the branch worth asserting here — it is the one that runs on
+# every machine that is not an ACE with the enhanced firmware, and getting it
+# wrong means telling a reader they have a feature they do not have.
+#
+# Lines 530-550 are the reason this is safe to type in. Registers 6, 7 and 1
+# are what registers 54, 55 and 57 turn into on a card with only eight of them,
+# so they come back to the values the BIOS sets text mode up with. The screen
+# assertion below is the proof: the prompt is still there and still readable.
+
+console video
+send \r
+
+screen ^PLAIN TMS9918A. NO HIDDEN MODE HERE.\s*$
+screen ^OK\s*$

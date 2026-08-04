@@ -17,7 +17,7 @@ GOOD MORNING
 OK
 ```
 
-It happened straight away. This is **immediate mode** — no number in front, so
+It happened right away. This is **immediate mode** — no number in front, so
 BASIC does it and forgets it.
 
 ## Do it later

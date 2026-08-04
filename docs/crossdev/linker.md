@@ -74,7 +74,7 @@ Get that segment wrong and the machine doesn't boot at all — the CPU reads
 `$FFFC` for its start address before anything else happens.
 
 **`type=ro`** this time, because it genuinely is read-only memory. The linker
-uses that to decide what can be initialised at load time and what can't.
+uses that to decide what can be initialized at load time and what can't.
 
 **`fill=yes, fillval=$00`** pads unused space with zeroes so the image is always
 exactly the size of the chip. Without it you'd get a short file and a burner
@@ -124,7 +124,7 @@ from BASIC, or `--bin 0x6000=level.bin` in the emulator — and both halves are
 where they claim to be.
 :::
 
-::: tip Uninitialised space costs nothing
+::: tip Uninitialized space costs nothing
 A segment declared `type=bss` occupies addresses but contributes no bytes to the
 file — the right home for a big buffer you fill at runtime. A program with a
 4 KB `bss` buffer in it comes out sixteen bytes long.

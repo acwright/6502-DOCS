@@ -1,7 +1,7 @@
 {
   "$meta": {
     "title": "BASIC keywords",
-    "description": "Every keyword the tokenizer recognises, with its token and dispatch. Token, name and dispatch are GREP-verified against BASIC.asm; syntax and description are lifted from the BIOS README (rank 4) and stay verified:false until a RUN-backed sample proves them in Phase 4.",
+    "description": "Every keyword the tokenizer recognizes, with its token and dispatch. Token, name and dispatch are GREP-verified against BASIC.asm; syntax and description are lifted from the BIOS README (rank 4) and stay verified:false until a RUN-backed sample proves them in Phase 4.",
     "generator": "scripts/extract-facts.mjs",
     "biosVersion": "1.5",
     "sources": [
@@ -980,7 +980,7 @@
       "forms": [
         {
           "syntax": "COLOR <fg>, <bg>",
-          "description": "Set TMS9918 text foreground/background colours (0–15 each)",
+          "description": "Set TMS9918 text foreground/background colors (0–15 each)",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"

@@ -332,7 +332,7 @@
         }
       ],
       "verified": true,
-      "check": "SCHEM — every card under Hardware/ confirms its claimed chip (65C02/65C816 CPU cards, AS6C62256+AT28C256 Memory Card, AS6C4008 RAM Card, DS1511Y RTC Card, CompactFlash Storage Card, W25Q128JVS+microSD Storage Card Pro, 65C51+MAX232 Serial Card/Pro with DTR/DCD/DSR, 65C22 GPIO Card, Pico9918A VGA Card/Pro, TMS9918A Video Card, 65C22+16x2 LCD Card, 6581-socket Sound Card). Backplane Pro Rev 1.1 confirmed: adds a Barrel_Jack_Switch + POWER switch absent from Rev 1.0, and nearly every passive switches from _SMD to _THT footprints, matching \"entirely through-hole\" plus the power switch/barrel jack. Slot numbers (1-8) are not silkscreen-labelled in any schematic, so those remain sourced from the README rather than SCHEM."
+      "check": "SCHEM — every card under Hardware/ confirms its claimed chip (65C02/65C816 CPU cards, AS6C62256+AT28C256 Memory Card, AS6C4008 RAM Card, DS1511Y RTC Card, CompactFlash Storage Card, W25Q128JVS+microSD Storage Card Pro, 65C51+MAX232 Serial Card/Pro with DTR/DCD/DSR, 65C22 GPIO Card, Pico9918A VGA Card/Pro, TMS9918A Video Card, 65C22+16x2 LCD Card, 6581-socket Sound Card). Backplane Pro Rev 1.1 confirmed: adds a Barrel_Jack_Switch + POWER switch absent from Rev 1.0, and nearly every passive switches from _SMD to _THT footprints, matching \"entirely through-hole\" plus the power switch/barrel jack. Slot numbers (1-8) are not silkscreen-labeled in any schematic, so those remain sourced from the README rather than SCHEM."
     },
     {
       "id": "dev",
@@ -411,7 +411,7 @@
       ],
       "revisions": [],
       "verified": true,
-      "check": "SCHEM — Hardware/DEV Board/Rev 1.0/DEV Board.kicad_sch confirms the Teensy 4.1, exactly 5 SN74LVC4245APWR level shifters (U1/U2/U3/U5/U6), SW1-SW4 labelled Run/Stop, Step, Clock, Reset respectively, an RJ45 Ethernet jack, a CR2032 holder, and a USB-C USB Host receptacle. Hardware/DEV Output Board/Rev 1.0/DEV Output Board.kicad_sch confirms the Teensy 4.0 and a Waveshare 2.4in LCD module (the schematic doesn't name the driver IC, so \"ILI9341\" is the module's known datasheet part rather than a schematic-visible string); no TMS9918/6581 part strings appear since both are software-emulated on the Teensy 4.0, consistent with the design."
+      "check": "SCHEM — Hardware/DEV Board/Rev 1.0/DEV Board.kicad_sch confirms the Teensy 4.1, exactly 5 SN74LVC4245APWR level shifters (U1/U2/U3/U5/U6), SW1-SW4 labeled Run/Stop, Step, Clock, Reset respectively, an RJ45 Ethernet jack, a CR2032 holder, and a USB-C USB Host receptacle. Hardware/DEV Output Board/Rev 1.0/DEV Output Board.kicad_sch confirms the Teensy 4.0 and a Waveshare 2.4in LCD module (the schematic doesn't name the driver IC, so \"ILI9341\" is the module's known datasheet part rather than a schematic-visible string); no TMS9918/6581 part strings appear since both are software-emulated on the Teensy 4.0, consistent with the design."
     },
     {
       "id": "kim",

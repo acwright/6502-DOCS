@@ -17,29 +17,29 @@ BasicStartup: .byte $0A, $08, $0A, $00, $A5, $32, $30, $36, $30, $00, $00, $00
 ; =============================================================================
 ;   TMS9918 Graphics Mode II Demo ($080C)
 ; =============================================================================
-;   Same idea as the Graphics Mode I demo, but with per-row colour: every cell
+;   Same idea as the Graphics Mode I demo, but with per-row color: every cell
 ;   on screen gets its own checkerboard pattern *and* its own eight random
-;   colour pairs, one per pixel row.  Waits for a key press, restores text
+;   color pairs, one per pixel row.  Waits for a key press, restores text
 ;   mode, and returns to BASIC.
 ;
 ;   GRAPHICS MODE II
 ;   ----------------
 ;   Selected by M3=1 (R0 bit 1 set).  Still 32 x 24 cells of 8 x 8 pixels, but
-;   the pattern and colour tables grow to 6144 bytes each and the screen is
+;   the pattern and color tables grow to 6144 bytes each and the screen is
 ;   split into three horizontal thirds of 8 rows.  Each third indexes its own
 ;   2 KB slice of those tables, so all 768 cells can have unique pixels and
-;   unique colour — 256 KB worth of freedom compared to Mode I's 256 patterns.
+;   unique color — 256 KB worth of freedom compared to Mode I's 256 patterns.
 ;
-;   The colour table is the important part: it is the same shape as the
+;   The color table is the important part: it is the same shape as the
 ;   pattern table, one byte per pattern byte, so *every pixel row* of every
 ;   cell carries its own foreground/background pair (high nibble / low
-;   nibble).  This demo fills all 6144 colour bytes with random pairs.
+;   nibble).  This demo fills all 6144 color bytes with random pairs.
 ;
 ;   VRAM layout (the usual Graphics II arrangement):
 ;     $0000-$17FF   Pattern table    (6144 bytes)   R4 = $03
 ;     $1800-$1AFF   Name table       (768 bytes)    R2 = $06
 ;     $1B00-$1B7F   Sprite attrs                    R5 = $36
-;     $2000-$37FF   Colour table     (6144 bytes)   R3 = $FF
+;     $2000-$37FF   Color table     (6144 bytes)   R3 = $FF
 ;     $3800-$3FFF   Sprite patterns                 R6 = $07
 ;
 ;   Note R3 and R4 are interpreted differently in this mode: only their top
@@ -63,7 +63,7 @@ GFX_CELLS       = GFX_COLS * GFX_ROWS   ; 768 name table entries
 G2_PATTERN      = $0000             ; Pattern table      ($0000-$17FF, 6144 bytes)
 G2_NAME         = $1800             ; Name table         ($1800-$1AFF, 768 bytes)
 G2_SPR_ATTR     = $1B00             ; Sprite attributes  ($1B00-$1B7F)
-G2_COLOR        = $2000             ; Colour table       ($2000-$37FF, 6144 bytes)
+G2_COLOR        = $2000             ; Color table       ($2000-$37FF, 6144 bytes)
 
 ; --- Register 1 values (16K VRAM, VDP interrupt off) ---
 R1_BLANK        = %10000000         ; Display blanked — used while loading VRAM
@@ -92,7 +92,7 @@ Start:
   jsr InitMode                      ; Mode registers, display still blanked
   jsr HideSprites
   jsr FillPatterns                  ; 768 checkerboards, one per cell
-  jsr FillColors                    ; A random colour pair per pixel row
+  jsr FillColors                    ; A random color pair per pixel row
   jsr FillNames                     ; $00-$FF in each third of the screen
   jsr ShowDisplay
   cli
@@ -177,7 +177,7 @@ FillPatterns:
 ;   FillColors — A random foreground/background pair for every pixel row
 ; =============================================================================
 ;   6144 bytes = 24 x 256.  This is what Mode II buys you over Mode I: eight
-;   independent colour pairs per cell instead of one per eight characters.
+;   independent color pairs per cell instead of one per eight characters.
 
 FillColors:
   lda #<G2_COLOR
@@ -199,7 +199,7 @@ FillColors:
 ;   FillNames — Point each third of the screen at its own table slice
 ; =============================================================================
 ;   768 bytes = $00-$FF repeated three times, so every cell has a unique
-;   pattern/colour slot.
+;   pattern/color slot.
 
 FillNames:
   lda #<G2_NAME
@@ -218,14 +218,14 @@ FillNames:
   rts
 
 ; =============================================================================
-;   RandomColor — Build a colour byte whose two nibbles always differ
+;   RandomColor — Build a color byte whose two nibbles always differ
 ; =============================================================================
 ;   Out: A = (foreground << 4) | background, foreground != background.
 ;   Preserves X and Y.
 ;
 ;   The background is derived as foreground XOR a non-zero delta, which
 ;   guarantees the two nibbles never match and so the checkerboard is always
-;   visible.  Colour 0 is transparent and shows the backdrop, which is black
+;   visible.  Color 0 is transparent and shows the backdrop, which is black
 ;   here, so it simply reads as black.
 
 RandomColor:
@@ -325,17 +325,17 @@ VdpRegs:
   .byte $02                         ; R0: M3=1 (Graphics Mode II)
   .byte R1_BLANK                    ; R1: 16K, blanked
   .byte $06                         ; R2: name table         @ $1800
-  .byte $FF                         ; R3: colour table       @ $2000, full mask
+  .byte $FF                         ; R3: color table       @ $2000, full mask
   .byte $03                         ; R4: pattern table      @ $0000, full mask
   .byte $36                         ; R5: sprite attributes  @ $1B00
   .byte $07                         ; R6: sprite patterns    @ $3800
-  .byte TMS_BLACK                   ; R7: backdrop colour
+  .byte TMS_BLACK                   ; R7: backdrop color
 
 ; Every pattern is the same single-pixel checkerboard used by the Graphics Mode I
 ; demo, which makes the two directly comparable: identical tile, but here each
-; of its eight pixel rows carries its own colour pair instead of the whole cell
+; of its eight pixel rows carries its own color pair instead of the whole cell
 ; sharing one.  Both row values have four set and four clear bits, so every row
-; shows both of its colours.
+; shows both of its colors.
 Checker:
   .byte %01010101
   .byte %10101010

@@ -35,8 +35,8 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| confirmed | 42 |
-| open | 3 |
+| confirmed | 46 |
+| open | 4 |
 | fixed | 2 |
 | wontfix | 3 |
 
@@ -75,7 +75,7 @@ the site. It is A9's problem in a second photograph — a version number visible
 in a picture — and A9 itself is resolved there, as a captioned historical shot
 rather than a reshoot.
 
-**A45** comes from building a colour chart for the BASIC guide, which meant
+**A45** comes from building a color chart for the BASIC guide, which meant
 checking what `COLOR` actually does before drawing swatches for it. It turned
 up a claim the chapter had backwards since the first pass of Phase 3 — one that
 `docs/assembly/video.md` had already stated correctly, which is what made the
@@ -246,7 +246,7 @@ serial are false at the machine itself.
 | **Truth** | The default headless machine **does** have a SID. `MEM` reports `HW=$7F`: every bit set except video (bit 7, `$40` is `HW_SID` and it is set). With `--console video` it reports `HW=$FF`. |
 | **Source** | RUN: `MEM` on a default headless boot prints ` 30718 BYTES FREE  HW=$7F`; the same on `--console video` prints `HW=$FF`. |
 | **Check** | RUN |
-| **Consequence** | The paragraph drew a graceful-degradation lesson from a condition that was not occurring. The underlying ROM behaviour — `BasCmdSound`/`BasCmdVol` do not guard on `HW_SID` — is real, but it was not what the sample demonstrated. |
+| **Consequence** | The paragraph drew a graceful-degradation lesson from a condition that was not occurring. The underlying ROM behavior — `BasCmdSound`/`BasCmdVol` do not guard on `HW_SID` — is real, but it was not what the sample demonstrated. |
 | **Fix** | Removed. The rewritten chapter teaches `SOUND` and `VOL` by playing a scale on a machine that has a sound chip, which is the machine the guide is about. |
 
 ### A11 — This repo's own `docs/getting-started/setup.md`: power inputs
@@ -308,7 +308,7 @@ serial are false at the machine itself.
 | **Truth** | The AB Controller emits **upper case unconditionally** — Shift affects symbols and numbers only, never letters — and Caps Lock is explicitly an ignored key that "produces no output and tracks no state". There is nothing to leave on, and lower case cannot be typed at the machine at all, which makes the `print` example unreachable. Lower case only enters over the serial line. |
 | **Source** | `6502-ACE/Firmware/AB Controller/README.md`: "Always Uppercase Letters: Letters are always output as uppercase ASCII regardless of modifiers"; "Ignored Keys: Caps Lock, Menu/GUI, Alt, Fn — produce no output and track no state"; modifier precedence at §"Ctrl / Shift". |
 | **Check** | GREP |
-| **Fix** | Rewritten: the ACE types capitals, full stop; Caps Lock does nothing; mixed case is a serial-only capability, noted in a collapsed block. |
+| **Fix** | Rewritten: the ACE types capitals, period; Caps Lock does nothing; mixed case is a serial-only capability, noted in a collapsed block. |
 
 ### A17 — This repo's own docs: `PRINT CHR$(219)` for a solid block
 
@@ -400,7 +400,7 @@ serial are false at the machine itself.
 | | |
 |---|---|
 | **Claim** | The README's BASIC keyword tables give: `COS` → `SIN(x)`, `TAN` → `SIN(x)`, `RIGHT$` → `LEFT$(s$,n)`, `MAX` → `MIN(a,b)`, `BSAVE` → `BLOAD <addr>,"name"`, `SAVE` → `LOAD "name"`, and `INPUT` → `INPUT ["prompt"{;` (truncated). |
-| **Truth** | Each is the neighbouring entry's line, pasted and not edited — `COS(x)`, `TAN(x)`, `RIGHT$(s$,n)`, `MAX(a,b)`, `BSAVE addr,len,"name"`, `SAVE "name"`. All seven keywords themselves work correctly; only their documentation is wrong. |
+| **Truth** | Each is the neighboring entry's line, pasted and not edited — `COS(x)`, `TAN(x)`, `RIGHT$(s$,n)`, `MAX(a,b)`, `BSAVE addr,len,"name"`, `SAVE "name"`. All seven keywords themselves work correctly; only their documentation is wrong. |
 | **Source** | GREP (the README tables) + RUN (each keyword exercised). |
 | **Check** | GREP + RUN |
 | **Consequence** | `BSAVE` is the dangerous one: a reader following the README would call it with two arguments and lose the length. |
@@ -442,9 +442,9 @@ serial are false at the machine itself.
 | | |
 |---|---|
 | **Observation** | `cl65 -t none -C 6502.cfg -Ln out.lbl -o out.prg src.asm` exits 0 and produces a **zero-line** `out.lbl`. Adding `-g` to the same command produces 218 lines. Nothing warns. |
-| **Truth** | Upstream cc65 behaviour, not a bug in this ecosystem — but a reader following the templates has no reason to expect it, and the symptom is a debugger that claims every symbol is missing. |
+| **Truth** | Upstream cc65 behavior, not a bug in this ecosystem — but a reader following the templates has no reason to expect it, and the symptom is a debugger that claims every symbol is missing. |
 | **Check** | RUN |
-| **Status** | `wontfix` — upstream cc65 behaviour, documented rather than worked around. |
+| **Status** | `wontfix` — upstream cc65 behavior, documented rather than worked around. |
 | **Consequence** | Both `docs/crossdev/makefile.md` and `docs/crossdev/debugging.md` state that `-g` is required for `-Ln`. |
 
 ### A30 — A `=` constant never reaches the label file; `:=` does
@@ -465,7 +465,7 @@ serial are false at the machine itself.
 | **Truth** | An unresolved identifier makes the expression evaluate true rather than raising an error at `bp.set` time or when it is evaluated. `DEBUG-PROTOCOL.md` documents that "bare identifiers resolve as symbols" but not what happens when one doesn't. |
 | **Source** | Emulator 2.5.1, `6502 dbg break … --condition` |
 | **Check** | RUN |
-| **Status** | `confirmed` — an upstream item for `6502-EMULATOR`. Failing closed (or refusing the breakpoint) would be the safer behaviour, since the symptom of a typo is a breakpoint that appears to ignore its condition. |
+| **Status** | `confirmed` — an upstream item for `6502-EMULATOR`. Failing closed (or refusing the breakpoint) would be the safer behavior, since the symptom of a typo is a breakpoint that appears to ignore its condition. |
 | **Consequence** | `docs/crossdev/debugging.md` warns about it next to the conditional-breakpoint section, because combined with A30 it is easy to hit: a `=` constant looks like a symbol, isn't one, and the condition then always matches. |
 
 ### A32 — `6502 dbg mem fill` refuses `0` and every hex form
@@ -524,7 +524,7 @@ serial are false at the machine itself.
 |---|---|
 | **Claim** | [PLAN.md's *Write from the seat*](PLAN.md#write-from-the-seat-not-from-the-harness) table says that, at the ACE, "the screen drops every code above 126 and all but four control codes". |
 | **Truth** | The filtering is in `Chrout`'s video path, which discards `$7F` and above and every control code except CR, LF, backspace and bell. The screen itself displays all 256 characters perfectly well — `VideoChroutRaw` puts any code on it, which is how a program draws with the box-drawing set. |
-| **Source** | `Kernal.asm` video Chrout implementation; confirmed by a program that draws a double-line box and centred title on a video machine |
+| **Source** | `Kernal.asm` video Chrout implementation; confirmed by a program that draws a double-line box and centered title on a video machine |
 | **Check** | RUN |
 | **Status** | `confirmed` — the shorthand is right about what a reader sees from `PRINT` and wrong about why, which matters as soon as anyone writes to the screen directly. |
 | **Consequence** | `docs/assembly/console.md` states the boundary precisely and `docs/assembly/video.md` draws with `VideoChroutRaw`. The user's guide's phrasing stands: from BASIC, the effect is exactly as described. |
@@ -569,7 +569,7 @@ serial are false at the machine itself.
 | **Truth** | `? "SHORTHAND"` gives `?SYNTAX ERROR`. The tokenizer has no `?` entry: `data/basic-keywords.json` lists 85 keywords and `?` is not among them. |
 | **Source** | GREP (the token table) + RUN |
 | **Check** | GREP + RUN |
-| **Consequence** | Inherited Commodore muscle memory. Mild, but it teaches a keystroke that fails, and `?` is what the machine puts in *front of* an error — so a reader who tries it sees `?SYNTAX ERROR` and may not realise the first character is the machine's, not theirs. |
+| **Consequence** | Inherited Commodore muscle memory. Mild, but it teaches a keystroke that fails, and `?` is what the machine puts in *front of* an error — so a reader who tries it sees `?SYNTAX ERROR` and may not realize the first character is the machine's, not theirs. |
 | **Fix** | The cards say `PRINT`. |
 
 ### A42 — `6502-ACE/README.md`: nine connector designators are shifted
@@ -607,16 +607,60 @@ serial are false at the machine itself.
 | **Consequence** | Small but real, and the same class as A9: a reader who looks closely gets a version number the rest of the site contradicts. It is a sticker on a socketed chip rather than anything about the design, so no claim in the guide depends on it. |
 | **Fix** | No caption on any page reads a version off the photograph, and none refers to the ROM label. Resolving it properly means re-shooting the board with a v1.5 chip in the socket — a Phase 9 item for `6502-ACE`, because the photograph lives in that repo and fixing it there fixes it everywhere. |
 
-### A45 — `docs/basic/sound-and-pictures.md`: "colours don't apply retrospectively"
+### A45 — `docs/basic/sound-and-video.md`: "colors don't apply retrospectively"
 
 | | |
 |---|---|
-| **Claim** | "Colours don't apply retrospectively — text already on the screen keeps the colours it was printed in." |
+| **Claim** | "Colors don't apply retrospectively — text already on the screen keeps the colors it was printed in." |
 | **Truth** | The opposite. The TMS9918's text mode has **one** foreground/background pair for the entire screen (`VideoSetColor` writes a single register), not one per character. Changing `COLOR` repaints everything already on the screen instantly — the `OK` prompt and every earlier line included — not just what gets printed next. |
 | **Source** | `Kernal.asm` `VideoSetColorImpl` (GREP); confirmed by RUN: `COLOR 1,15` then `PRINT "AAAAAAAA"`, then `COLOR 15,4` with no `CLS` — the existing `AAAAAAAA` and every prior line turn white-on-blue along with the new text. `docs/assembly/video.md` already had this right ("In text mode there is one pair for the whole screen"), which is what exposed the contradiction. |
 | **Check** | GREP + RUN |
-| **Consequence** | A reader who trusted this would print status text in one colour expecting it to stay put, then watch every line on the screen change colour together the next time `COLOR` runs — the opposite of what the chapter promised. |
-| **Fix** | Phase 8's colour-chart pass rewrote the paragraph: one pair for the whole screen, described as "a pair of coloured lights the whole screen sits under" rather than paint. `docs/using/sound-and-video.md`'s shorter `COLOR` bullet had the same gap (it didn't say retrospective either way) and was tightened at the same time. |
+| **Consequence** | A reader who trusted this would print status text in one color expecting it to stay put, then watch every line on the screen change color together the next time `COLOR` runs — the opposite of what the chapter promised. |
+| **Fix** | Phase 8's color-chart pass rewrote the paragraph: one pair for the whole screen, described as "a pair of colored lights the whole screen sits under" rather than paint. `docs/using/sound-and-video.md`'s shorter `COLOR` bullet had the same gap (it didn't say retrospective either way) and was tightened at the same time. |
+
+### A46 — The F18A forum documentation describes registers that never shipped
+
+| | |
+|---|---|
+| **Claim** | `F18A documentation.pdf` (Matthew Hagerty's collected forum posts) documents four scroll-limit registers at VR50–VR53, a "fixed map" bitmap of per-tile scroll exemptions based at VR10, page-size bits in VR30 alongside a horizontal banner size, and page-start bits in VR29. Its VR49 bit map names bit 7 `FIXED_EN`. |
+| **Truth** | None of that is the shipped register map. In the v1.8 and v1.9 register sheets — the same author, later — VR10 is tile layer 2's name table base, VR11 is its color table base, VR29 carries both layers' page sizes plus the pattern-plane spacing, VR30 is the per-line sprite maximum and nothing else, VR50 is general control and GPU triggers, VR51 is the per-frame sprite maximum, and VR49 bit 7 is `TILE2_EN`. The scroll-limit registers and the fixed map do not exist in either sheet. |
+| **Source** | `F18A Registers.xlsx`, sheets `V1.9` and `V1.8`, cross-checked against the Pico9918's F18A Programmer's Reference, which agrees with the sheets on every one of these. |
+| **Check** | Read all three sources against each other. Nothing here can be run: F18A mode is hardware-only and the emulator masks register writes to 0–7 (`6502-EMULATOR/src/core/IO/Video.ts:279`). |
+| **Consequence** | Severe for anyone writing F18A code from the forum posts, which are the most discoverable F18A document on the web and read as a specification. Following them puts a scroll window into general control and the GPU trigger bits, which is not a subtle failure. |
+| **Fix** | `data/f18a.json` is built from the v1.9 sheet, and every register the posts disagree about carries a `conflict` field that the reference page prints under the register as *"The sources disagree."* The posts are still the best explanation of *why* the parts work as they do — the unlock rationale, the bitplane scheme, the paging model, `PIX` — and that material is what the chapters draw on. |
+
+### A47 — The Pico9918 reference tabulates the enhanced color modes one step too high
+
+| | |
+|---|---|
+| **Claim** | The Pico9918's F18A Programmer's Reference gives the ECM levels as 2, 4, 8 and 16 colors from 1, 2, 3 and 4 bitplanes. |
+| **Truth** | 2, 4 and 8 colors from 1, 2 and 3 planes. Every other source says so and they are mutually consistent: the F18A HDL's index expression takes one, two and three pattern bits for ECM1–3; both register sheets label VR49's fields "1-bit / 2-bit / 3-bit color mode"; the pattern table grows 2 KB → 4 KB → 6 KB, which is one, two and three planes; and Hagerty's sprite discussion states the visible counts as 1, 3 and 7 "vs 2, 4, or 8" precisely because sprite index 0 is always transparent. A fourth plane has nowhere to come from — ECM is a two-bit field whose top value is 3. |
+| **Source** | `F18A documentation.pdf` (HDL excerpt, ECM sections, sprite section); `F18A Registers.xlsx` VR49 notes on both sheets. |
+| **Check** | Read the sources against each other; arithmetic on the pattern-table sizes. |
+| **Consequence** | A reader sizing a pattern table from the higher figures allocates 8 KB where 6 KB is needed, and expects sixteen colors in a tile that can hold eight. |
+| **Fix** | `data/f18a.json` carries the lower set, and `colorModeConflict` records why. The chapter prints the lower set without qualification — this is the one conflict resolved rather than left open, because the evidence is one-sided. |
+
+### A48 — Two F18A claims that cannot be settled from here
+
+| | |
+|---|---|
+| **Claim** | Two conflicts between the F18A sheets and the Pico9918 reference where the evidence is genuinely balanced. **(a)** Palette byte order: Hagerty's worked example sends the red byte first, the Pico9918 reference documents the green-and-blue byte first. **(b)** Sprite attribute bit 4: the v1.9 sheet calls it a per-sprite 16×16 size override, the Pico9918 reference calls it an opaque-sprite flag in 16×16 mode. |
+| **Truth** | Unknown. Both are observable in about a second on real hardware and not at all without it. |
+| **Status** | `open` — and open in a way that only an ACE with the enhanced firmware can close. |
+| **Check** | None available. F18A mode does not exist in the emulator. |
+| **Consequence** | (a) is self-announcing: get it backwards and the colors are visibly wrong on the first entry you write. (b) is quieter — code that relies on either reading may work on one card and not the other. |
+| **Fix** | Both are printed on the page as open questions rather than resolved: `docs/f18a/color.md` tells the reader to write four entries and swap the order if the colors come out wrong, and `docs/f18a/sprites.md` says to assume nothing about bit 4 in code meant to run on both cards. Also carried in `data/f18a.json` as `palette.writeOrderConflict` and `attributes.spriteUnlocked.conflict`. Close them by testing on hardware. |
+
+### A49 — The bitmap layer's priority bit is described two ways by its own author
+
+| | |
+|---|---|
+| **Claim** | VR31 bit 6. The v1.8 register sheet calls it priority over **sprites**; the v1.9 sheet calls it priority over **tiles**. |
+| **Truth** | Over tiles. The Pico9918 reference's layer-priority rules settle it independently: a bitmap-layer pixel clears the priority flag it inherited, so a sprite wins over the bitmap layer even where the bit is set and the tile beneath had priority. The bitmap layer is never drawn above a sprite, which makes "priority over sprites" impossible to be a description of anything. |
+| **Source** | `F18A Registers.xlsx` sheets `V1.8` and `V1.9`; the Pico9918 F18A Programmer's Reference, "Layer Priorities". |
+| **Check** | Read the sources against each other. |
+| **Consequence** | Anyone reading the v1.8 sheet plans a HUD drawn in the bitmap layer over their sprites, and cannot make it work. |
+| **Fix** | `data/f18a.json` records the v1.9 reading with the conflict noted, and `docs/f18a/bitmap.md` states the rule in the negative — *the bitmap layer is never drawn over a sprite* — because that is the form a reader needs. |
 
 ---
 

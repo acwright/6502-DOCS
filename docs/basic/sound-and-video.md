@@ -1,6 +1,6 @@
-# Sound and pictures
+# Sound and video
 
-Your ACE has a screen 40 characters wide and 24 rows deep, 16 colours, and three
+Your ACE has a screen 40 characters wide and 24 rows deep, 16 colors, and three
 voices of SID sound. Five statements reach all of it.
 
 ## Clearing and placing
@@ -14,23 +14,23 @@ voices of SID sound. Five statements reach all of it.
 `CLS` clears the screen and puts the cursor top left. `LOCATE row, column` moves
 it: rows `0` to `23` down the screen, columns `0` to `39` across.
 
-**Row first, then column.** Get them the wrong way round and you'll get
+**Row first, then column.** Get them the wrong way around and you'll get
 `?ILLEGAL QUANTITY ERROR` as soon as the column number goes past 23, which is at
 least a quick way to find out.
 
-## Colour
+## Color
 
-`COLOR foreground, background` sets the colours for everything on the screen,
+`COLOR foreground, background` sets the colors for everything on the screen,
 each from 0 to 15:
 
-<ColourChart />
+<ColorChart />
 
 <<< @/../samples/basic/screen-text.bas{basic}
 
 There's only **one** foreground and one background for the whole screen, not
 one per character. Change `COLOR` and everything already there changes with
-it, the `OK` prompt included — it isn't a paint colour, it's more like a pair
-of coloured lights the whole screen sits under. `CLS` fills the screen with
+it, the `OK` prompt included — it isn't a paint color, it's more like a pair
+of colored lights the whole screen sits under. `CLS` fills the screen with
 the current background.
 
 ## Sound
@@ -62,16 +62,16 @@ Multiply or divide by two to change octave:
 
 ## Both at once
 
-<<< @/../samples/basic/colour-loop.bas{basic}
+<<< @/../samples/basic/color-loop.bas{basic}
 
-Fifteen colours and fifteen rising notes, in one loop. The `"  "` on the end of
+Fifteen colors and fifteen rising notes, in one loop. The `"  "` on the end of
 line 50 is there to wipe the tail of the previous, longer number — a trick worth
 remembering, because nothing erases itself.
 
 <Figure
-  src="/images/screens/colours.png"
-  alt="A black screen with the words COLOUR 15 in white in the middle, and OK below to the left."
-  caption="Where the loop leaves you: the last of its fifteen colours, on the black background it set on the way past. Each of the other fourteen was on screen for a fifteenth of the time."
+  src="/images/screens/colors.png"
+  alt="A black screen with the words COLOR 15 in white in the middle, and OK below to the left."
+  caption="Where the loop leaves you: the last of its fifteen colors, on the black background it set on the way past. Each of the other fourteen was on screen for a fifteenth of the time."
   screen
 />
 

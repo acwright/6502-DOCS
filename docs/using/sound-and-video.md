@@ -1,6 +1,6 @@
 # Sound and video
 
-The ACE has three voices of SID sound and a 40×24 screen in 16 colours. Here
+The ACE has three voices of SID sound and a 40×24 screen in 16 colors. Here
 is how to reach both from BASIC.
 
 ## Making a noise
@@ -35,7 +35,7 @@ NOTE 8
 OK
 ```
 
-`DATA` holds the eight frequencies; `READ` takes the next one each time round
+`DATA` holds the eight frequencies; `READ` takes the next one each time through
 the loop. Change the numbers and you change the tune.
 
 ::: tip Some useful frequencies
@@ -54,15 +54,15 @@ register set is available to assembly programs and to `POKE`.
 ## Drawing on the screen
 
 The screen is **40 columns by 24 rows** of characters, in any of **16
-colours**. Three statements:
+colors**. Three statements:
 
 - **`CLS`** clears it.
 - **`LOCATE row, column`** moves the cursor.
-- **`COLOR foreground, background`** sets the colours for the whole screen —
+- **`COLOR foreground, background`** sets the colors for the whole screen —
   every character on it, not just what you type next — each number from 0 to
   15:
 
-<ColourChart />
+<ColorChart />
 
 <<< @/../samples/basic/screen-text.bas{basic}
 
@@ -81,10 +81,10 @@ light instead of the usual light on dark.
 Sound and screen together, which is where things start to feel like a computer
 from 1983:
 
-<<< @/../samples/basic/colour-loop.bas{basic}
+<<< @/../samples/basic/color-loop.bas{basic}
 
-Fifteen colours, fifteen notes, one loop. Line 40 puts the cursor back in the
-same place every time round, so the word stays put and only its colour changes.
+Fifteen colors, fifteen notes, one loop. Line 40 puts the cursor back in the
+same place every time through, so the word stays put and only its color changes.
 
 ::: details The character set
 The ACE draws with CP437 — the character set from the original IBM PC. As well

@@ -11,7 +11,7 @@ Symptom first. Find yours below.
 Work through these in order:
 
 1. **Is the power light on?** No light means no 5 V. Check the supply is
-   centre-positive and actually delivering 5 V.
+   center-positive and actually delivering 5 V.
 2. **Is the monitor on the right input?** VGA monitors are cheerfully silent
    about being on the wrong channel.
 3. **Try the serial port.** If you have a USB-to-serial adapter, plug it in,
@@ -32,7 +32,7 @@ thinks is going on.
 - Have you set the volume? `VOL 15` at the prompt, then `SOUND 1, 440, 50`.
   You should get a beep.
 - If the startup beep is missing too, the sound chip isn't being seen — check
-  it's seated properly in its socket, and the right way round.
+  it's seated properly in its socket, and the right way around.
 
 ## No beep at startup, but everything else works
 

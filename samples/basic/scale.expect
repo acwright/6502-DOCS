@@ -1,4 +1,4 @@
-# "Sound and pictures" — a C major scale, one note at a time.
+# "Sound and video" — a C major scale, one note at a time.
 # Eight notes at 20 centiseconds each, so give it room beyond the 20s default.
 
 timeout 40s

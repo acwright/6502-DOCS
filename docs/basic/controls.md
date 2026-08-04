@@ -77,7 +77,7 @@ Push it up and the *up* bit goes to zero. So the test is `= 0`:
 
 Write `IF (J AND 16) THEN` — without the `= 0` — and your program moves upwards
 constantly except when the player pushes up. It is the single most common
-joystick bug and now you'll recognise it on sight.
+joystick bug and now you'll recognize it on sight.
 
 Read the whole stick into a variable once per frame, as line 10 does, rather
 than calling `JOY(1)` five times. It's faster and it can't change its mind

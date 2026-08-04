@@ -7,7 +7,7 @@ character set already loaded.
 
 ## Text mode, as the machine leaves it
 
-40 columns by 24 rows, one colour for the letters and one for the background,
+40 columns by 24 rows, one color for the letters and one for the background,
 and 256 characters to choose from.
 
 | | |
@@ -45,9 +45,9 @@ Guarding a screenful of drawing with `and #HW_VID` costs four bytes and means
 the program says something sensible instead of drawing into a card that is not
 there. [What's fitted](/assembly/detection) is the whole chapter on this.
 
-**The colour byte.** `VideoSetColor` takes the letter colour in the high nibble
+**The color byte.** `VideoSetColor` takes the letter color in the high nibble
 and the background in the low one, so light yellow on dark blue is
-`(TMS_LT_YELLOW * 16) | TMS_DK_BLUE`. Sixteen colours, and the names are all in
+`(TMS_LT_YELLOW * 16) | TMS_DK_BLUE`. Sixteen colors, and the names are all in
 `6502.inc`.
 
 **Leaving the cursor somewhere sensible.** Whatever prints next carries on from
@@ -55,12 +55,12 @@ wherever you left the cursor, including BASIC's own `OK`. Setting it to a
 sensible row before returning is the difference between a tidy screen and a
 prompt in the middle of your artwork.
 
-## The colours
+## The colors
 
-<ColourChart constants />
+<ColorChart constants />
 
 In text mode there is one pair for the whole screen. The graphics modes are
-where colour gets interesting — [that chapter](/assembly/graphics) is next.
+where color gets interesting — [that chapter](/assembly/graphics) is next.
 
 ## The character set
 
@@ -157,7 +157,7 @@ step if you are unsure.
 
 <Figure
   src="/images/screens/framed-sign.png"
-  alt="A blue screen with a double-lined box drawn in pale yellow, THE ACE centred inside it, and OK below."
+  alt="A blue screen with a double-lined box drawn in pale yellow, THE ACE centered inside it, and OK below."
   caption="Every character of that frame is above 126, so PRINT cannot reach a single one of them."
   screen
 />

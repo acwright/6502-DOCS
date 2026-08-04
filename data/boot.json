@@ -54,7 +54,7 @@
       "source": "Kernal.asm:704"
     },
     {
-      "step": "KernalInit — probe and initialise every card, interrupts still disabled",
+      "step": "KernalInit — probe and initialize every card, interrupts still disabled",
       "source": "Kernal.asm:706"
     },
     {
