@@ -3,9 +3,13 @@ import { fileURLToPath, URL } from 'node:url'
 import { createCssVariablesTheme } from '@shikijs/core'
 import { defineConfig } from 'vitepress'
 
-function loadGrammar(name: string) {
+// `aliases` earns its place on 6502asm: VitePress's snippet-import syntax reads
+// the leading digits of `{6502asm}` as a line-highlight range and is left
+// asking for a language called `asm`, so a snippet needs a name that starts
+// with a letter.
+function loadGrammar(name: string, aliases: string[] = []) {
   const path = fileURLToPath(new URL(`./languages/${name}.tmLanguage.json`, import.meta.url))
-  return JSON.parse(readFileSync(path, 'utf-8'))
+  return { ...JSON.parse(readFileSync(path, 'utf-8')), aliases }
 }
 
 export default defineConfig({
@@ -35,7 +39,7 @@ export default defineConfig({
     // Greyscale-only code blocks: token colours come from CSS variables
     // defined in theme/style.css, not from a hard-coded colour theme.
     theme: createCssVariablesTheme({ name: 'greyscale', variablePrefix: '--shiki-' }),
-    languages: [loadGrammar('basic'), loadGrammar('6502asm')]
+    languages: [loadGrammar('basic'), loadGrammar('6502asm', ['ca65', 'asm'])]
   },
 
   themeConfig: {
@@ -50,6 +54,7 @@ export default defineConfig({
     sidebar: [
       {
         text: 'Introduction',
+        collapsed: true,
         items: [
           { text: 'Welcome', link: '/' },
           { text: 'Your ACE', link: '/your-ace' }
@@ -57,6 +62,7 @@ export default defineConfig({
       },
       {
         text: 'Getting Started',
+        collapsed: true,
         items: [
           { text: 'Setting up', link: '/getting-started/setup' },
           { text: 'First power-on', link: '/getting-started/first-boot' },
@@ -66,6 +72,7 @@ export default defineConfig({
       },
       {
         text: 'Using Your ACE',
+        collapsed: true,
         items: [
           { text: 'The keyboard', link: '/using/keyboard' },
           { text: 'Sound and video', link: '/using/sound-and-video' },
@@ -76,11 +83,8 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Add-ons',
-        items: [{ text: 'The KIM keypad', link: '/addons/kim' }]
-      },
-      {
         text: 'Programming in BASIC',
+        collapsed: true,
         items: [
           { text: 'Where to start', link: '/basic/' },
           { text: 'Typing it in', link: '/basic/typing-it-in' },
@@ -105,6 +109,7 @@ export default defineConfig({
       },
       {
         text: 'BASIC Reference',
+        collapsed: true,
         items: [
           { text: 'Every keyword', link: '/basic/reference' },
           { text: 'Every error message', link: '/basic/errors' },
@@ -112,7 +117,32 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Cross-Development',
+        collapsed: true,
+        items: [
+          { text: 'Where to start', link: '/crossdev/' },
+          { text: 'Why cross-develop', link: '/crossdev/why' },
+          { text: 'Installing cc65', link: '/crossdev/cc65' },
+          { text: 'The tool belt', link: '/crossdev/tools' },
+          { text: 'Starting from a template', link: '/crossdev/templates' },
+          { text: 'The Makefile', link: '/crossdev/makefile' },
+          { text: 'The linker config', link: '/crossdev/linker' },
+          { text: 'Build, run, repeat', link: '/crossdev/build-run-loop' },
+          { text: 'Debugging', link: '/crossdev/debugging' },
+          { text: 'Testing your program', link: '/crossdev/testing' },
+          { text: 'Onto real hardware', link: '/crossdev/to-hardware' },
+          { text: 'BASIC from your editor', link: '/crossdev/basic' },
+          { text: 'Driving it from an agent', link: '/crossdev/agents' }
+        ]
+      },
+      {
+        text: 'Add-ons',
+        collapsed: true,
+        items: [{ text: 'The KIM keypad', link: '/addons/kim' }]
+      },
+      {
         text: 'The Rest of the Family',
+        collapsed: true,
         items: [
           { text: 'Overview', link: '/family/' },
           { text: 'COB', link: '/family/cob' },

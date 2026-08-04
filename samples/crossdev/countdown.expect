@@ -1,0 +1,6 @@
+# The worked program of the cross-development chapters: assembled with cl65,
+# loaded as a .prg, RUN from BASIC.
+
+expect ^10$
+expect ^1$
+expect ^LIFT OFF$

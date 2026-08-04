@@ -41,6 +41,7 @@ findings. All of that lives here, where the reader never sees it. See
 | A populated COB | P | `docs/family/cob.md` | placeholder | `~/Developer/Kicad/6502-COB/Images/6502-COB.png` exists; a side-on photo showing several cards at once is better for this page. |
 | The DEV rig | P | `docs/family/dev.md` | placeholder | `~/Developer/Kicad/6502-DEV/Images/6502-DEV.png` exists. Wants the four control buttons legible. |
 | The VCS | P | `docs/family/vcs.md` | placeholder | `~/Developer/Kicad/6502-VCS/Images/6502-VCS.png` exists. Wants a cartridge half-inserted. |
+| Burning a cartridge ROM | P | `docs/crossdev/to-hardware.md` | placeholder | An AT28C256 in a TL866's ZIF socket, lid open, with a finished cartridge board and its label beside it. The one shot in the cross-development section that shows physical hardware. |
 
 ## Wanted but not yet placed
 
@@ -56,6 +57,7 @@ worth announcing:
 | Cartridge ROM overlay (`$C000–$FFFF`) | D | `docs/addons/kim.md`, the assembly guide |
 | KIM keypad close-up | P | `docs/addons/kim.md` |
 | Cartridge + label in hand | P | `docs/family/vcs.md` |
+| Cross-development toolchain flow | D | `docs/crossdev/index.md` — editor → `cl65` → `.prg` → card / cable / EEPROM → machine |
 
-Everything else in PLAN.md's Appendix B belongs to the chapters Phases 5–8 have
+Everything else in PLAN.md's Appendix B belongs to the chapters Phases 6–8 have
 yet to write.

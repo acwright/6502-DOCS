@@ -13,6 +13,7 @@ A listing that cannot be verified does not go in.
 |---|---|
 | `basic/` | BASIC listings shown in a chapter, typed into the machine as source and `RUN` |
 | `assembly/` | ca65 sources shown in a chapter, assembled with `cl65` and loaded as a `.prg` |
+| `crossdev/` | The worked program of the cross-development chapters, plus the `test.sh` those chapters ship |
 | `_checks/` | Regression cases that are **never shown** in the docs |
 | `_harness/` | Cases that test the harness itself, not the machine |
 | `lib/` | `6502.cfg` (linker config) and `6502.inc` (**generated** — see below) |
@@ -29,6 +30,15 @@ something. It asserts on its own real output with `expect`. **It never contains
 truth-value convention, the storage command surface. Those exist to turn CI red
 when the ROM moves, nobody reads them, and they may use the `pass` shorthand
 freely.
+
+## The one file the harness does not run
+
+`crossdev/test.sh` is the copyable regression script the cross-development
+chapters hand the reader. The harness ignores it — it is not a `.bas`, `.asm` or
+`.prg` — so it is checked by hand instead: run it against a directory holding a
+`.prg` case and a `.bas` case, confirm both report `ok`, break one expectation
+and confirm it reports `FAIL` and exits non-zero. Do that again whenever the
+emulator's CLI moves.
 
 ## Cases that are not files
 

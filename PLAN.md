@@ -676,6 +676,33 @@ on macOS, Linux, and Windows.
 A reader following the chapter from scratch on a clean machine reaches a running
 program; the preflight script from Phase 1 backs every prerequisite claim.
 
+### What shipped
+
+Thirteen pages under `/crossdev/` — the twelve chapters above plus an index —
+one new displayed sample (`samples/crossdev/countdown.asm`, the program the
+build, debug and test chapters all work on), and the copyable `test.sh` those
+chapters hand the reader.
+
+Three notes for later phases:
+
+- **The cc65 trap is smaller than this plan said.** Chapter 2 was written
+  against a claim — "the ROM *and templates* use `.setcpu "W65C02"`" — that
+  turned out to be wrong (`ACCURACY.md` A7). Phase 5 settled it by building the
+  actual 2.19 release from source and running both toolchains over the same
+  program: the output is **byte-identical** (A27). So the chapter tells readers
+  to install whatever their package manager ships and only go hunting for a
+  newer toolchain when they want to rebuild the ROM. Appendix C #4 overstates
+  the finding and should be read alongside A7 and A27.
+- **Two upstream emulator items came out of the debugging chapter.** A
+  breakpoint condition naming a symbol that doesn't exist is treated as *true*
+  and fires immediately (A31), and `dbg mem fill` refuses `0` and every hex
+  notation (A32). Both are documented as traps on the page; both want a fix in
+  `6502-EMULATOR` in Phase 9.
+- **`test.sh` is the one sample the harness can't run**, being a shell script.
+  It is verified by hand — both directions, including a deliberately broken
+  expectation — and `samples/README.md` records how, so the check is repeatable
+  rather than remembered.
+
 ---
 
 ## Phase 6 — The Assembly Guide

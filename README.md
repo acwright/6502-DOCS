@@ -49,6 +49,8 @@ is documented as an ACE add-on in `docs/addons/kim.md`.
 | `docs/getting-started/` | Setting up through to troubleshooting |
 | `docs/using/` | Everything you do at the prompt |
 | `docs/addons/` | Hardware that changes what the machine is |
+| `docs/basic/` | The BASIC guide — tutorial, then reference |
+| `docs/crossdev/` | Building on your own computer: cc65, the templates, debugging, testing |
 | `docs/family/` | The other four machines, for builders |
 
 Depth that would break the flow goes in a `::: details` or `::: tip` block

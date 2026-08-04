@@ -35,9 +35,10 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| confirmed | 26 |
+| confirmed | 31 |
 | open | 5 |
 | fixed | 0 |
+| wontfix | 3 |
 
 Entries **A10–A13** were found while rewriting Phase 3 against PLAN.md's
 [Course Correction](PLAN.md#course-correction-post-phase-3), and **A14–A19** in
@@ -50,6 +51,12 @@ that only tracks other people's mistakes is not a ledger.
 machine. Five are errors in the BIOS README's BASIC tables — the rank-4 source
 `data/basic-keywords.json` is generated from — and A24 is documented syntax the
 ROM rejects at runtime.
+
+**A27–A34** come from Phase 5, which built the templates with two different
+cc65 toolchains and drove the debugger through a real program. A27 finally
+settles A7 with a measurement — a 2.19 build and a current build of the same
+program are byte-identical — and A31 and A32 are upstream emulator items rather
+than documentation errors.
 
 A common root cause runs through A14–A18, worth naming: **the guide was written
 through the serial console, because that is the interface the harness drives.**
@@ -382,6 +389,86 @@ serial are false at the machine itself.
 | **Status** | Not a contradiction, but a claim that reads as more general than it is. |
 | **Consequence for these docs** | The BASIC guide never points `POKE`, `SYS` or `WAIT` at zero page; it uses 2560 (`$0A00`) for scratch and says plainly that it is only safe for a short program. Phase 6 should state the qualifier where it documents the zero-page map. |
 | **Check** | RUN |
+
+### A27 — A 2.19 build of the templates is byte-identical to a HEAD build
+
+| | |
+|---|---|
+| **Observation** | A7 established that only the BIOS needs a post-2.19 cc65. Phase 5 settled the remaining question — what a reader on 2.19 gives up — by building the actual 2.19 release from its source tarball into a throwaway prefix and running both toolchains over the same program. |
+| **Truth** | Nothing, until the program uses an instruction the plain 65C02 lacks. `samples/crossdev/countdown.asm` assembled with the 2.19 release and with `cl65 V2.19 - Git 547d92358` produces **byte-identical** output (49 bytes, `cmp` clean). The same 2.19 toolchain fails on the ROM at `BIOS.asm(22): Error: CPU not supported`. |
+| **Source** | Built `cc65-2.19` from `github.com/cc65/cc65` tag `V2.19` (`make bin`, `mkdir -p lib`, `make none`, install to a scratch prefix — the recipe in `6502-BIOS/README.md`, which this exercise also confirms works as written). |
+| **Check** | RUN |
+| **Status** | `confirmed` — refines A7 with the measurement it was missing. |
+| **Consequence** | `docs/crossdev/cc65.md` tells a reader to install whatever their package manager has, and to go and get a newer toolchain only when they want to build the ROM. |
+
+### A28 — `cl65 --version` cannot identify a cc65 build, in either direction
+
+| | |
+|---|---|
+| **Observation** | A7's aside recorded that a HEAD build reports `V2.19`. The 2.19 release is worse: built from its own tarball it reports **`ca65 V2.18 - N/A`**. |
+| **Truth** | The version string is derived at build time and identifies neither release nor capability. The only reliable test is to assemble a probe: `printf '.setcpu "W65C02"\n wai\n' \| ca65 -o /dev/null /dev/stdin`. |
+| **Check** | RUN |
+| **Status** | `confirmed` |
+| **Consequence** | Documented on the page as "don't trust the version string", with both observed strings in a table. `scripts/preflight.mjs` already probes rather than parsing. |
+
+### A29 — `cl65 -Ln` silently writes an empty label file without `-g`
+
+| | |
+|---|---|
+| **Observation** | `cl65 -t none -C 6502.cfg -Ln out.lbl -o out.prg src.asm` exits 0 and produces a **zero-line** `out.lbl`. Adding `-g` to the same command produces 218 lines. Nothing warns. |
+| **Truth** | Upstream cc65 behaviour, not a bug in this ecosystem — but a reader following the templates has no reason to expect it, and the symptom is a debugger that claims every symbol is missing. |
+| **Check** | RUN |
+| **Status** | `wontfix` — upstream cc65 behaviour, documented rather than worked around. |
+| **Consequence** | Both `docs/crossdev/makefile.md` and `docs/crossdev/debugging.md` state that `-g` is required for `-Ln`. |
+
+### A30 — A `=` constant never reaches the label file; `:=` does
+
+| | |
+|---|---|
+| **Observation** | `Counter = $40` in a source built with `-g -Ln` does not appear in the label file, and `6502 dbg sym resolve Counter` answers `no symbol named "Counter"`. `Counter := $40` appears as `al 000040 .Counter`, and `dbg mem Counter` and `dbg disasm` then both name it. |
+| **Truth** | ca65 treats the two assignments differently — `:=` defines an address-typed symbol, which is what the VICE label format carries. |
+| **Check** | RUN |
+| **Status** | `wontfix` — ca65 semantics, documented rather than worked around. |
+| **Consequence** | `samples/crossdev/countdown.asm` uses `:=` and says why in a comment; `docs/crossdev/debugging.md` carries it as a warning block. |
+
+### A31 — A breakpoint condition naming an unknown symbol is always true
+
+| | |
+|---|---|
+| **Observation** | `6502 dbg break CountLoop --condition '[NOSUCHSYMBOL] == 99'` is accepted without complaint and fires on the **first** hit. Compare `--condition 'A == $FF'`, which correctly never fires, and `'[Counter] == 3'`, which correctly fires on the eighth iteration. |
+| **Truth** | An unresolved identifier makes the expression evaluate true rather than raising an error at `bp.set` time or when it is evaluated. `DEBUG-PROTOCOL.md` documents that "bare identifiers resolve as symbols" but not what happens when one doesn't. |
+| **Source** | Emulator 2.5.1, `6502 dbg break … --condition` |
+| **Check** | RUN |
+| **Status** | `confirmed` — an upstream item for `6502-EMULATOR`. Failing closed (or refusing the breakpoint) would be the safer behaviour, since the symptom of a typo is a breakpoint that appears to ignore its condition. |
+| **Consequence** | `docs/crossdev/debugging.md` warns about it next to the conditional-breakpoint section, because combined with A30 it is easy to hit: a `=` constant looks like a symbol, isn't one, and the condition then always matches. |
+
+### A32 — `6502 dbg mem fill` refuses `0` and every hex form
+
+| | |
+|---|---|
+| **Observation** | `mem fill $0400 16 0` → `value: expected a positive number, got "0"`. Same for `0x00` and `$EA`. `mem fill $0400 8 255` works. The sibling command `mem write` accepts a hex byte string (`DEADBEEF`) happily. |
+| **Truth** | The argument is validated as a *positive* number and parsed as decimal only, which rules out the most common fill value of all — zero — and every notation the rest of the CLI accepts for a byte. |
+| **Source** | Emulator 2.5.1 |
+| **Check** | RUN |
+| **Status** | `confirmed` — an upstream item for `6502-EMULATOR`. |
+| **Consequence** | The debugging chapter zeroes memory with `mem write` and notes the quirk in one sentence rather than teaching around it silently. |
+
+### A33 — `6502-PRG/Makefile`: `clean` fails on a clean tree and misses one artefact
+
+| | |
+|---|---|
+| **Observation** | `make cf` copies the program to its 8.3 name (`PROGRAM.PRG`) before adding it to the image, and `clean` does not remove that copy. Separately, `clean` uses `rm` without `-f`, so running it twice stops with an error the second time. |
+| **Truth** | Both are small template warts rather than wrong documentation. |
+| **Status** | `confirmed` — an upstream item for `6502-PRG`, worth one commit in Phase 9. |
+| **Consequence** | `docs/crossdev/makefile.md` shows the corrected `clean` line and a `.PHONY` list, framed as housekeeping the reader adds. |
+
+### A34 — `6502-PRG/README.md` and `6502-CRT/README.md` still say `brew install cc65`
+
+| | |
+|---|---|
+| **Claim** | Both templates' prerequisites read `brew install cc65` with no version qualification; `6502-ASM/README.md` is the instance PLAN.md Appendix C #4 already records. |
+| **Truth** | For these two repos the plain install is **correct** — A27 shows 2.19 builds both templates byte-identically. The line is not wrong; it is merely silent about the one case (building the ROM) where it isn't enough. |
+| **Status** | `wontfix` for the templates, other than an optional pointer to the BIOS README's fuller explanation. Recorded so Phase 9 does not "fix" three READMEs into telling every reader to build cc65 from source. |
 
 ---
 
