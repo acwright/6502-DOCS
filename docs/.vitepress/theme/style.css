@@ -102,8 +102,7 @@
 }
 
 /* No accent hue anywhere: links read as underlined ink, not a colour swap. */
-.vp-doc a,
-.VPLink.link {
+.vp-doc a {
   color: var(--vp-c-brand-1);
   text-decoration: underline;
   text-underline-offset: 2px;
