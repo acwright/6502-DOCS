@@ -601,8 +601,14 @@ function f18aRegisters() {
     desc(`${m.colors} colors per tile, ${m.spriteColors} per sprite &middot; ${m.planes} plane${m.planes > 1 ? 's' : ''} &middot; ${m.patternTable} pattern table &middot; ${m.palettes} palettes`)
   ])
 
+  // The caveat rides on the card as well as in the chapter. Whoever is holding
+  // this sheet is standing at the hardware without the guide open, and D4 of a
+  // sprite's attribute byte is the one bit the two references describe
+  // differently — exactly the thing you want to know before you rely on it.
   const attrBlock = (a) =>
-    section(a.title, table([], bitRows(a.bits)))
+    section(a.title,
+      table([], bitRows(a.bits)),
+      a.conflict ? note('The sources disagree.', esc(a.conflict)) : '')
 
   return card({
     file: 'f18a-registers.html',
@@ -629,12 +635,7 @@ function f18aRegisters() {
               'most significant bit as 0, so his tables read mirrored against these.')),
           section('Display modes', table([], modeRows)),
           flowSection('Registers 0–7 (always available)',
-            standard.map(regBlock).join('\n'))
-        ]
-      },
-      {
-        heading: 'F18A Mode — Registers',
-        sections: [
+            standard.map(regBlock).join('\n')),
           flowSection('Registers 10–34 (unlocked only)',
             enhanced.filter((r) => r.reg <= 34).map(regBlock).join('\n'))
         ]
@@ -643,12 +644,7 @@ function f18aRegisters() {
         heading: 'F18A Mode — Registers',
         sections: [
           flowSection('Registers 35–63 (unlocked only)',
-            enhanced.filter((r) => r.reg >= 35).map(regBlock).join('\n'))
-        ]
-      },
-      {
-        heading: 'F18A Mode — Status & Attributes',
-        sections: [
+            enhanced.filter((r) => r.reg >= 35).map(regBlock).join('\n')),
           section('Status registers', table([], statusRows)),
           section('Enhanced color modes', table([], ecmRows)),
           attrBlock(f18a.attributes.spriteUnlocked),

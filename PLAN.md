@@ -1025,7 +1025,7 @@ one had to be handled rather than waved at.
 ### What shipped
 
 Eight pages under `/f18a/` as their own sidebar section, `data/f18a.json`, a
-generated register card, and two samples.
+generated two-page register card, and two samples.
 
 - **`data/f18a.json`** — every enhanced register with its bit fields, all
   sixteen status registers, the attribute bytes, the palette defaults, the

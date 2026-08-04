@@ -84,25 +84,6 @@
       <div class="reg-head"><strong>VR7</strong> <span class="reg-hex">$07 / ctrl $87</span> &mdash; Foreground / background color</div>
       <div class="reg-sum">Text color in the high nibble, backdrop in the low nibble.</div>
     </div>
-  </div><!-- /pg-body -->
-
-  <div class="pg-footer">
-    <span>F18A MODE — REGISTERS</span>
-    <span>A.C. WRIGHT 6502</span>
-    <span class="pg-num">1 / 4</span>
-  </div>
-
-</div><!-- /page -->
-
-<!-- ═══════════════════════════════════════════════════ PAGE 2 -->
-<div class="page">
-
-  <div class="pg-header">
-    <h1>F18A Mode — Registers</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>F18A mode &middot; Pico9918</div>
-  </div>
-
-  <div class="pg-body">
     <div class="section flow">
       <span class="sec-title">Registers 10–34 (unlocked only)</span>
       <div class="reg-head"><strong>VR10</strong> <span class="reg-hex">$0A / ctrl $8A</span> &mdash; Name table 2 base address</div>
@@ -193,12 +174,12 @@
   <div class="pg-footer">
     <span>F18A MODE — REGISTERS</span>
     <span>A.C. WRIGHT 6502</span>
-    <span class="pg-num">2 / 4</span>
+    <span class="pg-num">FRONT</span>
   </div>
 
 </div><!-- /page -->
 
-<!-- ═══════════════════════════════════════════════════ PAGE 3 -->
+<!-- ═══════════════════════════════════════════════════ PAGE 2 -->
 <div class="page">
 
   <div class="pg-header">
@@ -280,25 +261,6 @@
         </tbody>
       </table>
     </div>
-  </div><!-- /pg-body -->
-
-  <div class="pg-footer">
-    <span>F18A MODE — REGISTERS</span>
-    <span>A.C. WRIGHT 6502</span>
-    <span class="pg-num">3 / 4</span>
-  </div>
-
-</div><!-- /page -->
-
-<!-- ═══════════════════════════════════════════════════ PAGE 4 -->
-<div class="page">
-
-  <div class="pg-header">
-    <h1>F18A Mode — Status &amp; Attributes</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>F18A mode &middot; Pico9918</div>
-  </div>
-
-  <div class="pg-body">
     <div class="section">
       <span class="sec-title">Status registers</span>
       <table>
@@ -344,6 +306,7 @@
           <tr><td class="td-addr">D3-D0</td><td class="td-label">PS</td><td class="td-desc">Color, or palette select in the enhanced color modes</td></tr>
         </tbody>
       </table>
+      <div class="note-box"><strong>The sources disagree.</strong> The Pico9918 reference calls D4 an opaque-sprite flag in 16×16 mode rather than a size override. Both documents agree the bit is new and that it concerns 16×16 sprites; they do not agree on what it does.</div>
     </div>
     <div class="section">
       <span class="sec-title">Tile attribute byte, enhanced color modes</span>
@@ -366,7 +329,7 @@
   <div class="pg-footer">
     <span>F18A MODE — REGISTERS</span>
     <span>A.C. WRIGHT 6502</span>
-    <span class="pg-num">4 / 4</span>
+    <span class="pg-num">BACK</span>
   </div>
 
 </div><!-- /page -->
