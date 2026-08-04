@@ -40,6 +40,22 @@ chapters hand the reader. The harness ignores it — it is not a `.bas`, `.asm` 
 and confirm it reports `FAIL` and exits non-zero. Do that again whenever the
 emulator's CLI moves.
 
+## The three cases that assert less than they look like they do
+
+`assembly/graphics-1`, `assembly/graphics-2` and `assembly/multicolor` are the
+TMS demos, ported from `6502-ASM`. Each takes the screen off the machine, draws
+into a mode where the name table holds pixels rather than characters, waits for
+a key, restores text mode and returns.
+
+`dbg screen text` reads that name table as characters, so in a graphics mode it
+produces deterministic gibberish. Asserting on it would be asserting on the
+random-number generator. What these three cases check instead is the part that
+can genuinely break: the demo runs to the end, `InitVideo` puts text mode back,
+and BASIC's prompt reappears. A crash, a hang, or a mode left broken all fail.
+
+The pictures themselves are a screenshot problem, not a harness problem — see
+`IMAGES.md`.
+
 ## Cases that are not files
 
 The BASIC reference carries a worked example for every keyword, and 170 files

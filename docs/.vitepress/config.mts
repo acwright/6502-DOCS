@@ -39,7 +39,38 @@ export default defineConfig({
     // Greyscale-only code blocks: token colours come from CSS variables
     // defined in theme/style.css, not from a hard-coded colour theme.
     theme: createCssVariablesTheme({ name: 'greyscale', variablePrefix: '--shiki-' }),
-    languages: [loadGrammar('basic'), loadGrammar('6502asm', ['ca65', 'asm'])]
+    languages: [loadGrammar('basic'), loadGrammar('6502asm', ['ca65', 'asm'])],
+
+    // The cards under `public/cards/` are standalone pages, not VitePress
+    // routes. Their `.html` paths are not in VitePress's asset-extension list,
+    // so the SPA router treats a card link as an inbound page link, calls
+    // `preventDefault()`, and client-side routes to a page that does not exist
+    // — the card never opens. The router skips any link carrying a `target`,
+    // so marking these `_self` restores a plain full-page navigation in the
+    // same tab, which is what the prose tells the reader to expect ("use your
+    // browser's back button to come back").
+    //
+    // The attribute has to go on *after* VitePress's own link rule has run:
+    // that rule is what prepends `base`, and it skips any link that already
+    // carries a `target`. Setting the attribute first silently costs every
+    // card link its `/6502-DOCS/` prefix — the same broken-link bug in a new
+    // spot. So let it rewrite the href on the token, then add the attribute
+    // and render the token again.
+    config(md) {
+      const isCardLink = (href: string) => /(?:^|\/)cards\/.+\.html(?:[#?]|$)/.test(href)
+      const renderLink =
+        md.renderer.rules.link_open ??
+        ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+
+      md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+        const href = tokens[idx].attrGet('href')
+        const rendered = renderLink(tokens, idx, options, env, self)
+        if (!href || !isCardLink(href)) return rendered
+
+        tokens[idx].attrSet('target', '_self')
+        return self.renderToken(tokens, idx, options)
+      }
+    }
   },
 
   themeConfig: {
@@ -136,9 +167,49 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Programming in Assembly',
+        collapsed: true,
+        items: [
+          { text: 'Where to start', link: '/assembly/' },
+          { text: 'The 65C02', link: '/assembly/65c02' },
+          { text: 'Registers and addressing', link: '/assembly/registers' },
+          { text: 'The instruction set', link: '/assembly/instructions' },
+          { text: 'The memory map', link: '/assembly/memory-map' },
+          { text: 'The Kernal', link: '/assembly/kernal' },
+          { text: 'Hello world', link: '/assembly/hello' },
+          { text: 'Console in and out', link: '/assembly/console' },
+          { text: 'The screen', link: '/assembly/video' },
+          { text: 'The graphics modes', link: '/assembly/graphics' },
+          { text: 'Sound', link: '/assembly/sound' },
+          { text: 'The keyboard and the sticks', link: '/assembly/input' },
+          { text: 'Files on the card', link: '/assembly/storage' },
+          { text: 'The serial port', link: '/assembly/serial' },
+          { text: 'The clock', link: '/assembly/clock' },
+          { text: 'Interrupts', link: '/assembly/interrupts' },
+          { text: "What's fitted", link: '/assembly/detection' },
+          { text: 'Writing a cartridge', link: '/assembly/cartridges' },
+          { text: 'BASIC and machine code', link: '/assembly/basic-interop' },
+          { text: 'Banked RAM', link: '/assembly/banking' },
+          { text: 'Idioms and speed', link: '/assembly/idioms' },
+          { text: 'Worked projects', link: '/assembly/projects' }
+        ]
+      },
+      {
         text: 'Add-ons',
         collapsed: true,
         items: [{ text: 'The KIM keypad', link: '/addons/kim' }]
+      },
+      {
+        text: 'Reference',
+        collapsed: true,
+        items: [
+          { text: 'Printable cards', link: '/reference/' },
+          { text: 'The character set', link: '/reference/character-set' },
+          { text: 'Connectors', link: '/reference/connectors' },
+          { text: 'The keyboard matrix', link: '/reference/keyboard-matrix' },
+          { text: 'The keypad map', link: '/reference/keypad-map' },
+          { text: 'Glossary', link: '/reference/glossary' }
+        ]
       },
       {
         text: 'The Rest of the Family',

@@ -1,0 +1,9 @@
+# "Interrupts" — chaining a handler onto the front of the machine's own.
+#
+# Six characters go in — five letters and the Enter — and each one arrives as
+# an interrupt, so the count at the end is six.
+
+wait (OK|ENTER)
+send HELLO\r
+expect ^HELLO$
+expect ^THE PROCESSOR WAS INTERRUPTED 6 TIMES$

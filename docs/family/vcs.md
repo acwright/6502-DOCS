@@ -51,3 +51,10 @@ reference sheet is [here](/cards/vcs.html).
 
 The Main Board is also one of the two ways to build a
 [standalone KIM](/addons/kim#building-a-kim-on-its-own).
+
+<div class="card-link">
+
+📄 **[6502-VCS card](/cards/vcs.html)** — the machine on two printable
+pages. The [card index](/reference/) has the rest.
+
+</div>

@@ -35,9 +35,9 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| confirmed | 31 |
-| open | 5 |
-| fixed | 0 |
+| confirmed | 40 |
+| open | 3 |
+| fixed | 2 |
 | wontfix | 3 |
 
 Entries **A10–A13** were found while rewriting Phase 3 against PLAN.md's
@@ -57,6 +57,18 @@ cc65 toolchains and drove the debugger through a real program. A27 finally
 settles A7 with a measurement — a 2.19 build and a current build of the same
 program are byte-identical — and A31 and A32 are upstream emulator items rather
 than documentation errors.
+
+**A35–A37** come from Phase 6, which wrote fourteen assembly programs against
+the jump table. A35 is a stale address in a template comment; A36 is a real
+constraint on interrupt chaining that no README states; A37 corrects where the
+screen's character filtering actually happens.
+
+**A38–A43** come from Phase 7, which opened by typing every listing on every
+migrated card into the emulator — the audit O1 was raised for. Four of the five
+system sheets carried the same four broken listings; one of them, the "random
+maze", runs for ever and puts *nothing at all* on the screen. A42 is the
+schematic disagreeing with the ACE README about nine connector designators, and
+A43 is this repo's own fact base contradicting A18.
 
 A common root cause runs through A14–A18, worth naming: **the guide was written
 through the serial console, because that is the interface the harness drives.**
@@ -165,14 +177,16 @@ serial are false at the machine itself.
 
 ## Open
 
-### O1 — Sample programs on the ASSETS system cards
+### O1 — Sample programs on the ASSETS system cards — **resolved**
 
 | | |
 |---|---|
 | **Claim** | The ACE / COB / DEV / KIM / VCS reference sheets each print sample programs. |
 | **Suspected** | Most of the ACE sheet's programs do not run as printed. |
-| **Plan** | Phase 7 opens by typing every listing on every card into the emulator. Each becomes a verified `samples/` case or gets fixed or dropped. This is expected to generate the bulk of this ledger. |
-| **Check** | pending RUN |
+| **Found** | Overstated in one direction and understated in the other. Three of the ACE sheet's five "fun to try" listings were broken, not most — but the same three appear on the COB, DEV and VCS sheets too, so the count across the set was twelve. They are **A38** (`SOUND` voice 0), **A39** (`SYS $FF00`) and **A40** (the maze that draws nothing), plus **A41** on the reference tables. The rest — the scroll loop, `PRINT JOY(1)`, `COLOR 1,6`, `PRINT 2^16`, `TIME`, `LIST`/`RUN`/`NEW`/`MEM`, and every Monitor command printed — all run exactly as the sheets claim. |
+| **Status** | `fixed` — every listing on every card was typed in, and the corrected forms were typed in again. |
+| **Check** | RUN |
+| **Note** | None of them became a `samples/` case. A card listing is two or three lines meant to be typed at a display table, not a program a chapter walks through, and the chapters they condense already carry verified samples that do the same job properly. What the harness would have gained is a regression test on `SOUND`, `RND` and `CHR$` — and `data/basic-examples.json` already runs one for each of those. |
 
 ### O2 — The splash string is a literal, not derived from the version equates
 
@@ -193,14 +207,15 @@ serial are false at the machine itself.
 | **Plan** | Diff them in Phase 9 and fix the template. |
 | **Check** | pending GREP |
 
-### O4 — The migrated cards still carry their original v1.0-era content
+### O4 — The migrated cards still carry their original v1.0-era content — **resolved**
 
 | | |
 |---|---|
-| **Observation** | Phase 2 moved seventeen sheets onto the shared `cards/card.css`. That transform touched the `<head>` and the `<body>` tag only — every table, address, and listing is exactly the text that shipped in `6502-ASSETS`. So A2 (BASIC/Monitor ROM boundary) and A3 (`READY.`) are still printed on `docs/public/cards/ace.html` today, and the other four system cards have not been read against the fact base at all. |
-| **Status** | Deliberate. Rebuilding card content is Phase 7, which opens by auditing every card against `data/`; doing it during the migration would have mixed a mechanical, diffable move with editorial work and made both harder to check. |
-| **Mitigation** | Nothing on the site links to a card yet. The cards are reachable by URL but are not presented as current. |
-| **Check** | pending GREP + RUN (Phase 7) |
+| **Observation** | Phase 2 moved seventeen sheets onto the shared `cards/card.css` without touching a word of their content, so A2 (BASIC/Monitor ROM boundary) and A3 (`READY.`) were still printed on `docs/public/cards/ace.html`, and the other four system cards had never been read against the fact base. |
+| **Status** | `fixed`. Phase 7 rebuilt the ACE and KIM sheets from scratch and corrected the COB, DEV and VCS sheets in place. A2, A3, A38, A39, A40, A41 and A4's `$A000–$BFFF` conflation are all gone from every current card. |
+| **Note** | Six of the ten current cards are now **generated** from `data/` by `scripts/build-cards.mjs`, and `npm run verify` fails if the checked-in copy has drifted from the fact base. The class of problem O4 describes — a card quietly documenting a ROM two versions old — cannot recur for those six without CI going red. |
+| **Not covered** | The archived v1.0–v1.4 cards under `cards/archive/` are untouched by design. They describe the ROMs they were written for, which is the only thing they are for. |
+| **Check** | GREP + RUN |
 
 ### O5 — `?NO DEVICE` cannot currently be produced with the emulator CLI
 
@@ -469,6 +484,104 @@ serial are false at the machine itself.
 | **Claim** | Both templates' prerequisites read `brew install cc65` with no version qualification; `6502-ASM/README.md` is the instance PLAN.md Appendix C #4 already records. |
 | **Truth** | For these two repos the plain install is **correct** — A27 shows 2.19 builds both templates byte-identically. The line is not wrong; it is merely silent about the one case (building the ROM) where it isn't enough. |
 | **Status** | `wontfix` for the templates, other than an optional pointer to the BIOS README's fuller explanation. Recorded so Phase 9 does not "fix" three READMEs into telling every reader to build cc65 from source. |
+
+### A35 — `6502-CRT/Cart.asm`: `KernalInit` documented at the wrong address
+
+| | |
+|---|---|
+| **Claim** | The template's header comment reads `KernalInit ($A072) initializes all hardware`. |
+| **Truth** | `KernalInit` is slot 40, at **`$A078`**. `$A072` is `StWaitReady`. The same repo gets it right everywhere else — `6502.inc:416`, `README.md:14` and `README.md:34` all say `$A078` — so this is one stale comment, not a wrong build. |
+| **Source** | `Kernal.asm` jump table; `6502-CRT/6502.inc` |
+| **Check** | GREP |
+| **Status** | `confirmed` — a one-line upstream fix for `6502-CRT` in Phase 9. |
+| **Consequence** | Harmless in practice: the code calls the symbol, not the number. But a reader copying the comment into their own cartridge would call the CompactFlash wait routine at power-on and wonder why the machine hangs on a machine with no card. `docs/assembly/cartridges.md` never prints a jump-table address. |
+
+### A36 — A chained IRQ handler must not push anything
+
+| | |
+|---|---|
+| **Observation** | The Kernal's IRQ handler decides whether it was entered by `BRK` or by hardware by reading the saved processor status off the stack at a **fixed depth** (`tsx` then `lda $104,x`, past the A/Y/X it has just pushed). A handler installed in front of it via `IRQ_PTR` that pushes anything before its `jmp (Chain)` shifts that read onto the wrong byte. |
+| **Truth** | Chaining works only if the new front of the chain leaves the stack exactly as the processor left it — so it either uses instructions that touch no register (`inc`, `dec`, `stz` on absolute addresses) or restores everything it used before handing over. Nothing in the BIOS README says so. |
+| **Source** | `Kernal.asm` IRQ handler; confirmed by a chained counting handler that reports six interrupts for six typed characters |
+| **Check** | RUN |
+| **Status** | `confirmed` — not a bug, an undocumented constraint. Phase 9 should add a sentence to the BIOS README next to the interrupt vectors. |
+| **Consequence** | `docs/assembly/interrupts.md` states it as a warning and the chapter's program is one `inc` long on purpose. The alternative — replacing the vector outright and ending in `rti` — is documented alongside it. |
+
+### A37 — "The screen drops codes above 126" is a property of `Chrout`, not of the screen
+
+| | |
+|---|---|
+| **Claim** | [PLAN.md's *Write from the seat*](PLAN.md#write-from-the-seat-not-from-the-harness) table says that, at the ACE, "the screen drops every code above 126 and all but four control codes". |
+| **Truth** | The filtering is in `Chrout`'s video path, which discards `$7F` and above and every control code except CR, LF, backspace and bell. The screen itself displays all 256 characters perfectly well — `VideoChroutRaw` puts any code on it, which is how a program draws with the box-drawing set. |
+| **Source** | `Kernal.asm` video Chrout implementation; confirmed by a program that draws a double-line box and centred title on a video machine |
+| **Check** | RUN |
+| **Status** | `confirmed` — the shorthand is right about what a reader sees from `PRINT` and wrong about why, which matters as soon as anyone writes to the screen directly. |
+| **Consequence** | `docs/assembly/console.md` states the boundary precisely and `docs/assembly/video.md` draws with `VideoChroutRaw`. The user's guide's phrasing stands: from BASIC, the effect is exactly as described. |
+
+### A38 — Every system card plays a note on voice 0, which is not a voice
+
+| | |
+|---|---|
+| **Claim** | `SOUND 0,440,50` "plays a 440 Hz tone" — printed on the ACE, COB, DEV and VCS sheets. |
+| **Truth** | `?ILLEGAL QUANTITY ERROR`. `SOUND` takes **voice 1 to 3**; there is no voice 0. `SOUND 1,440,50` works. |
+| **Source** | RUN, at the `OK` prompt. `data/basic-examples.json` gives the syntax as `SOUND voice, freq, dur` with voice 1–3. |
+| **Check** | RUN |
+| **Consequence** | The one listing on those sheets a reader is most likely to try first — "make some noise" — errors out. It is also the only one whose failure gives no clue what to change. |
+| **Fix** | Corrected on all four cards. The Kernal's own `SidPlayNote` numbers voices 0–2, which is where the off-by-one presumably came from; BASIC adds one. |
+
+### A39 — `SYS $FF00` is a syntax error
+
+| | |
+|---|---|
+| **Claim** | The ACE and COB sheets reach the Wozmon easter egg with `SYS $FF00`. |
+| **Truth** | `?SYNTAX ERROR`. This BASIC has no `$` hex literal — `HEX()` formats hex for *output* only. **`SYS 65280`** works, and lands in an interactive Wozmon: `FF00.FF07` then answers `FF00: A9 1B C9 08 F0 18 C9 1B`. |
+| **Source** | RUN: `PRINT $FF00` and `SYS $FF00` both fail; `PRINT HEX(65280)` prints `$FF00`. |
+| **Check** | RUN |
+| **Fix** | Corrected on both cards. Note this is the *opposite* of A18: from BASIC, `SYS` reaches Wozmon and it works, because `SYS` does not turn interrupts off the way the Monitor's `G` does. |
+
+### A40 — The "random maze" one-liner draws nothing at all
+
+| | |
+|---|---|
+| **Claim** | The ACE and COB sheets offer `10 PRINT CHR$(INT(RND(1)*2)+177);` / `20 GOTO 10` as "fills the screen with a maze pattern". |
+| **Truth** | It fills the screen with nothing. `CHR$(177)` and `CHR$(178)` are `$B1` and `$B2`, and `Chrout`'s video path discards everything from `$7F` up (A17, A37). The program runs for ever on a blank screen. |
+| **Source** | RUN on `--console video`: after 8 M cycles the screen still shows only the three typed lines. Confirmed against `PRINT CHR$(177); CHR$(178); "END"`, which prints `END`. |
+| **Check** | RUN |
+| **Consequence** | The worst of this batch. It does not error, so there is nothing to look up; the machine simply appears to have hung. On a card handed to someone at a display table, that reads as a broken computer. |
+| **Fix** | Replaced with `10 PRINT CHR$(47 + 45 * INT(RND(1) * 2));` — `/` and `\`, both inside the printable range, which is the C64 maze trick done with characters this machine will actually pass. RUN-verified: it fills the screen. |
+
+### A41 — `?` is not a `PRINT` abbreviation here
+
+| | |
+|---|---|
+| **Claim** | Four system sheets head their BASIC table with `PRINT / ?`. |
+| **Truth** | `? "SHORTHAND"` gives `?SYNTAX ERROR`. The tokenizer has no `?` entry: `data/basic-keywords.json` lists 85 keywords and `?` is not among them. |
+| **Source** | GREP (the token table) + RUN |
+| **Check** | GREP + RUN |
+| **Consequence** | Inherited Commodore muscle memory. Mild, but it teaches a keystroke that fails, and `?` is what the machine puts in *front of* an error — so a reader who tries it sees `?SYNTAX ERROR` and may not realise the first character is the machine's, not theirs. |
+| **Fix** | The cards say `PRINT`. |
+
+### A42 — `6502-ACE/README.md`: nine connector designators are shifted
+
+| | |
+|---|---|
+| **Claim** | The ACE README's connector table gives `J14 = AUDIO R`, `J15 = AUDIO`, `J16 = 5V DC`, `J17 = CART`, `J18 = BUS`, `J19 = VCC`, `J20 = POWER LED`, `J21 = STORAGE`, `J22 = KEYBOARD`. |
+| **Truth** | Both the Rev 1.0 and Rev 1.1 schematics give `J14 = KEYBOARD`, `J15 = AUDIO R`, `J16 = AUDIO`, `J17 = 5V DC`, `J18 = CART`, `J19 = BUS`, `J20 = VCC`, `J21 = POWER LED`, `J22 = STORAGE`. `J1`–`J13` agree. |
+| **Source** | SCHEM: `Hardware/ACE Board/Rev 1.0/ACE Board.kicad_sch` and `Rev 1.1/*.kicad_sch`, Reference/Value pairs on every connector symbol. |
+| **Check** | SCHEM |
+| **Consequence** | The same class of error as A20, which found the switch designators shifted — and it means A11's citation of "`J16` `5V DC`" from the README named the wrong part. The barrel jack is **`J17`**. Anyone cross-referencing the README against the board from `J14` up is sent one connector out. |
+| **Fix** | Upstream, in `6502-ACE`. [Connectors](docs/reference/connectors.md) and `docs/public/cards/connectors.html` are built from the schematic, and every pin on that card was read off the netlist rather than off the README. |
+
+### A43 — `data/monitor-commands.json` reached Wozmon with `G`, which A18 had already disproved
+
+| | |
+|---|---|
+| **Claim** | The extractor wrote `wozmon.fromMonitor: "G FF00"`. |
+| **Truth** | A18 established in Phase 3 that `G FF00` hangs and `J FF00` works. The fact base was never corrected, so it still held the disproved form. |
+| **Source** | `scripts/extract-facts.mjs`, `extractMonitorCommands` |
+| **Check** | GREP |
+| **Consequence** | Nothing shipped it — the Monitor chapter was written by hand and got it right. But Phase 7 generates the Monitor card *from this file*, so it would have reprinted the trap on a card meant to be trusted at the keyboard. Worth recording as the case for generating cards: the error surfaced the moment something started reading the field. |
+| **Fix** | Corrected in the extractor, with the reason in a comment, and re-extracted. |
 
 ---
 

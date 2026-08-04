@@ -1,0 +1,5 @@
+# "Sound" — six notes through the sound chip, each one announced as it plays.
+
+timeout 40s
+expect ^A LITTLE FANFARE$
+expect ^C E G C G C $

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6502 Connectors</title>
+<link rel="stylesheet" href="card.css">
+</head>
+<!--
+  Hand-authored, SCHEM-verified. Every reference designator, every pin and
+  every net name below was read out of
+
+    6502-ACE/Hardware/ACE Board/Rev 1.1/ACE Board.kicad_sch
+
+  by walking each connector symbol's pins onto the wire graph and reading the
+  label at the far end. Rev 1.0 agrees on all of it. Where 6502-ACE/README.md
+  disagrees, the schematic wins and the disagreement is ACCURACY.md A42.
+
+  Recreated from 6502-ASSETS/Documentation/Connectors/ (an .afdesign file),
+  which drew the bus, the card edge and the ports correctly and named the bus
+  expansion pins by their family names rather than by what the ACE does with
+  them.
+-->
+<body class="card" style="--w-addr: 12%; --w-label: 20%">
+
+<div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
+
+<!-- ═══════════════════════════════════════════════════ ONE PAGE, TWO COLUMNS -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>Connectors</h1>
+    <div class="side-info">A.C. Wright 6502<br>ACE Board Rev 1.1</div>
+  </div>
+
+  <div class="pg-body">
+
+    <div class="section">
+      <span class="sec-title">Everything on the edges</span>
+      <table>
+        <thead><tr><th style="width:14%">Ref</th><th style="width:30%">What it is</th><th>Connector</th></tr></thead>
+        <tbody>
+          <tr><td class="td-addr">J6</td><td class="td-label">JOYSTICK A</td><td class="td-desc">DB-9 male &mdash; Atari 2600 style</td></tr>
+          <tr><td class="td-addr">J8</td><td class="td-label">JOYSTICK B</td><td class="td-desc">DB-9 male &mdash; Atari 2600 style</td></tr>
+          <tr><td class="td-addr">J12</td><td class="td-label">SERIAL (DTE)</td><td class="td-desc">DB-9 male &mdash; RS-232</td></tr>
+          <tr><td class="td-addr">J13</td><td class="td-label">PS/2</td><td class="td-desc">6-pin mini-DIN</td></tr>
+          <tr><td class="td-addr">J11 / J15</td><td class="td-label">AUDIO L / R</td><td class="td-desc">RCA jacks</td></tr>
+          <tr><td class="td-addr">J17</td><td class="td-label">5V DC</td><td class="td-desc">Barrel jack, 5&nbsp;V, 2&ndash;3&nbsp;A</td></tr>
+          <tr><td class="td-addr">J18</td><td class="td-label">CART</td><td class="td-desc">2&times;20 card edge, 2.54&nbsp;mm</td></tr>
+          <tr><td class="td-addr">J19</td><td class="td-label">BUS</td><td class="td-desc">2&times;20 box header, 2.54&nbsp;mm</td></tr>
+          <tr><td class="td-addr">J22</td><td class="td-label">STORAGE</td><td class="td-desc">2&times;10 socket &mdash; the CF adapter</td></tr>
+          <tr><td class="td-addr">J14</td><td class="td-label">KEYBOARD</td><td class="td-desc">1&times;16 header, 2.00&nbsp;mm</td></tr>
+          <tr><td class="td-addr">J9 / J10</td><td class="td-label">PORT B / PORT A</td><td class="td-desc">2&times;6 box headers &mdash; VIA GPIO</td></tr>
+          <tr><td class="td-addr">J7</td><td class="td-label">PADDLES</td><td class="td-desc">1&times;4 header &mdash; SID paddle inputs</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        The small three-pin headers &mdash; <code>J1</code> PHI2 SELECT, <code>J2</code> CTS EN,
+        <code>J4</code> DCD EN &mdash; are build-time jumpers, not things to plug into.
+        <code>J3</code> brings the reset switch out for a panel-mounted button.
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">Joystick &mdash; DB-9 male</span>
+      <table>
+        <thead><tr><th style="width:12%">Pin</th><th style="width:26%">Joystick A</th><th style="width:26%">Joystick B</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="td-addr">1</td><td class="td-label">PA4</td><td class="td-label">PB4</td><td class="td-desc">Up</td></tr>
+          <tr><td class="td-addr">2</td><td class="td-label">PA5</td><td class="td-label">PB5</td><td class="td-desc">Down</td></tr>
+          <tr><td class="td-addr">3</td><td class="td-label">PA6</td><td class="td-label">PB6</td><td class="td-desc">Left</td></tr>
+          <tr><td class="td-addr">4</td><td class="td-label">PA7</td><td class="td-label">PB7</td><td class="td-desc">Right</td></tr>
+          <tr><td class="td-addr">5</td><td class="td-label">PA3</td><td class="td-label">PB3</td><td class="td-desc">Y</td></tr>
+          <tr><td class="td-addr">6</td><td class="td-label">PA0</td><td class="td-label">PB0</td><td class="td-desc">A / fire</td></tr>
+          <tr><td class="td-addr">7</td><td class="td-label">PA1</td><td class="td-label">PB1</td><td class="td-desc">B</td></tr>
+          <tr><td class="td-addr">8</td><td class="td-label">GND</td><td class="td-label">GND</td><td class="td-desc">Ground</td></tr>
+          <tr><td class="td-addr">9</td><td class="td-label">PA2</td><td class="td-label">PB2</td><td class="td-desc">X</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        <strong>Active low.</strong> A direction being held pulls its line to <code>0</code>.
+        An untouched stick reads <code>$FF</code>, which is why the test is
+        <code>IF (JOY(1) AND 16) = 0</code> and not <code>&lt;&gt; 0</code>.
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">Serial &mdash; DB-9 male, DTE</span>
+      <table>
+        <thead><tr><th style="width:14%">Pin</th><th style="width:24%">Signal</th><th>Direction</th></tr></thead>
+        <tbody>
+          <tr><td class="td-addr">1</td><td class="td-label">DCD</td><td class="td-desc">In &mdash; carrier detect</td></tr>
+          <tr><td class="td-addr">2</td><td class="td-label">RXD</td><td class="td-desc">In &mdash; the ACE receives here</td></tr>
+          <tr><td class="td-addr">3</td><td class="td-label">TXD</td><td class="td-desc">Out &mdash; the ACE transmits here</td></tr>
+          <tr><td class="td-addr">4</td><td class="td-label">DTR</td><td class="td-desc">Out</td></tr>
+          <tr><td class="td-addr">5</td><td class="td-label">GND</td><td class="td-desc">Ground</td></tr>
+          <tr><td class="td-addr">6</td><td class="td-label">DSR</td><td class="td-desc">In</td></tr>
+          <tr><td class="td-addr">7</td><td class="td-label">RTS</td><td class="td-desc">Out</td></tr>
+          <tr><td class="td-addr">8</td><td class="td-label">CTS</td><td class="td-desc">In</td></tr>
+          <tr><td class="td-addr">9</td><td class="td-label">&mdash;</td><td class="td-desc">Not connected</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        <strong>19200 8-N-1.</strong> The ACE is wired as <em>data terminal equipment</em>, the
+        same as a PC, so reaching a laptop takes a <strong>null-modem</strong> cable or adapter
+        &mdash; a straight-through one leaves both ends talking on the same wire.
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">PS/2 &mdash; 6-pin mini-DIN</span>
+      <table>
+        <thead><tr><th style="width:14%">Pin</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td class="td-addr">1</td><td class="td-desc">PS2DATA</td></tr>
+          <tr><td class="td-addr">2</td><td class="td-desc">Not connected</td></tr>
+          <tr><td class="td-addr">3</td><td class="td-desc">GND</td></tr>
+          <tr><td class="td-addr">4</td><td class="td-desc">VCC</td></tr>
+          <tr><td class="td-addr">5</td><td class="td-desc">PS2CLK</td></tr>
+          <tr><td class="td-addr">6</td><td class="td-desc">Not connected</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        A PS/2 keyboard plugged in here works <em>alongside</em> the board's own keys, not
+        instead of them. Both feed the same ring buffer.
+      </div>
+    </div>
+
+    <!-- The bus table is forty rows, taller than a column can hold, so it is
+         marked to run on rather than be kept whole. Kept whole it would jump
+         to the top of column two and leave the tail of column one blank,
+         which is what pushed this card onto a second sheet. -->
+    <div class="section flow">
+      <span class="sec-title">The bus &mdash; J19 and the cartridge edge J18</span>
+      <div class="note-box">
+        Both carry the same forty signals in the same order: the whole 65C02 bus, brought out
+        twice. <strong>Odd pins down the left, even pins down the right.</strong>
+      </div>
+      <table>
+        <thead><tr><th class="th-hex" style="width:10%">Pin</th><th style="width:26%">Signal</th><th class="th-hex" style="width:10%">Pin</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td class="td-hex">1</td><td class="td-label">GND</td><td class="td-hex">2</td><td class="td-label">VCC</td></tr>
+          <tr><td class="td-hex">3</td><td class="td-label">RESB</td><td class="td-hex">4</td><td class="td-label">EXP0 &mdash; HRDB</td></tr>
+          <tr><td class="td-hex">5</td><td class="td-label">IRQB</td><td class="td-hex">6</td><td class="td-label">EXP1 &mdash; HRDB</td></tr>
+          <tr><td class="td-hex">7</td><td class="td-label">NMIB</td><td class="td-hex">8</td><td class="td-label">A15</td></tr>
+          <tr><td class="td-hex">9</td><td class="td-label">RDY</td><td class="td-hex">10</td><td class="td-label">A14</td></tr>
+          <tr><td class="td-hex">11</td><td class="td-label">BE</td><td class="td-hex">12</td><td class="td-label">A13</td></tr>
+          <tr><td class="td-hex">13</td><td class="td-label">RWB</td><td class="td-hex">14</td><td class="td-label">A12</td></tr>
+          <tr><td class="td-hex">15</td><td class="td-label">SYNC</td><td class="td-hex">16</td><td class="td-label">A11</td></tr>
+          <tr><td class="td-hex">17</td><td class="td-label">PHI2</td><td class="td-hex">18</td><td class="td-label">A10</td></tr>
+          <tr><td class="td-hex">19</td><td class="td-label">EXP3</td><td class="td-hex">20</td><td class="td-label">A9</td></tr>
+          <tr><td class="td-hex">21</td><td class="td-label">EXP2</td><td class="td-hex">22</td><td class="td-label">A8</td></tr>
+          <tr><td class="td-hex">23</td><td class="td-label">D7</td><td class="td-hex">24</td><td class="td-label">A7</td></tr>
+          <tr><td class="td-hex">25</td><td class="td-label">D6</td><td class="td-hex">26</td><td class="td-label">A6</td></tr>
+          <tr><td class="td-hex">27</td><td class="td-label">D5</td><td class="td-hex">28</td><td class="td-label">A5</td></tr>
+          <tr><td class="td-hex">29</td><td class="td-label">D4</td><td class="td-hex">30</td><td class="td-label">A4</td></tr>
+          <tr><td class="td-hex">31</td><td class="td-label">D3</td><td class="td-hex">32</td><td class="td-label">A3</td></tr>
+          <tr><td class="td-hex">33</td><td class="td-label">D2</td><td class="td-hex">34</td><td class="td-label">A2</td></tr>
+          <tr><td class="td-hex">35</td><td class="td-label">D1</td><td class="td-hex">36</td><td class="td-label">A1</td></tr>
+          <tr><td class="td-hex">37</td><td class="td-label">D0</td><td class="td-hex">38</td><td class="td-label">A0</td></tr>
+          <tr><td class="td-hex">39</td><td class="td-label">VCC</td><td class="td-hex">40</td><td class="td-label">GND</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        <strong>Four expansion pins, two of them spoken for.</strong> The family bus calls pins
+        4, 6, 21 and 19 <code>EXP0</code>&ndash;<code>EXP3</code>. The ACE ties
+        <code>EXP0</code> and <code>EXP1</code> to <code>HRDB</code>, its hard-reset line;
+        <code>EXP2</code> and <code>EXP3</code> are free. A COB card that expects all four to
+        be free will not behave on an ACE.
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">PORT A &mdash; J10 &middot; PORT B &mdash; J9</span>
+      <table>
+        <thead><tr><th class="th-hex" style="width:10%">Pin</th><th style="width:22%">Signal</th><th class="th-hex" style="width:10%">Pin</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td class="td-hex">1</td><td class="td-label">VCC</td><td class="td-hex">2</td><td class="td-label">GND</td></tr>
+          <tr><td class="td-hex">3</td><td class="td-label">PA7</td><td class="td-hex">4</td><td class="td-label">PA0</td></tr>
+          <tr><td class="td-hex">5</td><td class="td-label">PA6</td><td class="td-hex">6</td><td class="td-label">PA1</td></tr>
+          <tr><td class="td-hex">7</td><td class="td-label">PA5</td><td class="td-hex">8</td><td class="td-label">PA2</td></tr>
+          <tr><td class="td-hex">9</td><td class="td-label">PA4</td><td class="td-hex">10</td><td class="td-label">PA3</td></tr>
+          <tr><td class="td-hex">11</td><td class="td-label">CA1</td><td class="td-hex">12</td><td class="td-label">CA2</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        Port B's header is wired the same way with <code>PB0</code>&ndash;<code>PB7</code>,
+        <code>CB1</code> and <code>CB2</code>. Both are the 65C22 VIA's ports &mdash; the same
+        sixteen lines the keyboard matrix and the two joysticks share, so anything you hang
+        here has to take turns with them.
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">Keyboard &mdash; J14 &middot; Storage &mdash; J22</span>
+      <table>
+        <thead><tr><th style="width:22%">Header</th><th>Pins</th></tr></thead>
+        <tbody>
+          <tr><td class="td-label">KEYBOARD</td><td class="td-desc">1&ndash;8: <code>PA0</code>&ndash;<code>PA7</code> (matrix rows) &middot; 9&ndash;16: <code>PB0</code>&ndash;<code>PB7</code> (columns)</td></tr>
+          <tr><td class="td-label">STORAGE</td><td class="td-desc">Odd 1&ndash;19: GND, <code>D7</code>&ndash;<code>D0</code>, VCC &middot; Even 2&ndash;20: VCC, <code>RESB</code>, <code>RDY</code>, <code>RB</code>, <code>WB</code>, <code>IO4B</code>, <code>A2</code>, <code>A1</code>, <code>A0</code>, GND</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        The storage header is a small bus of its own: eight data lines, three address lines, a
+        read strobe, a write strobe and one chip select &mdash; <code>IO4B</code>, which is I/O
+        slot 4. That is exactly what an 8-bit CompactFlash card in True IDE mode wants, and it
+        is the whole of what the CF adapter board is.
+      </div>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502 CONNECTORS</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">FRONT</span>
+  </div>
+
+</div><!-- /page 1 -->
+
+</body>
+</html>

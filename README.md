@@ -51,6 +51,7 @@ is documented as an ACE add-on in `docs/addons/kim.md`.
 | `docs/addons/` | Hardware that changes what the machine is |
 | `docs/basic/` | The BASIC guide — tutorial, then reference |
 | `docs/crossdev/` | Building on your own computer: cc65, the templates, debugging, testing |
+| `docs/assembly/` | The assembly guide — the 65C02, the memory map, the Kernal, then a chapter per peripheral |
 | `docs/family/` | The other four machines, for builders |
 
 Depth that would break the flow goes in a `::: details` or `::: tip` block
@@ -154,18 +155,28 @@ printed online. A card picks a size regime with a body class — `card` for a
 dense reference sheet, `card placard` for one read at arm's length — and sets
 its column widths with custom properties. It never carries CSS of its own.
 
+**Six of the ten are generated** from the fact base — the BASIC, Monitor,
+Kernal, memory-map, character-set and keyboard-layout sheets. Edit `data/`, or
+the layout in `scripts/build-cards.mjs`, never the HTML. The other four come
+from schematics and firmware rather than from the ROM, so they are hand-written
+with their source cited in a comment at the top of the file.
+
 ```sh
+npm run cards         # regenerate the six that come from data/
+npm run cards:verify  # fail if a checked-in copy has drifted (in verify + CI)
 npm run cards:check   # no external requests, no inline CSS, real letter pages
 ```
+
+Every card is indexed at [`/reference/`](docs/reference/index.md) and linked
+from the chapter it condenses. **Nothing lives only on a card** — if you add a
+fact to one, add it to a chapter too.
 
 `cards/archive/` holds superseded sheets: the BIOS v1.0–v1.4 references and the
 two KIM LED walk-throughs. They are kept as the record of what each firmware
 release documented, not as current documentation.
 
-The cards were migrated from `6502-ASSETS` and **still carry their original
-v1.0-era content** — a later phase rebuilds each one from `data/`. See
-[`ASSETS-MIGRATION.md`](ASSETS-MIGRATION.md) for what moved, what was recreated,
-and what was deliberately dropped:
+See [`ASSETS-MIGRATION.md`](ASSETS-MIGRATION.md) for what moved from
+`6502-ASSETS`, what was recreated, and what was deliberately dropped:
 
 ```sh
 npm run migrate         # re-run the migration from a 6502-ASSETS checkout

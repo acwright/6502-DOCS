@@ -1,0 +1,9 @@
+# "Reading a line" — the console chapter's program. Chrin echoes what it
+# hands back, which is why the typed name appears without the program
+# printing it.
+
+wait (OK|NAME\?)
+send ADA\r
+expect ^WHAT IS YOUR NAME\?
+expect ^ADA$
+expect ^PLEASED TO MEET YOU, ADA!$

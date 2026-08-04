@@ -242,6 +242,15 @@ body.card {
   columns: 1;
 }
 
+/* Three-column pages: short rows that would leave half of a wide column blank
+   — the character set's code / glyph / name lists are the case this exists
+   for. Narrower columns want a narrower gutter, or the text runs out of room
+   before the page does. */
+.card .pg-body.three-col {
+  columns: 3;
+  column-gap: calc(var(--gap-col) * 0.7);
+}
+
 /* ── Page footer ────────────────────────────────────────────────────────── */
 .card .pg-footer {
   background: var(--c-bar);
@@ -268,6 +277,14 @@ body.card {
 .card .section {
   break-inside: var(--break-section);
   margin-bottom: var(--gap-sec);
+}
+
+/* A long list — the character set's 64-row name tables — is taller than a
+   column can ever be, so keeping it whole strands the tail of the column
+   before it and pushes the overflow off the page. These run on instead. */
+.card .section.flow,
+.card .section.flow table {
+  break-inside: auto;
 }
 
 .card .sec-title {
@@ -431,6 +448,115 @@ body.card {
   color: #555;
   white-space: nowrap;
   width: 16%;
+}
+
+/* ── Character grid ─────────────────────────────────────────────────────────
+   The glyphs are drawn from the ROM's own bytes as 8×8 SVGs, one 1×1 rect per
+   lit pixel, so they print at the printer's resolution rather than at whatever
+   a PNG was exported at — and what is on the page is the pattern table itself.
+   ────────────────────────────────────────────────────────────────────────── */
+.card .charset-grid {
+  table-layout: fixed;
+}
+
+.card .td-glyph {
+  text-align: center;
+  padding: 2px;
+  border-bottom: 0.4pt solid var(--c-rule-light);
+}
+
+.card .glyph {
+  width: 100%;
+  max-width: 0.4in;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  fill: var(--c-ink);
+  shape-rendering: crispEdges;
+}
+
+/* The same glyph inline in a name list — sized against the row, not the page. */
+.card .td-glyph-inline {
+  text-align: center;
+  padding: var(--pad-td);
+  border-bottom: 0.4pt solid var(--c-rule-light);
+}
+
+.card .td-glyph-inline .glyph {
+  width: 1.6em;
+  max-width: none;
+}
+
+.card .charset-grid .td-hex em {
+  font-style: normal;
+  color: #888;
+}
+
+/* ── Keyboard drawing ───────────────────────────────────────────────────────
+   Drawn from the KLE layout by scripts/build-cards.mjs, greyscale like
+   everything else. Inline rather than an <img> so it takes these rules.
+   ────────────────────────────────────────────────────────────────────────── */
+.card .keyboard {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.card .kb-plate {
+  fill: #222;
+}
+
+.card .kb-cap {
+  fill: var(--c-paper);
+  stroke: #555;
+  stroke-width: 1;
+}
+
+.card .kb-legend {
+  font-family: var(--f-body);
+  font-size: 13px;
+  fill: var(--c-ink);
+  text-anchor: middle;
+}
+
+/* The shifted legend is the one printed above the unshifted character. */
+.card .kb-legend-shift {
+  fill: #777;
+  font-size: 12px;
+}
+
+/* ── Key cells (matrix and keypad grids) ────────────────────────────────────
+   A key legend with its code underneath it, so one glance answers both "where
+   is this key" and "what does it send".
+   ────────────────────────────────────────────────────────────────────────── */
+.card .td-key {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: var(--fs-mono);
+  color: #000;
+  text-align: center;
+  white-space: nowrap;
+  padding: var(--pad-td);
+  border-bottom: 0.4pt solid var(--c-rule-light);
+}
+
+.card .td-key em {
+  display: block;
+  font-style: normal;
+  font-weight: 400;
+  font-size: calc(var(--fs-mono) - 1pt);
+  color: #888;
+}
+
+/* A key the firmware reads but deliberately drops, and one it treats as a
+   modifier rather than as a character. Both are worth telling apart at a
+   glance from the keys that send something. */
+.card .td-key-dead {
+  color: #999;
+}
+
+.card .td-key-mod em {
+  color: #555;
 }
 
 /* ── Note box ───────────────────────────────────────────────────────────── */

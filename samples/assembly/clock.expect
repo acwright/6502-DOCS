@@ -1,0 +1,8 @@
+# "The clock and the bytes that last" — setting the clock, reading it back,
+# and leaving a note in battery-backed memory.
+#
+# Seconds are written as 00 and read a moment later, so the last field is
+# whatever the clock has reached by then.
+
+expect ^THE TIME IS 09:30:\d\d ON 26/12/2026$
+expect ^AND THE CLOCK CARD REMEMBERS 30$

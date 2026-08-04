@@ -36,11 +36,11 @@
   ],
   "wozmon": {
     "address": "$FF00",
-    "fromMonitor": "G FF00",
+    "fromMonitor": "J FF00",
     "fromBasic": "SYS 65280",
     "note": "The original Apple I monitor, kept as an easter egg.",
     "source": "BIOS.cfg:7",
-    "check": "GREP"
+    "check": "GREP + RUN"
   },
   "commands": [
     {

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6502 Keypad Mapping</title>
+<link rel="stylesheet" href="card.css">
+</head>
+<!--
+  Hand-authored, GREP + SCHEM verified against:
+    6502-KIM/Firmware/KC Monitor/KC Monitor.asm — the KEY_* equates ($00 LEFT
+      … $17 B), KeySymTable (what the LCD shows) and HexValTable (which keys
+      are hex digits)
+    6502-KIM/README.md#keypad-card — 65C21 PIA, PA0–PA4 keypad code, CA1
+      data-available, CA2 encoder output enable; MM74C922 extended to 24 keys
+      with a 74HC00
+  Recreated from 6502-ASSETS/Documentation/Keypad Mapping/ (a .numbers file).
+  Every one of the 24 codes there matched the firmware; what it lacked was the
+  LCD symbol and what each key is for.
+-->
+<body class="card" style="--w-addr: 10%">
+
+<div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 1 — FRONT -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>Keypad Mapping</h1>
+    <div class="side-info">A.C. Wright 6502<br>KIM Keypad &middot; KC Monitor</div>
+  </div>
+
+  <div class="pg-body">
+
+    <div class="section">
+      <span class="sec-title">The pad</span>
+      <table style="text-align:center">
+        <tbody>
+          <tr><td class="td-key">ESC<em>$10</em></td><td class="td-key">INS<em>$11</em></td><td class="td-key">PGUP<em>$12</em></td><td class="td-key">A<em>$13</em></td></tr>
+          <tr><td class="td-key">&#9650;<em>$14</em></td><td class="td-key">DEL<em>$15</em></td><td class="td-key">PGDN<em>$16</em></td><td class="td-key">B<em>$17</em></td></tr>
+          <tr><td class="td-key">7<em>$07</em></td><td class="td-key">8<em>$08</em></td><td class="td-key">9<em>$09</em></td><td class="td-key">C<em>$0F</em></td></tr>
+          <tr><td class="td-key">4<em>$04</em></td><td class="td-key">5<em>$05</em></td><td class="td-key">6<em>$06</em></td><td class="td-key">D<em>$0E</em></td></tr>
+          <tr><td class="td-key">1<em>$01</em></td><td class="td-key">2<em>$02</em></td><td class="td-key">3<em>$03</em></td><td class="td-key">E<em>$0D</em></td></tr>
+          <tr><td class="td-key">&#9668;<em>$00</em></td><td class="td-key">0<em>$0A</em></td><td class="td-key">&#9658;<em>$0B</em></td><td class="td-key">F<em>$0C</em></td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        Twenty-four keys, and every one of them is a number underneath: the encoder hands the
+        PIA a five-bit code, <code>$00</code> to <code>$17</code>, and the monitor decides what
+        it means.
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">What each key does</span>
+      <table>
+        <thead><tr><th style="width:26%">Key</th><th>Function</th></tr></thead>
+        <tbody>
+          <tr><td class="td-cmd">0 &ndash; F</td><td class="td-desc">Shift a hex digit in &mdash; into the address while navigating, into the byte while editing</td></tr>
+          <tr><td class="td-cmd">&#9668; / &#9658;</td><td class="td-desc">Step the address back or on by one</td></tr>
+          <tr><td class="td-cmd">PGUP / PGDN</td><td class="td-desc">Step the address by <code>$0100</code></td></tr>
+          <tr><td class="td-cmd">INS</td><td class="td-desc">Switch between reading memory and editing it</td></tr>
+          <tr><td class="td-cmd">DEL</td><td class="td-desc">Write <code>$00</code> at the current address</td></tr>
+          <tr><td class="td-cmd">&#9650;</td><td class="td-desc">Run the code at the current address. It comes back on <code>RTS</code></td></tr>
+          <tr><td class="td-cmd">ESC</td><td class="td-desc">Stop a running program and return to the monitor</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">Every code, in order</span>
+      <table>
+        <thead><tr><th style="width:14%">Code</th><th style="width:26%">PA4&hellip;PA0</th><th style="width:16%">Key</th><th style="width:14%">LCD</th><th>Hex value</th></tr></thead>
+        <tbody>
+          <tr><td class="td-addr">$00</td><td class="td-syn">0 0 0 0 0</td><td class="td-cmd">&#9668;</td><td class="td-cmd">&lt;</td><td class="td-desc">&mdash;</td></tr>
+          <tr><td class="td-addr">$01</td><td class="td-syn">0 0 0 0 1</td><td class="td-cmd">1</td><td class="td-cmd">1</td><td class="td-desc">1</td></tr>
+          <tr><td class="td-addr">$02</td><td class="td-syn">0 0 0 1 0</td><td class="td-cmd">2</td><td class="td-cmd">2</td><td class="td-desc">2</td></tr>
+          <tr><td class="td-addr">$03</td><td class="td-syn">0 0 0 1 1</td><td class="td-cmd">3</td><td class="td-cmd">3</td><td class="td-desc">3</td></tr>
+          <tr><td class="td-addr">$04</td><td class="td-syn">0 0 1 0 0</td><td class="td-cmd">4</td><td class="td-cmd">4</td><td class="td-desc">4</td></tr>
+          <tr><td class="td-addr">$05</td><td class="td-syn">0 0 1 0 1</td><td class="td-cmd">5</td><td class="td-cmd">5</td><td class="td-desc">5</td></tr>
+          <tr><td class="td-addr">$06</td><td class="td-syn">0 0 1 1 0</td><td class="td-cmd">6</td><td class="td-cmd">6</td><td class="td-desc">6</td></tr>
+          <tr><td class="td-addr">$07</td><td class="td-syn">0 0 1 1 1</td><td class="td-cmd">7</td><td class="td-cmd">7</td><td class="td-desc">7</td></tr>
+          <tr><td class="td-addr">$08</td><td class="td-syn">0 1 0 0 0</td><td class="td-cmd">8</td><td class="td-cmd">8</td><td class="td-desc">8</td></tr>
+          <tr><td class="td-addr">$09</td><td class="td-syn">0 1 0 0 1</td><td class="td-cmd">9</td><td class="td-cmd">9</td><td class="td-desc">9</td></tr>
+          <tr><td class="td-addr">$0A</td><td class="td-syn">0 1 0 1 0</td><td class="td-cmd">0</td><td class="td-cmd">0</td><td class="td-desc">0</td></tr>
+          <tr><td class="td-addr">$0B</td><td class="td-syn">0 1 0 1 1</td><td class="td-cmd">&#9658;</td><td class="td-cmd">&gt;</td><td class="td-desc">&mdash;</td></tr>
+          <tr><td class="td-addr">$0C</td><td class="td-syn">0 1 1 0 0</td><td class="td-cmd">F</td><td class="td-cmd">F</td><td class="td-desc">15</td></tr>
+          <tr><td class="td-addr">$0D</td><td class="td-syn">0 1 1 0 1</td><td class="td-cmd">E</td><td class="td-cmd">E</td><td class="td-desc">14</td></tr>
+          <tr><td class="td-addr">$0E</td><td class="td-syn">0 1 1 1 0</td><td class="td-cmd">D</td><td class="td-cmd">D</td><td class="td-desc">13</td></tr>
+          <tr><td class="td-addr">$0F</td><td class="td-syn">0 1 1 1 1</td><td class="td-cmd">C</td><td class="td-cmd">C</td><td class="td-desc">12</td></tr>
+          <tr><td class="td-addr">$10</td><td class="td-syn">1 0 0 0 0</td><td class="td-cmd">ESC</td><td class="td-cmd">*</td><td class="td-desc">&mdash;</td></tr>
+          <tr><td class="td-addr">$11</td><td class="td-syn">1 0 0 0 1</td><td class="td-cmd">INS</td><td class="td-cmd">I</td><td class="td-desc">&mdash;</td></tr>
+          <tr><td class="td-addr">$12</td><td class="td-syn">1 0 0 1 0</td><td class="td-cmd">PGUP</td><td class="td-cmd">U</td><td class="td-desc">&mdash;</td></tr>
+          <tr><td class="td-addr">$13</td><td class="td-syn">1 0 0 1 1</td><td class="td-cmd">A</td><td class="td-cmd">A</td><td class="td-desc">10</td></tr>
+          <tr><td class="td-addr">$14</td><td class="td-syn">1 0 1 0 0</td><td class="td-cmd">&#9650;</td><td class="td-cmd">^</td><td class="td-desc">&mdash;</td></tr>
+          <tr><td class="td-addr">$15</td><td class="td-syn">1 0 1 0 1</td><td class="td-cmd">DEL</td><td class="td-cmd">X</td><td class="td-desc">&mdash;</td></tr>
+          <tr><td class="td-addr">$16</td><td class="td-syn">1 0 1 1 0</td><td class="td-cmd">PGDN</td><td class="td-cmd">N</td><td class="td-desc">&mdash;</td></tr>
+          <tr><td class="td-addr">$17</td><td class="td-syn">1 0 1 1 1</td><td class="td-cmd">B</td><td class="td-cmd">B</td><td class="td-desc">11</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:5px;">
+        <strong>The code is not the value.</strong> Nowhere do the two line up: key
+        <code>0</code> is code <code>$0A</code>, and <code>C</code> to <code>F</code> run
+        backwards &mdash; <code>$0C</code> is <code>F</code> and <code>$0F</code> is
+        <code>C</code>. The encoder numbers the switches in the order they sit on the board,
+        and the firmware's lookup table turns that into a digit. Read a code off the bus and
+        you must look it up; there is no arithmetic that gets you there.
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">How a press gets to the CPU</span>
+      <div class="note-box">
+        An <strong>MM74C922</strong> encoder scans the pad &mdash; sixteen keys natively,
+        extended to twenty-four with a <strong>74HC00</strong> &mdash; and raises
+        data-available on the PIA's <code>CA1</code>. That fires an interrupt, the handler
+        reads the five-bit code off <code>PA0</code>&ndash;<code>PA4</code>, and
+        <code>CA2</code> drops the encoder's output enable again. So no press is ever missed,
+        and the monitor is never sitting in a polling loop.
+      </div>
+      <div class="note-box">
+        The same <strong>65C21 PIA</strong> drives the LCD: Port A's top three lines are RS,
+        R/W and E, and Port B is the display's data bus.
+      </div>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502 KEYPAD MAPPING</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">FRONT</span>
+  </div>
+
+</div><!-- /page 1 -->
+
+</body>
+</html>

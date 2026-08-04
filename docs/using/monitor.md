@@ -127,3 +127,10 @@ keystrokes never arrive. `J` leaves them on.
   label="Wozmon"
   caption="A screen showing the jump from the Monitor's dot prompt into Wozmon's backslash, and a short memory dump underneath."
 />
+
+<div class="card-link">
+
+📄 **[Monitor Reference card](/cards/monitor-reference.html)** — all seventeen
+commands, the register display and the `G`/`J` trap, on two printable pages.
+
+</div>

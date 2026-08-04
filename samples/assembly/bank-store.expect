@@ -1,0 +1,5 @@
+# "Banked RAM" — two banks, one window, and the same address holding two
+# different things depending on which bank is swung into it.
+
+expect ^BANK 3 SNOWDROPS AND MUD$
+expect ^BANK 9 APPLES AND WOODSMOKE$

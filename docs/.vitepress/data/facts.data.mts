@@ -29,6 +29,7 @@ const FILES = [
   ['basicExamples', 'basic-examples.json'],
   ['monitorCommands', 'monitor-commands.json'],
   ['errors', 'errors.json'],
+  ['charset', 'charset.json'],
   ['systems', 'systems.json']
 ] as const
 
@@ -43,6 +44,7 @@ export interface Facts {
   basicExamples: any
   monitorCommands: any
   errors: any
+  charset: any
   systems: any
   /** BIOS release the whole fact base was extracted from, e.g. "1.5". */
   biosVersion: string

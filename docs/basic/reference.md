@@ -150,3 +150,10 @@ all of it.
   padding: 0.75rem 1rem;
 }
 </style>
+
+<div class="card-link">
+
+📄 **[BASIC Reference card](/cards/basic-reference.html)** — every keyword,
+the operator table and every error message, on three printable pages.
+
+</div>

@@ -114,6 +114,14 @@ Board revisions to date:
 </ul>
 :::
 
+<div class="card-link">
+
+📄 **[6502-ACE card](/cards/ace.html)** — this chapter, the memory map and
+the first things to type, on two printable pages. The
+[card index](/reference/) has the rest.
+
+</div>
+
 ## Next
 
 [Setting up](/getting-started/setup) — what to plug in, and in what order.

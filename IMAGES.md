@@ -29,8 +29,8 @@ findings. All of that lives here, where the reader never sees it. See
 | Everything connected | P | `docs/getting-started/setup.md` | placeholder | Cables labelled: power, VGA, audio, keyboard, joysticks, serial. |
 | The boot screen | G | `docs/getting-started/first-boot.md` | placeholder | `6502 run --console video` + `dbg screen png`. The transcript on the page is already checked; only the picture is missing. |
 | Text on screen | G | `docs/using/sound-and-video.md` | placeholder | Capture `samples/basic/screen-text.bas` on a video console. |
-| Wozmon | G | `docs/using/monitor.md` | placeholder | The dot prompt, `G FF00`, the backslash, and a short `FF00.FF0F` dump. |
-| The ACE keyboard layout | D | `docs/using/keyboard.md` | placeholder | `assets/keyboard/keyboard-layout.svg` exists (design source, not yet in `docs/public/`). Wiring it into a servable page is `cards/keyboard-layout.html` in Phase 7. |
+| Wozmon | G | `docs/using/monitor.md` | placeholder | The dot prompt, `J FF00`, the backslash, and a short `FF00.FF0F` dump. `G FF00` hangs the machine — [A18](ACCURACY.md). |
+| The ACE keyboard layout | D | `docs/using/keyboard.md` | placeholder | **Phase 7 built the drawing**, in `scripts/build-cards.mjs`, from `assets/keyboard/keyboard-layout.json`. It renders inline in `cards/keyboard-layout.html`. It is not on the chapter yet — that wants the same generator emitting a themed SVG into `docs/public/images/`. Do not reach for `assets/keyboard/keyboard-layout.svg`: KLE's export draws the caps and omits every legend. |
 | A laptop driving an ACE | P | `docs/using/serial.md` | placeholder | Both screens visible, showing the same prompt. |
 | An ACE wearing its KIM boards | P | `docs/addons/kim.md` | placeholder | The three-board stack in the cartridge slot, LCD lit and showing an address/byte pair. |
 | The whole family | P | `docs/family/index.md` | placeholder | COB, DEV, VCS, KIM, ACE lined up oldest to newest. `docs/public/images/6502.png` (migrated in Phase 2) is the only existing family photo and shows a stale `6502 BASIC v1.0` banner — [ACCURACY.md A9](ACCURACY.md#a9--the-family-hero-photo-shows-a-two-major-versions-stale-banner). Unreferenced until Phase 8 reshoots, crops below the text, or captions it as historical. |
@@ -41,6 +41,11 @@ findings. All of that lives here, where the reader never sees it. See
 | A populated COB | P | `docs/family/cob.md` | placeholder | `~/Developer/Kicad/6502-COB/Images/6502-COB.png` exists; a side-on photo showing several cards at once is better for this page. |
 | The DEV rig | P | `docs/family/dev.md` | placeholder | `~/Developer/Kicad/6502-DEV/Images/6502-DEV.png` exists. Wants the four control buttons legible. |
 | The VCS | P | `docs/family/vcs.md` | placeholder | `~/Developer/Kicad/6502-VCS/Images/6502-VCS.png` exists. Wants a cartridge half-inserted. |
+| The memory map | D | `docs/assembly/memory-map.md` | placeholder | A vertical strip of the whole 64K space, boundaries labelled. Was listed under "wanted but not yet placed"; the assembly guide now reserves a slot for it. |
+| The character set | D | `docs/reference/character-set.md` | **done** | Drawn from `data/charset.json` — every glyph is an SVG built from its eight ROM bytes, so the picture is the pattern table rather than a font resembling it. `cards/character-map.html` draws the same grid. Supersedes Appendix B's "character set grid", which assumed a screenshot. |
+| A framed sign | G | `docs/assembly/video.md` | placeholder | Capture the chapter's box-drawing program on a video console. The one shot that shows the character set doing something other than text. |
+| Graphics Mode I | G | `docs/assembly/graphics.md` | placeholder | Capture the Graphics I demo at the point it waits for a key — 32 colour pairs on screen at once. |
+| Multicolor mode | G | `docs/assembly/graphics.md` | placeholder | Capture the Multicolor demo the same way. Together with the shot above these are the only pictures of the machine outside text mode. |
 | Burning a cartridge ROM | P | `docs/crossdev/to-hardware.md` | placeholder | An AT28C256 in a TL866's ZIF socket, lid open, with a finished cartridge board and its label beside it. The one shot in the cross-development section that shows physical hardware. |
 
 ## Wanted but not yet placed
@@ -53,11 +58,12 @@ worth announcing:
 |---|---|---|
 | CF disk-bank / directory model | D | `docs/using/storage.md` |
 | XModem handshake | D | `docs/using/serial.md` |
-| Memory map | D | The assembly guide |
-| Cartridge ROM overlay (`$C000–$FFFF`) | D | `docs/addons/kim.md`, the assembly guide |
+| Cartridge ROM overlay (`$C000–$FFFF`) | D | `docs/addons/kim.md`, `docs/assembly/cartridges.md` |
 | KIM keypad close-up | P | `docs/addons/kim.md` |
 | Cartridge + label in hand | P | `docs/family/vcs.md` |
 | Cross-development toolchain flow | D | `docs/crossdev/index.md` — editor → `cl65` → `.prg` → card / cable / EEPROM → machine |
+| Zero-page ownership strip | D | `docs/assembly/memory-map.md` — the Kernal's `$00–$39` against your `$3A–$FF` |
+| Joystick bitmask (active low) | D | `docs/assembly/input.md` as well as `docs/basic/controls.md` |
 
-Everything else in PLAN.md's Appendix B belongs to the chapters Phases 6–8 have
+Everything else in PLAN.md's Appendix B belongs to the chapters Phases 7–8 have
 yet to write.

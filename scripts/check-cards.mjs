@@ -58,6 +58,19 @@ const RULES = [
   {
     name: 'declares letter pages',
     test: (html) => (/class="page"/.test(html) ? null : 'has no .page elements')
+  },
+  {
+    name: 'every local asset resolves',
+    // A card may reference a file next to it — the keyboard layout is an SVG
+    // rather than inline markup, because the KLE export carries its own
+    // <style> block and the rule above forbids one. A moved or renamed asset
+    // would print as an empty box, which nothing else here would catch.
+    test: (html, { dir }) => {
+      const missing = [...html.matchAll(/(?:href|src)="([^":]+)"/g)]
+        .map((m) => m[1])
+        .filter((url) => !url.startsWith('#') && !existsSync(resolve(dir, url)))
+      return missing.length ? `references files that are not there: ${missing.join(', ')}` : null
+    }
   }
 ]
 
@@ -92,7 +105,7 @@ for (const file of files) {
   const depth = rel.split('/').length - 2 // cards/x.html → 0, cards/archive/x.html → 1
   const failed = []
   for (const rule of RULES) {
-    const why = rule.test(html, { depth })
+    const why = rule.test(html, { depth, dir: dirname(file) })
     if (why) failed.push(`${rel}: ${why}`)
   }
   problems.push(...failed)

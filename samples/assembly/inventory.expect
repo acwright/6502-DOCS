@@ -1,0 +1,13 @@
+# "What the machine has" — the hardware-detection chapter's program.
+#
+# On a video machine every bit of the probe byte is set, which is the machine
+# the guide describes: a complete ACE. Asserted on the screen rather than the
+# console because that is where a video machine's output goes.
+
+console video
+
+screen ^WHAT THIS MACHINE HAS\s*$
+screen ^BANKED RAM, LOW\s+YES\s*$
+screen ^MEMORY CARD\s+YES\s*$
+screen ^KEYBOARD AND STICKS\s+YES\s*$
+screen ^VIDEO\s+YES\s*$

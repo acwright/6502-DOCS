@@ -6,6 +6,19 @@
 <title>6502-ACE — System Reference</title>
 <link rel="stylesheet" href="card.css">
 </head>
+<!--
+  Rebuilt in Phase 7. The sheet this replaces was written against BIOS v1.0 and
+  carried five errors that a reader would have hit within a minute of sitting
+  down: the READY. prompt (ACCURACY.md A3), the BASIC/Monitor ROM boundary
+  (A2), SOUND with voice 0 (A38), SYS $FF00 (A39), and a "random maze"
+  one-liner that prints nothing at all on a screen (A40). Every listing below
+  was typed into the emulator; every hardware line traces to the schematic or
+  to 6502-ACE/README.md, and the connector designators come from the schematic
+  where the two disagree (A42).
+
+  The card condenses docs/your-ace.md, docs/getting-started/*, and the BASIC
+  and Monitor chapters. Nothing here is only here.
+-->
 <body class="card placard">
 
 <div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
@@ -20,99 +33,86 @@
 
   <div class="pg-body">
 
-    <!-- Overview -->
     <div class="section">
-      <span class="sec-title">Overview</span>
+      <span class="sec-title">This is your ACE</span>
       <div class="note-box">
-        The <strong>6502-ACE</strong> (All-in-one Computer Experience) is a complete, self-contained 65C02 computer on a single PCB — designed and built by A.C. Wright. It folds everything found across the modular COB's expansion cards — CPU, memory, video, audio, storage, serial, GPIO, real-time clock, and keyboard controller — onto one board with an integrated Cherry MX mechanical keyboard, delivering the full AC6502 experience with no backplane required.
+        One board, one computer, everything on it &mdash; <strong>including the keyboard</strong>.
+        The <strong>6502-ACE</strong> folds every function of the modular COB's card stack onto a
+        single PCB: processor, memory, video, sound, storage, serial, clock, joysticks, and 67
+        mechanical keys soldered straight to the board. Nothing to fit, nothing to decide. Switch
+        it on and start typing. It is the finished machine of the <strong>AC6502</strong> family,
+        built around the Western Design Center W65C02S &mdash; the fully-static CMOS descendant
+        of the 1975 MOS 6502.
       </div>
     </div>
 
-    <!-- History & Design -->
     <div class="section">
-      <span class="sec-title">History &amp; Design</span>
-      <div class="note-box">
-        The ACE is part of the <strong>AC6502</strong> family — a set of open-source homebrew computers that all share one architecture, one memory map, and one common BIOS (kernel + machine-code monitor + BASIC). Where the original 6502-COB spreads its functions across plug-in cards on a backplane, the ACE integrates them into a tidy all-in-one machine in the spirit of the classic 8-bit home computers of the late 1970s and early 1980s. Built around the Western Design Center W65C02S — the modern, fully-static CMOS descendant of the 1975 MOS 6502 — it bridges vintage design with present-day parts.
-      </div>
-    </div>
-
-    <!-- System Specs -->
-    <div class="section">
-      <span class="sec-title">System Specifications</span>
+      <span class="sec-title">What is on the board</span>
       <table>
         <tbody>
-          <tr><td class="td-label">CPU</td><td class="td-desc">WDC W65C02S @ 1 MHz</td></tr>
-          <tr><td class="td-label">RAM</td><td class="td-desc">32KB SRAM + optional 512KB banked SRAM</td></tr>
-          <tr><td class="td-label">ROM</td><td class="td-desc">32KB EEPROM (28C256) — 6502 BIOS</td></tr>
-          <tr><td class="td-label">Video</td><td class="td-desc">Pico9918 — VGA 640×480, TMS9918A-compatible</td></tr>
-          <tr><td class="td-label">Audio</td><td class="td-desc">ARMSID (SID emulator) — 3-voice, RCA out</td></tr>
-          <tr><td class="td-label">Storage</td><td class="td-desc">CompactFlash adapter (8-bit IDE)</td></tr>
-          <tr><td class="td-label">Serial</td><td class="td-desc">65C51 ACIA, RS-232 / DB9, 50–19200 baud</td></tr>
-          <tr><td class="td-label">GPIO</td><td class="td-desc">65C22 VIA — 20 pins, 2× timers</td></tr>
-          <tr><td class="td-label">RTC</td><td class="td-desc">DS1511Y, battery-backed NVRAM</td></tr>
-          <tr><td class="td-label">Keyboard</td><td class="td-desc">Integrated Cherry MX matrix + PS/2 (ATmega1284P controller)</td></tr>
-          <tr><td class="td-label">Input</td><td class="td-desc">Atari 2600-compatible joystick ports</td></tr>
-          <tr><td class="td-label">Power</td><td class="td-desc">5V DC, 2–3A</td></tr>
+          <tr><td class="td-label">CPU</td><td class="td-desc">WDC W65C02S at 1 MHz, jumper-selectable to 2 MHz</td></tr>
+          <tr><td class="td-label">RAM</td><td class="td-desc">32 KB SRAM (62256) + 512 KB banked SRAM (AS6C4008)</td></tr>
+          <tr><td class="td-label">ROM</td><td class="td-desc">32 KB EEPROM (28C256) &mdash; the whole 6502 BIOS</td></tr>
+          <tr><td class="td-label">Video</td><td class="td-desc">Pico9918 &mdash; TMS9918A-compatible, VGA out, 40&times;24 text, 16 colours</td></tr>
+          <tr><td class="td-label">Sound</td><td class="td-desc">ARMSID &mdash; MOS 6581 replacement, 3 voices, RCA out</td></tr>
+          <tr><td class="td-label">Storage</td><td class="td-desc">CompactFlash on the ACE CF Adapter (8-bit True IDE)</td></tr>
+          <tr><td class="td-label">Serial</td><td class="td-desc">65C51 ACIA + MAX238, DB-9, 19200 8-N-1</td></tr>
+          <tr><td class="td-label">GPIO</td><td class="td-desc">65C22 VIA &mdash; two 8-bit ports and two timers</td></tr>
+          <tr><td class="td-label">Clock</td><td class="td-desc">DS1511Y, battery-backed, with 256 bytes of NVRAM</td></tr>
+          <tr><td class="td-label">Keyboard</td><td class="td-desc">67 Cherry MX switches on the board, plus PS/2 (ATmega1284P, AB Controller)</td></tr>
+          <tr><td class="td-label">Sticks</td><td class="td-desc">Two Atari 2600-compatible joystick ports</td></tr>
+          <tr><td class="td-label">Power</td><td class="td-desc">5 V DC, 2&ndash;3 A, barrel jack</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- At the Party -->
     <div class="section">
-      <span class="sec-title">At This Party</span>
+      <span class="sec-title">Two switches and a jumper</span>
       <div class="note-box">
-        This ACE has a small <strong>white reset button just above the ESC key</strong>. Tap it any time to restart the machine back to the BASIC prompt — perfect if a program runs away or the screen looks stuck. The keyboard is built right in, so just start typing!
+        The <strong>power switch</strong> is the cold start. The small white <strong>reset
+        button</strong>, just above <code>ESC</code>, is the warm one: it restarts the machine
+        but leaves memory alone, so your program and variables are still there afterwards. That
+        makes it the safe way out of anything that has run away.
+      </div>
+      <div class="note-box">
+        <strong>PHI2 SELECT</strong> picks 1 or 2 MHz. The eight-way <strong>IO ENABLE</strong>
+        DIP bank has one switch per I/O section &mdash; leave them all on; they are for
+        fault-finding.
       </div>
     </div>
 
-    <!-- AC6502 Family -->
     <div class="section">
-      <span class="sec-title">The AC6502 Family</span>
-      <table>
-        <thead><tr><th style="width:22%">System</th><th>Role</th></tr></thead>
-        <tbody>
-          <tr><td class="td-cmd">ACE</td><td class="td-desc">All-in-one single-board computer (this machine)</td></tr>
-          <tr><td class="td-cmd">COB</td><td class="td-desc">Modular backplane desktop with expansion cards</td></tr>
-          <tr><td class="td-cmd">KIM</td><td class="td-desc">Keypad + LCD minimal monitor</td></tr>
-          <tr><td class="td-cmd">VCS</td><td class="td-desc">Cartridge-based game console</td></tr>
-          <tr><td class="td-cmd">DEV</td><td class="td-desc">Emulation-based development system</td></tr>
-        </tbody>
-      </table>
-      <div class="note-box" style="margin-top:5px;">
-        Every machine in the family runs the same shared <strong>6502 BIOS</strong> — kernel, machine-code Monitor, and BASIC — so a program written on one runs on them all.
-      </div>
-    </div>
-
-    <!-- Memory Map -->
-    <div class="section">
-      <span class="sec-title">Memory Map</span>
+      <span class="sec-title">Memory map</span>
       <table>
         <thead><tr><th style="width:36%">Range</th><th>Contents</th></tr></thead>
         <tbody>
-          <tr><td class="td-addr">$0000–$07FF</td><td class="td-desc">Zero page, stack, input &amp; system variables</td></tr>
-          <tr><td class="td-addr">$0800–$7FFF</td><td class="td-desc">Program / BASIC RAM (30 KB)</td></tr>
-          <tr><td class="td-addr">$8000–$9FFF</td><td class="td-desc">I/O hardware — eight device slots</td></tr>
-          <tr><td class="td-addr">$A000–$B7FF</td><td class="td-desc">Kernal + jump table</td></tr>
-          <tr><td class="td-addr">$B800–$BFFF</td><td class="td-desc">Character set ROM</td></tr>
-          <tr><td class="td-addr">$C000–$E7FF</td><td class="td-desc">BASIC interpreter</td></tr>
-          <tr><td class="td-addr">$E800–$FEFF</td><td class="td-desc">Machine-code Monitor</td></tr>
-          <tr><td class="td-addr">$FF00–$FFF9</td><td class="td-desc">Wozmon (mini monitor)</td></tr>
-          <tr><td class="td-addr">$FFFA–$FFFF</td><td class="td-desc">CPU vectors (NMI, RESET, IRQ)</td></tr>
+          <tr><td class="td-addr">$0000&ndash;$07FF</td><td class="td-desc">Zero page, stack, Kernal and BASIC buffers</td></tr>
+          <tr><td class="td-addr">$0800&ndash;$7FFF</td><td class="td-desc">Your program, variables and strings (30 KB)</td></tr>
+          <tr><td class="td-addr">$8000&ndash;$9FFF</td><td class="td-desc">I/O &mdash; eight 1 KB device slots</td></tr>
+          <tr><td class="td-addr">$A000&ndash;$B7FF</td><td class="td-desc">Kernal + jump table</td></tr>
+          <tr><td class="td-addr">$B800&ndash;$BFFF</td><td class="td-desc">Character set</td></tr>
+          <tr><td class="td-addr">$C000&ndash;$EDFF</td><td class="td-desc">BASIC interpreter</td></tr>
+          <tr><td class="td-addr">$EE00&ndash;$FEFF</td><td class="td-desc">Machine-code Monitor</td></tr>
+          <tr><td class="td-addr">$FF00&ndash;$FFF9</td><td class="td-desc">Wozmon</td></tr>
+          <tr><td class="td-addr">$FFFA&ndash;$FFFF</td><td class="td-desc">NMI, RESET and IRQ vectors</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Did You Know -->
     <div class="section">
-      <span class="sec-title">Did You Know?</span>
+      <span class="sec-title">Did you know?</span>
       <div class="note-box">
-        The entire operating system — kernel, machine-code Monitor, <em>and</em> a full BASIC interpreter — fits in a single <strong>32 KB EEPROM</strong>.
+        The entire operating system &mdash; Kernal, machine-code Monitor <em>and</em> a full
+        BASIC &mdash; fits in one <strong>32 KB EEPROM</strong>, with room to spare for the
+        character set.
       </div>
       <div class="note-box">
-        The <strong>Pico9918</strong> video card is a Raspberry Pi Pico pretending to be the 1979 TMS9918A graphics chip found in the ColecoVision and MSX.
+        The <strong>Pico9918</strong> is a Raspberry Pi Pico pretending, cycle for cycle, to be
+        the 1979 TMS9918A from the ColecoVision and the MSX.
       </div>
       <div class="note-box">
-        The <strong>ARMSID</strong> reproduces the legendary Commodore 64 “SID” sound chip using a modern ARM microcontroller.
+        Three version numbers ship in that one chip: <strong>BIOS v1.5</strong>,
+        <strong>BASIC V2.0</strong> and <strong>Monitor v1.1</strong>.
       </div>
     </div>
 
@@ -137,118 +137,115 @@
 
   <div class="pg-body">
 
-    <!-- Getting Started -->
     <div class="section">
-      <span class="sec-title">Getting Started</span>
+      <span class="sec-title">Switching on</span>
       <div class="note-box">
-        Flip the power switch and the ACE boots straight into <strong>BASIC</strong>, showing a banner and the <code>READY.</code> prompt. Everything is typed at this prompt. Press <strong>ESC</strong> at boot (or type <code>BRK</code> handlers) to drop into the machine-code <strong>Monitor</strong> instead; type <code>X</code> in the monitor to return to BASIC.
+        The splash appears, counts down five seconds and boots <strong>BASIC</strong>. You get a
+        banner, a byte count, and the prompt &mdash; which is <code>OK</code>. Everything is
+        typed there.
+      </div>
+      <div class="code-block">-- 6502 BIOS v1.5 --
+
+6502 BASIC V2.0
+ 30718 BYTES FREE
+
+OK</div>
+      <div class="note-box">
+        Press <code>ENTER</code> during the countdown to skip it, or <code>ESC</code> to boot the
+        machine-code <strong>Monitor</strong> instead. Type <code>X</code> there to come back.
+        BASIC and the Monitor have sheets of their own, and the whole guide is at
+        <code>acwright.github.io/6502-DOCS</code>.
       </div>
     </div>
 
-    <!-- First Things to Type -->
     <div class="section">
-      <span class="sec-title">First Things to Type</span>
+      <span class="sec-title">First things to type</span>
       <table>
-        <thead><tr><th style="width:42%">Type This</th><th>What Happens</th></tr></thead>
+        <thead><tr><th style="width:42%">Type this</th><th>What happens</th></tr></thead>
         <tbody>
-          <tr><td class="td-cmd">PRINT "HELLO"</td><td class="td-desc">Prints text to the screen</td></tr>
-          <tr><td class="td-cmd">PRINT 6502*2</td><td class="td-desc">Use it as a calculator</td></tr>
-          <tr><td class="td-cmd">LIST</td><td class="td-desc">Show the program currently in memory</td></tr>
-          <tr><td class="td-cmd">RUN</td><td class="td-desc">Run the program in memory</td></tr>
-          <tr><td class="td-cmd">NEW</td><td class="td-desc">Erase the program and start fresh</td></tr>
+          <tr><td class="td-cmd">PRINT "HELLO"</td><td class="td-desc">Puts text on the screen</td></tr>
+          <tr><td class="td-cmd">PRINT 6502*2</td><td class="td-desc">Use it as a calculator &mdash; answers <code>13004</code></td></tr>
+          <tr><td class="td-cmd">LIST</td><td class="td-desc">Show the program in memory</td></tr>
+          <tr><td class="td-cmd">RUN</td><td class="td-desc">Run it</td></tr>
+          <tr><td class="td-cmd">NEW</td><td class="td-desc">Throw it away and start again</td></tr>
+          <tr><td class="td-cmd">MEM</td><td class="td-desc">Free bytes, what the machine found, and the current disk</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Loading Programs -->
     <div class="section">
-      <span class="sec-title">Loading &amp; Saving (CompactFlash)</span>
+      <span class="sec-title">Loading and saving</span>
       <table>
-        <thead><tr><th style="width:42%">Command</th><th>What Happens</th></tr></thead>
+        <thead><tr><th style="width:42%">Command</th><th>What happens</th></tr></thead>
         <tbody>
-          <tr><td class="td-cmd">DIR</td><td class="td-desc">List files on the CompactFlash card</td></tr>
-          <tr><td class="td-cmd">LOAD "NAME"</td><td class="td-desc">Load a program from CF</td></tr>
-          <tr><td class="td-cmd">SAVE "NAME"</td><td class="td-desc">Save your program to CF</td></tr>
-          <tr><td class="td-cmd">RUN</td><td class="td-desc">Run what you just loaded</td></tr>
+          <tr><td class="td-cmd">DIR</td><td class="td-desc">List the files on the CompactFlash card</td></tr>
+          <tr><td class="td-cmd">LOAD "NAME"</td><td class="td-desc">Load a program</td></tr>
+          <tr><td class="td-cmd">SAVE "NAME"</td><td class="td-desc">Save the one you have</td></tr>
+          <tr><td class="td-cmd">DEL "NAME"</td><td class="td-desc">Delete a file</td></tr>
+          <tr><td class="td-cmd">DISK 3</td><td class="td-desc">Switch to disk bank 3. The card holds 256 of them, 16 files each</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Fun With No Disk -->
     <div class="section">
-      <span class="sec-title">Fun To Try (No Disk Needed)</span>
+      <span class="sec-title">Fun to try &mdash; no card needed</span>
       <div class="note-box">
-        <strong>Endless name scroll —</strong> type:<br>
+        <strong>Endless name scroll &mdash;</strong> type<br>
         <code>10 PRINT "ACE ";</code><br>
         <code>20 GOTO 10</code><br>
-        then <code>RUN</code>. Press <strong>Ctrl+C</strong> to stop.
+        then <code>RUN</code>. Press <strong>ESC</strong> to stop it.
       </div>
       <div class="note-box">
-        <strong>Make some noise —</strong> <code>SOUND 0,440,50</code> plays a 440&nbsp;Hz tone. Try different frequencies. Set volume with <code>VOL 15</code>.
+        <strong>Random maze &mdash;</strong><br>
+        <code>10 PRINT CHR$(47 + 45 * INT(RND(1) * 2));</code><br>
+        <code>20 GOTO 10</code><br>
+        fills the screen with slashes that read as a maze.
       </div>
       <div class="note-box">
-        <strong>Random art —</strong><br>
-        <code>10 PRINT CHR$(INT(RND(1)*2)+177);</code><br>
-        <code>20 GOTO 10</code> &nbsp;— fills the screen with a maze pattern.
+        <strong>Make some noise &mdash;</strong> <code>VOL 15</code> then
+        <code>SOUND 1,440,50</code> plays a concert A for half a second. Voices are
+        <strong>1 to 3</strong>; volume 0 to 15.
       </div>
       <div class="note-box">
-        <strong>Wozmon easter egg —</strong> from BASIC type <code>SYS $FF00</code> to jump into a built-in copy of the original Apple I monitor.
+        <strong>Wiggle a joystick &mdash;</strong> <code>PRINT JOY(1)</code> reads
+        <code>255</code> with nothing held, and drops a bit for each direction you push.
       </div>
       <div class="note-box">
-        <strong>Wiggle the joystick —</strong> <code>PRINT JOY(1)</code> shows a live number that changes as you move a plugged-in Atari joystick.
+        <strong>Wozmon easter egg &mdash;</strong> <code>SYS 65280</code> lands you in a copy of
+        the original Apple I monitor. Its prompt is a backslash; <code>FF00.FF07</code> reads
+        eight bytes. Press the reset button to come back.
       </div>
     </div>
 
-    <!-- BASIC Quick Reference -->
     <div class="section">
-      <span class="sec-title">BASIC Quick Reference</span>
+      <span class="sec-title">BASIC in one table</span>
       <table>
         <thead><tr><th style="width:42%">Statement</th><th>Purpose</th></tr></thead>
         <tbody>
-          <tr><td class="td-cmd">PRINT / ?</td><td class="td-desc">Display text or numbers</td></tr>
-          <tr><td class="td-cmd">INPUT A</td><td class="td-desc">Ask the user for a value</td></tr>
-          <tr><td class="td-cmd">LET A=5</td><td class="td-desc">Assign a variable (LET optional)</td></tr>
-          <tr><td class="td-cmd">IF…THEN</td><td class="td-desc">Make a decision</td></tr>
-          <tr><td class="td-cmd">FOR…NEXT</td><td class="td-desc">Counting loop</td></tr>
-          <tr><td class="td-cmd">GOTO / GOSUB</td><td class="td-desc">Jump to / call a line number</td></tr>
-          <tr><td class="td-cmd">PEEK / POKE</td><td class="td-desc">Read / write a memory byte</td></tr>
-          <tr><td class="td-cmd">SYS addr</td><td class="td-desc">Call a machine-code routine</td></tr>
+          <tr><td class="td-cmd">PRINT</td><td class="td-desc">Show text or numbers</td></tr>
+          <tr><td class="td-cmd">INPUT A</td><td class="td-desc">Ask the person at the keyboard for a value</td></tr>
+          <tr><td class="td-cmd">LET A=5</td><td class="td-desc">Give a variable a value (<code>LET</code> optional)</td></tr>
+          <tr><td class="td-cmd">IF&hellip;THEN</td><td class="td-desc">Make a decision</td></tr>
+          <tr><td class="td-cmd">FOR&hellip;NEXT</td><td class="td-desc">Counting loop &mdash; one <code>NEXT</code> per loop</td></tr>
+          <tr><td class="td-cmd">GOTO / GOSUB</td><td class="td-desc">Jump to, or call, a line number</td></tr>
+          <tr><td class="td-cmd">CLS / LOCATE / COLOR</td><td class="td-desc">Clear the screen, move the cursor, set the colours</td></tr>
+          <tr><td class="td-cmd">PEEK / POKE</td><td class="td-desc">Read or write one byte of memory</td></tr>
+          <tr><td class="td-cmd">SYS addr</td><td class="td-desc">Call machine code and come back</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Monitor Commands -->
     <div class="section">
-      <span class="sec-title">Monitor Commands</span>
-      <table>
-        <thead><tr><th style="width:34%">Command</th><th>Action</th></tr></thead>
-        <tbody>
-          <tr><td class="td-cmd">M aaaa</td><td class="td-desc">Memory dump (hex + ASCII)</td></tr>
-          <tr><td class="td-cmd">D aaaa</td><td class="td-desc">Disassemble 65C02 code</td></tr>
-          <tr><td class="td-cmd">&gt; aaaa bb…</td><td class="td-desc">Deposit bytes into memory</td></tr>
-          <tr><td class="td-cmd">G aaaa</td><td class="td-desc">Go — run code at an address</td></tr>
-          <tr><td class="td-cmd">R</td><td class="td-desc">Show saved CPU registers</td></tr>
-          <tr><td class="td-cmd">N value</td><td class="td-desc">Convert hex / decimal / binary</td></tr>
-          <tr><td class="td-cmd">X</td><td class="td-desc">Exit Monitor back to BASIC</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Handy Keys -->
-    <div class="section">
-      <span class="sec-title">Handy Keys</span>
+      <span class="sec-title">Handy keys</span>
       <table>
         <thead><tr><th style="width:34%">Key</th><th>Does</th></tr></thead>
         <tbody>
-          <tr><td class="td-cmd">Ctrl + C</td><td class="td-desc">Stop a running program</td></tr>
-          <tr><td class="td-cmd">ESC</td><td class="td-desc">Enter the Monitor at boot</td></tr>
-          <tr><td class="td-cmd">Backspace</td><td class="td-desc">Erase the last character</td></tr>
-          <tr><td class="td-cmd">Reset button</td><td class="td-desc">Restart the machine to BASIC</td></tr>
+          <tr><td class="td-cmd">ESC</td><td class="td-desc"><strong>Stops a running program.</strong> The one to remember</td></tr>
+          <tr><td class="td-cmd">Ctrl + C</td><td class="td-desc">The same thing, if that is the habit you have</td></tr>
+          <tr><td class="td-cmd">Backspace</td><td class="td-desc">Rub out the last character</td></tr>
+          <tr><td class="td-cmd">Reset button</td><td class="td-desc">Warm restart &mdash; your program survives</td></tr>
         </tbody>
       </table>
-      <div class="note-box" style="margin-top:5px;">
-        Stuck? Just tap the <strong>white reset button above ESC</strong> and start over — you can't break anything.
-      </div>
     </div>
 
   </div><!-- /pg-body -->

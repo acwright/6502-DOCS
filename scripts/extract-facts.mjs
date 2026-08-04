@@ -674,11 +674,14 @@ function extractMonitorCommands(src) {
     ],
     wozmon: {
       address: hex(0xff00),
-      fromMonitor: 'G FF00',
+      // `J`, not `G`. MonCmdGo does `sei` before its `rti`, so Wozmon comes up
+      // with interrupts off and never receives a character — see ACCURACY.md
+      // A18. MonCmdJsr leaves interrupts alone and returns on RTS.
+      fromMonitor: 'J FF00',
       fromBasic: 'SYS 65280',
       note: 'The original Apple I monitor, kept as an easter egg.',
       source: 'BIOS.cfg:7',
-      check: 'GREP'
+      check: 'GREP + RUN'
     },
     commands
   }
@@ -833,6 +836,89 @@ function parseBasicMessages(basic) {
 
 function parseMonitorMessages(monitor) {
   return stringConstants(monitor.lines, /^MonStr\w+$/, 'Monitor.asm')
+}
+
+// ---------------------------------------------------------------------------
+// Character set  (the CP437 glyphs the video card is seeded with)
+// ---------------------------------------------------------------------------
+
+/**
+ * Read all 256 glyphs out of `Chars.asm`.
+ *
+ * Every character is a `; Character $xx - G (name)` comment followed by eight
+ * `.byte` rows, one pixel row each, five pixels left-aligned in the byte. The
+ * comment is as much a source of truth as the bytes: it is where the glyph's
+ * name comes from, and a card that prints "▓ medium shade" instead of "char
+ * 177" is the difference between a reference and a hex dump.
+ *
+ * The eight bytes are what `InitVideo` copies into the TMS9918 pattern table,
+ * so rendering them is rendering exactly what the screen shows.
+ */
+function extractCharset(src) {
+  const { lines } = src.chars
+  const chars = []
+
+  for (let i = 0; i < lines.length; i++) {
+    const header = lines[i].match(/^\s*;\s*Character \$([0-9A-F]{2})\s*-\s*(.*)$/)
+    if (!header) continue
+
+    const code = parseInt(header[1], 16)
+    // `☺ (white smiling face)` → glyph `☺`, name `white smiling face`. A few
+    // entries carry only a name, and the blank ones carry only a note.
+    const rest = header[2].trim()
+    const named = rest.match(/^(\S+)\s+\((.+)\)$/)
+
+    const rows = []
+    for (let j = i + 1; rows.length < 8 && j < lines.length; j++) {
+      const bytes = lines[j].match(/^\s*\.byte\s+(.+)$/)
+      if (!bytes) break
+      for (const b of bytes[1].split(',')) {
+        const value = b.trim().match(/^\$([0-9A-Fa-f]{2})$/)
+        if (value) rows.push(parseInt(value[1], 16))
+      }
+    }
+
+    if (rows.length !== 8) {
+      throw new Error(`Chars.asm: character $${header[1]} has ${rows.length} rows, expected 8`)
+    }
+
+    chars.push({
+      code,
+      hex: '$' + header[1],
+      glyph: named ? named[1] : rest,
+      name: named ? named[2] : rest,
+      rows
+    })
+  }
+
+  if (chars.length !== 256) {
+    throw new Error(`Chars.asm: found ${chars.length} characters, expected 256`)
+  }
+
+  return {
+    $meta: meta(
+      'Character set',
+      'All 256 CP437 glyphs, eight pixel rows each, as the video card is seeded with them.',
+      [src.chars, src.cfg]
+    ),
+    address: hex(0xb800),
+    end: hex(0xbfff),
+    bytesPerChar: 8,
+    cell: '8 × 8 pixels, glyphs drawn 5 wide and left-aligned in the byte',
+    // The boundary that decides what a reader can and cannot PRINT — see
+    // ACCURACY.md A17 and A37. It belongs with the glyphs, not with the screen.
+    printable: {
+      viaChrout: '$20–$7E',
+      note:
+        'Chrout puts $20 to $7E on the screen and honours four control codes ' +
+        '(CR, LF, backspace, bell). Everything else, including every glyph ' +
+        'above $7E, it discards. VideoChroutRaw draws any of the 256.',
+      rawRoutine: 'VideoChroutRaw',
+      source: 'Kernal.asm VideoChroutImpl',
+      check: 'GREP + RUN'
+    },
+    chars
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1083,6 +1169,7 @@ function main() {
     kernal: readSource(biosDir, 'Kernal.asm'),
     basic: readSource(biosDir, 'BASIC.asm'),
     monitor: readSource(biosDir, 'Monitor.asm'),
+    chars: readSource(biosDir, 'Chars.asm'),
     biosReadme: readSource(biosDir, 'README.md')
   }
 
@@ -1095,7 +1182,8 @@ function main() {
     'hardware.json': extractHardware(src),
     'basic-keywords.json': extractBasicKeywords(src),
     'monitor-commands.json': extractMonitorCommands(src),
-    'errors.json': extractErrors(src)
+    'errors.json': extractErrors(src),
+    'charset.json': extractCharset(src)
   }
 
   mkdirSync(DATA_DIR, { recursive: true })
@@ -1153,6 +1241,7 @@ function summarise(name, value) {
   if (name === 'memory-map.json') return `${value.ram.length} RAM regions, ${value.rom.length} ROM segments`
   if (name === 'hardware.json') return `${value.slots.length} I/O slots`
   if (name === 'boot.json') return `BIOS v${value.version.string.slice(1)}`
+  if (name === 'charset.json') return `${value.chars.length} glyphs`
   return ''
 }
 

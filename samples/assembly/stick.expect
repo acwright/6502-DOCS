@@ -1,0 +1,10 @@
+# "Reading the sticks" — one reading of each, decoded into names.
+#
+# Nothing is holding either stick here, so every bit comes back high and both
+# report NOTHING. Hold a direction while pressing Enter and the same program
+# names it.
+
+wait (OK|ENTER)
+send \r
+expect ^STICK 1: NOTHING$
+expect ^STICK 2: NOTHING$

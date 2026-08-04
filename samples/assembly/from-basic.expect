@@ -1,0 +1,4 @@
+# "BASIC and machine code together" — BASIC pokes a routine into memory,
+# leaves it two numbers, calls it, and reads the answer back.
+
+expect ^30 \+ 12 = 42$

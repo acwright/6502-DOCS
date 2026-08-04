@@ -768,6 +768,45 @@ machines, with the Kernal as the platform API.
 Every jump-table entry documented and matching `Kernal.asm` byte for byte; every snippet
 assembles with `cl65` and runs in the harness.
 
+### What shipped
+
+Twenty-two pages under `/assembly/` — the twenty chapters above plus an index,
+with chapter 8 split into **The screen** (text mode, the character set, talking
+to the card) and **The graphics modes** (the three TMS demos), because one page
+carrying all four modes and three full listings was unreadable. The Kernal
+chapter and the memory-map chapter are generated from the fact base, so all 53
+published slots are documented with their registers and none of it was retyped.
+
+Fourteen new samples: thirteen assembly programs, each the worked example of one
+chapter, plus the BASIC program that pokes machine code into memory and `SYS`es
+it. The suite is 129 cases, all green.
+
+Four notes for later phases:
+
+- **The three TMS demos are ported unchanged and do run in the harness, but a
+  graphics screen cannot be asserted as text.** What each case checks is the
+  part that can actually break: the demo runs to the end, restores text mode,
+  and BASIC's prompt comes back. The pictures themselves are Phase 8's job —
+  `IMAGES.md` carries a slot for Graphics I and Multicolor.
+- **The two KIM LED demos are annotated inline in the projects chapter rather
+  than shipped as samples.** They drive an LED latch on the keypad add-on's port
+  and they never return, so there is nothing for the harness to assert and
+  nothing for it to wait on. The KIM chapter's type-in cards remain their
+  canonical home.
+- **There is no cartridge sample.** The harness loads programs, not cartridges,
+  and adding a cartridge link configuration and a `dbg load cart` path to it was
+  more machinery than one chapter justified. `docs/assembly/cartridges.md` shows
+  fragments from the `6502-CRT` template instead of a listing of its own. A
+  cartridge case would be a genuine addition to the harness if a later phase
+  wants one.
+- **A35–A37 came out of writing the programs.** A35 is a stale jump-table
+  address in a `6502-CRT` comment (one line, Phase 9). A36 is the real find: a
+  chained interrupt handler must not push anything, because the Kernal's handler
+  reads the saved status register off the stack at a fixed depth — true,
+  undocumented anywhere upstream, and worth a sentence in the BIOS README. A37
+  moves the "the screen drops codes above 126" rule to where it belongs, which
+  is `Chrout`, not the screen.
+
 ---
 
 ## Phase 7 — Quick Reference Cards
@@ -815,6 +854,42 @@ and *nothing lives only on a card*.
 - Every card renders and prints correctly offline in Chrome and Safari.
 - `ACCURACY.md` shows every card-sourced discrepancy resolved.
 - No fact exists on a card that does not also exist in a chapter.
+
+### What shipped
+
+Ten current cards at `/cards/*.html`, indexed at `/reference/`, each linked from
+the chapter it condenses and linking back. Five new pages under `/reference/` —
+the card index, the character set, connectors, the keyboard matrix, the keypad
+map and a glossary — because five of the cards had no chapter to condense yet
+and "nothing lives only on a card" is the phase's own rule.
+
+Four notes for later phases:
+
+- **Six of the ten cards are generated.** `scripts/build-cards.mjs` writes the
+  BASIC, Monitor, Kernal, memory-map, character-set and keyboard-layout cards
+  from `data/`, and `npm run verify` fails if the checked-in copy has drifted.
+  That is the structural answer to how the originals ended up documenting a
+  v1.0 ROM on a v1.5 machine: for those six it can no longer happen quietly.
+  The other four — the ACE, KIM, connectors and keyboard-matrix sheets — come
+  from boards and firmware rather than from the ROM, so they are hand-written
+  with their source cited in a comment at the top of the file.
+- **The audit found twelve broken listings, not "most of them"** (`ACCURACY.md`
+  O1, now resolved). Three bad programs appeared on four sheets each: `SOUND`
+  with voice 0 (A38), `SYS $FF00` (A39), and a "random maze" that runs for ever
+  and puts *nothing* on the screen (A40), because every character it asks for is
+  above the range `Chrout` will pass. A41 is a `PRINT / ?` heading for a BASIC
+  with no `?`. Everything else on those sheets ran exactly as printed.
+- **`data/charset.json` is new**, extracted from `Chars.asm`: 256 glyphs, eight
+  bytes each, with the name the ROM comment gives them. Both the character-set
+  card and `/reference/character-set` draw every glyph as an SVG from those
+  bytes, so what a reader sees is the pattern table itself rather than a font
+  that resembles it. It also gives Phase 8 the character-set grid for free.
+- **Two upstream items came out of the schematics.** A42 is nine shifted
+  connector designators in `6502-ACE/README.md` — the same class as A20, and it
+  means A11 named the wrong part for the barrel jack, which is `J17`. A43 is
+  smaller but worth the note: the fact base still carried `G FF00` for Wozmon,
+  which A18 had disproved three phases earlier, and nothing noticed until a card
+  started generating itself from that field.
 
 ---
 

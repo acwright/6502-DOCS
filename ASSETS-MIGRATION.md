@@ -6,11 +6,13 @@ The evidence that `6502-ASSETS` can be archived.
 file is what makes that a decision rather than a guess: every path that existed
 in it, where it went, and — where it went nowhere — why.
 
-**Status: complete.** Every path in `6502-ASSETS` is accounted for. What remains
-before archiving is not migration but authorship: six sheets are recreated from
-the fact base in [Phase 7](PLAN.md#phase-7--quick-reference-cards), and the
-migrated cards still carry their original content
-([ACCURACY.md O4](ACCURACY.md)).
+**Status: complete.** Every path in `6502-ASSETS` is accounted for, and
+[Phase 7](PLAN.md#phase-7--quick-reference-cards) has finished the authoring
+that was outstanding: the six sheets that existed only as Affinity or Numbers
+documents are now HTML cards, and the five migrated system sheets have been
+audited against the machine and corrected
+([ACCURACY.md O1 and O4](ACCURACY.md), both resolved). Nothing in this repo
+still depends on `6502-ASSETS`.
 
 ## How this file is kept honest
 
@@ -60,16 +62,19 @@ table, address, and listing is the text that shipped in `6502-ASSETS`, so a
 converted card diffs cleanly against its original and any visual change is
 attributable to the stylesheet alone.
 
-**Did not:** correct any card's content. That is Phase 7, which opens by auditing
-every sheet against `data/`. The known-wrong ROM boundary and `READY.` prompt on
-the ACE sheet ([ACCURACY.md A2, A3](ACCURACY.md)) are still printed on
-`docs/public/cards/ace.html` today, and nothing on the site links to a card yet.
+**Did not:** correct any card's content. That was Phase 7, which typed every
+listing on every sheet into the emulator and found twelve broken ones across the
+five system cards ([ACCURACY.md A38–A41](ACCURACY.md)) on top of the ROM
+boundary and `READY.` prompt already logged as A2 and A3. The ACE and KIM sheets
+were rebuilt from scratch; the COB, DEV and VCS sheets were corrected in place.
+Every card is now linked from [the card index](docs/reference/index.md) and from
+the chapter it condenses.
 
 ## Where things landed
 
 | Directory | Holds |
 |---|---|
-| [`docs/public/cards/`](docs/public/cards/) | The five system sheets and the shared `card.css`. Served at `/cards/*.html` — raw print pages, outside the VitePress chrome. |
+| [`docs/public/cards/`](docs/public/cards/) | Ten current sheets and the shared `card.css`. Served at `/cards/*.html` — raw print pages, outside the VitePress chrome. Five came from `6502-ASSETS`; five are new in Phase 7. |
 | [`docs/public/cards/archive/`](docs/public/cards/archive/) | The BIOS v1.0–v1.4 reference sheets and the two KIM LED walk-throughs. Kept as the record of what each firmware release documented; superseded, not current. |
 | [`docs/public/images/`](docs/public/images/) | Branding exports, the family photo, and the character-set renders at 1×–16×. |
 | [`assets/`](assets/) | Design sources — nothing here is served. See [`assets/README.md`](assets/README.md). |
@@ -78,31 +83,46 @@ the ACE sheet ([ACCURACY.md A2, A3](ACCURACY.md)) are still printed on
 
 The nine sheets rendered by headless Chrome from `file://` with no network:
 every one prints to a 612 × 792 pt page (US Letter, exactly), at the same page
-count as its original, with `BebasNeue-Regular` and `SourceCodePro-SemiBold`
-embedded in the output. The originals, rendered the same way, fall back to
-Helvetica and Menlo — which is the bug this migration fixes.
+count as its original, with `BebasNeue-Regular` embedded in the output. The
+originals, rendered the same way, fall back to Helvetica — which is the bug this
+migration fixes. Phase 7 re-ran the same check across all fourteen current
+sheets and got the same result.
+
+One caveat on that check, found in Phase 7 and worth writing down so nobody
+chases it twice: **`Source Code Pro` never appears in a `--print-to-pdf`
+output**, whichever card you render, and the PDF names Menlo instead. It is not
+a loading failure. A screenshot of the same page shows the face rendering
+correctly — dotted zero, Source Code Pro letterforms — so the `@font-face`
+resolves and the browser is using it. Chrome's headless PDF writer substitutes a
+system monospace at export time; printing from a normal browser window, which is
+what the print hint on every card tells the reader to do, does not.
 
 ### What is deliberately not here
 
 - **PDFs of the HTML sheets** (10 files). Print artefacts, not sources. Regenerate
   by printing the card: letter, 100%, margins off, background graphics on. The
   PDF/PNG exports of the *legacy* sheets — the ones with no HTML to print — are
-  kept in `assets/legacy/renders/` as the reference their Phase 7 recreations get
-  checked against.
+  kept in `assets/legacy/renders/` as the reference their Phase 7 recreations
+  were checked against.
 - **`README.md`.** Its folder guide describes a tree that no longer exists; its
   memory-map summary is wrong in two places ([A4, A8](ACCURACY.md)) and is
   replaced by `data/memory-map.json`; its Related table is rebuilt in this repo's
   README.
 - **`LICENSE`, `.gitignore`.** This repo has its own.
 
-### Still to author
+### Authored rather than migrated
 
 Six sheets existed only as Affinity Designer or Numbers documents published to
-PDF. There is nothing to migrate — a `.afdesign` cannot be diffed against
-`Kernal.asm` — so each is recreated as HTML from the fact base or the schematics
-in Phase 7. Sources are parked in `assets/affinity/` and `assets/numbers/`, last
-exports in `assets/legacy/renders/`, and the full mapping is in
-[`assets/README.md`](assets/README.md).
+PDF. There was nothing to migrate — a `.afdesign` cannot be diffed against
+`Kernal.asm` — so Phase 7 recreated each as HTML from the fact base or from the
+KiCad schematics. Sources stay parked in `assets/affinity/` and
+`assets/numbers/`, last exports in `assets/legacy/renders/`, and the full
+mapping is in [`assets/README.md`](assets/README.md).
+
+Three of the recreations are **generated** from `data/` by
+`scripts/build-cards.mjs` and re-checked by `npm run verify`, so they cannot
+fall behind the ROM. Three are hand-written from the schematics and firmware,
+each citing its source in a comment at the top of the file.
 
 ---
 

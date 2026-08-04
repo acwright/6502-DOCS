@@ -70,3 +70,10 @@ reference sheet is [here](/cards/cob.html).
 
 The COB's cards are also what you'd use to build a
 [standalone KIM](/addons/kim#building-a-kim-on-its-own).
+
+<div class="card-link">
+
+📄 **[6502-COB card](/cards/cob.html)** — the machine on two printable
+pages. The [card index](/reference/) has the rest.
+
+</div>

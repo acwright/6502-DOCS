@@ -101,6 +101,26 @@
   letter-spacing: 0.02em;
 }
 
+/**
+ * Centre the site title against the wordmark beside it.
+ *
+ * The nav bar centres its items by line box, and Bebas Neue's line box is not
+ * symmetric about its capitals: per 16px em it asks for 14px of ascent and 5px
+ * of descent while its capitals are only 11.6px tall, so the letters sit above
+ * the middle of the box they are centred in. The `6502` PNG is cropped tight
+ * to its glyphs, so the two are directly comparable — and "ACE DOCUMENTATION"
+ * came out about 1.1px high of it.
+ *
+ *   (descent − ascent) / 2 + capHeight / 2
+ *     = (5 − 14) / 2 + 11.6 / 2 ≈ 1.1px at 16px ≈ 0.07em
+ *
+ * Nudging by em rather than px keeps it true if the nav font size changes.
+ */
+.VPNavBarTitle .title span {
+  position: relative;
+  top: 0.07em;
+}
+
 /* No accent hue anywhere: links read as underlined ink, not a colour swap. */
 .vp-doc a {
   color: var(--vp-c-brand-1);
@@ -139,4 +159,24 @@
 .placeholder-image .placeholder-caption {
   font-size: 0.9em;
   max-width: 32em;
+}
+
+/**
+ * The pointer from a chapter to the printable card that condenses it.
+ *
+ * The cards live outside the VitePress build, as raw HTML under
+ * `docs/public/cards/`, so they cannot be reached by the sidebar or by search.
+ * This is the only way a reader finds one — which is why it is a block rather
+ * than a link buried in a sentence.
+ */
+.card-link {
+  margin: 2em 0;
+  padding: 0.9em 1.2em;
+  border-left: 3px solid var(--vp-c-default-1);
+  background: var(--vp-c-default-soft);
+}
+
+.card-link p {
+  margin: 0;
+  font-size: 0.95em;
 }

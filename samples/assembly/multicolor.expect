@@ -1,0 +1,14 @@
+# One of the three graphics-mode demos, ported from the assembly examples
+# repository. It takes the screen off the machine, draws, waits for a key,
+# then hands text mode back and returns to BASIC.
+#
+# The drawn screen is not text, so there is nothing sensible to read off it
+# with a text dump. What is asserted is the part that can go wrong: the demo
+# runs to the end, puts text mode back, and BASIC's prompt returns.
+
+console video
+timeout 60s
+cycles 8000000
+send \r
+
+screen ^OK\s*$

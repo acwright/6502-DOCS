@@ -1,0 +1,6 @@
+# "Drawing on the screen" — a framed sign, positioned character by character.
+
+console video
+
+screen ^\s+║\s+THE ACE\s+║\s*$
+screen ^\s+╚═+╝\s*$

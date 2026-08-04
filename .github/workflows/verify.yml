@@ -37,6 +37,12 @@ jobs:
       - name: Check the reference cards
         run: npm run cards:check
 
+      # Six of the cards are generated from `data/` — a stale checked-in copy
+      # would print a machine that no longer exists, which is exactly how the
+      # originals ended up documenting a v1.0 ROM. Neither script needs deps.
+      - name: Check the generated cards are current
+        run: npm run cards:verify
+
       # The migration is only evidence for retiring 6502-ASSETS if it is still
       # true. This re-walks that repo and fails if it holds a path this repo does
       # not account for. Drop the step once 6502-ASSETS is deleted (Phase 10

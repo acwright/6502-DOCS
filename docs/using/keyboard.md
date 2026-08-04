@@ -108,3 +108,15 @@ puts nothing on the screen, even though there is a solid block at that position
 in the character set. Reaching the upper half of the character set means going
 through the Kernal's raw output routine from assembly.
 :::
+
+[The character set](/reference/character-set) shows all 256 of them, and
+which ones `PRINT` will pass.
+
+<div class="card-link">
+
+📄 **[Keyboard Layout card](/cards/keyboard-layout.html)** — the keys as they
+sit on the board, and the ones worth remembering. The
+**[Keyboard Matrix card](/cards/keyboard-matrix.html)** has the grid behind
+them, for anyone wiring their own.
+
+</div>

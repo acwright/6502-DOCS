@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6502 Keyboard Matrix</title>
+<link rel="stylesheet" href="card.css">
+</head>
+<!--
+  Hand-authored, SCHEM + GREP verified against:
+    6502-ACE/Firmware/AB Controller/src/main.cpp  — matrixMap[8][8], the
+      row/column-to-ASCII table the controller ships with
+    6502-ACE/Hardware/ACE Board/Rev 1.1/ACE Board.kicad_sch — J14 KEYBOARD,
+      a 1×16 2.00mm header carrying PA0–PA7 then PB0–PB7 in order
+  Recreated from 6502-ASSETS/Documentation/Keyboard Matrix/ (a .numbers file),
+  which had the grid right and carried no codes.
+-->
+<body class="card" style="--w-label: 12%">
+
+<div class="print-hint">To print: letter &middot; 100% scale &middot; margins off &middot; background graphics ON</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 1 — FRONT -->
+<div class="page">
+
+  <div class="pg-header">
+    <h1>Keyboard Matrix</h1>
+    <div class="side-info">A.C. Wright 6502<br>ACE &middot; AB Controller</div>
+  </div>
+
+  <div class="pg-body one-col">
+
+    <div class="section">
+      <span class="sec-title">Rows and columns</span>
+      <div class="note-box">
+        The ACE's 67 keys are wired as an 8&nbsp;×&nbsp;8 grid. The AB Controller drives one
+        <strong>row</strong> at a time on <code>PA0</code>&ndash;<code>PA7</code> and reads the
+        <strong>columns</strong> back on <code>PB0</code>&ndash;<code>PB7</code>. Find your key,
+        read off its row and column, and the small number is the ASCII code the controller sends
+        when you press it.
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:10%"></th>
+            <th class="th-hex">PB0</th><th class="th-hex">PB1</th><th class="th-hex">PB2</th><th class="th-hex">PB3</th>
+            <th class="th-hex">PB4</th><th class="th-hex">PB5</th><th class="th-hex">PB6</th><th class="th-hex">PB7</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">PA0</td>
+            <td class="td-key">`<em>$60</em></td><td class="td-key">1<em>$31</em></td><td class="td-key">2<em>$32</em></td><td class="td-key">3<em>$33</em></td>
+            <td class="td-key">4<em>$34</em></td><td class="td-key">5<em>$35</em></td><td class="td-key">6<em>$36</em></td><td class="td-key">7<em>$37</em></td>
+          </tr>
+          <tr>
+            <td class="td-label">PA1</td>
+            <td class="td-key">8<em>$38</em></td><td class="td-key">9<em>$39</em></td><td class="td-key">0<em>$30</em></td><td class="td-key">-<em>$2D</em></td>
+            <td class="td-key">=<em>$3D</em></td><td class="td-key">BKSP<em>$08</em></td><td class="td-key">ESC<em>$1B</em></td><td class="td-key">TAB<em>$09</em></td>
+          </tr>
+          <tr>
+            <td class="td-label">PA2</td>
+            <td class="td-key">Q<em>$51</em></td><td class="td-key">W<em>$57</em></td><td class="td-key">E<em>$45</em></td><td class="td-key">R<em>$52</em></td>
+            <td class="td-key">T<em>$54</em></td><td class="td-key">Y<em>$59</em></td><td class="td-key">U<em>$55</em></td><td class="td-key">I<em>$49</em></td>
+          </tr>
+          <tr>
+            <td class="td-label">PA3</td>
+            <td class="td-key">O<em>$4F</em></td><td class="td-key">P<em>$50</em></td><td class="td-key">[<em>$5B</em></td><td class="td-key">]<em>$5D</em></td>
+            <td class="td-key">\<em>$5C</em></td><td class="td-key">INS<em>$1A</em></td><td class="td-key td-key-dead">CAPS<em>ignored</em></td><td class="td-key">A<em>$41</em></td>
+          </tr>
+          <tr>
+            <td class="td-label">PA4</td>
+            <td class="td-key">S<em>$53</em></td><td class="td-key">D<em>$44</em></td><td class="td-key">F<em>$46</em></td><td class="td-key">G<em>$47</em></td>
+            <td class="td-key">H<em>$48</em></td><td class="td-key">J<em>$4A</em></td><td class="td-key">K<em>$4B</em></td><td class="td-key">L<em>$4C</em></td>
+          </tr>
+          <tr>
+            <td class="td-label">PA5</td>
+            <td class="td-key">;<em>$3B</em></td><td class="td-key">'<em>$27</em></td><td class="td-key">ENTER<em>$0D</em></td><td class="td-key">DEL<em>$7F</em></td>
+            <td class="td-key td-key-mod">SHIFT<em>modifier</em></td><td class="td-key">Z<em>$5A</em></td><td class="td-key">X<em>$58</em></td><td class="td-key">C<em>$43</em></td>
+          </tr>
+          <tr>
+            <td class="td-label">PA6</td>
+            <td class="td-key">V<em>$56</em></td><td class="td-key">B<em>$42</em></td><td class="td-key">N<em>$4E</em></td><td class="td-key">M<em>$4D</em></td>
+            <td class="td-key">,<em>$2C</em></td><td class="td-key">.<em>$2E</em></td><td class="td-key">/<em>$2F</em></td><td class="td-key">UP<em>$1E</em></td>
+          </tr>
+          <tr>
+            <td class="td-label">PA7</td>
+            <td class="td-key td-key-mod">CTRL<em>modifier</em></td><td class="td-key td-key-dead">MENU<em>ignored</em></td><td class="td-key td-key-dead">ALT<em>ignored</em></td><td class="td-key">SPACE<em>$20</em></td>
+            <td class="td-key td-key-dead">FN<em>ignored</em></td><td class="td-key">LEFT<em>$1C</em></td><td class="td-key">DOWN<em>$1F</em></td><td class="td-key">RIGHT<em>$1D</em></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">What the controller does with a press</span>
+      <div class="note-box">
+        <strong>Letters are always capitals.</strong> Shift changes the symbols and the number
+        row and nothing else &mdash; there is no lower case at the machine. It exists over the
+        serial line, and only there.
+      </div>
+      <div class="note-box">
+        <strong>Four keys do nothing at all.</strong> Caps Lock, Menu, Alt and Fn produce no
+        output and track no state. Caps Lock in particular is not a lock: there is nothing for
+        it to switch.
+      </div>
+      <div class="note-box">
+        <strong>Ctrl sends a control code.</strong> <code>Ctrl</code>+<code>A</code> through
+        <code>Ctrl</code>+<code>Z</code> send 1 to 26, so <code>Ctrl</code>+<code>C</code> is
+        <code>$03</code> (break) and <code>Ctrl</code>+<code>H</code> is <code>$08</code>
+        (backspace). <code>Ctrl</code>+<code>[</code> sends <code>$1B</code>, the same code as
+        <kbd>Esc</kbd>.
+      </div>
+      <div class="note-box">
+        <strong>Esc stops a running program.</strong> BASIC checks for it between statements.
+        It is the key to reach for when something runs away; the reset button above it is the
+        one for when even that does not answer.
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="sec-title">Where the grid comes out of the board</span>
+      <div class="note-box">
+        The matrix is on the ACE's <strong>KEYBOARD</strong> header &mdash; a 1&nbsp;&times;&nbsp;16
+        pin header at 2.00&nbsp;mm pitch, <code>PA0</code>&ndash;<code>PA7</code> on pins 1&ndash;8
+        and <code>PB0</code>&ndash;<code>PB7</code> on pins 9&ndash;16. On a stock ACE the board's
+        own switches are soldered across it. Anyone enclosing the board leaves those unfitted and
+        wires an outboard keyboard here instead &mdash; same grid, same codes.
+      </div>
+      <div class="note-box">
+        The same two VIA ports carry the joysticks. That is why the Kernal disables the encoder
+        before a raw read and enables it again afterwards, and why reading a stick by hand needs
+        the <code>KBDisable</code> &rarr; read &rarr; <code>KBEnable</code> dance.
+      </div>
+    </div>
+
+  </div><!-- /pg-body -->
+
+  <div class="pg-footer">
+    <span>6502 KEYBOARD MATRIX</span>
+    <span>A.C. WRIGHT 6502</span>
+    <span class="pg-num">FRONT</span>
+  </div>
+
+</div><!-- /page 1 -->
+
+</body>
+</html>

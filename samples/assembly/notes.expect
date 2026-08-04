@@ -1,0 +1,7 @@
+# "Files, from assembly" — load a file that is already on the card, write one
+# of our own, and read it back.
+
+console storage
+
+expect ^THE CARD ALREADY HELD: HELLO
+expect ^AND NOW IT HOLDS: WRITTEN BY A PROGRAM$

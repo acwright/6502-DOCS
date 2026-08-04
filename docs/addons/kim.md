@@ -109,3 +109,12 @@ lovely object and a genuinely good way to learn the 65C02. The full parts list
 and the wiring are in the
 [6502-KIM repository](https://github.com/acwright/6502-KIM); the cards it needs
 come from [COB](/family/cob).
+
+<div class="card-link">
+
+📄 **[6502-KIM card](/cards/kim.html)** — the boards, the overlay and the pad,
+on two printable pages. The **[Keypad Mapping card](/cards/keypad-mapping.html)**
+has all twenty-four keycodes; [the keypad map](/reference/keypad-map) explains
+them.
+
+</div>

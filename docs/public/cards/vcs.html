@@ -53,9 +53,9 @@
       </table>
     </div>
 
-    <!-- At the Party -->
+    <!-- Hands on: what to do with the machine in front of you. -->
     <div class="section">
-      <span class="sec-title">At This Party</span>
+      <span class="sec-title">At the machine</span>
       <div class="note-box">
         This VCS has a small <strong>white reset button on the Main Board near the front</strong>. Press it to restart the current cartridge — or, with no cartridge inserted, to reboot into the built-in BIOS BASIC. Plug a joystick into the front port before you start a game.
       </div>
@@ -70,7 +70,7 @@
           <tr><td class="td-cmd">VCS</td><td class="td-desc">Cartridge-based game console (this machine)</td></tr>
           <tr><td class="td-cmd">ACE</td><td class="td-desc">All-in-one single-board computer</td></tr>
           <tr><td class="td-cmd">COB</td><td class="td-desc">Modular backplane desktop</td></tr>
-          <tr><td class="td-cmd">KIM</td><td class="td-desc">Keypad + LCD minimal monitor</td></tr>
+          <tr><td class="td-cmd">KIM</td><td class="td-desc">Keypad + LCD add-on that turns an ACE into a KIM-1</td></tr>
           <tr><td class="td-cmd">DEV</td><td class="td-desc">Emulation-based development system</td></tr>
         </tbody>
       </table>
@@ -156,7 +156,7 @@
     <div class="section">
       <span class="sec-title">With No Cartridge</span>
       <div class="note-box">
-        Boot the VCS with the slot empty and it falls back to the shared <strong>BIOS BASIC</strong> with a <code>READY.</code> prompt (a PS/2 keyboard is handy here). You get the full AC6502 BASIC just like the ACE or COB.
+        Boot the VCS with the slot empty and it falls back to the shared <strong>BIOS BASIC</strong> with the <code>OK</code> prompt (a PS/2 keyboard is handy here). You get the full AC6502 BASIC just like the ACE or COB.
       </div>
     </div>
 
@@ -167,7 +167,7 @@
         <strong>Read the joystick —</strong> at the BASIC prompt type <code>PRINT JOY(1)</code> and move the stick; the number changes with each direction and the fire button.
       </div>
       <div class="note-box">
-        <strong>Make some noise —</strong> <code>VOL 15</code> then <code>SOUND 0,440,50</code> plays a tone through the SID chip.
+        <strong>Make some noise —</strong> <code>VOL 15</code> then <code>SOUND 1,440,50</code> plays a tone through the SID chip.
       </div>
       <div class="note-box">
         <strong>Color the screen —</strong> <code>COLOR 1,6</code> sets text and background colors (0–15 each) on the TMS9918 display.
@@ -180,7 +180,7 @@
       <table>
         <thead><tr><th style="width:42%">Statement</th><th>Purpose</th></tr></thead>
         <tbody>
-          <tr><td class="td-cmd">PRINT / ?</td><td class="td-desc">Display text or numbers</td></tr>
+          <tr><td class="td-cmd">PRINT</td><td class="td-desc">Display text or numbers</td></tr>
           <tr><td class="td-cmd">JOY(1)</td><td class="td-desc">Read the joystick / fire button</td></tr>
           <tr><td class="td-cmd">SOUND / VOL</td><td class="td-desc">Play a tone / set volume</td></tr>
           <tr><td class="td-cmd">COLOR f,b</td><td class="td-desc">Set text &amp; background color</td></tr>
@@ -200,7 +200,9 @@
           <tr><td class="td-cmd">M aaaa</td><td class="td-desc">Memory dump (hex + ASCII)</td></tr>
           <tr><td class="td-cmd">D aaaa</td><td class="td-desc">Disassemble 65C02 code</td></tr>
           <tr><td class="td-cmd">&gt; aaaa bb…</td><td class="td-desc">Deposit bytes into memory</td></tr>
-          <tr><td class="td-cmd">G aaaa</td><td class="td-desc">Go — run code at an address</td></tr>
+          <tr><td class="td-cmd">J aaaa</td><td class="td-desc">Call code and come back on <code>RTS</code></td></tr>
+          <tr><td class="td-cmd">G aaaa</td><td class="td-desc">Go — hands the machine over for good</td></tr>
+          <tr><td class="td-cmd">R</td><td class="td-desc">Show the saved CPU registers</td></tr>
           <tr><td class="td-cmd">X</td><td class="td-desc">Exit Monitor back to BASIC</td></tr>
         </tbody>
       </table>

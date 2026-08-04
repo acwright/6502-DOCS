@@ -51,3 +51,10 @@ files, and the Teensy firmware. The printable reference sheet is
 
 The CPU core is [vrEmu6502](https://github.com/visrealm/vrEmu6502), which is
 excellent and worth reading on its own account.
+
+<div class="card-link">
+
+📄 **[6502-DEV card](/cards/dev.html)** — the machine on two printable
+pages. The [card index](/reference/) has the rest.
+
+</div>
