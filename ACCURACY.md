@@ -35,7 +35,7 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| confirmed | 41 |
+| confirmed | 42 |
 | open | 3 |
 | fixed | 2 |
 | wontfix | 3 |
@@ -74,6 +74,12 @@ A43 is this repo's own fact base contradicting A18.
 the site. It is A9's problem in a second photograph — a version number visible
 in a picture — and A9 itself is resolved there, as a captioned historical shot
 rather than a reshoot.
+
+**A45** comes from building a colour chart for the BASIC guide, which meant
+checking what `COLOR` actually does before drawing swatches for it. It turned
+up a claim the chapter had backwards since the first pass of Phase 3 — one that
+`docs/assembly/video.md` had already stated correctly, which is what made the
+disagreement visible.
 
 A common root cause runs through A14–A18, worth naming: **the guide was written
 through the serial console, because that is the interface the harness drives.**
@@ -600,6 +606,17 @@ serial are false at the machine itself.
 | **Check** | INSPECT |
 | **Consequence** | Small but real, and the same class as A9: a reader who looks closely gets a version number the rest of the site contradicts. It is a sticker on a socketed chip rather than anything about the design, so no claim in the guide depends on it. |
 | **Fix** | No caption on any page reads a version off the photograph, and none refers to the ROM label. Resolving it properly means re-shooting the board with a v1.5 chip in the socket — a Phase 9 item for `6502-ACE`, because the photograph lives in that repo and fixing it there fixes it everywhere. |
+
+### A45 — `docs/basic/sound-and-pictures.md`: "colours don't apply retrospectively"
+
+| | |
+|---|---|
+| **Claim** | "Colours don't apply retrospectively — text already on the screen keeps the colours it was printed in." |
+| **Truth** | The opposite. The TMS9918's text mode has **one** foreground/background pair for the entire screen (`VideoSetColor` writes a single register), not one per character. Changing `COLOR` repaints everything already on the screen instantly — the `OK` prompt and every earlier line included — not just what gets printed next. |
+| **Source** | `Kernal.asm` `VideoSetColorImpl` (GREP); confirmed by RUN: `COLOR 1,15` then `PRINT "AAAAAAAA"`, then `COLOR 15,4` with no `CLS` — the existing `AAAAAAAA` and every prior line turn white-on-blue along with the new text. `docs/assembly/video.md` already had this right ("In text mode there is one pair for the whole screen"), which is what exposed the contradiction. |
+| **Check** | GREP + RUN |
+| **Consequence** | A reader who trusted this would print status text in one colour expecting it to stay put, then watch every line on the screen change colour together the next time `COLOR` runs — the opposite of what the chapter promised. |
+| **Fix** | Phase 8's colour-chart pass rewrote the paragraph: one pair for the whole screen, described as "a pair of coloured lights the whole screen sits under" rather than paint. `docs/using/sound-and-video.md`'s shorter `COLOR` bullet had the same gap (it didn't say retrospective either way) and was tightened at the same time. |
 
 ---
 

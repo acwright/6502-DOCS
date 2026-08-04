@@ -329,6 +329,33 @@ const SLOT_CHIPS = {
   HW_VID: { slot: 8, chip: 'TMS9918A / Pico9918', card: 'Video Card / VGA Card' }
 }
 
+// The TMS9918's sixteen text-mode colours: index, the `TMS_*` symbol every
+// assembly sample uses (`6502-PRG/6502.inc`, and `renderInclude` below), a
+// name a reader can say out loud, and the RGB the emulator renders it as
+// (`6502-EMULATOR/src/core/IO/Video.ts`, `TMS_PALETTE` — the chip's own output
+// varies with the display it's wired to, so this is "what an ACE shows on a
+// VGA monitor", not a hardware constant). Indices 0, 1, 4 and 15 are
+// screenshot-verified against a running machine (`ACCURACY.md` A45); the rest
+// share its rendering path.
+const TMS9918_COLOURS = [
+  ['TRANSPARENT', 'Transparent', '#000000'],
+  ['BLACK', 'Black', '#000000'],
+  ['MED_GREEN', 'Medium green', '#21C942'],
+  ['LT_GREEN', 'Light green', '#5EDC78'],
+  ['DK_BLUE', 'Dark blue', '#5455ED'],
+  ['LT_BLUE', 'Light blue', '#7D75FC'],
+  ['DK_RED', 'Dark red', '#D3524D'],
+  ['CYAN', 'Cyan', '#43EBF6'],
+  ['MED_RED', 'Medium red', '#FD5554'],
+  ['LT_RED', 'Light red', '#FF7978'],
+  ['DK_YELLOW', 'Dark yellow', '#D3C153'],
+  ['LT_YELLOW', 'Light yellow', '#E5CE80'],
+  ['DK_GREEN', 'Dark green', '#21B03C'],
+  ['MAGENTA', 'Magenta', '#C95BBA'],
+  ['GRAY', 'Grey', '#CCCCCC'],
+  ['WHITE', 'White', '#FFFFFF']
+]
+
 function extractHardware(src) {
   const symbols = parseIncSymbols(src.inc)
   const byName = new Map(symbols.map((s) => [s.symbol, s]))
@@ -381,6 +408,20 @@ function extractHardware(src) {
       test: 'IF (JOY(1) AND 16) = 0',
       source: 'Kernal.asm ReadJoystick1Impl',
       check: 'GREP'
+    },
+    colors: {
+      description:
+        'Text mode has one foreground/background pair for the whole screen, set with ' +
+        '(foreground << 4) | background — there is no per-character colour until a ' +
+        'graphics mode’s colour table comes into play.',
+      entries: TMS9918_COLOURS.map(([symbol, name, hex], index) => ({
+        index,
+        symbol: `TMS_${symbol}`,
+        name,
+        hex
+      })),
+      source: '6502-PRG/6502.inc (names); 6502-EMULATOR/src/core/IO/Video.ts (RGB)',
+      check: 'INSPECT'
     }
   }
 }
@@ -1115,12 +1156,9 @@ function renderInclude(facts) {
   }
 
   block('TMS9918 colours (for VideoSetColor: (foreground << 4) | background)')
-  const COLOURS = [
-    'TRANSPARENT', 'BLACK', 'MED_GREEN', 'LT_GREEN', 'DK_BLUE', 'LT_BLUE',
-    'DK_RED', 'CYAN', 'MED_RED', 'LT_RED', 'DK_YELLOW', 'LT_YELLOW',
-    'DK_GREEN', 'MAGENTA', 'GRAY', 'WHITE'
-  ]
-  COLOURS.forEach((name, i) => equate(`TMS_${name}`, `$${i.toString(16).toUpperCase()}`, '', ' ='))
+  for (const c of facts.hardware.colors.entries) {
+    equate(c.symbol, `$${c.index.toString(16).toUpperCase()}`, c.name, ' =')
+  }
 
   block('Joystick bits (active low: a held direction reads 0)')
   for (const bit of facts.hardware.joystick.bits) {

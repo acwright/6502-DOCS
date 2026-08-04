@@ -57,12 +57,7 @@ prompt in the middle of your artwork.
 
 ## The colours
 
-| | | | |
-|---|---|---|---|
-| `TMS_TRANSPARENT` | `TMS_BLACK` | `TMS_MED_GREEN` | `TMS_LT_GREEN` |
-| `TMS_DK_BLUE` | `TMS_LT_BLUE` | `TMS_DK_RED` | `TMS_CYAN` |
-| `TMS_MED_RED` | `TMS_LT_RED` | `TMS_DK_YELLOW` | `TMS_LT_YELLOW` |
-| `TMS_DK_GREEN` | `TMS_MAGENTA` | `TMS_GRAY` | `TMS_WHITE` |
+<ColourChart constants />
 
 In text mode there is one pair for the whole screen. The graphics modes are
 where colour gets interesting — [that chapter](/assembly/graphics) is next.

@@ -325,3 +325,33 @@
   margin: 0;
   font-size: 0.95em;
 }
+
+/**
+ * The sixteen TMS9918 text-mode colours, rendered by <ColourChart>. This is
+ * the one place actual colour is deliberate against the site's otherwise
+ * greyscale chrome — the swatch's colour is the entire content of the row, the
+ * same way a screenshot is shown in colour rather than converted to match the
+ * theme.
+ */
+.colour-chart {
+  width: auto;
+  margin: 1.5em 0 0.5em;
+}
+
+.colour-chart .colour-chart-index {
+  text-align: right;
+}
+
+.colour-swatch {
+  display: inline-block;
+  width: 1.4em;
+  height: 1.4em;
+  vertical-align: middle;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 2px;
+}
+
+.colour-chart-note {
+  font-size: 0.9em;
+  color: var(--vp-c-text-2);
+}

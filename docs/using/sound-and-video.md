@@ -58,8 +58,11 @@ colours**. Three statements:
 
 - **`CLS`** clears it.
 - **`LOCATE row, column`** moves the cursor.
-- **`COLOR foreground, background`** sets the colours everything after it is
-  drawn in.
+- **`COLOR foreground, background`** sets the colours for the whole screen —
+  every character on it, not just what you type next — each number from 0 to
+  15:
+
+<ColourChart />
 
 <<< @/../samples/basic/screen-text.bas{basic}
 

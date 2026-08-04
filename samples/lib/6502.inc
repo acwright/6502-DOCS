@@ -331,22 +331,22 @@ VID_NAME_TABLE       = $0000    ; VRAM name table (40x24 = 960 bytes)
 VID_PATTERN_TABLE    = $0800    ; VRAM pattern table (2048 bytes)
 
 ; --- TMS9918 colours (for VideoSetColor: (foreground << 4) | background) ---
-TMS_TRANSPARENT      = $0
-TMS_BLACK            = $1
-TMS_MED_GREEN        = $2
-TMS_LT_GREEN         = $3
-TMS_DK_BLUE          = $4
-TMS_LT_BLUE          = $5
-TMS_DK_RED           = $6
-TMS_CYAN             = $7
-TMS_MED_RED          = $8
-TMS_LT_RED           = $9
-TMS_DK_YELLOW        = $A
-TMS_LT_YELLOW        = $B
-TMS_DK_GREEN         = $C
-TMS_MAGENTA          = $D
-TMS_GRAY             = $E
-TMS_WHITE            = $F
+TMS_TRANSPARENT      = $0       ; Transparent
+TMS_BLACK            = $1       ; Black
+TMS_MED_GREEN        = $2       ; Medium green
+TMS_LT_GREEN         = $3       ; Light green
+TMS_DK_BLUE          = $4       ; Dark blue
+TMS_LT_BLUE          = $5       ; Light blue
+TMS_DK_RED           = $6       ; Dark red
+TMS_CYAN             = $7       ; Cyan
+TMS_MED_RED          = $8       ; Medium red
+TMS_LT_RED           = $9       ; Light red
+TMS_DK_YELLOW        = $A       ; Dark yellow
+TMS_LT_YELLOW        = $B       ; Light yellow
+TMS_DK_GREEN         = $C       ; Dark green
+TMS_MAGENTA          = $D       ; Magenta
+TMS_GRAY             = $E       ; Grey
+TMS_WHITE            = $F       ; White
 
 ; --- Joystick bits (active low: a held direction reads 0) ---
 JOY_R                = $80      ; bit 7

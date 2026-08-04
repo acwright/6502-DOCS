@@ -21,6 +21,12 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
 
+  // Default to light regardless of the OS preference: the ACE itself is black
+  // text on a white screen, and the site's first impression should match the
+  // machine's. Still a real toggle — a reader who picks dark keeps it on their
+  // next visit, via the usual `vitepress-theme-appearance` localStorage key.
+  appearance: { initialValue: 'light' } as any,
+
   // Branding migrated from 6502-ASSETS in Phase 2. Entries in `head` are emitted
   // verbatim, so they carry `base` by hand; `themeConfig.logo` does not.
   head: [

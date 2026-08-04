@@ -475,9 +475,12 @@ noise, and put something on the screen — without being told what a Kernal is.
    the cursor keys, Ctrl codes), stopping a program, and the reset button.
    **Esc is taught as the way to stop a program**; Ctrl+C is mentioned as the
    equivalent that terminal users will reach for.
-7. **Sound and pictures** — `SOUND` and `VOL` (a tune, not a beep), `CLS`,
+7. **Sound and video** — `SOUND` and `VOL` (a tune, not a beep), `CLS`,
    `LOCATE`, `COLOR`, the 40×24 screen and its 16 colours. Ends with a small
-   program that does both at once.
+   program that does both at once. *(Renamed from "Sound and pictures" —
+   Phase 4 gave that name to its own BASIC-guide chapter on the same
+   statements, and the two need to read as different chapters, not a
+   duplicate.)*
 8. **Storage** — the CompactFlash card, the 256 × 1 MB disk-bank model, `DIR`,
    `LOAD`, `SAVE`, `DEL`, `DISK`, `FORMAT`, `BLOAD`/`BSAVE`, and the 16-file / 8.3
    limits framed as "how much fits", not as a spec.
@@ -1077,7 +1080,7 @@ Sidebar order, which is the order a reader meets the site:
 Introduction          Welcome · Your ACE
 Getting Started       Setting up · First power-on · Your first ten minutes ·
                       When something's wrong
-Using Your ACE        The keyboard · Sound and pictures · Storage ·
+Using Your ACE        The keyboard · Sound and video · Storage ·
                       Serial and a terminal · The Monitor · The emulator
 Add-ons               The KIM keypad
 The Rest of the Family  Overview · COB · DEV · VCS

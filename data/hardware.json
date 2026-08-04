@@ -715,5 +715,108 @@
     "test": "IF (JOY(1) AND 16) = 0",
     "source": "Kernal.asm ReadJoystick1Impl",
     "check": "GREP"
+  },
+  "colors": {
+    "description": "Text mode has one foreground/background pair for the whole screen, set with (foreground << 4) | background — there is no per-character colour until a graphics mode’s colour table comes into play.",
+    "entries": [
+      {
+        "index": 0,
+        "symbol": "TMS_TRANSPARENT",
+        "name": "Transparent",
+        "hex": "#000000"
+      },
+      {
+        "index": 1,
+        "symbol": "TMS_BLACK",
+        "name": "Black",
+        "hex": "#000000"
+      },
+      {
+        "index": 2,
+        "symbol": "TMS_MED_GREEN",
+        "name": "Medium green",
+        "hex": "#21C942"
+      },
+      {
+        "index": 3,
+        "symbol": "TMS_LT_GREEN",
+        "name": "Light green",
+        "hex": "#5EDC78"
+      },
+      {
+        "index": 4,
+        "symbol": "TMS_DK_BLUE",
+        "name": "Dark blue",
+        "hex": "#5455ED"
+      },
+      {
+        "index": 5,
+        "symbol": "TMS_LT_BLUE",
+        "name": "Light blue",
+        "hex": "#7D75FC"
+      },
+      {
+        "index": 6,
+        "symbol": "TMS_DK_RED",
+        "name": "Dark red",
+        "hex": "#D3524D"
+      },
+      {
+        "index": 7,
+        "symbol": "TMS_CYAN",
+        "name": "Cyan",
+        "hex": "#43EBF6"
+      },
+      {
+        "index": 8,
+        "symbol": "TMS_MED_RED",
+        "name": "Medium red",
+        "hex": "#FD5554"
+      },
+      {
+        "index": 9,
+        "symbol": "TMS_LT_RED",
+        "name": "Light red",
+        "hex": "#FF7978"
+      },
+      {
+        "index": 10,
+        "symbol": "TMS_DK_YELLOW",
+        "name": "Dark yellow",
+        "hex": "#D3C153"
+      },
+      {
+        "index": 11,
+        "symbol": "TMS_LT_YELLOW",
+        "name": "Light yellow",
+        "hex": "#E5CE80"
+      },
+      {
+        "index": 12,
+        "symbol": "TMS_DK_GREEN",
+        "name": "Dark green",
+        "hex": "#21B03C"
+      },
+      {
+        "index": 13,
+        "symbol": "TMS_MAGENTA",
+        "name": "Magenta",
+        "hex": "#C95BBA"
+      },
+      {
+        "index": 14,
+        "symbol": "TMS_GRAY",
+        "name": "Grey",
+        "hex": "#CCCCCC"
+      },
+      {
+        "index": 15,
+        "symbol": "TMS_WHITE",
+        "name": "White",
+        "hex": "#FFFFFF"
+      }
+    ],
+    "source": "6502-PRG/6502.inc (names); 6502-EMULATOR/src/core/IO/Video.ts (RGB)",
+    "check": "INSPECT"
   }
 }
