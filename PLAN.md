@@ -1234,11 +1234,14 @@ Five notes, three of which are things this phase got wrong first.
   rather than a link carrying a dash.
 - **A 404 and a refused connection are not the same finding, and conflating
   them makes the check worthless.** `www.analog.com` resolves and then
-  completes no connection here, from any client, while the same run reaches
-  forty-five other hosts; `gitlab.com` did the same on the second run and not
-  the first. Had those failed the build, the first person to see red would have
-  learned to re-run it. HTTP errors fail; unreachable hosts print as unchecked,
-  every run, so they stay visible without being a gate.
+  completes no connection, from any client, while the same run reaches
+  forty-five other hosts — and the GitHub runner, on an entirely different
+  network, reports exactly the same one host. That is a server refusing
+  automated requests, not a dead datasheet. `gitlab.com` did it on one local
+  run and not the next, which is the same story with worse timing. Had either
+  failed the build, the first person to see red would have learned to re-run
+  it. HTTP errors fail; unreachable hosts print as unchecked, every run, so
+  they stay visible without being a gate.
 - **Screenshots were reproducible all along.** Phase 8 left them
   un-drift-checked on the reasoning that "asserting a committed PNG in CI means
   asserting on an encoder" — but the encoder is deterministic, and the entire
