@@ -47,13 +47,6 @@ waits for a keypress and use that as a seed — `RND(-S)` sets the starting poin
 **Now change this:** make it count down from 7 guesses and lose the game at
 zero.
 
-<Figure
-  src="/images/screens/treasure.png"
-  alt="A screen showing four-by-four grids of dots with Xs where digs have happened, questions asking for row and column, and TREASURE. FOUND IN 2 DIGS. at the bottom."
-  caption="Two digs in. The grid is redrawn after each one, so you can see where you have been."
-  screen
-/>
-
 ## A times table
 
 <<< @/../samples/basic/times-table.bas{basic}
@@ -198,6 +191,13 @@ TREASURE. FOUND IN 2 DIGS.
 
 OK
 ```
+
+<Figure
+  src="/images/screens/treasure.png"
+  alt="A screen showing four-by-four grids of dots with Xs where digs have happened, questions asking for row and column, and TREASURE. FOUND IN 2 DIGS. at the bottom."
+  caption="Two digs in. The grid is redrawn after each one, so you can see where you have been."
+  screen
+/>
 
 Line 130 is the one to study: `P = (R - 1) * 4 + C` turns a row and a column
 into a single number from 1 to 16, because [arrays here have only one
