@@ -7,7 +7,7 @@
     "sources": [
       {
         "file": "Kernal.asm",
-        "sha256": "250abc617e108c5fa31b6b8cdb777e74130f53a2fe6c22582348dfb02effd756"
+        "sha256": "ff83f704a1d3c7aec5f8212644ccdc13c4d04652cdd971665aa9912455c8336e"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."

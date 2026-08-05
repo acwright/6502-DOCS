@@ -83,3 +83,24 @@ export function firstSpan(cell) {
   const match = cell.match(/`([^`]+)`/)
   return match ? match[1].trim() : cell
 }
+
+/** Every backticked span in a cell, in order. */
+export function spans(cell) {
+  return [...cell.matchAll(/`([^`]+)`/g)].map(([, span]) => span.trim())
+}
+
+/**
+ * A cell's text with its backticks removed and its HTML entities decoded.
+ *
+ * The BIOS README writes a literal pipe inside a syntax line as `&#124;`, which
+ * splits one logical span into two — `` `INPUT ["prompt"{;`&#124;`,}] var …` ``.
+ * Reading the first span alone truncates the syntax at the pipe, so anything
+ * that cannot pair spans to names has to fall back to the whole cell.
+ */
+export function cellText(cell) {
+  return cell
+    .replace(/`/g, '')
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+    .replace(/&amp;/g, '&')
+    .trim()
+}

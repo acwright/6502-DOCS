@@ -1120,6 +1120,69 @@ generated two-page register card, and two samples.
 - `ACCURACY.md` has no open items.
 - Every sibling repo links to the docs site; no repo links to `6502-ASSETS` any more.
 
+### What shipped
+
+Fourteen commits across eleven repos, one per repo, each carrying its
+source-of-truth citation. Every confirmed ledger item that named a sibling repo
+is fixed in that repo; `O3` and `O5` are closed; `A25` turned out to name the
+wrong repo entirely and is fixed here.
+
+| Repo | What changed |
+|---|---|
+| `6502-BIOS` | A21–A24, A36, A8, A50 (new), O2 |
+| `6502-ACE` | A20, A42 — and the switch BOM's size groupings, which had shifted with them |
+| `6502-EMULATOR` | A6, A31, A32, O5 — the last three are code, not documentation |
+| `6502-PRG` / `6502-CRT` | A33, A35, A8 |
+| `6502-KIM` | A4 |
+| `6502-DEV` | A51 (new) |
+| `6502-COB`, `6502-VCS`, `6502-ASM`, `6502-BAS`, `bastok`, `cffs` | audited clean; backlink and `Related` table |
+
+Five notes for later phases:
+
+- **Three findings were the ledger's own.** `A25` accused the BIOS README of
+  seven copy-pasted syntax lines; the README was right and **this repo's
+  extractor** was taking the first backticked span of a grouped row and giving
+  it to every keyword on that row. `A23` said `FOR` nests "at least 16"; it
+  nests **14**, and the original measurement had been reading a program whose
+  counter variable was also one of its sixteen loop variables. `A50` is new and
+  is the same subject: the README put BASIC's `GOSUB` and `FOR` stacks at
+  `$0400–$05FF` when `BASIC.asm:204` says outright that they are on the CPU
+  stack. Checking upstream honestly meant re-running the checks, not
+  transcribing the ledger — two of the three "upstream bugs" in that batch were
+  ours.
+- **The real `FOR` finding is the failure mode, not the number.**
+  `BasCmdGosub` guards its push and raises `OUT OF MEMORY`; `BasCmdFor` has no
+  guard at all. The fifteenth frame overwrites the bottom of page 1 and the
+  error appears later, at that loop's `NEXT`, as `?NEXT WITHOUT FOR ERROR`
+  against a line that is correct. That is now in the BIOS README and in
+  [Loops](docs/basic/loops.md).
+- **`--empty` closes O5 and generalizes past it.** The emulator filled every
+  I/O slot unconditionally, so the BIOS's graceful-degradation paths could not
+  be reached from a script — there was no way to make `DIR` produce the
+  `?NO DEVICE ERROR` the ROM plainly contains. `6502 run --headless --empty
+  storage` now does, and `--empty sound` reaches the silent `SOUND`/`VOL`
+  returns that A10 mistook for the default machine. Storage's `NO DEVICE`
+  claim is RUN-verifiable for the first time; **a Phase 10 candidate is to turn
+  that into a `samples/_checks/` case** now that the harness can express it.
+- **The ACE was the only board whose README had drifted.** After A20 and A42,
+  every reference designator in all five KiCad repos was compared against the
+  schematic of the same name, revision by revision — the COB's 33 board
+  sections, the VCS's five boards, the KIM's three, the DEV's two. One
+  disagreement turned up (A51, one connector). Worth knowing before anyone
+  spends Phase 10 re-auditing them.
+- **`bin2woz` and `TMS9918-EDITOR` deliberately have no backlink.** Both were
+  written for this family but neither is specific to it — a Wozmon-format
+  converter and a TMS9918 editor are useful to anyone with those chips, and
+  pointing their READMEs at an ACE guide would misrepresent what they are.
+  They carry no `6502-ASSETS` reference either, so nothing was owed.
+
+**Two items stay open, and both need hardware.** `A44` is the `BIOS V1.0` label
+visible on the EPROM in `6502-ACE/Images/6502-ACE.png`, which is the site's
+first photograph; resolving it means re-shooting the board with a v1.5 chip in
+the socket. `A48` is the two F18A claims — palette byte order and sprite
+attribute bit 4 — that only an ACE with the enhanced firmware can settle. Both
+are recorded on the page as what they are; neither blocks Phase 10.
+
 ---
 
 ## Phase 10 — Launch & ASSETS Retirement

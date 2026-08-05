@@ -11,7 +11,7 @@
       },
       {
         "file": "README.md",
-        "sha256": "ecc3c73ce93678e7aea277256e4e175dae83a4839cfd8f56bf258fe2e4e3e85e"
+        "sha256": "ca7d864e76a5fcea30558c771887b9aacef2b2a6b36ac30c45610081ff58d702"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."

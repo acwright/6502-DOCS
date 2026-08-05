@@ -11,7 +11,7 @@
       },
       {
         "file": "README.md",
-        "sha256": "ecc3c73ce93678e7aea277256e4e175dae83a4839cfd8f56bf258fe2e4e3e85e"
+        "sha256": "ca7d864e76a5fcea30558c771887b9aacef2b2a6b36ac30c45610081ff58d702"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -26,19 +26,21 @@
   },
   "limits": {
     "notes": [
-      "**Numeric range:** ~±1.7 × 10³⁸, six significant digits. Numbers print with a leading-space sign convention (positive numbers prefixed by a space, negative by `-`). Boolean expressions evaluate to `-1` (true) or `0` (false).",
-      "**Stack limits:** GOSUB and FOR/NEXT frames both live on the 6502 stack, which they share with the interpreter's own working space. At least 20 GOSUB levels are available whatever the subroutine does, and about 27 for a simple one; FOR/NEXT supports up to 8 nested loops. Exceeding either limit produces an `OUT OF MEMORY` error.",
+      "**Variable names:** any length, letters and digits, but **only the first two characters are significant** — the usual Microsoft BASIC rule. `COUNT` and `COURSE` are the same variable (`CO`), and `PRINT COUNT` after `COUNT = 7 : COURSE = 9` prints `9`. A name may not contain a keyword: `SCORE` will not parse, because it contains `OR`.",
+      "**Numeric range:** ~±1.7 × 10³⁸, **nine significant digits** (`PRINT 1 / 3` gives ` .333333333`, `PRINT SQR(2)` gives ` 1.41421356`). Numbers print with a leading-space sign convention (positive numbers prefixed by a space, negative by `-`). Boolean expressions evaluate to `-1` (true) or `0` (false).",
+      "**Stack limits:** GOSUB and FOR/NEXT frames both live on the 6502 stack, which they share with the interpreter's own working space. At least 20 GOSUB levels are available whatever the subroutine does, and about 27 for a simple one; exceeding that raises `OUT OF MEMORY`, because `BasCmdGosub` checks the stack pointer against `GOSUB_STACK_MIN` before it pushes.",
+      "**`FOR` has no such guard, and fails differently.** A `FOR` frame is 18 bytes (`TXTPTR`, `CURLIN`, the 5-byte limit, the step sign, the 5-byte step, the variable address, and the `$81` tag), so 14 of them fill page 1. `BasCmdFor` pushes without testing the stack pointer, so the 15th frame overwrites the bottom of the stack instead of raising an error — and the failure surfaces later, at the matching `NEXT`, as **`?NEXT WITHOUT FOR ERROR`**. Fourteen levels of nesting is the working ceiling at the top level of a program, and less inside a `GOSUB`, which shares the same 256 bytes.",
       "**Memory layout:** Programs grow up from `$0800`. Numeric/string scalar variables follow the program, then arrays, then the string heap which grows down from `$8000`. `MEM` and the cold-boot banner report `MEMSIZ - VARTAB` (free bytes for variables, arrays, and strings combined)."
     ],
-    "forNestingLevels": 8,
+    "forNestingLevels": 14,
     "gosubLevelsGuaranteed": 20,
-    "variableNames": "Single letter A-Z (numeric) and A$-Z$ (string); each may also be DIMed as a 1-D array",
+    "variableNames": "Any length of letters and digits, first two characters significant; a $ suffix makes it a string. Each name may also be DIMed as a 1-D array.",
     "floatBytes": 5,
-    "significantDigits": 6,
+    "significantDigits": 9,
     "printZoneWidth": 14,
     "source": "6502-BIOS/README.md",
-    "check": "pending RUN (Phase 4)",
-    "verified": false
+    "check": "RUN (Phase 4, re-measured Phase 9)",
+    "verified": true
   },
   "operatorPrecedence": [
     {
@@ -155,7 +157,7 @@
       "forms": [
         {
           "syntax": "FOR var = init TO limit [STEP step]",
-          "description": "Counted loop. Default step is `1`. Up to 8 nested loops. The limit is tested at `NEXT`, as in Microsoft 6502 BASIC, so the body always runs at least once — `FOR I = 5 TO 1` runs once and leaves `I` at 6",
+          "description": "Counted loop. Default step is `1`. Nests 14 deep — see **Stack limits** below. The limit is tested at `NEXT`, as in Microsoft 6502 BASIC, so the body always runs at least once — `FOR I = 5 TO 1` runs once and leaves `I` at 6",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"
@@ -175,8 +177,8 @@
       "statementUsable": true,
       "forms": [
         {
-          "syntax": "NEXT [var [, var ...]]",
-          "description": "Increment loop variable and branch back to matching `FOR` if condition holds",
+          "syntax": "NEXT [var]",
+          "description": "Increment loop variable and branch back to matching `FOR` if condition holds. **One variable only** — the comma form `NEXT J, I` is not accepted and fails at runtime with `?NEXT WITHOUT FOR ERROR` at the comma",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"
@@ -217,7 +219,7 @@
       "statementUsable": true,
       "forms": [
         {
-          "syntax": "INPUT [\"prompt\"{;",
+          "syntax": "INPUT [\"prompt\"{;|,}] var [, var ...]",
           "description": "Read value(s) from the user. Numeric or string vars supported. Re-prompts with `?REDO FROM START` on bad numeric input; `?EXTRA IGNORED` if too many comma-separated values",
           "verified": false,
           "source": "6502-BIOS/README.md",
@@ -469,7 +471,7 @@
       "statementUsable": true,
       "forms": [
         {
-          "syntax": "ON expr GOTO l1,l2,...",
+          "syntax": "ON expr GOTO l1,l2,... / ON expr GOSUB l1,l2,...",
           "description": "Evaluate `expr`, branch to nth target. Out-of-range index silently continues",
           "verified": false,
           "source": "6502-BIOS/README.md",
@@ -560,7 +562,7 @@
           "check": "pending RUN (Phase 4)"
         },
         {
-          "syntax": "LOAD \"name\"",
+          "syntax": "SAVE \"name\"",
           "description": "Programs. Loads at `$0800` and readies BASIC to `RUN` it",
           "verified": false,
           "source": "6502-BIOS/README.md",
@@ -1407,7 +1409,7 @@
       "statementUsable": false,
       "forms": [
         {
-          "syntax": "SIN(x)",
+          "syntax": "COS(x)",
           "description": "Trig functions, radians",
           "verified": false,
           "source": "6502-BIOS/README.md",
@@ -1445,7 +1447,7 @@
       "statementUsable": false,
       "forms": [
         {
-          "syntax": "SIN(x)",
+          "syntax": "TAN(x)",
           "description": "Trig functions, radians",
           "verified": false,
           "source": "6502-BIOS/README.md",
@@ -1616,7 +1618,7 @@
       "statementUsable": false,
       "forms": [
         {
-          "syntax": "LEFT$(s$,n)",
+          "syntax": "RIGHT$(s$,n)",
           "description": "First / last `n` chars of `s$`",
           "verified": false,
           "source": "6502-BIOS/README.md",
@@ -1654,7 +1656,7 @@
       "statementUsable": false,
       "forms": [
         {
-          "syntax": "JOY(1)",
+          "syntax": "JOY(1) / JOY(2)",
           "description": "Joystick port 1 or 2 bitmask (R-L-D-U-Y-X-B-A). The port is **active low** — each line is pulled up and grounded by its switch — and the value is the port read raw, so a held button is a `0` bit and an untouched stick reads `$FF`. Test a direction with `IF (JOY(1) AND 16) = 0`",
           "verified": false,
           "source": "6502-BIOS/README.md",
@@ -1730,7 +1732,7 @@
       "statementUsable": false,
       "forms": [
         {
-          "syntax": "MIN(a,b)",
+          "syntax": "MAX(a,b)",
           "description": "Smaller / larger of `a` and `b`",
           "verified": false,
           "source": "6502-BIOS/README.md",
@@ -1807,7 +1809,7 @@
           "check": "pending RUN (Phase 4)"
         },
         {
-          "syntax": "BLOAD <addr>,\"name\"",
+          "syntax": "BSAVE <addr>,<len>,\"name\"",
           "description": "Raw bytes at an address you choose — data, graphics, code",
           "verified": false,
           "source": "6502-BIOS/README.md",

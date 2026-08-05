@@ -35,10 +35,32 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| confirmed | 46 |
+| fixed | 44 |
+| confirmed | 4 |
 | open | 4 |
-| fixed | 2 |
 | wontfix | 3 |
+
+**Phase 9 closed the ledger's upstream backlog.** Every confirmed item that
+named a sibling repo has been fixed in that repo, one commit each, with the
+source-of-truth citation in the message: `6502-BIOS` (A8, A21, A22, A23, A24,
+A36, O2), `6502-ACE` (A20, A42), `6502-KIM` (A4), `6502-PRG` (A8, A33),
+`6502-CRT` (A8, A35), `6502-EMULATOR` (A6, A31, A32, O5), `6502-DEV` (a new
+one). What remains open is **A44** and **A48**, which need a camera and an ACE
+respectively, plus **A26** and **O5's** documentation notes, which are
+observations rather than defects.
+
+Three of the phase's findings are worth reading before the entries:
+
+- **A25 was misdiagnosed.** The BIOS README's keyword tables were never wrong.
+  This repo's extractor took the *first* backticked span of a grouped row and
+  gave it to every keyword on that row, so `SIN(x) / COS(x) / TAN(x)` made COS
+  and TAN both read `SIN(x)`. The bug was here. See A25 below.
+- **A23 was wrong about the number.** `FOR` nests **14** deep, not "at least
+  16". Measured at every depth from 8 to 24, and explained by the source: a
+  frame is 18 bytes on a 256-byte stack, and `BasCmdFor` has no depth guard.
+- **A50 is new**, and is the RAM map in the BIOS README putting BASIC's `GOSUB`
+  and `FOR` stacks at `$0400–$05FF` when `BASIC.asm` says outright that they
+  live on the CPU stack.
 
 Entries **A10–A13** were found while rewriting Phase 3 against PLAN.md's
 [Course Correction](PLAN.md#course-correction-post-phase-3), and **A14–A19** in
@@ -129,7 +151,8 @@ serial are false at the machine itself.
 | **Truth** | `$A000–$B7FF` is the Kernal (6,144 bytes); `$B800–$BFFF` is the **CP437 character set** (2,048 bytes), which is a separate segment and separate content. |
 | **Source** | `BIOS.cfg`: `KERNAL: start=$A000, size=$1800`, `CHARS: start=$B800, size=$0800`. INSPECT: `$B800` reads as character-pattern data, not code. |
 | **Check** | GREP + INSPECT |
-| **Also affects** | `6502-KIM/README.md#keypad-card` repeats the conflation in its overlay table: "`$A000–$BFFF` BIOS Kernal (unchanged, still callable)". Both halves *are* still readable under the overlay, so the row is not wrong about reachability — only about the name. Worth a wording fix in Phase 9. |
+| **Also affects** | `6502-KIM/README.md#keypad-card` repeated the conflation in its overlay table: "`$A000–$BFFF` BIOS Kernal (unchanged, still callable)". Both halves *are* still readable under the overlay, so the row was not wrong about reachability — only about the name. |
+| **Fix** | `fixed` — `6502-KIM` d88eb9a splits the row into `$A000–$B7FF` Kernal and `$B800–$BFFF` character set. The BIOS README's own ROM map already had it right. |
 
 ### A5 — PLAN.md: "51 published jump-table slots"
 
@@ -149,7 +172,8 @@ serial are false at the machine itself.
 | **Truth** | The banner is **`6502 BASIC V2.0`**. |
 | **Source** | `MsgBanner` at `BASIC.asm:8827`: `.byte $0D,$0A,"6502 BASIC V2.0",$0D,$0A,0`. RUN-confirmed. |
 | **Check** | GREP + RUN |
-| **Note** | The *substance* of Appendix C #3 — that the prompt is `OK` and not `READY.` — is correct; only the version number in the quoted banner is wrong. `AGENTS.md` shows it in illustrative output rather than as a claim, so the fix there is cosmetic. |
+| **Note** | The *substance* of Appendix C #3 — that the prompt is `OK` and not `READY.` — is correct; only the version number in the quoted banner is wrong. |
+| **Fix** | `fixed` — `6502-EMULATOR` 19e3a95 corrects both transcripts (`docs/AGENTS.md` and `README.md`). |
 
 ### A7 — PLAN.md and `6502-ASM/README.md`: which things need a post-2.19 cc65
 
@@ -170,7 +194,8 @@ serial are false at the machine itself.
 | **Truth** | None of `$0400–$07FF` is free for a user program. `$0400` is `BAS_LINBUF` (raw input line), `$0500` is `BAS_TOKBUF` (tokenized scratch), and `$0600–$07FF` is `FS_SECTOR_BUF`, which **any** filesystem call clobbers. |
 | **Source** | `BASIC.asm:209-210`, `BIOS.inc:120` |
 | **Check** | GREP |
-| **Consequence** | A reader who trusts the name will POKE into BASIC's line buffer. `data/memory-map.json` names these regions for what they are; the docs must too, and the `6502-PRG` include's comment should be reworded in Phase 9. The genuinely free RAM is `$003A–$00FF` in zero page and everything above the program in `$0800–$7FFF`. |
+| **Consequence** | A reader who trusts the name will POKE into BASIC's line buffer. The genuinely free RAM is `$003A–$00FF` in zero page and everything above the program in `$0800–$7FFF`. |
+| **Fix** | `fixed` in three repos. `6502-BIOS` bbca238 documents `USER_VARS` in `BIOS.inc` for what it is — a legacy name kept only because Wozmon builds its input buffer there — and the README's RAM map now names `BAS_LINBUF` and `BAS_TOKBUF` separately with a note that none of `$0400–$07FF` is free. `6502-PRG` 25869c5 and `6502-CRT` 672e813 reword the same line in their `6502.inc`, and qualify the zero-page line as well: `$003A–$00FF` is free for a program that has taken the machine over, which is A26's point. |
 
 ### A9 — The family hero photo shows a two-major-versions-stale banner
 
@@ -214,9 +239,9 @@ serial are false at the machine itself.
 | | |
 |---|---|
 | **Observation** | This repo generates its own `samples/lib/6502.inc` from the BIOS source (rank 1). The `6502-PRG` and `6502-CRT` templates ship a hand-maintained `6502.inc` (rank 3) that readers actually use. Both describe the same machine and should agree. |
-| **Status** | Not yet compared. Any disagreement is by definition a template bug, since the generated file is derived from the ROM. |
-| **Plan** | Diff them in Phase 9 and fix the template. |
-| **Check** | pending GREP |
+| **Status** | `fixed` — compared in Phase 9, and **they agree**. 204 symbols appear in both files and **not one disagrees on its value**. The template additionally carries 142 symbols the extractor does not emit (hardware constants and bit masks), and the generated file carries 53 the template does not (BASIC's own internals — `BAS_TXTTAB`, `BAS_WARM` and the like, which are not part of the published API). `6502-PRG/6502.inc` and `6502-CRT/6502.inc` are byte-identical to each other. |
+| **Note** | No template bug to fix, which is the outcome worth recording: the hand-maintained include has kept up with the ROM. What the templates *did* need was a wording fix, in A8. |
+| **Check** | GREP — symbol/value pairs parsed out of all three files and compared, rather than a text diff, since the files are laid out differently. |
 
 ### O4 — The migrated cards still carry their original v1.0-era content — **resolved**
 
@@ -234,8 +259,8 @@ serial are false at the machine itself.
 |---|---|
 | **Observation** | The BASIC error `?NO DEVICE ERROR` (`BASIC.asm:7976-7981`, `ReqHw`) fires when a statement needs a card whose `HW_PRESENT` bit is clear. Storage statements (`DIR`, `LOAD "name"`, `SAVE "name"`, `DEL`, `BLOAD`, `BSAVE`, `FORMAT`) all guard on `HW_CF`. Confirmed empirically: `6502 run --headless` with **no** `--cf` flag still reports `HW=$7F` (every bit set except video) and `DIR` prints an empty `DISK 0` rather than erroring — the emulator's default headless machine profile always includes a Storage card object (`src/tests/IO/Storage.test.ts` instantiates one unconditionally), and `--cf` only attaches a backing image to it; there is no CLI flag to remove the card itself. |
 | **Consequence for these docs** | [Storage](https://github.com/acwright/6502-DOCS/blob/main/docs/using/storage.md)'s `NO DEVICE` claim is GREP-sourced (the error text and the `ReqHw` guard are real and read directly from the ROM) but is **not** RUN-verified, unlike every other command in that chapter — the current tooling cannot reach the condition that would trigger it. |
-| **Status** | Open. Not a documentation error — a gap in what the emulator CLI can currently simulate. |
-| **Suggested upstream fix** | A `6502-EMULATOR` flag to omit the Storage card entirely (mirroring how `--console video` is the only currently-togglable card) would close this. Tracked here rather than filed upstream directly, since this repo doesn't own that one. |
+| **Status** | `fixed`. Was not a documentation error — a gap in what the emulator CLI could simulate. |
+| **Fix** | `fixed` — `6502-EMULATOR` 19e3a95 adds `--empty <cards>`, which leaves any I/O slot unpopulated: `ram1`, `ram2`, `rtc`, `storage`, `serial`, `via`, `sound`, `video`, or `io1`..`io8`. `6502 run --headless --empty storage` reports `HW=$77` and answers `DIR` with **`?NO DEVICE ERROR`**, so [Storage](docs/using/storage.md)'s claim is now RUN-verifiable like everything else in that chapter. The flag generalises past this one case — `--empty sound` reaches the silent `SOUND`/`VOL` returns that A10 mistook for the default machine. |
 | **Check** | GREP (the error path); RUN attempted and found not reproducible |
 
 ### A10 — This repo's own `docs/using/sound-and-video.md`: "no SID fitted"
@@ -349,7 +374,7 @@ serial are false at the machine itself.
 | **Source** | SCHEM: `Hardware/ACE Board/Rev 1.0/ACE Board.kicad_sch` and `Rev 1.1/*.kicad_sch`, symbol Reference/Value pairs. The DIP switch's eight positions carry the labels `$8000`, `$8400`, `$8800`, `$8C00`, `$9000`, `$9400`, `$9800`, `$9C00` — one per I/O slot. |
 | **Check** | SCHEM |
 | **Consequence** | Anyone cross-referencing the README against the board or the schematic is sent to the wrong part. Schematics outrank READMEs, so the README is the thing to fix. |
-| **Fix** | Upstream, in `6502-ACE`. These docs sidestep it by naming no designator for the reset button — "just above the Esc key" is more use to a reader anyway. |
+| **Fix** | `fixed` — `6502-ACE` 2b8d717. The audit went further than this entry: the schematic numbers RESET as **SW17**, a push button inside the keyboard's own numbering, which shifts *every* designator from SW15 up by one, so the BOM's size groupings were wrong too (CAPS LOCK is SW32 not SW31, SPACE is SW62 not SW61, the 2.25u group is SW42/SW45/SW50). All of it was re-derived from the schematic's Footprint properties rather than transcribed. These docs continue to name no designator — "just above the Esc key" is more use to a reader anyway. |
 
 ### A21 — `6502-BIOS/README.md`: BASIC numbers documented as six significant digits
 
@@ -360,7 +385,7 @@ serial are false at the machine itself.
 | **Source** | RUN, at the `OK` prompt on a v1.5 machine. |
 | **Check** | RUN |
 | **Consequence** | A programmer trusting six digits would round away three digits of real precision. |
-| **Fix** | Upstream, in `6502-BIOS/README.md`. These docs say nine, and `data/basic-keywords.json` carries the README's figure until the extractor is re-run against a corrected README. |
+| **Fix** | `fixed` — `6502-BIOS` bbca238 says nine and shows the two examples. `data/basic-keywords.json` now carries nine as well. |
 
 ### A22 — `6502-BIOS/README.md`: variable names documented as single-letter
 
@@ -371,18 +396,20 @@ serial are false at the machine itself.
 | **Source** | RUN. |
 | **Check** | RUN |
 | **Consequence** | Understated by a long way: the README describes 26 numeric variables where the machine offers hundreds, and it gives no warning about the collision rule that comes with them — or about names containing a keyword (`SCORE` contains `OR` and will not parse). |
-| **Fix** | Upstream. [Numbers and variables](docs/basic/numbers-and-variables.md) documents the real rule, the two-character collision and the buried-keyword trap. |
+| **Fix** | `fixed` — `6502-BIOS` bbca238 states the real rule, the two-character collision and the buried-keyword trap in a callout of its own. [Numbers and variables](docs/basic/numbers-and-variables.md) already had all three. |
 
 ### A23 — `6502-BIOS/README.md`: FOR/NEXT nesting documented as 8 levels
 
 | | |
 |---|---|
 | **Claim** | "FOR/NEXT supports up to 8 nested loops." |
-| **Truth** | At least 16. Sixteen nested `FOR` loops, each closed by its own `NEXT`, run to completion; nine nested loops around a counter produce 2⁹ = 512 iterations with no error. |
-| **Source** | RUN. |
-| **Check** | RUN |
-| **Consequence** | Understates the machine. Harmless in that nobody was told they could do less than they can — but the number is wrong, and the guide would have repeated it. |
-| **Fix** | Upstream. The guide says loops nest "as deep as you like in practice" and does not quote a figure, since the real ceiling is stack space shared with `GOSUB` rather than a fixed count. |
+| **Truth** | **14.** Nine nested loops around a counter produce 2⁹ = 512 iterations with no error; fourteen run to completion; fifteen and beyond do not. |
+| **Source** | RUN, at every depth from 8 to 24 — a program of *n* nested `FOR`s each closed by its own `NEXT`. Depths 8–14 print their end marker; 15, 16, 17, 20 and 24 all fail, and they fail at the **fifteenth** `NEXT` whatever the depth, which is what pins the ceiling at 14. |
+| **Check** | RUN + GREP |
+| **Correction** | **This entry was wrong when it was written**, and in the more dangerous direction: it said "at least 16" on the strength of a single sixteen-deep program that appeared to pass. Re-running it under Phase 9 with a counter variable outside the loop set showed it had never been printing anything — the original test's counter was `N`, which was also one of its sixteen loop variables. |
+| **Why 14** | `BASIC.asm:7650-7678` pushes an 18-byte frame per `FOR` — `TXTPTR`, `CURLIN`, the 5-byte limit, the step sign, the 5-byte step, the variable address, and the `$81` tag. Fourteen of those is 252 bytes, and page 1 is 256. |
+| **The real finding** | Not the number — the failure mode. `BasCmdGosub` guards its push against `GOSUB_STACK_MIN` and raises `OUT OF MEMORY` when it would overflow; **`BasCmdFor` has no such guard**. The fifteenth frame silently overwrites the bottom of the stack, and the error surfaces later, at that loop's `NEXT`, as `?NEXT WITHOUT FOR ERROR` — naming a line that is correct. |
+| **Fix** | `fixed` — `6502-BIOS` bbca238 documents 14, the frame size, the missing guard and the misleading error. [Loops](docs/basic/loops.md) carries the same in a `::: tip`, framed as something you meet by accident or not at all. |
 
 ### A24 — `6502-BIOS/README.md`: `NEXT` documented with a comma list it does not accept
 
@@ -393,18 +420,18 @@ serial are false at the machine itself.
 | **Source** | RUN: a two-deep nest closed with `NEXT J, I` prints ` 1 1 1 2` then `?NEXT WITHOUT FOR ERROR IN 40`. |
 | **Check** | RUN |
 | **Consequence** | The most consequential of this batch: it is documented syntax that fails at runtime, in the middle of a loop, with an error naming a cause that isn't the real one. |
-| **Fix** | Upstream — either the README or `BasCmdNext`. The guide teaches one `NEXT` per loop and says the comma form is not accepted. `data/basic-examples.json` pins it with a running case. |
+| **Fix** | `fixed` — `6502-BIOS` bbca238 gives the syntax as `NEXT [var]` and says in the same row that the comma form fails at runtime, and where. The guide already taught one `NEXT` per loop; `data/basic-examples.json` pins it with a running case. |
 
 ### A25 — `6502-BIOS/README.md`: seven keyword syntax lines copied from the wrong entry
 
 | | |
 |---|---|
-| **Claim** | The README's BASIC keyword tables give: `COS` → `SIN(x)`, `TAN` → `SIN(x)`, `RIGHT$` → `LEFT$(s$,n)`, `MAX` → `MIN(a,b)`, `BSAVE` → `BLOAD <addr>,"name"`, `SAVE` → `LOAD "name"`, and `INPUT` → `INPUT ["prompt"{;` (truncated). |
-| **Truth** | Each is the neighboring entry's line, pasted and not edited — `COS(x)`, `TAN(x)`, `RIGHT$(s$,n)`, `MAX(a,b)`, `BSAVE addr,len,"name"`, `SAVE "name"`. All seven keywords themselves work correctly; only their documentation is wrong. |
-| **Source** | GREP (the README tables) + RUN (each keyword exercised). |
+| **Claim** | `data/basic-keywords.json` gave: `COS` → `SIN(x)`, `TAN` → `SIN(x)`, `RIGHT$` → `LEFT$(s$,n)`, `MAX` → `MIN(a,b)`, `BSAVE` → `BLOAD <addr>,"name"`, `SAVE` → `LOAD "name"`, and `INPUT` → `INPUT ["prompt"{;` (truncated). Phase 4 read this as seven syntax lines copied from the neighbouring entry and not edited, and recorded it as a bug in the BIOS README. |
+| **Truth** | **The README was never wrong. This repo's extractor was.** The README groups related keywords on one row — ``​`SIN(x)` / `COS(x)` / `TAN(x)`​`` in one cell, ``​`LOAD "name"` / `SAVE "name"`​`` in another — and `readmeBasicForms` took `firstSpan()` of the syntax cell and gave it to *every* keyword the row named. Six of the seven are that. The seventh, `INPUT`, is the same function truncating at an escaped pipe: the README writes the literal `|` in `INPUT ["prompt"{;`&#124;`,}] var [, var ...]` as `&#124;`, which splits one logical span into two, and the first of them ends at the semicolon. |
+| **Source** | GREP. `6502-BIOS/README.md` has not been touched since 2026-07-31, before Phase 4 ran, so the text Phase 4 read is the text there now — and it gives `SIN(x) / COS(x) / TAN(x)`, `MIN(a,b) / MAX(a,b)`, `BLOAD <addr>,"name" / BSAVE <addr>,<len>,"name"` and the full `INPUT` line, all correct. |
 | **Check** | GREP + RUN |
-| **Consequence** | `BSAVE` is the dangerous one: a reader following the README would call it with two arguments and lose the length. |
-| **Fix** | Upstream. Corrected syntax for all 85 keywords now lives in `data/basic-examples.json`, hand-authored and machine-checked, and is what [the reference](docs/basic/reference.md) prints. The generated `data/basic-keywords.json` still carries the README's text — the two disagreeing is exactly this entry. |
+| **Consequence** | The ledger accused the wrong repo, and would have had Phase 9 "fix" a README that was right. It is also the one class of error the fact base is supposed to prevent: a generated file was wrong, the hand-authored `data/basic-examples.json` was right, and the disagreement was read as the *source* being wrong rather than the *extraction*. |
+| **Fix** | `fixed` in this repo. `scripts/lib/markdown.mjs` gains `spans()` and `cellText()`; `readmeBasicForms` pairs spans to names positionally when the counts line up and falls back to the whole decoded cell when they do not, which also reassembles `INPUT`. All seven now extract correctly. `data/basic-examples.json` remains the hand-authored, machine-checked source [the reference](docs/basic/reference.md) prints. |
 
 ### A26 — Zero page `$003A` is not free while BASIC is running
 
@@ -465,7 +492,7 @@ serial are false at the machine itself.
 | **Truth** | An unresolved identifier makes the expression evaluate true rather than raising an error at `bp.set` time or when it is evaluated. `DEBUG-PROTOCOL.md` documents that "bare identifiers resolve as symbols" but not what happens when one doesn't. |
 | **Source** | Emulator 2.5.1, `6502 dbg break … --condition` |
 | **Check** | RUN |
-| **Status** | `confirmed` — an upstream item for `6502-EMULATOR`. Failing closed (or refusing the breakpoint) would be the safer behavior, since the symptom of a typo is a breakpoint that appears to ignore its condition. |
+| **Status** | `fixed` — `6502-EMULATOR` 19e3a95. The breakpoint still fires, which is deliberate; what it no longer does is fire *silently*. The evaluation error is carried on `BreakpointHit` and `StopReason`, so the stop now reads `breakpoint #1 at $A000 (condition could not be evaluated: unknown name "NOSUCHSYMBOL")` and the debug protocol reports it too. Verified against this entry's exact reproduction. |
 | **Consequence** | `docs/crossdev/debugging.md` warns about it next to the conditional-breakpoint section, because combined with A30 it is easy to hit: a `=` constant looks like a symbol, isn't one, and the condition then always matches. |
 
 ### A32 — `6502 dbg mem fill` refuses `0` and every hex form
@@ -476,8 +503,8 @@ serial are false at the machine itself.
 | **Truth** | The argument is validated as a *positive* number and parsed as decimal only, which rules out the most common fill value of all — zero — and every notation the rest of the CLI accepts for a byte. |
 | **Source** | Emulator 2.5.1 |
 | **Check** | RUN |
-| **Status** | `confirmed` — an upstream item for `6502-EMULATOR`. |
-| **Consequence** | The debugging chapter zeroes memory with `mem write` and notes the quirk in one sentence rather than teaching around it silently. |
+| **Status** | `fixed` — `6502-EMULATOR` 19e3a95 adds a `parseByte` that takes `$EA`, `0xEA` and decimal across `$00-$FF`, zero included, and `mem fill` uses it. Verified: `mem fill $0400 16 0`, `$EA` and `0x00` all work, and `256` and `ZZ` are refused with the range in the message. |
+| **Consequence** | The debugging chapter's note about zeroing with `mem write` is now historical rather than necessary; it is left in place until the chapter is next revised, since it is still correct advice on emulator 2.5.1. |
 
 ### A33 — `6502-PRG/Makefile`: `clean` fails on a clean tree and misses one artefact
 
@@ -485,7 +512,7 @@ serial are false at the machine itself.
 |---|---|
 | **Observation** | `make cf` copies the program to its 8.3 name (`PROGRAM.PRG`) before adding it to the image, and `clean` does not remove that copy. Separately, `clean` uses `rm` without `-f`, so running it twice stops with an error the second time. |
 | **Truth** | Both are small template warts rather than wrong documentation. |
-| **Status** | `confirmed` — an upstream item for `6502-PRG`, worth one commit in Phase 9. |
+| **Status** | `fixed` — `6502-PRG` 25869c5. `clean` is one `rm -f` line covering the 8.3 copy as well, and `.PHONY` lists every target rather than two. `6502-CRT` 672e813 got the same treatment. |
 | **Consequence** | `docs/crossdev/makefile.md` shows the corrected `clean` line and a `.PHONY` list, framed as housekeeping the reader adds. |
 
 ### A34 — `6502-PRG/README.md` and `6502-CRT/README.md` still say `brew install cc65`
@@ -504,7 +531,7 @@ serial are false at the machine itself.
 | **Truth** | `KernalInit` is slot 40, at **`$A078`**. `$A072` is `StWaitReady`. The same repo gets it right everywhere else — `6502.inc:416`, `README.md:14` and `README.md:34` all say `$A078` — so this is one stale comment, not a wrong build. |
 | **Source** | `Kernal.asm` jump table; `6502-CRT/6502.inc` |
 | **Check** | GREP |
-| **Status** | `confirmed` — a one-line upstream fix for `6502-CRT` in Phase 9. |
+| **Status** | `fixed` — `6502-CRT` 672e813. Cart.crt rebuilds byte-identically, the comment being the only change. |
 | **Consequence** | Harmless in practice: the code calls the symbol, not the number. But a reader copying the comment into their own cartridge would call the CompactFlash wait routine at power-on and wonder why the machine hangs on a machine with no card. `docs/assembly/cartridges.md` never prints a jump-table address. |
 
 ### A36 — A chained IRQ handler must not push anything
@@ -515,7 +542,7 @@ serial are false at the machine itself.
 | **Truth** | Chaining works only if the new front of the chain leaves the stack exactly as the processor left it — so it either uses instructions that touch no register (`inc`, `dec`, `stz` on absolute addresses) or restores everything it used before handing over. Nothing in the BIOS README says so. |
 | **Source** | `Kernal.asm` IRQ handler; confirmed by a chained counting handler that reports six interrupts for six typed characters |
 | **Check** | RUN |
-| **Status** | `confirmed` — not a bug, an undocumented constraint. Phase 9 should add a sentence to the BIOS README next to the interrupt vectors. |
+| **Status** | `fixed` — `6502-BIOS` bbca238 adds a *Chaining an IRQ Handler* section next to the cartridge vectors, quoting the `tsx` / `lda $104,x` that makes the constraint real and giving both ways out: touch no register, or replace the vector and end in `rti`. |
 | **Consequence** | `docs/assembly/interrupts.md` states it as a warning and the chapter's program is one `inc` long on purpose. The alternative — replacing the vector outright and ending in `rti` — is documented alongside it. |
 
 ### A37 — "The screen drops codes above 126" is a property of `Chrout`, not of the screen
@@ -581,7 +608,7 @@ serial are false at the machine itself.
 | **Source** | SCHEM: `Hardware/ACE Board/Rev 1.0/ACE Board.kicad_sch` and `Rev 1.1/*.kicad_sch`, Reference/Value pairs on every connector symbol. |
 | **Check** | SCHEM |
 | **Consequence** | The same class of error as A20, which found the switch designators shifted — and it means A11's citation of "`J16` `5V DC`" from the README named the wrong part. The barrel jack is **`J17`**. Anyone cross-referencing the README against the board from `J14` up is sent one connector out. |
-| **Fix** | Upstream, in `6502-ACE`. [Connectors](docs/reference/connectors.md) and `docs/public/cards/connectors.html` are built from the schematic, and every pin on that card was read off the netlist rather than off the README. |
+| **Fix** | `fixed` — `6502-ACE` 2b8d717 renumbers all nine. [Connectors](docs/reference/connectors.md) and `docs/public/cards/connectors.html` were already built from the schematic, so nothing on the site changes. |
 
 ### A43 — `data/monitor-commands.json` reached Wozmon with `G`, which A18 had already disproved
 
@@ -661,6 +688,29 @@ serial are false at the machine itself.
 | **Check** | Read the sources against each other. |
 | **Consequence** | Anyone reading the v1.8 sheet plans a HUD drawn in the bitmap layer over their sprites, and cannot make it work. |
 | **Fix** | `data/f18a.json` records the v1.9 reading with the conflict noted, and `docs/f18a/bitmap.md` states the rule in the negative — *the bitmap layer is never drawn over a sprite* — because that is the form a reader needs. |
+
+### A50 — `6502-BIOS/README.md`: the GOSUB and FOR stacks put in the wrong page
+
+| | |
+|---|---|
+| **Claim** | The README's RAM map gave `$0400–$05FF` as "BASIC line-input buffer, GOSUB stack, FOR stack". |
+| **Truth** | Neither stack is there. `$0400` is `BAS_LINBUF` (the raw input line) and `$0500` is `BAS_TOKBUF` (tokenizing scratch); `GOSUB` and `FOR` frames are pushed onto the **CPU stack in page 1**. |
+| **Source** | GREP. `BASIC.asm:204` says it in as many words — "GOSUB / FOR stacks live elsewhere; `$0500-$05FF` doubles as the tokenization scratch buffer" — and `BASIC.asm:209-210` defines both buffers. `BasCmdGosub` and `BasCmdFor` both `pha` their frames. |
+| **Check** | GREP |
+| **Consequence** | It is the reason A23's "up to 8 nested loops" looked plausible: a 512-byte region would explain a small fixed limit, where the truth is a 256-byte page shared with everything else the interpreter is doing. Anyone reasoning about how deep they can nest from this map reasons from the wrong number and the wrong place. |
+| **Fix** | `fixed` — `6502-BIOS` bbca238 splits the row in two, names each buffer, notes that the CPU stack row is where the frames actually live, and adds a caution under the table that none of `$0400–$07FF` is free memory. |
+
+### A51 — `6502-DEV/README.md`: the Output Board's J1 named SPEAKER
+
+| | |
+|---|---|
+| **Claim** | The DEV Output Board BOM gave `J1` as `SPEAKER`. |
+| **Truth** | The schematic's Value for that connector is `AUDIO`. |
+| **Source** | SCHEM: `Hardware/DEV Output Board/Rev 1.0/DEV Output Board.kicad_sch`. |
+| **Check** | SCHEM |
+| **Consequence** | Trivial on its own. It is recorded because of how it was found: every designator in all five KiCad repos was compared against the schematic of the same name, revision by revision, after A20 and A42 showed the ACE's had drifted. This was the only other disagreement in the family — the COB's 33 board sections, the VCS's five boards and the KIM's three all agree with their schematics. |
+| **Fix** | `fixed` — `6502-DEV` f5e5649. |
+
 
 ---
 

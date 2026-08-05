@@ -75,7 +75,7 @@ And note where `I` ends up: one step past the limit, not on it.
 
 ## One variable per NEXT
 
-Loops nest — a loop inside a loop, as deep as you like in practice:
+Loops nest — a loop inside a loop, and a loop inside that:
 
 ```
 10 FOR I = 1 TO 2
@@ -101,6 +101,18 @@ FOR`, so give each loop its own line. It costs a line and saves an evening.
 
 You can leave the variable off entirely — a bare `NEXT` closes the innermost
 loop — but naming it is what makes a long program readable.
+
+::: tip How deep can you go?
+Fourteen. Every open `FOR` keeps eighteen bytes of bookkeeping — where the loop
+started, what it counts to, what it steps by — on a stack that is exactly 256
+bytes, and fourteen of those fill it.
+
+Fourteen is far more than any program you'd want to read, so this is a limit you
+will meet by accident or not at all. It's worth knowing what it looks like when
+you do: the fifteenth `FOR` doesn't complain. The complaint arrives later, at
+that loop's `NEXT`, as `?NEXT WITHOUT FOR` — pointing at a line that is perfectly
+correct. If you ever see that on a `NEXT` you're sure of, count your open loops.
+:::
 
 ## Getting out early
 

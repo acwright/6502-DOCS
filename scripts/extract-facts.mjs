@@ -34,9 +34,11 @@ import {
   stringConstants
 } from './lib/asm.mjs'
 import {
+  cellText,
   firstSpan,
   identifiers,
   section,
+  spans,
   tableStartingWith,
   tables
 } from './lib/markdown.mjs'
@@ -666,18 +668,27 @@ function readmeBasicForms(readme) {
 
     for (const row of table.rows) {
       const names = identifiers(row[0])
-      const syntax = firstSpan(row[0])
       const description = row[hasSyntax ? 2 : 1]
+      // The README groups related keywords on one row — `SIN(x)` / `COS(x)` /
+      // `TAN(x)`, `LOAD "name"` / `SAVE "name"`. Reading only the first span
+      // gave every keyword in such a row the *first* one's syntax, so COS was
+      // documented as `SIN(x)` and SAVE as `LOAD "name"`. When the spans line
+      // up one-to-one with the names, pair them; otherwise take the whole cell,
+      // which is also what rescues a syntax line split around an escaped pipe.
+      const cell = hasSyntax ? row[1] : row[0]
+      const forms = spans(cell)
+      const syntaxFor = (index) =>
+        forms.length === names.length ? forms[index] : cellText(cell)
 
-      for (const name of names) {
+      names.forEach((name, index) => {
         add(name, {
-          syntax: hasSyntax ? firstSpan(row[1]) : syntax,
+          syntax: syntaxFor(index),
           description,
           verified: false,
           source: '6502-BIOS/README.md',
           check: 'pending RUN (Phase 4)'
         })
-      }
+      })
     }
   }
 
@@ -691,17 +702,26 @@ function readmeLimits(readme) {
     .map((l) => l.replace(/^\s*>\s?/, '').trim())
     .filter(Boolean)
 
+  // These were transcribed from the BIOS README and four of them were wrong,
+  // which is what Phase 4 found by typing all 85 keywords in and Phase 9 fixed
+  // upstream. They now carry the measured values, so the fact base and the
+  // README agree — and `check` says which method settled each one rather than
+  // claiming the README as the source for numbers the README got wrong.
   return {
     notes: quotes,
-    forNestingLevels: 8,
+    // 14, not 8: a FOR frame is 18 bytes on the hardware stack, so 14 fill
+    // page 1, and BasCmdFor has no depth guard — the 15th corrupts the stack
+    // and its NEXT reports `?NEXT WITHOUT FOR ERROR`.
+    forNestingLevels: 14,
     gosubLevelsGuaranteed: 20,
-    variableNames: 'Single letter A-Z (numeric) and A$-Z$ (string); each may also be DIMed as a 1-D array',
+    variableNames:
+      'Any length of letters and digits, first two characters significant; a $ suffix makes it a string. Each name may also be DIMed as a 1-D array.',
     floatBytes: 5,
-    significantDigits: 6,
+    significantDigits: 9,
     printZoneWidth: 14,
     source: '6502-BIOS/README.md',
-    check: 'pending RUN (Phase 4)',
-    verified: false
+    check: 'RUN (Phase 4, re-measured Phase 9)',
+    verified: true
   }
 }
 
@@ -1026,23 +1046,39 @@ function extractCharset(src) {
 function extractBoot(src) {
   const { lines } = src.kernal
 
+  const major = versionEquate(src.inc, 'BIOS_VERSION_MAJOR')
+  const minor = versionEquate(src.inc, 'BIOS_VERSION_MINOR')
+
   // The splash strings are `.asciiz` under local (`@`-prefixed) labels inside
-  // the Splash routine.
+  // the Splash routine. The title is assembled with `.sprintf` from the version
+  // equates rather than typed — a Phase 9 fix upstream, so the splash and
+  // KernalVersion cannot drift apart — so its text has to be interpolated here
+  // the way ca65 interpolates it. Everything else is a plain literal.
   const strings = []
+  let titleIsDerived = false
   lines.forEach((line, i) => {
-    const match = line.match(/^(@?\w+):\s*\.asciiz\s+"([^"]*)"/)
-    if (match) {
+    const literal = line.match(/^(@?\w+):\s*\.asciiz\s+"([^"]*)"/)
+    const sprintf = line.match(
+      /^(@?\w+):\s*\.asciiz\s+\.sprintf\("([^"]*)",\s*BIOS_VERSION_MAJOR,\s*BIOS_VERSION_MINOR\)/
+    )
+    if (sprintf) {
+      titleIsDerived = true
       strings.push({
-        symbol: match[1],
-        text: match[2],
+        symbol: sprintf[1],
+        text: sprintf[2].replace('%d.%d', `${major}.${minor}`),
+        derivedFrom: 'BIOS_VERSION_MAJOR/MINOR',
+        source: `Kernal.asm:${i + 1}`,
+        check: 'GREP'
+      })
+    } else if (literal) {
+      strings.push({
+        symbol: literal[1],
+        text: literal[2],
         source: `Kernal.asm:${i + 1}`,
         check: 'GREP'
       })
     }
   })
-
-  const major = versionEquate(src.inc, 'BIOS_VERSION_MAJOR')
-  const minor = versionEquate(src.inc, 'BIOS_VERSION_MINOR')
 
   const splash = strings.find((s) => s.symbol === '@SplashTitle')
   const versionInSplash = splash?.text.match(/v(\d+)\.(\d+)/)
@@ -1059,12 +1095,14 @@ function extractBoot(src) {
       source: 'BIOS.inc:134-135',
       check: 'GREP'
     },
-    // The splash text is a literal, not built from the version equates, so the
-    // two can drift. Flag it here rather than let the docs quote a stale splash.
+    // The splash is now assembled from the version equates upstream, so it
+    // cannot drift — but the check stays, because it is what would notice if
+    // that ever got typed back into a literal.
     splashMatchesVersion:
       versionInSplash != null &&
       Number(versionInSplash[1]) === major &&
       Number(versionInSplash[2]) === minor,
+    splashDerivedFromVersion: titleIsDerived,
     strings,
     menu: {
       timeoutSeconds: 5,
