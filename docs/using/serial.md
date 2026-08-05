@@ -60,9 +60,10 @@ Either way you've got about a minute to get the transfer started before the
 ACE gives up and hands you the prompt back. If that happens, nothing is
 harmed — just type the command again.
 
-<PlaceholderImage
-  label="A laptop driving an ACE"
-  caption="An ACE with a USB-to-serial cable running to a laptop, the laptop's terminal window showing the same OK prompt as the ACE's monitor."
+<Figure
+  src="/images/photos/serial-terminal.jpg"
+  alt="A CoolTerm window connected over serial, showing the BIOS banner, BASIC's own banner, and PRINT 2*2 answered with 4."
+  caption="A terminal on the other end of the cable: the same banners and the same OK prompt the ACE's own screen shows."
 />
 
 <Diagram

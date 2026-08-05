@@ -58,7 +58,7 @@ page today, via `<PlaceholderImage>`) · `pending` (not placed on any page).
 | Text on screen | G | `docs/using/sound-and-video.md` | **done** | `screens/screen-text.png`, from `samples/basic/screen-text.bas`. |
 | The Monitor | G | `docs/using/monitor.md` | **done** | `screens/monitor.png` — in with `BRK`, `M 0800`, `R`. |
 | Wozmon | G | `docs/using/monitor.md` | **done** | `screens/wozmon.png` — the dot prompt, `J FF00`, the backslash, `FF00.FF0F`. `G FF00` hangs the machine — [A18](ACCURACY.md). |
-| A laptop driving an ACE | P | `docs/using/serial.md` | placeholder | **Wants a camera.** Both screens in one frame, showing the same prompt. |
+| A laptop driving an ACE | P | `docs/using/serial.md` | **done** | `photos/serial-terminal.jpg`, from `assets/photos/serial-terminal.png`. The plan wanted both screens in one frame; what shipped instead is a CoolTerm capture — the BIOS banner, BASIC's banner, `PRINT 2*2` answered — which makes the same point about the two ends agreeing without needing a camera. |
 | The XModem handshake | D | `docs/using/serial.md` | **done** | `xmodem.svg`. |
 | A card, its disks, its files | D | `docs/using/storage.md` | **done** | `cf-disks.svg`. |
 | An ACE wearing its KIM boards | P | `docs/addons/kim.md` | **done** | `photos/kim.jpg`. |
@@ -87,16 +87,15 @@ page today, via `<PlaceholderImage>`) · `pending` (not placed on any page).
 | Burning a cartridge ROM | P | `docs/crossdev/to-hardware.md` | **done** | `photos/cartridge-burn.jpg`, from `assets/photos/cartridge-burn.png`. The chip in the programmer, the cartridge board and its VC83 BASIC label waiting beside it. |
 | The character set | D | `docs/reference/character-set.md` | **done** | Phase 7's, drawn from `data/charset.json` — every glyph is an SVG built from its eight ROM bytes, so the picture is the pattern table rather than a font resembling it. |
 
-## The placeholder that's left
+## No placeholders left
 
-One needs a camera and a machine on a desk, and nothing in any repo
-substitutes for it:
+`using/serial.md` was the last one — it wanted a laptop and an ACE sharing a
+desk, and no camera was available. What shipped instead is a CoolTerm capture,
+which makes the same point (both ends agree on the prompt) without the photo.
 
-1. **A laptop and an ACE showing the same prompt** (`using/serial.md`).
-
-A second would be worth having and no page reserves a slot for it: **the whole
-family lined up**, oldest to newest. `photos/family-desk.jpg` is a single older
-machine, not a line-up.
+One more image would be worth having and no page reserves a slot for it: **the
+whole family lined up**, oldest to newest. `photos/family-desk.jpg` is a single
+older machine, not a line-up.
 
 ## Chapters that ship without a picture
 

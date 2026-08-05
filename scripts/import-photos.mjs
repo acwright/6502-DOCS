@@ -109,6 +109,13 @@ const PHOTOS = [
     to: 'cartridge-burn.jpg',
     from: join(REPO, 'assets/photos/cartridge-burn.png'),
     subject: 'An AT28C256 in the ZIF socket of a TL866 programmer, lid open, with a finished cartridge board and its label beside it.'
+  },
+  {
+    // A CoolTerm window rather than a laptop-and-ACE photo — the placeholder
+    // wanted a camera; this is the substitute the site actually ships.
+    to: 'serial-terminal.jpg',
+    from: join(REPO, 'assets/photos/serial-terminal.png'),
+    subject: "A CoolTerm window connected over serial: the BIOS banner, BASIC's own banner, and PRINT 2*2 answered with 4."
   }
 ]
 
