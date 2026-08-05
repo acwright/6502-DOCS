@@ -5,6 +5,7 @@
  *   npm run screens                 # every shot
  *   npm run screens -- treasure     # shots whose name contains this
  *   npm run screens -- --keep       # leave the 320×240 originals in place
+ *   npm run screens:verify          # re-take and compare; writes nothing
  *
  * Phase 8 of PLAN.md, tier 1: a screenshot in this guide is never a photograph
  * of somebody's monitor. Each one is a real machine, booted from the same ROM
@@ -30,7 +31,8 @@
  */
 
 import { spawn, spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -268,20 +270,38 @@ function buildAssembly(source) {
   return prg
 }
 
-/** Scale up without smoothing: a character cell is eight hard pixels. */
+/**
+ * Scale up without smoothing: a character cell is eight hard pixels.
+ *
+ * The two `-define`s and the `-strip` are what make a shot reproducible. The
+ * machine is deterministic and so is the encoder, but ImageMagick stamps three
+ * `date:` text chunks and a `tIME` into every file it writes, so re-taking an
+ * unchanged screen produced a 38-byte diff and eleven of them looked like the
+ * ROM had moved. Without the timestamps the bytes are identical, which is what
+ * lets `--check` below mean anything.
+ */
 function scale(file) {
-  const result = spawnSync('magick', [file, '-filter', 'point', '-resize', `${SCALE * 100}%`, file], {
-    encoding: 'utf-8'
-  })
+  const result = spawnSync(
+    'magick',
+    [
+      file,
+      '-filter', 'point',
+      '-resize', `${SCALE * 100}%`,
+      '-strip',
+      '-define', 'png:exclude-chunk=date,time',
+      file
+    ],
+    { encoding: 'utf-8' }
+  )
   if (result.error) throw new Error('ImageMagick is not installed — `brew install imagemagick`')
   if (result.status !== 0) throw new Error(`magick failed:\n${(result.stderr || '').trim()}`)
 }
 
 // ---------------------------------------------------------------------------
 
-async function takeShot(shot, port) {
+async function takeShot(shot, port, dest = OUT) {
   const machine = new Machine(port, { paused: shot.boot === 'splash' })
-  const file = join(OUT, `${shot.name}.png`)
+  const file = join(dest, `${shot.name}.png`)
 
   try {
     await machine.start()
@@ -327,6 +347,11 @@ async function takeShot(shot, port) {
 async function main() {
   const args = process.argv.slice(2)
   const keep = args.includes('--keep')
+  // Re-take every shot into a scratch directory and compare, writing nothing.
+  // A red run here means the machine draws something different than it did —
+  // a new ROM, a new emulator, or a changed sample — and the fix is to look at
+  // the picture and then run without --check.
+  const check = args.includes('--check')
   const filters = args.filter((a) => !a.startsWith('--'))
 
   const shots = filters.length ? SHOTS.filter((s) => filters.some((f) => s.name.includes(f))) : SHOTS
@@ -340,20 +365,44 @@ async function main() {
     process.exit(1)
   }
 
-  mkdirSync(OUT, { recursive: true })
+  const dest = check ? mkdtempSync(join(tmpdir(), 'screens-')) : OUT
+  mkdirSync(dest, { recursive: true })
   let failed = 0
+  let drifted = 0
 
   for (const [i, shot] of shots.entries()) {
     try {
-      const file = await takeShot(shot, PORT + i)
+      const file = await takeShot(shot, PORT + i, dest)
       if (!existsSync(file)) throw new Error('the emulator wrote no file')
       if (!keep) scale(file)
-      console.log(`ok   images/screens/${shot.name}.png  (${Math.round(statSync(file).size / 1024)} KB)`)
+
+      if (check) {
+        const committed = join(OUT, `${shot.name}.png`)
+        if (!existsSync(committed)) {
+          drifted++
+          console.log(`DRIFT ${shot.name} — no committed screenshot`)
+        } else if (!readFileSync(committed).equals(readFileSync(file))) {
+          drifted++
+          console.log(`DRIFT ${shot.name} — the machine draws something else now`)
+        } else {
+          console.log(`ok   images/screens/${shot.name}.png`)
+        }
+      } else {
+        console.log(`ok   images/screens/${shot.name}.png  (${Math.round(statSync(file).size / 1024)} KB)`)
+      }
     } catch (error) {
       failed++
       console.log(`FAIL ${shot.name}`)
       console.log(`       ${error.message}`)
     }
+  }
+
+  if (check) {
+    rmSync(dest, { recursive: true, force: true })
+    console.log(`\n${shots.length - failed - drifted}/${shots.length} shots current`)
+    if (drifted) console.log('Run `npm run screens` and look at what changed before committing.')
+    if (failed || drifted) process.exit(1)
+    return
   }
 
   console.log(`\n${shots.length - failed}/${shots.length} shots taken`)

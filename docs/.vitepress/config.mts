@@ -12,6 +12,10 @@ function loadGrammar(name: string, aliases: string[] = []) {
   return { ...JSON.parse(readFileSync(path, 'utf-8')), aliases }
 }
 
+const BIOS_VERSION: string = JSON.parse(
+  readFileSync(fileURLToPath(new URL('../../data/boot.json', import.meta.url)), 'utf-8')
+).version.string
+
 export default defineConfig({
   title: 'ACE Documentation',
   description:
@@ -250,7 +254,11 @@ export default defineConfig({
     },
 
     footer: {
-      message: 'Released under the MIT License.',
+      // Which firmware this manual describes is a fact about the machine, and
+      // the one thing a reader with an older ROM needs in order to know why a
+      // page and their screen disagree. Read from the fact base rather than
+      // typed, so it cannot be the last place on the site still saying v1.4.
+      message: `Written for BIOS ${BIOS_VERSION}. Released under the MIT License.`,
       copyright: 'Copyright © AC6502'
     }
   }

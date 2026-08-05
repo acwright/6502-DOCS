@@ -165,3 +165,11 @@ jobs:
 
       - name: Build docs
         run: npm run docs:build
+
+      # VitePress checks dead links between Markdown pages and nothing else.
+      # This reads the build: component `src`s, the raw HTML cards, every
+      # anchor, and the network. A host that refuses the runner is reported as
+      # unchecked rather than failed — an HTTP 404 is a broken link, a reset
+      # connection is not an answer.
+      - name: Check every link
+        run: npm run links

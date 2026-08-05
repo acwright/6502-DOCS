@@ -81,7 +81,7 @@ Being able to count truths is genuinely useful:
 
 Each passing test contributes −1, so negating the total counts them.
 
-## And, or, not — the trap
+## And, or, not — the trap {#and-or-not-the-trap}
 
 `AND`, `OR` and `NOT` do their work **bit by bit on whole numbers**. On the
 −1/0 values that comparisons produce, that behaves exactly like the words
