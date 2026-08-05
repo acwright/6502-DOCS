@@ -240,6 +240,40 @@ Pages use three components, all registered in
 A placeholder's caption **describes the picture and nothing else** — no phase
 numbers, no script names, no accuracy notes. Those go in `IMAGES.md`.
 
+## Icons and link previews
+
+Not pictures on a page — the pictures of the *site*. `scripts/build-icons.mjs`
+sizes them all out of `assets/branding/`, and the head tags that point at them
+are in [`docs/.vitepress/config.mts`](docs/.vitepress/config.mts).
+
+```sh
+npm run icons        # redraw every icon and the link-preview card
+npm run icons:check  # fail if one is missing or the wrong size (in CI)
+```
+
+Two things this fixes, both of which look like a favicon problem and are not:
+
+- **"Add to Dock" showed the wrong icon.** Every site here lives under
+  `acwright.github.io`, and Safari files a site's icon by host rather than by
+  path — so this site, which declared no `site.webmanifest`, inherited the icon
+  of a sibling project that does. `docs/public/site.webmanifest` gives it its
+  own `id`, which is what tells the two apart.
+- **A shared link had no picture.** `og:image` was a root-relative path, which
+  Open Graph does not allow and scrapers drop, and it pointed at a square, which
+  renders as a thumbnail beside the text. It is now an absolute URL to
+  `images/og-card.png` at the 1.91:1 a large card wants.
+
+The small sizes come off the hand-pixeled `favicon.ico` rather than the big
+mark: sixteen pixels of deliberate drawing beats any downscale of a wordmark,
+which turns to mush below about 48px. Everything from 180px up comes off the
+mark itself. Same arrangement as the photographs — drawing needs ImageMagick and
+a Mac system font, so the outputs are committed and CI only checks they are
+there at the size the manifest promises.
+
+`docs/public/favicon.ico` is not written by this script. It is copied
+byte-for-byte out of `6502-ASSETS` by the migration, which fails if the two ever
+differ, so it stays the 16×16 original and the PNGs carry the sizes it lacks.
+
 ## Running machines on a page
 
 Twenty-seven machines sit on nineteen pages, each beside the listing it belongs

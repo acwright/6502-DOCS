@@ -58,6 +58,12 @@ jobs:
       - name: Check every photograph is present
         run: npm run photos:check
 
+      # Same arrangement as the photographs: drawing them needs ImageMagick and
+      # a Mac system font, so the outputs are committed and CI only asks whether
+      # each one is present at the size the manifest and the head tags promise.
+      - name: Check every icon is present
+        run: npm run icons:check
+
       # The migration is only evidence for retiring 6502-ASSETS if it is still
       # true. This re-walks that repo and fails if it holds a path this repo does
       # not account for. Drop the step once 6502-ASSETS is deleted (Phase 10

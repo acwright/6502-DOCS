@@ -1,0 +1,31 @@
+{
+  "name": "ACE Documentation",
+  "short_name": "ACE Docs",
+  "description": "The user's and programmer's guide to the ACE — a whole 65C02 computer on one board.",
+  "id": "/6502-DOCS/",
+  "start_url": "/6502-DOCS/",
+  "scope": "/6502-DOCS/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/6502-DOCS/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/6502-DOCS/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/6502-DOCS/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

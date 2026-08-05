@@ -16,12 +16,20 @@ const BIOS_VERSION: string = JSON.parse(
   readFileSync(fileURLToPath(new URL('../../data/boot.json', import.meta.url)), 'utf-8')
 ).version.string
 
+// Where the site actually answers from. `base` alone is enough for anything the
+// browser resolves, but a link preview is assembled by a scraper on someone
+// else's machine, and Open Graph requires those URLs absolute — a path-only
+// `og:image` is simply dropped. Everything social below is built from this.
+const BASE = '/6502-DOCS/'
+const SITE = `https://acwright.github.io${BASE}`
+const OG_CARD = `${SITE}images/og-card.png`
+
 export default defineConfig({
   title: 'ACE Documentation',
   description:
     "The user's and programmer's guide to the ACE — a whole 65C02 computer on one board.",
   lang: 'en-US',
-  base: '/6502-DOCS/',
+  base: BASE,
   cleanUrls: true,
   lastUpdated: true,
 
@@ -31,13 +39,59 @@ export default defineConfig({
   // next visit, via the usual `vitepress-theme-appearance` localStorage key.
   appearance: { initialValue: 'light' } as any,
 
-  // Branding migrated from 6502-ASSETS in Phase 2. Entries in `head` are emitted
-  // verbatim, so they carry `base` by hand; `themeConfig.logo` does not.
+  // Branding migrated from 6502-ASSETS in Phase 2, sized out by
+  // `scripts/build-icons.mjs`. Entries in `head` are emitted verbatim, so they
+  // carry `base` by hand; `themeConfig.logo` does not.
   head: [
-    ['link', { rel: 'icon', href: '/6502-DOCS/favicon.ico', sizes: '16x16' }],
-    ['link', { rel: 'apple-touch-icon', href: '/6502-DOCS/images/mark.png' }],
-    ['meta', { property: 'og:image', content: '/6502-DOCS/images/mark.png' }]
+    // The .ico is the hand-pixeled 16×16 from ASSETS, kept as the fallback for
+    // anything that still asks for one by that name. Browsers that understand
+    // the PNGs prefer them, which is what puts a sharp icon on a retina tab.
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: `${BASE}icons/favicon-32.png` }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: `${BASE}icons/favicon-16.png` }],
+    ['link', { rel: 'icon', href: `${BASE}favicon.ico`, sizes: '16x16' }],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: `${BASE}icons/apple-touch-icon.png` }],
+
+    // The manifest is what makes "Add to Dock" treat this as its own app rather
+    // than one more page on `acwright.github.io` — see build-icons.mjs.
+    ['link', { rel: 'manifest', href: `${BASE}site.webmanifest` }],
+    ['meta', { name: 'theme-color', content: '#ffffff', media: '(prefers-color-scheme: light)' }],
+    ['meta', { name: 'theme-color', content: '#1b1b1f', media: '(prefers-color-scheme: dark)' }],
+
+    // Everything on the card except the title, the description and the URL,
+    // which are per-page and set in `transformHead` below.
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'ACE Documentation' }],
+    ['meta', { property: 'og:image', content: OG_CARD }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+    ['meta', { property: 'og:image:alt', content: 'ACE Documentation — a whole 65C02 computer on one board' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:image', content: OG_CARD }]
   ],
+
+  /**
+   * The head tags that differ page to page.
+   *
+   * Without these a scraper falls back to `<title>` and `<meta description>`,
+   * which is not terrible, but `og:url` is what makes a share of
+   * `/basic/loops` say it is that page rather than the site in general.
+   */
+  transformHead({ pageData, siteData, description }) {
+    const path = pageData.relativePath
+      .replace(/(^|\/)index\.md$/, '$1')
+      .replace(/\.md$/, '')
+
+    // The home page's own title is "Welcome", which says nothing as the
+    // headline of a shared link — and `/` is the URL that gets shared most.
+    const title = path === '' ? siteData.title : pageData.title || siteData.title
+
+    return [
+      ['link', { rel: 'canonical', href: SITE + path }],
+      ['meta', { property: 'og:url', content: SITE + path }],
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: description || siteData.description }]
+    ]
+  },
 
   // No landing page: `/` renders docs/index.md directly, using the default
   // doc layout (no `layout: home`), so the sidebar is visible from first paint.

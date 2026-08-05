@@ -1,6 +1,6 @@
 {
   "name": "6502-docs",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "User's and programmer's guide for the ACE, flagship of the AC6502 family.",
   "private": true,
   "type": "module",
@@ -25,6 +25,8 @@
     "embeds:verify": "node scripts/build-embeds.mjs --check",
     "photos": "node scripts/import-photos.mjs",
     "photos:check": "node scripts/import-photos.mjs --check",
+    "icons": "node scripts/build-icons.mjs",
+    "icons:check": "node scripts/build-icons.mjs --check",
     "screens": "node scripts/capture-screens.mjs",
     "screens:verify": "node scripts/capture-screens.mjs --check",
     "preflight": "node scripts/preflight.mjs",
