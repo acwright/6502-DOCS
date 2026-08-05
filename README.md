@@ -413,6 +413,14 @@ error fails it; a host that refuses the connection outright, or answers 429, is
 reported as unchecked — a reset is not an answer, and neither is "you are asking
 too often" from a shared CI address. It runs in CI after the build.
 
+`github.com` links are checked through the API, which answers honestly where an
+anonymous page request answers 429. Set `GITHUB_TOKEN` and the quota goes from
+sixty an hour *per address* to five thousand per token; CI passes
+`github.token` for exactly that reason, since a runner's address is shared with
+every other Actions job on it. Without one the check still works — sixty an hour
+is plenty for one person — and an exhausted quota reports as unchecked rather
+than as a broken link.
+
 It also checks the emulator frame's query strings against the parameter table in
 `data/emulator.json`. The frame ignores a parameter it has never heard of, by
 design, so that a page pinned to an old release keeps working — which means a

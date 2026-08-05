@@ -202,4 +202,11 @@ jobs:
       # unchecked rather than failed — an HTTP 404 is a broken link, a reset
       # connection is not an answer.
       - name: Check every link
+        # GitHub's API answers sixty anonymous requests an hour *per address*,
+        # and a runner's address is shared with every other Actions job on it.
+        # The token raises that to five thousand, which is the difference
+        # between this step checking the sibling repos and reporting that it
+        # could not.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: npm run links

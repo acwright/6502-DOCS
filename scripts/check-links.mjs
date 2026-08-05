@@ -159,20 +159,34 @@ function headingsOf(file) {
 
 const externalCache = new Map()
 
+/**
+ * A token lifts GitHub's API quota from 60 requests an hour per *address* to
+ * 5,000 per token — and an address is exactly the wrong unit on a CI runner,
+ * where it is shared with everyone else building anything. CI has one already;
+ * locally this is usually unset, which is fine, because sixty an hour is
+ * plenty for one person.
+ */
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN
+
 async function head(url, method) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 20000)
   try {
+    const headers = {
+      // A default Node user-agent is refused outright by two of the vendor
+      // sites these docs cite. Identify as what this is.
+      'user-agent': '6502-DOCS link checker (+https://github.com/acwright/6502-DOCS)',
+      accept: '*/*'
+    }
+    if (GITHUB_TOKEN && new URL(url).hostname === 'api.github.com') {
+      headers.authorization = `Bearer ${GITHUB_TOKEN}`
+    }
+
     const res = await fetch(url, {
       method,
       redirect: 'follow',
       signal: controller.signal,
-      headers: {
-        // A default Node user-agent is refused outright by two of the vendor
-        // sites these docs cite. Identify as what this is.
-        'user-agent': '6502-DOCS link checker (+https://github.com/acwright/6502-DOCS)',
-        accept: '*/*'
-      }
+      headers
     })
     return res.status
   } finally {
@@ -204,7 +218,15 @@ async function checkExternal(url) {
       const parts = u.pathname.replace(/^\//, '').replace(/\.git$/, '').split('/')
       if (parts.length === 2 && parts[0] && parts[1]) {
         const status = await head(`https://api.github.com/repos/${parts[0]}/${parts[1]}`, 'GET')
-        return status === 200 ? null : { broken: `the GitHub API says ${status}` }
+        if (status === 200) return null
+        // The API answers an exhausted quota with 403, not 429. Without a token
+        // that quota is sixty an hour per address, which a CI runner shares
+        // with the whole of GitHub Actions — so this says nothing about whether
+        // the repository exists, and must not fail the build.
+        if (status === 403 || status === 429) {
+          return { unreachable: `the GitHub API says ${status} — out of quota, not an answer` }
+        }
+        return { broken: `the GitHub API says ${status}` }
       }
     }
 
