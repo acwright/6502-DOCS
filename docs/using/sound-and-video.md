@@ -71,7 +71,7 @@ light instead of the usual light on dark.
 
 <Figure
   src="/images/screens/screen-text.png"
-  alt="A mostly empty screen with HELLO FROM YOUR ACE printed in the middle, and OK on the left below it."
+  alt="A mostly empty screen with HELLO FROM THE ACE printed in the middle, and OK on the left below it."
   caption="Three lines of BASIC, and the words land where you put them."
   screen
 />

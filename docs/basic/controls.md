@@ -110,7 +110,7 @@ difference between a smear and an animation.
 `WAIT address, mask` stops the program until reading that address and ANDing it
 with the mask gives something non-zero. Nothing else happens while it waits —
 not even <kbd>Esc</kbd> — so it's the one statement here that can genuinely
-wedge your machine if you point it at a bit that never arrives.
+wedge the machine if you point it at a bit that never arrives.
 
 It's a hardware statement, and you want it about once a year. `INKEY` in a loop
 is the answer to almost every question that looks like it needs `WAIT`.

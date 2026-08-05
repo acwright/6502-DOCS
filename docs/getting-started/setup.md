@@ -21,7 +21,7 @@ window in the middle, or stretched, depending on the monitor's own settings.
 
 ## 2. The keyboard
 
-Nothing to do. Your ACE's keyboard is soldered to the board — 67 mechanical
+Nothing to do. The ACE's keyboard is soldered to the board — 67 mechanical
 keys across the front of it, and it's live the moment the machine is on.
 
 ::: details Using a separate keyboard instead

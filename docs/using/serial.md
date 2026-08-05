@@ -1,6 +1,6 @@
 # Serial and a terminal
 
-The DB9 socket turns any laptop into a second way in to your ACE. You don't
+The DB9 socket turns any laptop into a second way in to the ACE. You don't
 need it — the machine has its own keyboard and its own screen — but there are a
 few things it makes much easier.
 

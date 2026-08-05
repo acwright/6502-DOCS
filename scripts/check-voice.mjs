@@ -62,6 +62,17 @@ const RULES = [
     pattern: /\b(way round|time round|round again|straight away|full stop\b(?! character)|fortnight|rubbish|ticked a box|doing sums)\b/i,
     why: 'say it the American way — the other way around, each time through, right away, period'
   },
+  // The reader may be at an ACE, at the emulator, or reading before they have
+  // either. Nothing on this site is for sale, so nothing on it should read as
+  // though the reader bought a machine or is being sold one. "the ACE" and "an
+  // ACE" cover every reader; "your ACE" only covers one of them. This is about
+  // the computer alone — `your program`, `your laptop` and `your work` really
+  // are the reader's, and stay.
+  {
+    name: 'ownership of the machine',
+    pattern: /\byour ACE\b|\bships with the computer\b|\bout of the box\b|\bcame in the box\b/i,
+    why: 'write "the ACE" or "an ACE" — the reader may not own one, and none of this is selling them one'
+  },
   // Several chapters now carry a live machine beside the listing they show. To
   // the reader that is a machine, and the caption under it says so — it does
   // not say what it is made of, any more than a photograph's caption says JPEG.

@@ -1,6 +1,6 @@
 # Programming in BASIC
 
-BASIC is the language your ACE speaks the moment it finishes booting. There is
+BASIC is the language the ACE speaks the moment it finishes booting. There is
 nothing to install and nothing to set up. The `OK` on the screen is the language
 waiting for you.
 

@@ -1,6 +1,6 @@
 # Sound and video
 
-Your ACE has a screen 40 characters wide and 24 rows deep, 16 colors, and three
+The ACE has a screen 40 characters wide and 24 rows deep, 16 colors, and three
 voices of SID sound. Five statements reach all of it.
 
 ## Clearing and placing

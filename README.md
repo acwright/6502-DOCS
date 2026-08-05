@@ -45,14 +45,16 @@ npm run check:voice   # fail if the docs start talking about the docs
 
 ## Writing a page
 
-The site is a manual for the **ACE**, addressed to someone who was handed one
-and did not build it. It says "your ACE" and means it; it does not hedge across
-five machines. COB, DEV and VCS live in `docs/family/` for builders, and the KIM
-is documented as an ACE add-on in `docs/addons/kim.md`.
+The site is a manual for the **ACE**, addressed to someone sitting at one who
+did not build it. It writes "the ACE", not "your ACE" — the reader may be at the
+emulator, and nothing on the site should read as though they bought a machine or
+as though one is being sold to them. It does not hedge across five machines
+either: COB, DEV and VCS live in `docs/family/` for builders, and the KIM is
+documented as an ACE add-on in `docs/addons/kim.md`.
 
 | Path | Section |
 |---|---|
-| `docs/index.md`, `docs/your-ace.md` | Introduction |
+| `docs/index.md`, `docs/the-ace.md` | Introduction |
 | `docs/getting-started/` | Setting up through to troubleshooting |
 | `docs/using/` | Everything you do at the prompt |
 | `docs/addons/` | Hardware that changes what the machine is |

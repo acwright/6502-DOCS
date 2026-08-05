@@ -3,7 +3,7 @@ import { data as facts } from './.vitepress/data/facts.data.mts'
 const ace = facts.systems.systems.find(s => s.id === 'ace')
 </script>
 
-# Your ACE
+# The ACE
 
 One board, one computer, everything on it — **including the keyboard**. The ACE
 is a big board, about as tall as a Commodore 128 and a little narrower, and the
@@ -21,7 +21,7 @@ PCB. No cards to fit, no expansion decisions to make.
 **The big chip in the middle** is a **W65C02S** — the processor. It's a 1970s
 design still in production today, running here at 1 or 2 MHz. That sounds slow.
 It is slow. It's also completely comprehensible, which is the point: there is
-nothing happening inside your ACE that you can't eventually understand.
+nothing happening inside the ACE that you can't eventually understand.
 
 **Next to it, two 32 KB chips.** One is RAM (what your programs live in while
 they run); one is ROM, holding the BIOS — BASIC, the Monitor, and the routines

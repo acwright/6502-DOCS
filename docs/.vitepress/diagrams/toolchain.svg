@@ -26,6 +26,6 @@
 <path class="dg-l" d="M585 226 V256"/>
 <line class="dg-l" x1="75" y1="256" x2="585" y2="256"/>
 <line class="dg-l" x1="330" y1="256" x2="330" y2="284" marker-end="url(#dg-arrow)"/>
-<rect class="dg-r2" x="240" y="284" width="180" height="56" rx="3"/><text class="dg-t" x="330" y="310" text-anchor="middle">Your ACE</text><text class="dg-a" x="330" y="326" text-anchor="middle">or the emulator’s window</text>
+<rect class="dg-r2" x="240" y="284" width="180" height="56" rx="3"/><text class="dg-t" x="330" y="310" text-anchor="middle">The ACE</text><text class="dg-a" x="330" y="326" text-anchor="middle">or the emulator’s window</text>
 <text class="dg-n" x="30" y="366" text-anchor="start">The same .prg every time. Only the way it gets there changes.</text>
 </svg>

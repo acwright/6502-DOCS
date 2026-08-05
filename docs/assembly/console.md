@@ -1,6 +1,6 @@
 # Console input and output
 
-The console is wherever this machine's text goes and comes from. On your ACE
+The console is wherever this machine's text goes and comes from. On an ACE
 that is the screen and the keyboard. On a machine with no video card it is the
 serial port. Your program does not need to know which.
 

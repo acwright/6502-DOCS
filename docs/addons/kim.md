@@ -1,6 +1,6 @@
 # The KIM keypad
 
-Three small boards turn your ACE into a **KIM-1** — the 1976 single-board
+Three small boards turn an ACE into a **KIM-1** — the 1976 single-board
 computer that taught a generation what a microprocessor was. Twenty-four keys,
 a two-line display, and nothing between you and the bytes.
 

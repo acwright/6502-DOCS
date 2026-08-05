@@ -8,7 +8,7 @@ goes down the [serial cable](/using/serial), and back again.
 
 **ACE** — All-in-one Computer Experience. The machine this guide is about: one
 board carrying the processor, memory, video, sound, storage, serial, clock,
-joystick ports and a full keyboard. See [Your ACE](/your-ace).
+joystick ports and a full keyboard. See [The ACE](/the-ace).
 
 **ARMSID** — the sound chip. A modern part that behaves like the MOS 6581
 "SID" from the Commodore 64: three voices, real filters, RCA out.

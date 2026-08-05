@@ -3,4 +3,4 @@
 # video card, so this one is asserted against the screen buffer itself.
 
 console video
-screen ^\s+HELLO FROM YOUR ACE\s*$
+screen ^\s+HELLO FROM THE ACE\s*$

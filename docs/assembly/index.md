@@ -15,7 +15,7 @@ calls those the same way BASIC does.
 
 - **An assembler.** [cc65](/crossdev/cc65), which the
   [cross-development section](/crossdev/) sets up from scratch.
-- **Somewhere to run it.** Your ACE, or the emulator on your laptop. Every
+- **Somewhere to run it.** An ACE, or the emulator on your laptop. Every
   program in this section runs on both.
 - **BASIC.** Not to write in — to load and start your program with, which is
   the easiest way to get machine code into a running machine.

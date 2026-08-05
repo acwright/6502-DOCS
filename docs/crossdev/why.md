@@ -48,7 +48,7 @@ in the loop.
 pattern you name. No window, no waiting, output you can pipe into something
 else.
 
-Neither is a simulation of the ACE's behavior. It is the same ROM your machine
+Neither is a simulation of the ACE's behavior. It is the same ROM the hardware
 runs, the same BASIC, the same Kernal, the same 65C02.
 
 ## What you still go to the machine for

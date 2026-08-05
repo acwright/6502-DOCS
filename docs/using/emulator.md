@@ -1,7 +1,7 @@
 # The emulator
 
 The whole machine, in software. Same ROM, same BASIC, same everything — it just
-runs on your laptop instead of your desk.
+runs on a laptop instead of on a board.
 
 Use it to try the machine before you build one, to work on a program when the
 real one's in another room, or to test something without hunting for a

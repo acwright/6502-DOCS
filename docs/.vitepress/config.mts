@@ -152,7 +152,7 @@ export default defineConfig({
         collapsed: true,
         items: [
           { text: 'Welcome', link: '/' },
-          { text: 'Your ACE', link: '/your-ace' }
+          { text: 'The ACE', link: '/the-ace' }
         ]
       },
       {
@@ -166,7 +166,7 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Using Your ACE',
+        text: 'Using the ACE',
         collapsed: true,
         items: [
           { text: 'The keyboard', link: '/using/keyboard' },

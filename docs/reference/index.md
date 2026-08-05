@@ -24,7 +24,7 @@ laptop with no internet looks the same as one printed online.
 
 | Card | What it covers | The chapter it condenses |
 |---|---|---|
-| 📄 **[6502-ACE](/cards/ace.html)** | The whole machine on two pages: what is on the board, the memory map, the first things to type, and enough BASIC and Monitor to get going. The one that ships with the computer | [Your ACE](/your-ace) |
+| 📄 **[6502-ACE](/cards/ace.html)** | The whole machine on two pages: what is on the board, the memory map, the first things to type, and enough BASIC and Monitor to get going. The one to print first | [The ACE](/the-ace) |
 | 📄 **[Memory Map](/cards/memory-map.html)** | All 64 KB, then RAM and ROM in detail, then every I/O register on the board | [The memory map](/assembly/memory-map) |
 | 📄 **[Connectors](/cards/connectors.html)** | Every socket and header, pin by pin, off the schematic | [Connectors](/reference/connectors) |
 | 📄 **[Keyboard Layout](/cards/keyboard-layout.html)** | The 67 keys as they sit, and the ones that do something out of the ordinary | [The keyboard](/using/keyboard) |

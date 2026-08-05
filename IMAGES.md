@@ -48,7 +48,7 @@ page today, via `<PlaceholderImage>`) · `pending` (not placed on any page).
 | Image | Kind | Where it's used | Status | Notes |
 |---|---|---|---|---|
 | The ACE, from above | P | `docs/index.md` — Welcome | **done** | `photos/ace.jpg`. The whole machine in one frame, which is what the Welcome page needed to say "this is a real object". The ROM's hand-written label reads `BIOS V1.0` — the board was photographed before v1.5 ([ACCURACY.md A44](ACCURACY.md)) — so nothing on the page reads a version off it. |
-| The board, without the keyboard | P | `docs/your-ace.md` | **done** | `photos/ace-board.jpg`, the top 1430 px of the same photograph. The tour chapter wants the parts filling the frame. |
+| The board, without the keyboard | P | `docs/the-ace.md` | **done** | `photos/ace-board.jpg`, the top 1430 px of the same photograph. The tour chapter wants the parts filling the frame. |
 | The keys | P | `docs/using/keyboard.md` | **done** | `photos/ace-keyboard.jpg`, the bottom of the same photograph. |
 | The ACE keyboard layout | D | `docs/using/keyboard.md` | **done** | `keyboard.svg`, drawn from `assets/keyboard/keyboard-layout.json` by the shared drawing in `scripts/lib/keyboard.mjs` — the same one the printable card uses. Do not reach for `assets/keyboard/keyboard-layout.svg`: KLE's export draws the caps and omits every legend. |
 | Everything connected | P | `docs/getting-started/setup.md` | **done** | `photos/everything-connected.jpg`, from `assets/photos/cables.png`. Shot as the kit laid out rather than a cabled machine — the caption says "what you'll be connecting" rather than claiming a connection the picture doesn't show. |

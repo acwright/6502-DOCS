@@ -74,7 +74,7 @@ harness stays; its vocabulary never reaches the page.
 
 | Before | After |
 |---|---|
-| Five co-equal machines, every chapter hedged | The ACE is *the* machine; the guide says "your ACE" and means it |
+| Five co-equal machines, every chapter hedged | The ACE is *the* machine; the guide writes "the ACE" and does not hedge |
 | `/systems/{ace,cob,dev,kim,vcs}` as peers | Main guide is ACE-only; COB/DEV/VCS live in an appendix for DIY builders |
 | KIM as a fifth machine | KIM as an **ACE add-on** (Keypad Card + Keypad Helper + Keypad LCD Helper), with standalone builds as a footnote |
 | "Banked RAM and storage are optional" | The ACE ships with everything; those are builder's notes, not user-facing caveats |
@@ -110,10 +110,11 @@ If a sentence doesn't serve one of those three, it doesn't ship.
 ## Guiding Principles
 
 1. **The ACE is the machine.** The guide is written for someone sitting at an ACE
-   (or the emulator, which is a complete ACE). It says "your ACE", not "your
-   machine, depending on which one you have". Everything the ACE has, it has —
-   video, sound, storage, serial, joysticks, RTC, banked RAM. No hedging.
-2. **Friendly first.** This is the manual that came in the box. Short sentences,
+   (or the emulator, which is a complete ACE). It says "the ACE", not "your
+   machine, depending on which one you have" — and not "your ACE" either, which
+   presumes a reader who bought one. Everything the ACE has, it has — video,
+   sound, storage, serial, joysticks, RTC, banked RAM. No hedging.
+2. **Friendly first.** Short sentences,
    plain words, a joke where a joke fits, and a thing to type on nearly every
    page. If a paragraph reads like a datasheet, it belongs in a README.
 3. **The docs teach; the READMEs specify.** Every repo README stays where it is and
@@ -172,6 +173,7 @@ Binding rules for every page under `docs/`. Violations are bugs.
 | "Phase 7", "Phase 8", "once `scripts/capture-screens.mjs` exists" | Project management. Placeholders say what the picture *will show*, nothing else. |
 | "on ACE and VCS's Main Board; the COB Backplane Pro adds…" | Five-machine hedging in a chapter about the ACE. |
 | "What the machine is, according to the machine" | Written for a robot. |
+| "your ACE", "ships with the computer", "out of the box", "the one that came in the box" | Ownership and sales language. The reader may be at the emulator, may have built one, may be reading before they have anything at all — and nothing here is being sold to them. Write "the ACE" or "an ACE". `your program`, `your laptop`, `your work` are fine: those really are theirs. |
 
 ### Write from the seat, not from the harness
 
@@ -456,7 +458,7 @@ noise, and put something on the screen — without being told what a Kernal is.
 
 ### Chapters
 
-1. **Welcome** — this is your ACE, here's what it can do, here's the first thing to
+1. **Welcome** — this is the ACE, here's what it can do, here's the first thing to
    type. One page, warm, no architecture lecture. A photograph, the `OK` prompt,
    and a two-line program that draws something. Links onward to Setting Up and to
    the emulator for anyone without hardware yet.
@@ -527,14 +529,14 @@ takes, and a prominent link to its KiCad repo and its reference card.
 
 1. Rewrite every page shipped by the first pass of Phase 3 against
    [Voice & Style](#voice--style). Delete `docs/systems/` and rebuild as
-   `docs/your-ace.md`, `docs/addons/kim.md`, and `docs/family/*`.
+   `docs/the-ace.md`, `docs/addons/kim.md`, and `docs/family/*`.
 2. Restructure `data/systems.json` so the ACE record describes the machine as
    shipped — banked RAM and CompactFlash storage are part of the ACE, not
    "optional" — with the Rev 1.0 RAM patch and the separate CF Adapter board
    recorded as builder's notes rather than user-facing caveats.
 3. Rewrite the displayed samples so each one is a program worth running, and move
    the `PASS`-style regression cases to `samples/_checks/`.
-4. Rebuild the sidebar: Introduction → Getting Started → Using Your ACE →
+4. Rebuild the sidebar: Introduction → Getting Started → Using the ACE →
    Add-ons → The Rest of the Family.
 
 ### Exit criteria
@@ -1617,7 +1619,7 @@ by hand rather than claimed as done.
 
 ```
 /                          Welcome (the landing page IS the guide)
-/your-ace                  a tour of the machine, and the spec table
+/the-ace                   a tour of the machine, and the spec table
 /getting-started/          setup · first-boot · first-ten-minutes · troubleshooting
 /using/                    keyboard · sound-and-video · storage · serial ·
                            monitor · emulator
@@ -1644,7 +1646,7 @@ Sidebar order, which is the order a reader meets the site:
 Introduction          Welcome · Your ACE
 Getting Started       Setting up · First power-on · Your first ten minutes ·
                       When something's wrong
-Using Your ACE        The keyboard · Sound and video · Storage ·
+Using the ACE        The keyboard · Sound and video · Storage ·
                       Serial and a terminal · The Monitor · The emulator
 F18A Mode             What F18A mode is · Turning it on · Colors · Sprites ·
                       Scrolling and layers · The bitmap layer · The GPU ·

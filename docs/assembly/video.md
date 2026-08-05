@@ -1,7 +1,7 @@
 # The screen
 
 The video card is a TMS9918A — the chip from the MSX, the ColecoVision and the
-TI-99/4A — or a Pico9918 pretending to be one, which is what an ACE ships with.
+TI-99/4A — or a Pico9918 pretending to be one, which is what an ACE has.
 Either way it behaves identically, and it comes up in text mode with the
 character set already loaded.
 

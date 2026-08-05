@@ -1,6 +1,6 @@
 # Time and memory that lasts
 
-There's a clock chip in your ACE with a battery on it. It knows the date while
+There's a clock chip in the ACE with a battery on it. It knows the date while
 the machine is unplugged, and it has 256 bytes of memory that survive with it.
 
 ## Asking the time

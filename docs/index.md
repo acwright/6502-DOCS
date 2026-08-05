@@ -66,7 +66,7 @@ If you don't have an ACE in front of you, here is one. Start it, wait for the
 | have it plugged in and want to see it boot | [First power-on](/getting-started/first-boot) |
 | are at the `OK` prompt right now | [Your first ten minutes](/getting-started/first-ten-minutes) |
 | don't have one yet | [The emulator](/using/emulator) — it's a complete ACE, in your browser |
-| want to know what's on the board | [Your ACE](/your-ace) |
+| want to know what's on the board | [The ACE](/the-ace) |
 
 Everything in this guide works the same on real hardware and in the emulator.
 If you don't have a machine yet, open the emulator in another tab and follow
@@ -81,5 +81,5 @@ They're all open hardware, and they're all documented at the
 [back of this guide](/family/) if you'd like to build one.
 
 The KIM is the interesting one, because it isn't really a separate machine any
-more — three small boards turn your ACE *into* a KIM-1. That's
+more — three small boards turn an ACE *into* a KIM-1. That's
 [its own chapter](/addons/kim).

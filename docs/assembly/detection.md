@@ -6,7 +6,7 @@ const slots = facts.hardware.slots
 
 # What's fitted
 
-Your ACE has everything. That is what the machine is: a complete computer on
+An ACE has everything. That is what the machine is: a complete computer on
 one board, video, sound, storage, serial, clock, sticks and banked RAM all
 present.
 
@@ -121,7 +121,7 @@ The ACE has an eight-way switch bank that enables and disables each I/O
 section, meant for fault-finding. A switched-off card is invisible to the
 power-on probe, so it reads exactly like a card that is not there. That makes
 your detection code testable on real hardware without unplugging anything —
-see [Your ACE](/your-ace).
+see [The ACE](/the-ace).
 :::
 
 Next: [writing a cartridge](/assembly/cartridges).

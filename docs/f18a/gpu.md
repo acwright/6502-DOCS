@@ -6,7 +6,7 @@ const gpu = facts.f18a.gpu
 
 # The GPU
 
-There is a second processor in your ACE, and it is inside the video card.
+There is a second processor in an ACE, and it is inside the video card.
 
 It is a TMS9900 — a 16-bit chip from 1976, the one in the TI-99/4A — with its
 own RAM, direct access to VRAM and the palette and every VDP register, a

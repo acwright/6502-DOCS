@@ -629,7 +629,7 @@ function toolchain() {
   const busY = ROW + RH + 30
   body.push(line(first + BW / 2, busY, first + (routes.length - 1) * (BW + GAP) + BW / 2, busY))
   body.push(arrow(MID, busY, MID, busY + 28))
-  body.push(box(MID - 90, busY + 28, 180, 56, 'Your ACE', { sub: 'or the emulator’s window', cls: 'dg-r2' }))
+  body.push(box(MID - 90, busY + 28, 180, 56, 'The ACE', { sub: 'or the emulator’s window', cls: 'dg-r2' }))
 
   body.push(text(30, busY + 110, 'The same .prg every time. Only the way it gets there changes.', 'dg-n'))
 

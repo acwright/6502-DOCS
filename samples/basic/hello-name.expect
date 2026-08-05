@@ -7,4 +7,4 @@
 wait (OK|\?)
 send ADA\r
 expect ^HELLO, ADA$
-expect ^WELCOME TO YOUR ACE\.$
+expect ^WELCOME TO THE ACE\.$

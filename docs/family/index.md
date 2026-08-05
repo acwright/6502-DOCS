@@ -36,7 +36,7 @@ that turns an ACE into a KIM, which is why it has
 [a chapter in the main guide](/addons/kim).
 
 **ACE — All-in-one Computer Experience.** Everything above, on one board. The
-machine [this guide is about](/your-ace).
+machine [this guide is about](/the-ace).
 
 ## What they share
 

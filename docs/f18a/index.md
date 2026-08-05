@@ -1,9 +1,9 @@
 # What F18A mode is
 
-There is a second video chip inside your ACE, and it has been switched off
+There is a second video chip inside every ACE, and it has been switched off
 since the day the machine was built.
 
-The card in the video slot is a [Pico9918](/your-ace). It spends its life
+The card in the video slot is a [Pico9918](/the-ace). It spends its life
 pretending to be a TMS9918A, and it is very good at it — 40 columns of text,
 three graphics modes, 32 sprites, 16 colors, all exactly as the 1979 chip did
 them. But the Pico9918 also carries a second personality called **F18A mode**,
