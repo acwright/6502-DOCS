@@ -11,6 +11,10 @@ Built with [VitePress](https://vitepress.dev/), deployed to GitHub Pages.
 See [`PLAN.md`](PLAN.md) for the full multi-phase build plan, sources of
 truth, and verification method.
 
+**The site describes BIOS v1.5, and every sample and screenshot in it was
+produced by emulator 2.5.1.** Those are the two versions that move; see
+[Maintenance](#maintenance) for what to do when either does.
+
 > **Read [`PLAN.md`'s *Voice & Style*](PLAN.md#voice--style) before writing a
 > page.** It is binding, it is enforced by `npm run check:voice`, and it exists
 > because the first pass at these docs read like a compliance report. Short
@@ -243,6 +247,95 @@ it wrong, not just in these docs.
 This file, `PLAN.md`, `IMAGES.md` and `ASSETS-MIGRATION.md` are the project's
 own working notes. **None of their vocabulary belongs on the site** — see
 *Voice & Style*.
+
+## Maintenance
+
+This site is generated from a machine that is still being worked on. Almost
+everything on it — the tables, the cards, the diagrams, the listings, the
+screenshots — is derived from the BIOS source or produced by running the ROM,
+so the day the firmware moves, a lot of pages are quietly wrong until someone
+re-derives them. These are the steps that do it, and the order matters.
+
+### The rule
+
+**A new BIOS feature ships with a docs page and a passing sample.** Not a
+release note, not a line in a table: a chapter that tells a reader what to type
+and a file under `samples/` that proves the machine answers. A feature nobody
+can find and nobody has run is not finished. The same goes the other way — a
+statement the ROM stops accepting is a broken sample, and the harness will say
+so before a reader does.
+
+### After a BIOS release
+
+Run these in order from a checkout with the new firmware built. Each one either
+prints `ok` or tells you what moved.
+
+```sh
+npm run facts         # re-extract data/ from the BIOS source
+git diff data/        # read this — it is the release notes, mechanically derived
+npm run cards         # the six generated cards follow the fact base
+npm run diagrams      # so do nine of the fifteen diagrams
+npm run verify        # every listing, every keyword example, against the new ROM
+npm run screens:verify # did anything the reader looks at change?
+npm run links         # nothing above should have broken a link, but check
+```
+
+`git diff data/` is the important one and the easy one to skip. It is the only
+place the firmware's changes show up as a list, and every later step is
+downstream of it. A new Kernal slot, a renamed error string, a moved buffer —
+all of it appears there first.
+
+If `npm run screens:verify` reports drift, **look at the picture before
+accepting it**: run `npm run screens` and open what changed. A screenshot that
+changed because the splash gained a line is a fix; one that changed because a
+demo now crashes is a bug the harness may not have caught.
+
+### Bumping the documented version
+
+`data/boot.json` carries the version string, extracted from `BIOS.inc`, and the
+site footer reads it at build time — so for the footer, `npm run facts` is the
+whole bump.
+
+Pages are not all so lucky. A handful state the version in prose, and three
+show the splash screen as a transcript inside a code fence, where nothing can
+interpolate. Those are typed by hand and have to be edited by hand — which is
+exactly how the sheets this site replaced ended up describing a v1.0 ROM. So
+`npm run check:voice` fails on any version stated next to the word *BIOS* that
+disagrees with the fact base:
+
+```
+docs/reference/glossary.md:24  stale BIOS version — "BIOS v1.4"
+       the firmware reports v1.5; re-run `npm run facts` and fix the page
+```
+
+Links into `cards/archive/` are exempt, since naming an old version is what
+that directory is for.
+
+The emulator version is pinned differently, and more weakly: it is whatever
+produced the committed screenshots and the passing samples, recorded at the top
+of this file by hand. Nothing enforces it — `npm run preflight` prints the
+version it finds but does not compare it to anything. Bump it by re-running the
+suite against the new CLI and editing the line above.
+
+### Superseded documentation
+
+Old BIOS reference cards move to `docs/public/cards/archive/` rather than being
+deleted — they are the record of what each firmware release documented. They
+are outside `npm run cards:verify`, so they are never regenerated against a ROM
+they never described, but `npm run cards:check` still holds them to the print
+rules like any other card.
+
+### Checking links
+
+```sh
+npm run links           # the built site plus this repo's notes, network included
+npm run links:offline   # structure and anchors only, no network
+```
+
+Needs `npm run docs:build` first: it reads the build, not the Markdown, which
+is how it sees component `src`s, the raw HTML cards and every anchor. An HTTP
+error fails it; a host that refuses the connection outright is reported as
+unchecked, because a reset is not an answer. It runs in CI after the build.
 
 ## Deploying
 

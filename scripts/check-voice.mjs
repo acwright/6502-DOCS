@@ -68,6 +68,17 @@ const RULES = [
 // are never rendered as text, so they are exempt from the path rules.
 const EXEMPT_LINE = /^\s*<<< @/
 
+// The site footer reads the BIOS version out of the fact base, so it cannot go
+// stale. Prose and splash transcripts are typed by hand and can — which is
+// precisely how the sheets this site replaced ended up describing a v1.0 ROM on
+// a v1.5 machine. Any version a page states next to the word BIOS has to be the
+// one the firmware actually reports.
+const BIOS_VERSION = JSON.parse(readFileSync(join(ROOT, 'data/boot.json'), 'utf-8')).version.string
+const VERSION_NEAR_BIOS = /BIOS[^\n]{0,40}?\b(v\d+\.\d+)/gi
+// `cards/archive/` holds the superseded v1.0–v1.4 sheets, and a link to one is
+// supposed to name an old version — that is the whole point of the archive.
+const ARCHIVE_LINE = /cards\/archive\//
+
 function markdownFiles(dir) {
   const found = []
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -93,6 +104,15 @@ for (const file of markdownFiles(DOCS)) {
       failures++
       console.log(`${relative(ROOT, file)}:${n + 1}  ${rule.name} — "${hit[0]}"`)
       console.log(`       ${rule.why}`)
+    }
+
+    if (ARCHIVE_LINE.test(line)) continue
+
+    for (const hit of line.matchAll(VERSION_NEAR_BIOS)) {
+      if (hit[1].toLowerCase() === BIOS_VERSION.toLowerCase()) continue
+      failures++
+      console.log(`${relative(ROOT, file)}:${n + 1}  stale BIOS version — "${hit[0].trim()}"`)
+      console.log(`       the firmware reports ${BIOS_VERSION}; re-run \`npm run facts\` and fix the page`)
     }
   }
 }
