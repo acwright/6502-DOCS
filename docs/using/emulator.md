@@ -7,6 +7,10 @@ Use it to try the machine before you build one, to work on a program when the
 real one's in another room, or to test something without hunting for a
 CompactFlash card.
 
+<Emulator
+  caption="Here's one now. Same ROM, same BASIC, same 30718 bytes free."
+/>
+
 ## In the browser
 
 <https://acwright.github.io/6502-EMULATOR/>
@@ -37,8 +41,14 @@ Everything happens from the row of buttons across the top:
 | **↺** | Reset — exactly like the button on a real ACE. Memory survives. |
 | **⏻** | Power cycle — the cold start. Memory is cleared. |
 | **1 MHz / 2 MHz** | Switch CPU speed |
+| **Speaker** | Mute and unmute |
 | **Clipboard** | Paste text in as keystrokes |
 | **⚙** | Settings |
+
+The speaker button tells you whether there is sound *right now*, not what the
+setting says — so it shows muted, dimmed, until you click it. Browsers won't
+let a page make noise until you've interacted with it, and that click is the
+interaction.
 
 Settings has the same file rows, plus what's currently loaded and an **✕** to
 unload it again.
@@ -75,6 +85,139 @@ ACE, or move files between the two with XModem. See
 
 <kbd>F11</kbd>, or <kbd>⌘</kbd>+<kbd>Return</kbd> on a Mac. The picture keeps
 its 4:3 shape whatever the window is doing.
+
+## Putting your program on the web
+
+You've written a game. You want to show it to somebody.
+
+A `.prg` isn't a thing you can post — nobody's going to download a file and
+find an emulator to open it in. What you want is a link that just plays, and
+you can have one, because the emulator has a second page built to sit inside
+somebody else's:
+
+```html
+<iframe
+  src="https://acwright.github.io/6502-EMULATOR/embed.html?prg=https://your-site.example/game.prg&autostart=1&autotype=RUN%5Cr"
+  width="640" height="520"
+  allow="autoplay; gamepad; fullscreen"
+  style="border: 0"
+></iframe>
+```
+
+That's the whole integration. `prg` is your program; `autostart` boots the
+machine as the page opens; `autotype` types `RUN` once BASIC is up, so a visitor
+gets a game rather than an `OK` prompt and a puzzle. `%5Cr` is how a `\r` — the
+Enter key — survives being written in a URL.
+
+640 × 520 is the video output doubled, plus the emulator's control bar. Add
+`&controls=none` and 640 × 480 fits the picture exactly.
+
+::: warning `prg` needs the program's full address
+It's tempting to write `prg=game.prg` and drop the file next to your page. That
+doesn't work, and the way it fails is confusing: the emulator is what fetches
+the file, and the emulator is on *its* site, not yours — so `game.prg` means
+`game.prg` next to the emulator, which isn't there, and you get a working BASIC
+prompt and a 404 in a corner.
+
+Give it the whole `https://…` address. The next section shows how to work that
+out when you don't know it yet.
+:::
+
+### On itch.io
+
+[itch.io](https://itch.io/) is where a link like that wants to live, and it
+takes a shape rather than a snippet: a zip containing an `index.html`, uploaded
+as an **HTML** project, with the viewport set to **640 × 520**.
+
+The catch is the one above. Itch decides your address when you upload, so you
+can't type it into the page beforehand — but the page can ask the browser what
+its own address is and work it out from there. That's the whole of the script
+in here:
+
+<<< @/../samples/embed/itch/index.html{html}
+
+Put your `.prg` in the zip beside it, name it `game.prg` or change the one line
+that says otherwise, and you're done. Itch's CDN sends the
+`Access-Control-Allow-Origin` header the emulator needs in order to fetch a file
+from another site, which is the difference between this working and not.
+
+::: warning Test it on itch, not by double-clicking
+Opening `index.html` from your own disk will boot the emulator but won't load
+your program: the frame fetches over `https:` only, so a `file://` address is
+refused. It isn't broken. Upload it as a draft project — drafts are private —
+and play it there, or carry the program in the URL as below.
+:::
+
+### On a blog, a forum, or anywhere you can't upload a file
+
+Put the program *in the link*. Every parameter that names a file has a twin
+ending in `64` that takes the bytes themselves, base64-encoded:
+
+```sh
+base64 < game.prg | tr '+/' '-_' | tr -d '=\n'
+```
+
+Paste the result in place of the whole `prg=…`:
+
+```
+…/embed.html?prg64=AQgLCAoAmSJIRUxMTyIAAAA&autostart=1&autotype=RUN%5Cr
+```
+
+Now the link *is* the game. Nothing is fetched, so it works from anywhere —
+a comment box, a gist, a file on your desktop. The limit is URL length:
+a few tens of kilobytes is comfortable, a card image is not.
+
+This is what every machine on this site uses, which is why they run on a laptop
+with no network as happily as they do here.
+
+### Sound
+
+Embeds start silent, and there's nothing you can pass to change that. Browsers
+refuse to let a framed page make noise until somebody has clicked inside it —
+`muted=0` only means "unmute at the first opportunity", and the first
+opportunity is that click.
+
+So if your game opens on a tune, the tune starts when the player clicks, not
+when the page loads. Worth a line of "click to start" on the page around it.
+
+### A game that loads or saves
+
+`cf=` attaches a CompactFlash image — the kind [`cffs`](/crossdev/tools) builds
+— so `DIR`, `LOAD` and `SAVE` work inside the frame. It's a fetched file like
+`prg`, so it wants the same full `https://…` address, for the same reason.
+
+Anything saved is thrown away when the page closes, unless you add `persist=1`,
+which keeps the card and the clock card's memory in the browser's storage
+between visits. That's what you want for a game with a high-score table.
+
+Be deliberate about it, though: that storage is one record per *site*, shared
+with everything else on the same address — including the full emulator. This
+guide never uses it for exactly that reason. On your own page, where yours is
+the only machine, it's the right switch.
+
+### Fullscreen
+
+`allow="fullscreen"` on the frame. Leave it off and the button is still there,
+the browser refuses it, and the emulator tells the player why — which is a
+worse first impression than not offering it.
+
+### Where the `.prg` comes from
+
+Whichever way you got here:
+
+- `SAVE "GAME"` on the machine, then copy it off the card.
+- [`bastok`](/crossdev/basic) turns a BASIC listing into one.
+- `make` in either project template does it for
+  [assembly](/crossdev/build-run-loop).
+
+::: tip Driving the machine from the page around it
+Everything above happens as the frame loads. It can also be driven afterwards —
+a **Run this** button next to a listing, a reset button, keystrokes sent on
+demand — over `postMessage`. That's a web developer's job rather than a
+BASIC programmer's, and it's documented in
+[EMBEDDING.md](https://github.com/acwright/6502-EMULATOR/blob/main/docs/EMBEDDING.md)
+along with every parameter above.
+:::
 
 ## Running it from the command line
 

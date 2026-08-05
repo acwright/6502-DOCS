@@ -3,6 +3,13 @@
 You're at the `OK` prompt. Everything below gets typed there, one line at a
 time, <kbd>Enter</kbd> after each. Nothing to install, nothing to load.
 
+Or use this one. It's a whole ACE, and everything in this chapter works on it
+exactly as it does on the board.
+
+<Emulator
+  caption="Type into this and it does the same thing the real machine does. Click it first so the keys come here."
+/>
+
 ## Doing math
 
 Type a line starting with `PRINT` and BASIC works it out and shows you:

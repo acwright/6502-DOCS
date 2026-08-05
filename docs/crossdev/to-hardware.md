@@ -169,6 +169,14 @@ the file matches the chip, which is what the programmer expects.
 up.
 :::
 
+## Onto somebody else's screen
+
+There's a fifth destination, and it isn't hardware at all: a web page, where
+anyone with a browser can play your program without owning a machine or a card
+reader. It takes about six lines of HTML, and it lives with the rest of the
+emulator in
+[Putting your program on the web](/using/emulator#putting-your-program-on-the-web).
+
 ## Which to use
 
 If you have a card reader, use the card: it's the least fiddly and it's how a

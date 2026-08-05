@@ -31,6 +31,16 @@ OK
   screen
 />
 
+Starting the machine below is the same as reaching for the switch. Watch for
+the splash, and take the five seconds if you want them — click it first, or the
+keys go to this page instead.
+
+<Emulator
+  label="Switch it on"
+  countdown
+  caption="Cold from the switch: the splash, the five-second choice, and then the prompt."
+/>
+
 ## What it does in those five seconds
 
 <Diagram

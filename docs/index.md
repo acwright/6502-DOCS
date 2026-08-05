@@ -39,6 +39,13 @@ OK
 That's it. That's the whole idea. Everything else in this guide is a bigger
 version of that.
 
+If you don't have an ACE in front of you, here is one. Start it, wait for the
+`OK`, and type that line yourself.
+
+<Emulator
+  caption="An ACE, booting into BASIC. Click it once to give it the keyboard, then type."
+/>
+
 ## What you can do with it
 
 - **Write programs in BASIC** — games, tunes, drawings, calculators. Type them

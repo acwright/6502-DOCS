@@ -53,7 +53,7 @@ with `6502 dbg sym load`.
 ```
 
 ```
-headless 2.5.1 — serial console, 1 MHz, turbo, 1722240 cycles
+headless 2.6.1 — serial console, 1 MHz, turbo, 1722240 cycles
 ```
 
 ::: tip Ports
@@ -179,9 +179,17 @@ Bare names resolve as symbols, `$` and `0x` are hex, bare digits are decimal.
 
 ::: warning A typo'd symbol makes the condition always true
 Name something the debugger has never heard of — `[Countr] == 3` — and the
-breakpoint is accepted without complaint and fires on the first hit, every time.
-If a conditional breakpoint stops immediately and you can't see why, check that
-the name is really in your label file before you go looking at the program.
+breakpoint is still accepted, and it fires on the first hit, every time. It does
+tell you why it stopped:
+
+```
+breakpoint #1 at $A000 (condition could not be evaluated: unknown name "Countr")
+```
+
+So if a conditional breakpoint goes off immediately, read the stop line before
+you go looking at your program. Combined with the `=` and `:=` distinction
+above, this is easy to walk into: a constant defined with `=` looks like a
+symbol and isn't one.
 :::
 
 ## Watchpoints
@@ -223,17 +231,16 @@ its own.
 6502 dbg mem write $40 5        # the countdown now starts from five
 6502 dbg mem write $0400 DEADBEEF
 6502 dbg regs --set A=0x42
-6502 dbg mem fill $0400 16 255
+6502 dbg mem fill $0400 16 $EA      # or 0, or 0x00
 ```
 
 Patching memory and resuming is much faster than an edit-and-rebuild cycle when
 you're testing a guess. Just remember the patch lives in that machine only, and
 goes away when it does.
 
-Two small argument quirks worth knowing before they cost you a minute: `mem
-write` takes its bytes as a hex string, while `mem fill` wants its value as a
-plain positive decimal — it turns down `$EA`, `0x00` and `0` alike. To zero a
-range, write the zeroes.
+One argument difference worth knowing: `mem write` takes a run of bytes as a
+hex string, so `DEADBEEF` is four of them, while `mem fill` takes a single byte
+— `0`, `$EA` and `0x00` all work, and anything outside `$00-$FF` is refused.
 
 ## Snapshots
 

@@ -48,6 +48,11 @@ THE PROCESSOR WAS INTERRUPTED 6 TIMES
 OK
 ```
 
+<Emulator
+  sample="assembly/ticker"
+  caption="Type something and press Enter. The count is how many times your handler ran."
+/>
+
 Five letters and an Enter: six characters, six interrupts.
 
 Three things in there are the whole technique.

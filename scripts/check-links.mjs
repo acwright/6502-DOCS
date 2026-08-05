@@ -27,6 +27,24 @@ const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(REPO, 'docs/.vitepress/dist')
 const BASE = '/6502-DOCS/'
 
+/**
+ * The emulator frame, and every parameter it answers to.
+ *
+ * A frame URL is a link like any other and gets checked like one. Its query
+ * string does not: the frame ignores a parameter it has never heard of, on
+ * purpose, so that a page pinned to an old release keeps working. That is right
+ * for a reader's page and wrong for this one — here a misspelled or renamed
+ * parameter is a silently broken example, which is the worst kind. So the
+ * spellings are checked against the contract instead.
+ */
+const EMULATOR = JSON.parse(readFileSync(join(REPO, 'data/emulator.json'), 'utf8'))
+const FRAME_PARAMETERS = new Set([
+  ...EMULATOR.parameters.media,
+  ...EMULATOR.parameters.media.map((name) => `${name}64`),
+  ...EMULATOR.parameters.flags,
+  ...EMULATOR.parameters.other
+])
+
 const offline = process.argv.includes('--offline')
 const verbose = process.argv.includes('--verbose')
 
@@ -44,7 +62,7 @@ const NOTES = [
 
 const failures = []
 const unreachable = []
-const checked = { internal: 0, external: 0, anchors: 0 }
+const checked = { internal: 0, external: 0, anchors: 0, frames: 0 }
 
 // ---------------------------------------------------------------------------
 // Reading what is served
@@ -318,10 +336,93 @@ function checkNotes(external) {
 }
 
 // ---------------------------------------------------------------------------
+// The emulator frame
+// ---------------------------------------------------------------------------
+
+/**
+ * Every frame URL this repository writes, and every parameter it sets.
+ *
+ * Three sources, because the site reaches the frame three ways and all three
+ * can be wrong independently: the examples a chapter prints, the starter page a
+ * reader is invited to upload, and the component that builds a URL at run time.
+ * Only the first two are text in the build; the component's are read out of its
+ * source, since a URL assembled in the browser is in no HTML file to scan.
+ */
+function checkFrame(external) {
+  external.add(EMULATOR.web.frame)
+  checked.frames++
+
+  const seen = []
+
+  // A frame URL printed in a chapter arrives here HTML-escaped — `&` between
+  // parameters is `&amp;`, and the quote that ends the attribute is `&quot;`.
+  // Both have to come back before the query can be split, or the checker
+  // reports the entity as a parameter.
+  const decode = (html) =>
+    html
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+
+  // A parameter can be written two ways: into the URL, or set on it afterwards.
+  // The starter page does the second — it cannot know the program's address
+  // until it has loaded — so a scan for `embed.html?…` alone would stop
+  // checking the one page a reader is invited to copy.
+  const scan = (where, text) => {
+    const decoded = decode(text)
+    for (const m of decoded.matchAll(/embed\.html\?([^\s"'<>]+)/g)) {
+      seen.push({ where, query: m[1] })
+    }
+    for (const m of decoded.matchAll(/searchParams\.set\(\s*['"]([^'"]+)['"]/g)) {
+      seen.push({ where, query: `${m[1]}=` })
+    }
+  }
+
+  for (const file of walk(DIST).filter((f) => f.endsWith('.html'))) {
+    const html = readFileSync(file, 'utf8')
+    if (html.includes('embed.html?')) scan(relative(REPO, file), html)
+  }
+
+  const starter = join(REPO, 'samples/embed/itch/index.html')
+  if (existsSync(starter)) scan('samples/embed/itch/index.html', readFileSync(starter, 'utf8'))
+
+  for (const { where, query } of seen) {
+    checked.frames++
+    for (const pair of query.split('&')) {
+      const name = decodeURIComponent(pair.split('=')[0])
+      if (!name) continue
+      if (!FRAME_PARAMETERS.has(name)) {
+        report(where, `embed.html?…${name}=…`, `the frame has no "${name}" parameter — it would be ignored`)
+      }
+    }
+  }
+
+  // The component, whose URLs never exist as text anywhere.
+  const component = join(REPO, 'docs/.vitepress/theme/Emulator.vue')
+  if (existsSync(component)) {
+    const source = readFileSync(component, 'utf8')
+    for (const m of source.matchAll(/params\.set\(\s*'([^']+)'/g)) {
+      checked.frames++
+      if (!FRAME_PARAMETERS.has(m[1])) {
+        report('docs/.vitepress/theme/Emulator.vue', `params.set('${m[1]}')`,
+          `the frame has no "${m[1]}" parameter — it would be ignored`)
+      }
+    }
+    // The one parameter this site must never send. See data/emulator.json.
+    if (/params\.set\(\s*'persist'/.test(source)) {
+      report('docs/.vitepress/theme/Emulator.vue', "params.set('persist')", EMULATOR.banned.persist)
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 
 const external = new Set()
 const pageCount = checkBuiltSite(external)
 checkNotes(external)
+checkFrame(external)
 
 if (offline) {
   console.log(`Skipping ${external.size} external links (--offline).`)
@@ -340,7 +441,7 @@ if (offline) {
 
 console.log(
   `\n${pageCount} pages · ${checked.internal} internal · ${checked.anchors} anchors · ` +
-    `${checked.external} external (github.com via the API)`
+    `${checked.external} external (github.com via the API) · ${checked.frames} frame parameters`
 )
 
 if (unreachable.length) {

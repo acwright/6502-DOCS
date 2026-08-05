@@ -38,6 +38,11 @@ available to it.
 ╚══════════════════════╝
 ```
 
+<Emulator
+  sample="assembly/screen"
+  caption="A box drawn from the half of the character set PRINT cannot reach."
+/>
+
 Three things in there are worth pulling out.
 
 **The check at the top.** `HW_PRESENT` says what the machine found at power-on.

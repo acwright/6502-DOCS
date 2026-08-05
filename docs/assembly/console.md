@@ -64,6 +64,11 @@ PLEASED TO MEET YOU, ADA!
 OK
 ```
 
+<Emulator
+  sample="assembly/greeting"
+  caption="Type a name and press Enter. Every character in that answer came back through Chrin."
+/>
+
 The loop is the shape you will write over and over: ask, poll, stop at the
 carriage return, store everything else. The length check keeps a long answer
 from running off the end of the buffer, and `stz Name,x` puts the zero on the

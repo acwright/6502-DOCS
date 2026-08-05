@@ -22,6 +22,11 @@ RUN
 OK
 ```
 
+<Emulator
+  sample="assembly/from-basic"
+  caption="A BASIC program that pokes eleven bytes of machine code into memory and calls them."
+/>
+
 Those eleven numbers in the `DATA` lines are this:
 
 ```asm

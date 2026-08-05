@@ -60,6 +60,11 @@ SOUND               YES
 VIDEO               YES
 ```
 
+<Emulator
+  sample="assembly/inventory"
+  caption="The same eight questions, asked of a machine with every card fitted."
+/>
+
 A mask table and a name table indexed by the same counter is all it takes, and
 the padding in the names is what makes the column line up without any
 formatting code.

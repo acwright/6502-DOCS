@@ -7,11 +7,11 @@
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "5ac7b66641967251932e6705191051c76cbdf4077d1811fa649aa02ae3cee3b7"
+        "sha256": "badfb994c70b2ace7bc1733fdc6a384cdfce53e33e0dad28862785e29085b3d3"
       },
       {
         "file": "Kernal.asm",
-        "sha256": "ff83f704a1d3c7aec5f8212644ccdc13c4d04652cdd971665aa9912455c8336e"
+        "sha256": "166c5dc1e0219f8ec9742ea7e81e3e1b57cb68e9f7cbc4ee5848c3678047b7bf"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -30,13 +30,13 @@
       "symbol": "@SplashTitle",
       "text": "-- 6502 BIOS v1.5 --",
       "derivedFrom": "BIOS_VERSION_MAJOR/MINOR",
-      "source": "Kernal.asm:3061",
+      "source": "Kernal.asm:3135",
       "check": "GREP"
     },
     {
       "symbol": "@SplashMenu",
       "text": "ENTER=BASIC  ESC=MONITOR",
-      "source": "Kernal.asm:3062",
+      "source": "Kernal.asm:3136",
       "check": "GREP"
     }
   ],

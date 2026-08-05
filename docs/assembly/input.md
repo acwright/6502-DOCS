@@ -74,6 +74,11 @@ STICK 2: NOTHING
 OK
 ```
 
+<Emulator
+  sample="assembly/stick"
+  caption="With no stick plugged in, both ports read NOTHING — which is the answer, not a failure."
+/>
+
 Hold a direction while you press Enter and it names it. Two things about the
 structure are worth stealing: a mask table beside a table of names turns eight
 `if`s into a loop, and the `Anything` counter is how you know to print

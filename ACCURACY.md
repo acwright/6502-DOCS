@@ -26,8 +26,9 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.5.1, cc65 built from
-HEAD (`cl65 V2.19 - Git 547d92358`).
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.1, cc65 built from
+HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
+release they were found on; where that matters — A31 and A32 — the entry says so.
 
 ---
 
@@ -35,10 +36,10 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| fixed | 45 |
-| confirmed | 3 |
+| fixed | 46 |
+| confirmed | 4 |
 | open | 4 |
-| wontfix | 3 |
+| wontfix | 4 |
 
 **Phase 9 closed the ledger's upstream backlog.** Every confirmed item that
 named a sibling repo has been fixed in that repo, one commit each, with the
@@ -48,6 +49,15 @@ A36, O2), `6502-ACE` (A20, A42), `6502-KIM` (A4), `6502-PRG` (A8, A33),
 one). What remains open is **A44** and **A48**, which need a camera and an ACE
 respectively, plus **A26** and **O5's** documentation notes, which are
 observations rather than defects.
+
+**Phase 11 closed A31 and A32**, whose consequence lines had been waiting for
+the release that carries the fix, and added two of its own from putting a live
+machine on the page: **A52**, a frame that reported its own normal startup as a
+permanent error, and **A53**, the reason the site sends the frame a single
+keystroke instead of relying on URL parameters alone. **A54** came out of
+writing the chapter rather than the site — a relative `prg=` resolves against
+the emulator and not against the page framing it, which is what the plan and
+`EMBEDDING.md` both implied it did.
 
 **Phase 10 closed A1**, the oldest entry here, in the only way it could be
 closed: `6502-ASSETS` is archived, and the README that called v1.4 current was
@@ -499,7 +509,7 @@ serial are false at the machine itself.
 | **Source** | Emulator 2.5.1, `6502 dbg break … --condition` |
 | **Check** | RUN |
 | **Status** | `fixed` — `6502-EMULATOR` 19e3a95. The breakpoint still fires, which is deliberate; what it no longer does is fire *silently*. The evaluation error is carried on `BreakpointHit` and `StopReason`, so the stop now reads `breakpoint #1 at $A000 (condition could not be evaluated: unknown name "NOSUCHSYMBOL")` and the debug protocol reports it too. Verified against this entry's exact reproduction. |
-| **Consequence** | `docs/crossdev/debugging.md` warns about it next to the conditional-breakpoint section, because combined with A30 it is easy to hit: a `=` constant looks like a symbol, isn't one, and the condition then always matches. |
+| **Consequence** | Closed in Phase 11. The warning in `docs/crossdev/debugging.md` stays — the breakpoint still fires on the first hit, which is deliberate — but it now shows the stop line that says why, rather than telling the reader they will get no explanation. 2.5.1 was the release a reader could actually get when this was written; 2.6.0 is the first one carrying the fix. |
 
 ### A32 — `6502 dbg mem fill` refuses `0` and every hex form
 
@@ -510,7 +520,7 @@ serial are false at the machine itself.
 | **Source** | Emulator 2.5.1 |
 | **Check** | RUN |
 | **Status** | `fixed` — `6502-EMULATOR` 19e3a95 adds a `parseByte` that takes `$EA`, `0xEA` and decimal across `$00-$FF`, zero included, and `mem fill` uses it. Verified: `mem fill $0400 16 0`, `$EA` and `0x00` all work, and `256` and `ZZ` are refused with the range in the message. |
-| **Consequence** | The debugging chapter's note about zeroing with `mem write` is now historical rather than necessary; it is left in place until the chapter is next revised, since it is still correct advice on emulator 2.5.1. |
+| **Consequence** | Closed in Phase 11. The workaround is gone from `docs/crossdev/debugging.md`: `mem fill` now takes `0`, `$EA` and `0x00`, and the chapter says so and shows one. Verified again on 2.6.0, which is the release this site is written against and the first one a reader can get the fix in. |
 
 ### A33 — `6502-PRG/Makefile`: `clean` fails on a clean tree and misses one artefact
 
@@ -717,10 +727,39 @@ serial are false at the machine itself.
 | **Consequence** | Trivial on its own. It is recorded because of how it was found: every designator in all five KiCad repos was compared against the schematic of the same name, revision by revision, after A20 and A42 showed the ACE's had drifted. This was the only other disagreement in the family — the COB's 33 board sections, the VCS's five boards and the KIM's three all agree with their schematics. |
 | **Fix** | `fixed` — `6502-DEV` f5e5649. |
 
+### A52 — The frame reports a normal startup as a permanent error
 
----
+| | |
+|---|---|
+| **Observation** | Any frame carrying `prg`/`prg64` shows a red banner over the picture reading *Loaded — waiting for BASIC to boot to finish setting up the program*, and it never goes away. Reproduced in Chrome against the 2.6.0 web build at t=2 s, 5 s and 9 s, long after BASIC is up and the program has run. |
+| **Truth** | Loading a program before the machine has booted is the supported way to do it and the way every embed on this site does it: the store writes the image, sets `loadWarning` as a *status*, and clears it when the end-of-program pointers are fixed up a moment later. `EmbedApp.vue` snapshotted that status once at mount and pushed it into `problems`, a permanent list rendered in red. The condition it describes resolves in about a second; the banner did not. |
+| **Source** | Emulator 2.6.0, `dist/web/embed.html` |
+| **Check** | RUN |
+| **Status** | `fixed` — `6502-EMULATOR` d3632c1, released as **2.6.1**, which is what this site is pinned to. The warning is read *after* BASIC is ready rather than before, so only a load that genuinely failed reaches the banner; under `autostart=0` it waits for the machine to be started at all, since a program that has had no chance to load has not failed to load. The banner is also restyled from red to a neutral note, because nothing that reaches it is fatal — a malformed parameter has already fallen back to its default, and a file that would not load leaves a working BASIC prompt behind it. Verified by building both ways and driving the frame in Chrome: the banner is present at 2 s, 5 s and 9 s before the change and absent after. |
+| **Consequence** | It was on every embed on this site that carries a program — twenty of them — announcing a fault, in red, on a machine that was working. Nothing in the docs described it, so there is no prose to correct; what needed correcting was the frame. |
 
-## Not a discrepancy, but worth stating once
+### A53 — `autotype` cannot answer the boot menu, because it waits for BASIC
+
+| | |
+|---|---|
+| **Observation** | An ACE gives five seconds at `ENTER=BASIC  ESC=MONITOR` before defaulting to BASIC, and a frame sits through all five. `autotype` cannot shorten it: it waits for `isBasicReady` before typing, so a leading `\r` arrives after the countdown it was meant to answer. |
+| **Truth** | Not a bug — `autotype` waits on purpose, so that `autotype=RUN\r` cannot fire into a machine that is not listening. But it means the URL parameters alone cannot skip the boot menu, and a keystroke injected at reset *is* taken: with the machine paused at reset, `dbg send '\r'` then `run` reaches the `OK` prompt in under 900k cycles against about 5.4M for the countdown. It survives `KernalInit`. |
+| **Source** | Emulator 2.6.0, `EmbedApp.vue` `autotype()`; reproduced on the CLI with `--pause` |
+| **Check** | RUN |
+| **Status** | `wontfix` upstream for now — worked around here. |
+| **Consequence** | `<Emulator>` sends one `6502:type` with a carriage return when the frame announces `6502:ready`, which is the site's only use of the message API and the reason it passes `origins`. It is the difference between a reader clicking a button and waiting five seconds and a reader clicking a button and seeing a program. The one chapter that is *about* those five seconds asks for them back with `countdown`. |
+
+
+### A54 — A relative `prg=` is relative to the emulator, not to your page
+
+| | |
+|---|---|
+| **Claim** | `EMBEDDING.md`'s opening example is `embed.html?prg=game.prg`, and PLAN.md's Phase 11 says of itch.io that "a `.prg` uploaded beside the page loads fine". Both read as though a relative path resolves against the page doing the framing. |
+| **Truth** | It resolves against the **frame's** document, because the frame is what calls `fetch`. A host page at `http://host/host.html` framing `http://host/6502-EMULATOR/embed.html?prg=game.prg` asks for `/6502-EMULATOR/game.prg`, not `/game.prg`. Reproduced in Chrome with the file present beside the host page and absent beside the frame: `prg: game.prg: HTTP 404 File not found`, over a working BASIC prompt. |
+| **Source** | Emulator 2.6.0, `src/renderer/src/embed/media.ts` — `fetch(source.url)` with no base. |
+| **Check** | RUN |
+| **Status** | `confirmed` — inherent rather than fixable. The frame cannot read the parent's URL cross-origin, so it has no way to resolve against the host page even in principle. It is a documentation defect, in this repo's plan and in `EMBEDDING.md`'s example — the latter corrected in `6502-EMULATOR` d3632c1 (2.6.1). |
+| **Consequence** | It is the difference between the starter folder working as uploaded and not working at all, and it fails *quietly* — a visitor gets a BASIC prompt rather than a blank frame, so a page can look almost right. `samples/embed/itch/index.html` resolves the address at load time with `new URL('game.prg', location.href)`, which is also the only way to do it on itch, where the address is not known until after the upload. `docs/using/emulator.md` gives the trap its own warning block and shows an absolute URL in the one-frame example. PLAN.md's Phase 11 note is corrected in its *What shipped* section rather than in the plan text, which is a record of what was believed at the time. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.

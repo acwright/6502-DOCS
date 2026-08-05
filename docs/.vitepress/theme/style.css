@@ -355,3 +355,104 @@
   font-size: 0.9em;
   color: var(--vp-c-text-2);
 }
+
+/**
+ * A machine on the page, rendered by <Emulator>.
+ *
+ * The frame is 640×520 — the video output doubled, plus the emulator's own
+ * control bar — and holds that ratio at any width, so the panel a reader clicks
+ * is exactly the shape of the machine that replaces it and nothing on the page
+ * moves when it does.
+ *
+ * Before the click there is no frame at all: the button below is the whole
+ * component, which is why it carries the machine's proportions rather than
+ * being a line of text.
+ */
+.doc-emulator {
+  margin: 2em 0;
+}
+
+.doc-emulator-frame {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640 / 520;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-default-soft);
+}
+
+.doc-emulator-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.doc-emulator-start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  width: 100%;
+  height: 100%;
+  padding: 1em;
+  border: 0;
+  background: none;
+  color: var(--vp-c-text-2);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.doc-emulator-start:hover,
+.doc-emulator-start:focus-visible {
+  background: var(--vp-c-default-1);
+  color: var(--vp-c-bg);
+}
+
+.doc-emulator-label {
+  font-family: 'Bebas Neue', var(--vp-font-family-base);
+  letter-spacing: 0.04em;
+  font-size: 1.5em;
+  line-height: 1.1;
+  color: var(--vp-c-text-1);
+}
+
+.doc-emulator-start:hover .doc-emulator-label,
+.doc-emulator-start:focus-visible .doc-emulator-label {
+  color: inherit;
+}
+
+.doc-emulator-note {
+  font-size: 0.85em;
+}
+
+.doc-emulator figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.2em;
+  justify-content: space-between;
+  max-width: 640px;
+  margin-top: 0.6em;
+  font-size: 0.88em;
+  line-height: 1.5;
+  color: var(--vp-c-text-2);
+}
+
+.doc-emulator-out {
+  white-space: nowrap;
+}
+
+/**
+ * On paper an embed is a dead button, so it does not print. Every page that
+ * carries one also carries the picture it had before — a live machine is an
+ * addition to a chapter, never the illustration a chapter relies on.
+ */
+@media print {
+  .doc-emulator {
+    display: none;
+  }
+}

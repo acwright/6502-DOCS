@@ -36,6 +36,13 @@ above it is the state of the processor at the moment you arrived: where it was
 (`PC`), what was in its three registers (`A`, `X`, `Y`), and its flags. Don't
 worry about it yet.
 
+Here's a machine to try all three doors on. Nothing you do to its memory can
+hurt anything.
+
+<Emulator
+  caption="Type BRK to go down, X to come back. Everything below works here."
+/>
+
 `X` takes you back to BASIC, with your program intact:
 
 ```

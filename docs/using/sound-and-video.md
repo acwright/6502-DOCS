@@ -86,6 +86,12 @@ from 1983:
 Fifteen colors, fifteen notes, one loop. Line 40 puts the cursor back in the
 same place every time through, so the word stays put and only its color changes.
 
+<Emulator
+  sample="basic/color-loop"
+  sound
+  caption="Fifteen colors and fifteen notes. Click it once for the sound as well as the picture."
+/>
+
 ::: details The character set
 The ACE draws with CP437 — the character set from the original IBM PC. As well
 as letters and numbers there are box-drawing characters, arrows, card suits and

@@ -23,11 +23,27 @@
 // HEAD build still reports `V2.19 - Git <sha>`. Both checks assemble a probe.
 
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 export const REQUIRED_NODE_MAJOR = 22
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+
+/**
+ * The emulator release the whole site is written against.
+ *
+ * Every sample's output, every screenshot's pixels and every embedded program's
+ * bytes came off one release, and a run on a different one is not the check it
+ * looks like. So this is a gate rather than a line of information: the version
+ * lives in the fact base, and a machine running something else fails here
+ * instead of quietly producing a different answer three scripts later.
+ */
+export const EMULATOR_VERSION = JSON.parse(
+  readFileSync(join(ROOT, 'data/emulator.json'), 'utf-8')
+).version
 
 const checks = [
   { name: 'node', required: true, run: checkNode },
@@ -77,7 +93,22 @@ function checkEmulator() {
         'or point $SIXFIVEOHTWO at "node <checkout>/out/cli/index.js".'
     }
   }
-  return { ok: true, version: result.stdout.trim(), detail: `via ${[command, ...prefix].join(' ')}` }
+
+  const version = result.stdout.trim()
+  const via = `via ${[command, ...prefix].join(' ')}`
+
+  if (version !== EMULATOR_VERSION) {
+    return {
+      ok: false,
+      version,
+      detail:
+        `${via} — the site is written against ${EMULATOR_VERSION}. Install that release, ` +
+        'or bump data/emulator.json and re-run the samples, the screenshots and the ' +
+        'embedded payloads against the new one.'
+    }
+  }
+
+  return { ok: true, version, detail: via }
 }
 
 /** cc65 is installed and can assemble what the samples and templates use. */

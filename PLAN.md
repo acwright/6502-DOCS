@@ -37,6 +37,7 @@ keyboard.
 - [Phase 8.5 — F18A Mode](#phase-85--f18a-mode)
 - [Phase 9 — Cross-Repo Accuracy Pass & Backlinks](#phase-9--cross-repo-accuracy-pass--backlinks)
 - [Phase 10 — Launch & ASSETS Retirement](#phase-10--launch--assets-retirement)
+- [Phase 11 — The Embedded Emulator](#phase-11--the-embedded-emulator)
 - [Appendix A — Proposed Site Map](#appendix-a--proposed-site-map)
 - [Appendix B — Image Inventory](#appendix-b--image-inventory)
 - [Appendix C — Accuracy Findings Already Spotted](#appendix-c--accuracy-findings-already-spotted)
@@ -241,7 +242,7 @@ Ranked. When two disagree, the higher one wins and the lower one gets fixed.
 |------|--------|----------|-------------------|
 | 1 | **BIOS source** | `~/Developer/Assembly/6502-BIOS` (`BIOS.inc`, `Kernal.asm`, `BASIC.asm`, `Monitor.asm`) | Kernal jump table, memory map, BASIC dialect, Monitor commands, version number, `HW_PRESENT` bits |
 | 1 | **KiCad schematics** | `~/Developer/Kicad/6502-{ACE,COB,DEV,KIM,VCS}/Schematics` | Pinouts, connectors, address decoding, part numbers, jumper/switch behavior |
-| 2 | **Emulator** | `~/Developer/NodeJS/6502-EMULATOR` (v2.5.1, CLI installed at `/usr/local/bin/6502`) | Observable runtime behavior — boot text, prompts, error messages, timing, sample output |
+| 2 | **Emulator** | `~/Developer/NodeJS/6502-EMULATOR` (v2.6.0, CLI installed at `/usr/local/bin/6502`) | Observable runtime behavior — boot text, prompts, error messages, timing, sample output; and, from 2.6.0, the embed contract in `docs/EMBEDDING.md` |
 | 3 | **Template projects** | `6502-PRG`, `6502-CRT` (`Makefile`, `6502.cfg`, `6502.inc`) | The canonical cross-dev build, link config, and include file |
 | 3 | **Tooling repos** | `bastok`, `cffs`, `bin2woz`, `TMS9918-EDITOR` | Tool CLIs and file formats |
 | 4 | **Existing READMEs / ASSETS docs** | everywhere | Starting drafts only — treated as *claims to verify*, not facts |
@@ -253,7 +254,7 @@ Current firmware baseline for the whole site: **BIOS v1.5** (`BIOS.inc`:
 
 ## Verification Method
 
-The emulator CLI is installed and agent-drivable (`6502 --version` → `2.5.1`), and
+The emulator CLI is installed and agent-drivable (`6502 --version` → `2.6.0`), and
 `~/Developer/NodeJS/6502-EMULATOR/docs/AGENTS.md` documents the whole method. Every
 phase that produces a factual claim uses one of these four checks, and records which
 one it used:
@@ -302,6 +303,7 @@ Rules:
 | 8.5 | F18A mode | 6 | M (unplanned — see below) |
 | 9 | Cross-repo accuracy pass & backlinks | 3–7 | M |
 | 10 | Launch & ASSETS retirement | all | S |
+| 11 | The embedded emulator | 10 | M |
 
 Phases 3–6 are independently writable once Phase 1 lands and can be worked in any
 order; 8 runs continuously beside them.
@@ -1287,6 +1289,321 @@ recorded on the page as what they are.
 
 ---
 
+## Phase 11 — The Embedded Emulator
+
+**Goal:** the reader stops reading about the machine and starts using it, on the
+page they are already on. Emulator **2.6.0** ships a second web entry point built
+for exactly this, so the site's emulator baseline moves to 2.6.0 at the same time
+and the updated site is released.
+
+This is the phase [Appendix E](#appendix-e--open-questions) #3 deferred: "link to
+it from the getting-started chapter rather than iframe it, and revisit an
+embedded *try it* widget after launch." It is after launch, and the widget now
+exists upstream rather than needing to be built here.
+
+### What 2.6.0 brings
+
+The web build now has two pages. `index.html` is the full emulator the site
+already links to; **`embed.html`** is the same machine sized for an `<iframe>` —
+no settings panel, no serial console, no debug bridge, nothing written to disk
+unless asked. It takes its configuration from URL parameters (`prg`, `bin`,
+`cf`, `autostart`, `autotype`, `controls`, `muted`, `freq`, `persist`), accepts a
+base64 twin of every media parameter (`prg64`, `bin64`, …) that carries the bytes
+in the URL itself, and can be driven after load over `postMessage`. The contract
+is `6502-EMULATOR/docs/EMBEDDING.md`, which is a rank-2 source for this phase the
+way `AGENTS.md` is for the harness.
+
+Three other 2.6.0 changes land on pages this site has already written, and are
+part of this phase because a version bump that leaves them stale is not a bump:
+
+- `WAI` and `STP` now genuinely halt the processor.
+- The emulator has a mute button, and it reports whether sound is *audible*
+  rather than what the setting says.
+- **A31 and A32 are fixed in it.** Both are marked `fixed` in `ACCURACY.md` with
+  their consequence lines still describing the workaround, because 2.5.1 was the
+  release a reader could actually get. 2.6.0 is the first one carrying the fix,
+  which is what those lines were waiting for.
+
+### Decisions taken up front
+
+Each of these could reasonably go the other way, so each is settled here rather
+than re-argued per page.
+
+1. **Frame the deployed embed; do not vendor the web build.** The entire web
+   build is about 400 KB, so vendoring it into `docs/public/` is affordable and
+   would pin the version exactly. It is still the wrong trade: the docs site and
+   the emulator are served from the **same origin** — `acwright.github.io` — so
+   an iframe costs no third-party request, no CORS header and no CSP allowance,
+   and a vendored copy is a build artefact of another repo that this one would
+   have to remember to re-copy after every emulator release. Pin by *checking*
+   instead (task 6).
+2. **Inline the program with `prg64=`; never fetch it.** The `64` forms are what
+   make a snippet self-contained — no second round trip, and they work on the dev
+   server, where the deployed frame *is* cross-origin. The real reason is drift:
+   the bytes come from the same file under `samples/` that the chapter displays
+   and the harness runs. A **Run this** button running something other than the
+   printed listing is the precise failure this plan built the harness to prevent.
+3. **Click to load, and `autostart=0` everywhere.** Nothing is requested from the
+   emulator origin until the reader asks for it, and no page boots a CPU nobody
+   has looked at — several pages carry more than one embed, and four machines
+   emulating on scroll is rude on a laptop and worse on a phone. `autotype` waits
+   for the machine to come up, so `autostart=0&autotype=RUN\r` types the listing
+   on the click rather than before it.
+4. **`persist` stays off, and this one is not a preference.** Persistence is one
+   IndexedDB record per origin, and the docs site shares its origin with the full
+   web emulator. An embed here with `persist=1` allocates a small card and
+   becomes what is saved — so a reader who uses the app on the same origin would
+   find their 256 MB card shrunk by a documentation page. The component must not
+   accept the parameter at all, rather than defaulting it off.
+5. **An embed never replaces a screenshot.** Print, no-JS and offline readers get
+   nothing from an iframe, and Phase 8's rule — a picture ships when it shows
+   something the prose cannot say as quickly — is unaffected by a live machine
+   sitting next to it. Every page that gains an embed keeps the picture it has.
+6. **No embed under `/f18a/`.** The emulator is a faithful TMS9918A and masks
+   register writes above 7; a live machine on those pages would demonstrate the
+   stock branch and read as if the chapter were wrong. The section index already
+   tells the reader, once, that F18A mode is hardware-only. That stays the only
+   mention.
+7. **URL parameters only, for now.** `postMessage` would give a **Run again**
+   button that retypes without reloading the frame, which is nicer and is not
+   worth the surface in a first pass. It is the obvious follow-up, and the note
+   that goes with it: the embed accepts commands from any origin by default, so
+   the day this site starts *driving* a frame is the day `origins=` earns its
+   place.
+
+### Where the embeds go
+
+| Page | Carries | Why there |
+|---|---|---|
+| `/` Welcome | The two-line program the page opens on | The site's highest-value placement: "or the emulator on their laptop" becomes an ACE on the page they landed on |
+| `/getting-started/first-boot` | An empty machine, no program | Clicking *is* the power switch, and the splash, the `ENTER=BASIC ESC=MONITOR` choice and the countdown are what the chapter is describing |
+| `/getting-started/first-ten-minutes` | An empty machine at the `OK` prompt | Every line in the chapter is meant to be typed; now it can be typed here |
+| `/using/keyboard` | A runaway `FOR` loop, not run | Esc stopping a program is the one thing in that chapter a screenshot cannot show |
+| `/using/sound-and-video` | The chapter's closing program | Sound needs a click to start the audio graph, and this chapter's click is one the reader wants to make anyway |
+| `/using/monitor` | An empty machine | The `.` prompt, `M`/`D`/`R`/`G`/`X`, and the Wozmon easter egg as the payoff it is |
+| `/using/emulator` | One at the top, **and the chapter on embedding** | The chapter about the emulator should open with the emulator; also gains the mute button, the 2.6.0 toolbar, and the section below |
+| `/basic/` worked programs | One per program | The eight programs from Phase 4's chapter 18 — the pages people photocopy — each already a verified sample |
+| `/assembly/` worked examples | The ones with console output | Thirteen assembly samples already build to `.prg`; the graphics demos embed too, since a live TMS demo is worth more than the screenshot beside it |
+| `/addons/kim` | Nothing | The two LED demos drive a latch on the keypad add-on and never return. No harness case, no embed; the type-in cards stay their home |
+| `/crossdev/` | Nothing | Those chapters are about the CLI, the debug bridge and the build loop. The embed has none of the three, by design |
+
+### The other half: putting *your* game on a page
+
+Framing the emulator is what this site does with 2.6.0. Explaining how to frame
+it is what the site owes its reader, and it is the more valuable of the two: a
+reader who has written a game currently has nowhere to send anyone. A `.prg` is
+not a thing you can post. An `<iframe>` around this emulator is a playable link,
+and **itch.io** is where that link wants to live.
+
+So `/using/emulator` gains a section — *Putting your program on the web*, or
+similar — written for someone who has just typed `SAVE "GAME"` and wants to show
+it to somebody. It is the one place on the site where the mechanism *is* the
+subject, and it covers:
+
+- **The whole integration, in one `<iframe>`.** The example is complete, and
+  copyable, and the reader's program is in it.
+- **On itch.io**, which needs a shape rather than a snippet: a zip with an
+  `index.html` that holds the iframe, uploaded as an HTML project, with the
+  viewport set to **640×520** (or 640×480 with `controls=none`, which is exactly
+  the video). Itch's CDN sends CORS headers, so a `.prg` uploaded beside the page
+  loads fine — which is the difference between this working and not, and is the
+  kind of thing a reader discovers at 1 a.m. otherwise.
+- **On a blog, a forum, or anywhere you cannot upload a file**: `prg64=`, the
+  program carried in the URL itself. One line of `base64`, and the link *is* the
+  game.
+- **Starting it for them.** `autostart`, and `autotype=RUN\r` so the reader who
+  clicks gets a game rather than an `OK` prompt and a puzzle.
+- **Sound**, and the honest version of it: embeds start muted, browsers block
+  autoplay in frames, and the first click in the frame is what starts the audio —
+  so a game that opens on a tune needs the player to click first, whatever
+  `muted=0` says.
+- **A game that loads or saves**: `cf=` for a card image built with `cffs`, and
+  what `persist` does — including that it is shared per origin, which is the
+  reason this site does not use it and a reason the reader might.
+- **Fullscreen** needs `allow="fullscreen"` on the frame, and the embed says so
+  when it is missing.
+- **Where a `.prg` comes from** in the first place — `SAVE`, `bastok`, or `make`
+  — as links to the chapters that already cover it, not a retelling.
+
+Two boundaries. The `postMessage` API is a link to
+[EMBEDDING.md](https://github.com/acwright/6502-EMULATOR/blob/main/docs/EMBEDDING.md),
+not a section: a **Run this** button next to a code block is a web developer's
+project, and this chapter's reader is not necessarily one. And
+`/crossdev/to-hardware` gets a pointer, not a copy — publishing a program belongs
+next to the other ways of getting it out of the machine, but it has one home.
+
+This section is also the exception that
+[Voice & Style](#voice--style) needs stated out loud: *iframe*, *base64* and
+*embed* are banned as **captions on the site's own embeds**, because there the
+mechanism is not what the reader asked about. Here it is the subject, and a
+section that would not say *iframe* could not teach this. The banned list is
+about verification vocabulary and about the site talking about itself — not about
+refusing to name the web.
+
+### Tasks
+
+1. **`<Emulator>` component** in `docs/.vitepress/theme/components/`, beside
+   `<Figure>` and `<Diagram>` and following their conventions. Renders a styled
+   grayscale panel with the caption and a start affordance; the `<iframe>` enters
+   the DOM on click and not before, so it is absent from the built HTML and from
+   print. Props for the sample it loads, the `autotype` line, `controls`, and
+   `freq`; no prop for `persist`. Sizes on the documented 640×520 with the fluid
+   `aspect-ratio` wrapper, carries `allow="autoplay; gamepad; fullscreen"`, and
+   links out to the full emulator for a reader who would rather have a tab.
+2. **`scripts/build-embeds.mjs` → `data/embeds.json`**, the base64 payload for
+   every sample a chapter embeds, produced the way the harness produces them —
+   `bastok` for `.bas`, `cl65` for `.asm` — so the embedded bytes and the tested
+   file cannot diverge. `--check` joins `npm run verify` alongside `cards:verify`
+   and `diagrams:verify`: a listing that changes without its payload changing is
+   a red build.
+3. **Place the embeds** per the table above, keeping every screenshot. Captions
+   describe the machine, not the mechanism — [Voice & Style](#voice--style)
+   applies unchanged, so no caption says *iframe*, *base64*, *embed*, or an
+   emulator version number.
+4. **Write the embedding section on `/using/emulator`**, per *The other half*
+   above. Ship a copyable starter with it: `samples/embed/itch/` — an
+   `index.html` holding the frame, a `README` naming the two fields itch.io asks
+   for, and one of the Phase 4 games as the program, so the reader's first
+   upload is a change of filename rather than a build. Cross-link
+   `/crossdev/to-hardware`.
+5. **Verify that starter the way `test.sh` is verified.** The harness runs
+   programs, not pages, so this one is checked by hand — upload the zip to a
+   draft itch.io project, play it, and confirm the same page works from a
+   `file://` open and from `npm run docs:preview` — and the check is recorded in
+   `samples/README.md` beside `test.sh`'s, so it is repeatable rather than
+   remembered.
+6. **Teach `scripts/check-links.mjs` about the frame.** `embed.html` is a URL
+   like any other and should be reachable; beyond that, validate each embed's
+   parameter spellings against EMBEDDING.md's table, because an unrecognised
+   parameter is ignored silently by design — which is right for the frame and
+   wrong for CI. The starter page and the chapter's examples are checked with
+   everything else, so a parameter that gets renamed upstream fails here.
+7. **`check:voice`** gains the embed vocabulary in the banned list, scoped to
+   captions and prose *outside* the embedding section — which is the first
+   exception the checker carries, and wants a comment saying why.
+8. **Bump the emulator baseline to 2.6.0 and make it a gate.** A new
+   `data/emulator.json` — hand-authored, like `basic-examples.json` and
+   `f18a.json` — carries the version the site is written against; `preflight`
+   compares `6502 --version` against it rather than printing it, and README's
+   pinned line and the maintenance section's "pinned differently, and more
+   weakly" paragraph are rewritten around that. This closes the Phase 10 note
+   that preflight checks the emulator version against nothing.
+9. **Re-run everything against 2.6.0.** `npm run facts` first and read
+   `git diff data/`: the 2.6.0 bundle carries a **rebuilt `BIOS.bin`**
+   (`6502-EMULATOR` b4d5fab, alongside an RTC fix), so confirm the fact base and
+   the splash are unchanged before assuming this is only a CLI bump. Then
+   `verify`, `screens:verify`, `cards`, `diagrams`, `links`.
+10. **Absorb the rest of 2.6.0 into the prose.** Drop the `mem fill` workaround in
+    [`docs/crossdev/debugging.md`](docs/crossdev/debugging.md) (A32) and revise
+    the conditional-breakpoint warning now that a broken condition says so
+    instead of firing silently (A31); add the mute button to the emulator
+    chapter's toolbar table; and check the idioms chapter's `WAI` paragraph
+    against a processor that now actually halts.
+11. **Close A31 and A32 in `ACCURACY.md`**, whose consequence lines were
+    explicitly waiting for the release that carries the fix.
+12. **Release.** Every gate green, full build, Pages deploy, and a tag — the
+    launch shipped untagged, so tag Phase 10's commit `v1.0.0` retroactively and
+    this phase `v1.1.0`, matching the sibling repos' convention, and move
+    `package.json` off `0.1.0` to the same number.
+
+### Deliverables
+
+`docs/.vitepress/theme/components/Emulator.vue`, `scripts/build-embeds.mjs`,
+`data/embeds.json`, `data/emulator.json`, embeds on the pages in the table above,
+the embedding section on `/using/emulator` and the `samples/embed/itch/` starter
+that goes with it, an updated README (pin, maintenance, and how to add an embed),
+two ledger items closed, and a tagged, deployed site.
+
+### Exit criteria
+
+- A reader who lands on `/` can type a program and run it without leaving the
+  page or owning anything.
+- A reader who has written a game can follow `/using/emulator` to a playable
+  link, and the itch.io route is checked by having actually done it once.
+- No page carries an embed as its only illustration, and the printed site is
+  unchanged.
+- `npm run verify` fails if a displayed listing and its embedded payload
+  disagree, and `npm run preflight` fails on an emulator that is not 2.6.0.
+- README, `data/emulator.json`, the samples and the screenshots all agree on
+  2.6.0.
+- The site is live with the embeds and tagged `v1.1.0`.
+
+### Open questions
+
+1. **How many embeds a page can carry before they become wallpaper.** Eight
+   worked BASIC programs on one page is eight start buttons. Working assumption:
+   one per program, as the table says, and revisit if the BASIC projects page
+   reads as a bank of buttons rather than a set of programs.
+2. **Whether the Welcome embed should be the exception to `autostart=0`.** An ACE
+   that is already showing its `OK` prompt when the reader arrives is a better
+   first impression than a panel that says *click to start*. It is also the one
+   page where the cost lands on everybody. Working assumption: click to start,
+   like everywhere else, decided against on the first read of the built page
+   rather than in advance.
+
+### What shipped
+
+Twenty-seven machines on nineteen pages, one new component, one new builder,
+two new fact-base files, the embedding section and its starter, and four new
+gates. **The baseline landed on 2.6.1 rather than 2.6.0** — putting a live
+machine on twenty pages found a bug in the frame within minutes, and the fix is
+what a reader gets. `npm run verify` is 131 cases and `data/embeds.json`'s twenty-two
+payloads; `npm run links` now checks frame parameters as well as links.
+
+Five notes, and three of them are things this phase found out by doing rather
+than by planning.
+
+- **Decision 3 was half right, and the half that was wrong cost a click.**
+  "Click to load, and `autostart=0` everywhere" is two mechanisms for one
+  worry, and the first does the job better: a frame that is not in the DOM is
+  not loading a web build, let alone emulating. Keeping `autostart=0` as well
+  would have meant the reader clicks a panel that says *Run this program*, gets
+  a frame that says *Click to start*, and clicks again. The frame mounts on the
+  click and boots as it mounts.
+- **Five seconds of boot menu is a long time on a web page, and `autotype`
+  cannot shorten it** — it waits for BASIC before typing, by design, so a
+  leading carriage return arrives after the countdown it was meant to answer
+  (`ACCURACY.md` A53). A keystroke injected at reset *is* taken: the machine
+  reaches `OK` in under 900k cycles against about 5.4M. So `<Emulator>` sends
+  one `6502:type` when the frame announces itself, which is a deviation from
+  decision 7 and the reason it passes `origins`. It is one message, not the
+  **Run again** button that decision was actually about. The chapter that is
+  *about* those five seconds keeps them, with `countdown`.
+- **A relative `prg=` does not mean what this plan thought it meant**
+  (`ACCURACY.md` A54). "A `.prg` uploaded beside the page loads fine" is wrong:
+  the *emulator* fetches the file, so a relative path is relative to the
+  emulator, and `prg=game.prg` on an itch page asks itch's CDN for nothing and
+  the emulator's own site for a file that isn't there. It fails quietly — a
+  working BASIC prompt with a 404 in the corner — which is the worst way to
+  fail. The starter resolves the address at load time with
+  `new URL('game.prg', location.href)`, which is also the only way to do it on
+  itch, where you do not know your address until after you have uploaded. The
+  chapter gives the trap its own warning, and `EMBEDDING.md`'s own example was
+  corrected upstream.
+- **The frame reported its own normal startup as a permanent error**
+  (`ACCURACY.md` A52). Every embed carrying a program showed a red banner
+  reading *Loaded — waiting for BASIC…* and never took it down: a transient
+  status was snapshotted once at mount into a permanent problem list. It was on
+  twenty machines, in red, announcing a fault on a machine that was working.
+  Fixed in `6502-EMULATOR` — the warning is read after BASIC is ready, so only
+  a genuine failure reaches the banner, and the banner is restyled from red to
+  a note, since nothing that reaches it is fatal.
+- **Two things could not be embedded, and both are honest gaps.** A program
+  that reads a memory card has nothing to read: the frame's card is blank, and
+  the smallest image `cffs` builds is a megabyte, which is not going in a URL.
+  That is `file-browser`, `high-score` and `notes` — so the BASIC projects page
+  carries seven machines for eight programs and says which one needs a real
+  one. And `/f18a/` has none, as decision 6 required.
+
+**The itch.io upload is the one check still owed.** The starter was driven
+end to end in Chrome against a locally served build — the program loads by its
+resolved absolute address, `autotype` runs it, and no banner appears — and the
+`file://` and `docs:preview` cases are covered. Uploading a draft project needs
+an itch.io account, so it is recorded in `samples/README.md` as the step to do
+by hand rather than claimed as done.
+
+---
+
 ## Appendix A — Proposed Site Map
 
 ```
@@ -1430,7 +1747,11 @@ Curated, in a `/resources/` page and inline where relevant.
 
 **This ecosystem**
 - Every sibling repo, in a generated table
-- [The web emulator](https://acwright.github.io/6502-EMULATOR/) — embedded/linked in the getting-started chapter
+- [The web emulator](https://acwright.github.io/6502-EMULATOR/) — linked from the
+  getting-started chapter, and framed page-by-page from
+  [`embed.html`](https://acwright.github.io/6502-EMULATOR/embed.html) per
+  [Phase 11](#phase-11--the-embedded-emulator); the contract is
+  [EMBEDDING.md](https://github.com/acwright/6502-EMULATOR/blob/main/docs/EMBEDDING.md)
 
 **Historical inspiration**
 - C64 User's Guide & Programmer's Reference Guide, KIM-1 User Manual, Apple I / Wozmon
@@ -1445,9 +1766,12 @@ Non-blocking; each has a working assumption so writing can proceed.
 1. **Repo URL casing** — assumed `github.com/acwright/6502-DOCS` and Pages base
    `/6502-DOCS/`, matching the sibling repos' casing.
 2. **Custom domain** — assumed none; if one is planned, only `base` and a `CNAME` change.
-3. **Embedding the web emulator** — the browser build exists at
+3. **Embedding the web emulator** — ~~the browser build exists at
    `acwright.github.io/6502-EMULATOR`. Assumption: link to it from the getting-started
-   chapter rather than iframe it, and revisit an embedded "try it" widget after launch.
+   chapter rather than iframe it, and revisit an embedded "try it" widget after
+   launch.~~ **Settled by [Phase 11](#phase-11--the-embedded-emulator):** emulator
+   2.6.0 ships an embed-sized entry point, and the site frames it on the pages
+   where a live machine beats a screenshot.
 4. **Search** — assumed VitePress local search (no external service, matches the
    self-hosted, offline-capable posture).
 5. **Versioned docs** — assumed single-version tracking the current BIOS (v1.5), with old

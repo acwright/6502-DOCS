@@ -61,6 +61,22 @@ const RULES = [
     name: 'British idiom',
     pattern: /\b(way round|time round|round again|straight away|full stop\b(?! character)|fortnight|rubbish|ticked a box|doing sums)\b/i,
     why: 'say it the American way — the other way around, each time through, right away, period'
+  },
+  // Several chapters now carry a live machine beside the listing they show. To
+  // the reader that is a machine, and the caption under it says so — it does
+  // not say what it is made of, any more than a photograph's caption says JPEG.
+  // Naming an emulator release is the same class of mistake as naming a BIOS
+  // release: it is a number that goes stale on a page nobody remembers to edit.
+  {
+    name: 'embed mechanism',
+    pattern: /\biframes?\b|\bbase64\b|\bembed(s|ded|ding)?\b|\bpostMessage\b|\bembed\.html\b/i,
+    why: 'a machine on the page is a machine — describe what it does, not what it is built out of',
+    // The one place on the site where the mechanism *is* the subject: a reader
+    // who has written a game and wants a link to send someone. A section that
+    // could not say "iframe" could not teach this. The banned list is about
+    // verification vocabulary and about the site talking about itself — not
+    // about refusing to name the web.
+    except: { file: 'docs/using/emulator.md', from: '## Putting your program on the web', to: /^## /m }
   }
 ]
 
@@ -79,6 +95,18 @@ const VERSION_NEAR_BIOS = /BIOS[^\n]{0,40}?\b(v\d+\.\d+)/gi
 // supposed to name an old version — that is the whole point of the archive.
 const ARCHIVE_LINE = /cards\/archive\//
 
+// The emulator's own version goes stale the same way, and in the same place: a
+// transcript inside a code fence, where nothing can interpolate. The two pages
+// that show `6502 --version` and `6502 dbg info` are quoting a machine, so what
+// they quote has to be the release this site was written against. Every
+// three-part version number in the docs is one of those — if a page ever needs
+// a different one, this reports it and somebody decides rather than nobody
+// noticing.
+const EMULATOR_VERSION = JSON.parse(
+  readFileSync(join(ROOT, 'data/emulator.json'), 'utf-8')
+).version
+const THREE_PART_VERSION = /\b\d+\.\d+\.\d+\b/g
+
 function markdownFiles(dir) {
   const found = []
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -90,20 +118,63 @@ function markdownFiles(dir) {
   return found
 }
 
+/**
+ * The lines of `file` a rule does not apply to.
+ *
+ * A rule's `except` names one section of one page, from a heading to the next
+ * one. So far there is exactly one, and it is worth stating why the checker
+ * needs the machinery at all: the emulator chapter has a section about framing
+ * the emulator on your own page, and a section that could not write the word
+ * *iframe* could not teach it. Everywhere else on the site a machine on the
+ * page is a machine, and the caption says what it does rather than what it is
+ * made of.
+ */
+function exemptRange(rule, path, lines) {
+  const exempt = new Set()
+  if (!rule.except || relative(ROOT, path) !== rule.except.file) return exempt
+
+  let inside = false
+  for (const [n, line] of lines.entries()) {
+    if (!inside) {
+      if (line.trim() === rule.except.from) inside = true
+      continue
+    }
+    if (rule.except.to.test(line)) break
+    exempt.add(n)
+  }
+
+  if (!inside) {
+    throw new Error(
+      `${rule.except.file} no longer has the heading "${rule.except.from}" — ` +
+        `the "${rule.name}" exception is pointing at nothing`
+    )
+  }
+  return exempt
+}
+
 let failures = 0
 
 for (const file of markdownFiles(DOCS)) {
   const lines = readFileSync(file, 'utf-8').split('\n')
+  const exemptions = RULES.map((rule) => exemptRange(rule, file, lines))
 
   for (const [n, line] of lines.entries()) {
     if (EXEMPT_LINE.test(line)) continue
 
-    for (const rule of RULES) {
+    for (const [r, rule] of RULES.entries()) {
+      if (exemptions[r].has(n)) continue
       const hit = line.match(rule.pattern)
       if (!hit) continue
       failures++
       console.log(`${relative(ROOT, file)}:${n + 1}  ${rule.name} — "${hit[0]}"`)
       console.log(`       ${rule.why}`)
+    }
+
+    for (const hit of line.matchAll(THREE_PART_VERSION)) {
+      if (hit[0] === EMULATOR_VERSION) continue
+      failures++
+      console.log(`${relative(ROOT, file)}:${n + 1}  stale emulator version — "${hit[0]}"`)
+      console.log(`       the site is written against ${EMULATOR_VERSION}; re-run the transcript and fix the page`)
     }
 
     if (ARCHIVE_LINE.test(line)) continue

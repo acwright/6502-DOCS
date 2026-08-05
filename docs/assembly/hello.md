@@ -4,6 +4,13 @@ Twelve lines, of which four are the program.
 
 <<< @/../samples/assembly/hello.asm{asm}
 
+Or run the assembled program right here:
+
+<Emulator
+  sample="assembly/hello"
+  caption="Six instructions, three of them a Kernal call, and a machine that says hello."
+/>
+
 Assemble it, load it, run it:
 
 ```sh

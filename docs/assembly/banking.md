@@ -27,6 +27,11 @@ BANK 9 APPLES AND WOODSMOKE
 OK
 ```
 
+<Emulator
+  sample="assembly/bank-store"
+  caption="Two messages living at one address, in two different banks."
+/>
+
 Two messages at the same address, and which one you get depends entirely on
 what was last written to the latch.
 

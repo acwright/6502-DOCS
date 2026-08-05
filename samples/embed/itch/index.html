@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Treasure Grid</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: #000;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      iframe {
+        width: 640px;
+        height: 520px;
+        max-width: 100vw;
+        max-height: 100vh;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe id="machine" title="Treasure Grid" allow="autoplay; gamepad; fullscreen"></iframe>
+
+    <script>
+      // The address of the program, worked out from the address of this page.
+      //
+      // This is the one line that cannot be written by hand. `prg` is fetched by
+      // the emulator, which lives on its own site — so a relative `prg=game.prg`
+      // is relative to *the emulator*, not to you, and comes back 404. The
+      // program needs its full address, and you don't know what that is until
+      // this page has been uploaded. So ask the browser at the last moment.
+      const program = new URL('game.prg', location.href).href
+
+      // `autostart=1` boots the machine as the page opens, and `autotype=RUN\r`
+      // types RUN once BASIC is up, so a visitor gets a game rather than an OK
+      // prompt and a puzzle. Drop `autotype` if your program starts itself.
+      const machine = new URL('https://acwright.github.io/6502-EMULATOR/embed.html')
+      machine.searchParams.set('prg', program)
+      machine.searchParams.set('autostart', '1')
+      machine.searchParams.set('autotype', 'RUN\r')
+
+      document.getElementById('machine').src = machine
+    </script>
+  </body>
+</html>

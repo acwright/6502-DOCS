@@ -10,9 +10,14 @@ on:
 # tool with no package published anywhere.
 env:
   # Pinned so a red build means the docs changed, not that an upstream did.
-  EMULATOR_REF: main
+  # The emulator ref is a tag rather than a branch because `preflight` now
+  # checks `6502 --version` against `data/emulator.json` — the site's samples,
+  # screenshots and embedded payloads all came off one release, and a run on a
+  # different one is not the check it looks like. Bump both together.
+  EMULATOR_REF: v2.6.1
   CC65_REF: master
   CFFS_REF: main
+  BASTOK_REF: main
 
 jobs:
   # Cheap, dependency-free checks on the migrated assets. Split out from
@@ -124,6 +129,31 @@ jobs:
           mkdir -p "$HOME/.local/bin"
           printf '#!/bin/sh\nexec node "%s/.cffs/dist/cli.js" "$@"\n' "$GITHUB_WORKSPACE" > "$HOME/.local/bin/cffs"
           chmod +x "$HOME/.local/bin/cffs"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      # --- bastok -----------------------------------------------------------
+      # `build-embeds.mjs --check` re-tokenizes every BASIC listing a chapter
+      # offers to run and fails if the checked-in payload has drifted from it.
+      # Same wrapper treatment as cffs: the builder shells out to a `bastok` on
+      # PATH rather than an overridable command.
+      - name: Checkout bastok
+        uses: actions/checkout@v7
+        with:
+          repository: acwright/bastok
+          ref: ${{ env.BASTOK_REF }}
+          path: .bastok
+
+      - name: Build bastok
+        working-directory: .bastok
+        run: |
+          npm ci
+          npm run build
+
+      - name: Put bastok on PATH
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          printf '#!/bin/sh\nexec node "%s/.bastok/dist/index.js" "$@"\n' "$GITHUB_WORKSPACE" > "$HOME/.local/bin/bastok"
+          chmod +x "$HOME/.local/bin/bastok"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       # --- cc65 -------------------------------------------------------------

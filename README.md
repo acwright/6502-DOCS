@@ -11,9 +11,12 @@ Built with [VitePress](https://vitepress.dev/), deployed to GitHub Pages.
 See [`PLAN.md`](PLAN.md) for the full multi-phase build plan, sources of
 truth, and verification method.
 
-**The site describes BIOS v1.5, and every sample and screenshot in it was
-produced by emulator 2.5.1.** Those are the two versions that move; see
-[Maintenance](#maintenance) for what to do when either does.
+**The site describes BIOS v1.5, and every sample, screenshot and embedded
+program in it was produced by emulator 2.6.1.** Those are the two versions that
+move, and both are now gates rather than notes: `npm run check:voice` fails on a
+page stating a BIOS version the firmware disagrees with, and `npm run preflight`
+fails on an emulator that is not the one in `data/emulator.json`. See
+[Maintenance](#maintenance) for what to do when either moves.
 
 > **Read [`PLAN.md`'s *Voice & Style*](PLAN.md#voice--style) before writing a
 > page.** It is binding, it is enforced by `npm run check:voice`, and it exists
@@ -237,6 +240,56 @@ Pages use three components, all registered in
 A placeholder's caption **describes the picture and nothing else** — no phase
 numbers, no script names, no accuracy notes. Those go in `IMAGES.md`.
 
+## Running machines on a page
+
+Twenty-seven machines sit on nineteen pages, each beside the listing it belongs
+to, in a frame around the emulator's second web entry point. That page is served
+from the same origin as this site, so a frame costs no third-party request and
+no CSP allowance.
+
+```
+<Emulator caption="…" />                             an empty machine
+<Emulator sample="basic/times-table" caption="…" />  loaded and RUN
+<Emulator sample="basic/goto-loop" :run="false" />   loaded, not run
+<Emulator sample="basic/tune" sound caption="…" />   starts unmuted
+<Emulator countdown caption="…" />                   sits through the boot menu
+```
+
+To add one:
+
+1. Add the sample's path to `EMBEDS` in `scripts/build-embeds.mjs`.
+2. `npm run embeds`, which writes the program's bytes into `data/embeds.json`
+   using the same tools the harness uses — `bastok` for a BASIC listing, `cl65`
+   for an assembly one.
+3. Put `<Emulator sample="…">` on the page, next to the listing it belongs to.
+
+The program travels in the URL rather than being fetched, so a chapter is
+self-contained on the dev server as well as the deployed site — and, more to the
+point, **the program that runs cannot be a different program from the one
+printed above it**. `npm run verify` rebuilds every payload and fails if a
+listing has moved without its bytes moving with it.
+
+Four rules the component enforces rather than documents:
+
+- **The frame enters the DOM on the click and not before**, so it is absent from
+  the built HTML and from print, and a page with four machines on it emulates
+  nothing until asked.
+- **An embed never replaces a picture.** Every page that gained one kept the
+  screenshot it had; print and no-JS readers lose nothing.
+- **There is no `persist` prop.** Persistence is one IndexedDB record per
+  origin, shared with the full web emulator on this same origin — an embed that
+  saved its own small card would become what a reader's app restores. The
+  parameter is not accepted rather than defaulted off.
+- **Captions describe the machine, not the mechanism.** `npm run check:voice`
+  fails on *iframe*, *base64*, *embed* and *postMessage* anywhere under `docs/`
+  except one section of the emulator chapter, which is the one place the
+  mechanism is what the reader came for.
+
+Samples that read a memory card are not embeddable — the frame's card is blank,
+and the smallest image `cffs` makes is a megabyte, which is not going in a URL.
+There are no embeds under `/f18a/` either: the emulator is a faithful TMS9918A
+and masks the register writes those chapters are about.
+
 ## Accuracy
 
 [`ACCURACY.md`](ACCURACY.md) is the ledger of every place a document in this
@@ -311,11 +364,33 @@ docs/reference/glossary.md:24  stale BIOS version — "BIOS v1.4"
 Links into `cards/archive/` are exempt, since naming an old version is what
 that directory is for.
 
-The emulator version is pinned differently, and more weakly: it is whatever
-produced the committed screenshots and the passing samples, recorded at the top
-of this file by hand. Nothing enforces it — `npm run preflight` prints the
-version it finds but does not compare it to anything. Bump it by re-running the
-suite against the new CLI and editing the line above.
+The emulator version is pinned in `data/emulator.json`, hand-authored like
+`basic-examples.json` and `f18a.json`, and it is a gate: `npm run preflight`
+compares `6502 --version` against it and fails on anything else. That matters
+more than it used to, because three different things now come off one release —
+the samples' output, the screenshots' pixels, and the bytes of every program a
+chapter offers to run. A run on a different release is not the check it looks
+like.
+
+`npm run check:voice` covers the other half, the numbers a page states in prose:
+every three-part version in `docs/` has to be the pinned one, which catches the
+two chapters that quote `6502 --version` and `6502 dbg info` inside a code
+fence, where nothing can interpolate.
+
+To bump it:
+
+```sh
+# 1. Edit data/emulator.json, then:
+npm run preflight     # confirms the installed CLI is the release you named
+npm run facts         # a new bundle may carry a rebuilt ROM — read git diff data/
+npm run verify        # samples and embedded payloads, against the new release
+npm run screens:verify
+npm run links         # frame parameters are checked against the contract here
+```
+
+Bump `EMULATOR_REF` in `.github/workflows/verify.yml` to the matching tag in the
+same commit, or CI will build a different emulator from the one preflight
+demands.
 
 ### Superseded documentation
 
@@ -337,6 +412,14 @@ is how it sees component `src`s, the raw HTML cards and every anchor. An HTTP
 error fails it; a host that refuses the connection outright is reported as
 unchecked, because a reset is not an answer. It runs in CI after the build.
 
+It also checks the emulator frame's query strings against the parameter table in
+`data/emulator.json`. The frame ignores a parameter it has never heard of, by
+design, so that a page pinned to an old release keeps working — which means a
+misspelled or renamed parameter here would fail silently and forever. Three
+places are covered: the examples the emulator chapter prints, the starter page a
+reader is invited to upload, and the `<Emulator>` component, whose URLs are
+assembled in the browser and appear as text nowhere.
+
 ## Deploying
 
 Pushes to `main` trigger `.github/workflows/deploy.yml`, which builds the
@@ -349,8 +432,8 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 | `docs/` | VitePress site source (pages, theme, public assets) |
 | `docs/public/cards/` | Printable HTML quick-reference cards, served raw at `/cards/` |
 | `data/` | Machine-readable fact base, generated — consumed by the docs at build time |
-| `samples/` | Verified BASIC/assembly listings backing every listing in the docs |
-| `scripts/` | Fact extractor, sample harness, voice check, toolchain preflight, asset migration, card/diagram builders, screenshot capture, photo import |
+| `samples/` | Verified BASIC/assembly listings backing every listing in the docs, plus the starter page under `samples/embed/` |
+| `scripts/` | Fact extractor, sample harness, voice check, link check, toolchain preflight, asset migration, card/diagram/embed builders, screenshot capture, photo import |
 | `docs/.vitepress/diagrams/` | Generated SVG diagrams, inlined into pages by `<Diagram>` |
 | `docs/public/images/` | Screenshots, photographs and branding, served as-is |
 | `assets/` | Design sources — logos, label artwork, and the `.afdesign`/`.numbers` originals pending HTML recreation. Never served; see [`assets/README.md`](assets/README.md). |

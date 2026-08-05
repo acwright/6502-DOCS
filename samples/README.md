@@ -14,6 +14,7 @@ A listing that cannot be verified does not go in.
 | `basic/` | BASIC listings shown in a chapter, typed into the machine as source and `RUN` |
 | `assembly/` | ca65 sources shown in a chapter, assembled with `cl65` and loaded as a `.prg` |
 | `crossdev/` | The worked program of the cross-development chapters, plus the `test.sh` those chapters ship |
+| `embed/` | The starter page the emulator chapter hands a reader who wants their program on the web |
 | `_checks/` | Regression cases that are **never shown** in the docs |
 | `_harness/` | Cases that test the harness itself, not the machine |
 | `lib/` | `6502.cfg` (linker config) and `6502.inc` (**generated** — see below) |
@@ -31,14 +32,37 @@ truth-value convention, the storage command surface. Those exist to turn CI red
 when the ROM moves, nobody reads them, and they may use the `pass` shorthand
 freely.
 
-## The one file the harness does not run
+## The two things the harness does not run
 
-`crossdev/test.sh` is the copyable regression script the cross-development
+The harness runs programs. Two of the files here are not programs, so each is
+checked by hand and the check is written down rather than remembered.
+
+**`crossdev/test.sh`** is the copyable regression script the cross-development
 chapters hand the reader. The harness ignores it — it is not a `.bas`, `.asm` or
 `.prg` — so it is checked by hand instead: run it against a directory holding a
 `.prg` case and a `.bas` case, confirm both report `ok`, break one expectation
 and confirm it reports `FAIL` and exits non-zero. Do that again whenever the
 emulator's CLI moves.
+
+**`embed/itch/`** is the page a reader zips and uploads. `index.html` is the
+file the emulator chapter displays, so what a reader copies cannot drift from
+what was checked; `game.prg` is written by `scripts/build-embeds.mjs` from
+`basic/treasure.bas`, and `npm run verify` fails if it stops matching that
+listing. What is left is whether the page works, which needs a browser:
+
+1. **On itch.io.** Zip the folder, create a project, set the kind to HTML,
+   upload with *play in the browser* ticked, viewport 640 x 520. Play it. A
+   draft project is private, so this costs nothing to repeat.
+2. **From `file://`.** Open `index.html` directly. The emulator must boot to a
+   BASIC prompt and say why the program did not load — the frame fetches over
+   `https:` only. That is the documented behavior, and the chapter warns about
+   it; a *silent* failure here would be the bug.
+3. **From `npm run docs:preview`.** The chapter's copy of the page must render
+   with its parameters intact, and `npm run links` must pass, which is what
+   checks those parameters against the release the site is pinned to.
+
+Repeat 1 whenever the frame's contract moves — that is,
+`6502-EMULATOR/docs/EMBEDDING.md`.
 
 ## The two cases that assert the branch you are not writing for
 

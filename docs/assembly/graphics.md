@@ -56,6 +56,11 @@ every pattern the same checkerboard and letting only the color vary.
   screen
 />
 
+<Emulator
+  sample="assembly/graphics-1"
+  caption="Thirty-two color pairs, one checkerboard. Press a key when you have seen enough."
+/>
+
 Worth noticing in that listing:
 
 - **`InitMode`** writes the eight registers from a table. The values are the
@@ -92,6 +97,11 @@ Graphics II bug, and the symptom is a screen that repeats every third.
   screen
 />
 
+<Emulator
+  sample="assembly/graphics-2"
+  caption="6144 bytes of pattern and 6144 of color, filled at random. Press a key to come back to text."
+/>
+
 ## Multicolor
 
 No patterns and no color table: the pattern table *is* the picture, one nibble
@@ -113,6 +123,11 @@ plain 1536-byte framebuffer that you can fill from top to bottom.
   alt="A screen of small square blocks of color arranged in a fine random grid, sixteen colors in play."
   caption="64 × 48 fat pixels, any color anywhere. Nothing here is a character."
   screen
+/>
+
+<Emulator
+  sample="assembly/multicolor"
+  caption="The pattern table used as a framebuffer, painted from top to bottom."
 />
 
 ## Drawing something you meant to draw

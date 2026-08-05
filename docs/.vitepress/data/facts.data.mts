@@ -31,7 +31,9 @@ const FILES = [
   ['errors', 'errors.json'],
   ['charset', 'charset.json'],
   ['systems', 'systems.json'],
-  ['f18a', 'f18a.json']
+  ['f18a', 'f18a.json'],
+  ['emulator', 'emulator.json'],
+  ['embeds', 'embeds.json']
 ] as const
 
 export declare const data: Facts
@@ -48,6 +50,10 @@ export interface Facts {
   charset: any
   systems: any
   f18a: any
+  /** The emulator release the site is written against, and the embed contract. */
+  emulator: any
+  /** The base64 payload for every program a chapter offers to run. */
+  embeds: any
   /** BIOS release the whole fact base was extracted from, e.g. "1.5". */
   biosVersion: string
 }

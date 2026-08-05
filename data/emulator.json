@@ -1,0 +1,44 @@
+{
+  "$meta": {
+    "title": "The emulator this site is written against",
+    "description": "Hand-authored, like basic-examples.json and f18a.json, because the emulator is a sibling repository rather than a source file this one can read. It carries the release every sample, screenshot and embedded program on this site was produced by, and the shape of the embed contract, so both are checked rather than remembered: `npm run preflight` fails on a machine running something else, and the link checker fails on a frame parameter this release has never heard of.",
+    "sources": [
+      {
+        "file": "6502-EMULATOR/package.json",
+        "authority": "The release number itself."
+      },
+      {
+        "file": "6502-EMULATOR/docs/EMBEDDING.md",
+        "authority": "The embed contract — the parameter table, the flag spellings, the documented frame size. Rank 2 for anything on this page, the way AGENTS.md is for the harness."
+      }
+    ],
+    "warning": "Hand-authored file. Bumping the version here is what moves the whole site to a new release, and nothing will pass until the samples and screenshots have been re-run against it."
+  },
+
+  "version": "2.6.1",
+
+  "web": {
+    "app": "https://acwright.github.io/6502-EMULATOR/",
+    "frame": "https://acwright.github.io/6502-EMULATOR/embed.html",
+    "contract": "https://github.com/acwright/6502-EMULATOR/blob/main/docs/EMBEDDING.md"
+  },
+
+  "frame": {
+    "width": 640,
+    "height": 520,
+    "videoHeight": 480,
+    "allow": "autoplay; gamepad; fullscreen",
+    "note": "The video output is 320x240. Doubling it and allowing for the control bar gives 640x520; controls=none needs only the video, so 640x480 fits exactly."
+  },
+
+  "parameters": {
+    "media": ["rom", "cart", "prg", "bin", "cf"],
+    "flags": ["autostart", "muted", "persist"],
+    "other": ["autotype", "controls", "freq", "cfsize", "origins"],
+    "note": "Every media parameter also has a `64` twin — rom64, cart64, prg64, bin64, cf64 — carrying the bytes in the URL itself. An unrecognized parameter is ignored silently by the frame, which is right for a reader's page and wrong for this one, so the link checker spells them out."
+  },
+
+  "banned": {
+    "persist": "Persistence is one IndexedDB record per origin, and this site shares its origin with the full web emulator. An embed that saved a small card would become what a reader's app restores — so the component does not accept the parameter at all, rather than defaulting it off."
+  }
+}

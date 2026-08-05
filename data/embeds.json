@@ -1,0 +1,144 @@
+{
+  "$meta": {
+    "title": "Programs the site offers to run",
+    "description": "The base64 payload for every sample a chapter can run in a frame around the emulator, built from the same file under samples/ that the chapter displays and the harness executes — bastok for a BASIC listing, cl65 for an assembly one. A listing that changes without its payload changing is a red build, because a Run this button running something other than the printed program is the drift this repository exists to prevent.",
+    "generator": "scripts/build-embeds.mjs",
+    "encoding": "URL-safe base64, unpadded. Raw image loaded at $0800, no load-address header.",
+    "starter": "samples/embed/itch/game.prg, built from samples/basic/treasure.bas",
+    "warning": "Generated file — edit the sample and re-run the builder, not this."
+  },
+  "programs": {
+    "assembly/bank-store": {
+      "source": "samples/assembly/bank-store.asm",
+      "built": "cl65",
+      "bytes": 153,
+      "prg64": "CggKAKUyMDYwAAAAqQMgNQipcqAIIDwIqQkgNQiphKAIIDwIqQMgNQggTQipCSA1CCBNCGCN_4ONawhghUCEQaAAsUCZAIDwA8iA9mCpbKAIIJCgrWsIogAglqCpICAAoKkAoIAgkKBMk6AAQkFOSyAAU05PV0RST1BTIEFORCBNVUQAQVBQTEVTIEFORCBXT09EU01PS0UA"
+    },
+    "assembly/clock": {
+      "source": "samples/assembly/clock.asm",
+      "built": "cl65",
+      "bytes": 206,
+      "prg64": "CggKAKUyMDYwAAAAqRSNCwOpGqIMoBogY6CpCaIeoAAgYKCpnqAIIJCgIFqgWtogiAipOiAAoGggiAipOiAAoGggiAipq6AIIJCgIF2gWtogiAipLyAAoGggiAipLyAAoK0LAyCICGggiAggk6CpHqIAIGmgqbCgCCCQoKIAIGagIIgIIJOgYKIwyQqQBekK6ID3CTBIiiAAoGhMAKBUSEUgVElNRSBJUyAAIE9OIABBTkQgVEhFIENMT0NLIENBUkQgUkVNRU1CRVJTIAA"
+    },
+    "assembly/fanfare": {
+      "source": "samples/assembly/fanfare.asm",
+      "built": "cl65",
+      "bytes": 121,
+      "prg64": "CggKAKUyMDYwAAAAqWagCCCQoKkMIDmgZECmQL1gCCAAoKkgIACgpkC8VAi9TgiqqQAgM6CmQL1aCKIAIHWgIDag5kClQMkG0NAgk6BgJJemOKY4ERUZIhkiDw8PHg8tQ0VHQ0dDQSBMSVRUTEUgRkFORkFSRQ0KAA"
+    },
+    "assembly/from-basic": {
+      "source": "samples/assembly/from-basic.bas",
+      "built": "bastok",
+      "bytes": 234,
+      "prg64": "OAgKAI4gRUxFVkVOIEJZVEVTIE9GIE1BQ0hJTkUgQ09ERSwgVFlQRUQgSU4gQVMgTlVNQkVSUwBJCBQAgSBBID0gMCCcIDEwAFEIHgCGIEIAYwgoAJUgMTUzNiArIEEsIEIAawgyAIIgQQB6CDwAlSAyMDMyLCAzMACJCEYAlSAyMDMzLCAxMgCUCFAApSAxNTM2AK8IWgCWICIzMCArIDEyID0iOyDDKDIwMzQpANIIZACDIDE3MywgMjQwLCA3LCAyNCwgMTA5LCAyNDEsIDcA6AhuAIMgMTQxLCAyNDIsIDcsIDk2AAAA"
+    },
+    "assembly/graphics-1": {
+      "source": "samples/assembly/graphics-1.asm",
+      "built": "cl65",
+      "bytes": 322,
+      "prg64": "CggKAKUyMDYwAAAArQ0DKYDQC6kroAkgkKAgk6BgeCDHCCBBCCBfCCBsCCCGCCCbCCBYCFgg5Ah4IBWgIBigWGCtAZyiAL37CI0BnIoJgI0BnOjgCNDvYKnAogFMswipAKIHIL0IqdCNAJxgqQCiCCC9CKAAogC9AwmNAJzo4AjQ9YjQ8GCpAKIDIL0IogC9CwmNAJzo4CDQ9WCpAKIAIL0IogOgACDQCI0AnMjQ98rQ8mCNAZyKCYCNAZxgjQGciglAjQGcYKk8hTqpw4U7YKU7SqU6akU7hTtqRTqFOkU7hTtgIAygyQDwBSAJoID0IAygyQDw-SAJoGAAgAAMAQ4BAVWqVapVqlWq8R8hEjzDRVRplnRHi7isyt7t9E8xE33XtmvhHpzJ-I9ObyB2aWRlbyBjYXJkIHByZXNlbnQuAA"
+    },
+    "assembly/graphics-2": {
+      "source": "samples/assembly/graphics-2.asm",
+      "built": "cl65",
+      "bytes": 331,
+      "prg64": "CggKAKUyMDYwAAAArQ0DKYDQC6k0oAkgkKAgk6BgeCDwCCBBCCBfCCBsCCCOCCCmCCBYCFggDQl4IBWgIBigWGCtAZyiAL0kCY0BnIoJgI0BnOjgCNDvYKnAogFM3AipAKIbIOYIqdCNAJxgqQCiACDmCKkDhT6gAKIAvSwJjQCc6OAI0PWI0PDGPtDqYKkAoiAg5giiGKAAILwIjQCcyND3ytDyYKkAohgg5giiA6AAmI0AnMjQ-crQ9GAg-QiFPCkPhT2lPEpKSkrQAqkBRT2FPKU9CgoKCgU8YI0BnIoJgI0BnGCNAZyKCUCNAZxgqTSFOqkShTtgpTtKpTpqRTuFO2pFOoU6RTuFO2AgDKDJAPAFIAmggPQgDKDJAPD5IAmgYAKABv8DNgcBVapVqlWqVapObyB2aWRlbyBjYXJkIHByZXNlbnQuAA"
+    },
+    "assembly/greeting": {
+      "source": "samples/assembly/greeting.asm",
+      "built": "cl65",
+      "bytes": 128,
+      "prg64": "CggKAKUyMDYwAAAAqVagCCCQoKIAIAOgkPvJDfAK4BCw851FCOiA7Z5FCCCToKlqoAggkKCpRaAIIJCgqSEgAKAgk6BgAAAAAAAAAAAAAAAAAAAAAABXSEFUIElTIFlPVVIgTkFNRT8gAFBMRUFTRUQgVE8gTUVFVCBZT1UsIAA"
+    },
+    "assembly/hello": {
+      "source": "samples/assembly/hello.asm",
+      "built": "cl65",
+      "bytes": 42,
+      "prg64": "CggKAKUyMDYwAAAAqRSgCCCQoGBIRUxMTyBGUk9NIEFTU0VNQkxZDQoA"
+    },
+    "assembly/inventory": {
+      "source": "samples/assembly/inventory.asm",
+      "built": "cl65",
+      "bytes": 283,
+      "prg64": "CggKAKUyMDYwAAAAqVSgCCCQoKIAvUQIvEwIIJCgvTwILQ0D8AapbKAIgASpcKAIIJCgIJOg6OAI0NpgAQIECBAgQIBziJ2yx9zxBggICAgICAgJV0hBVCBUSElTIE1BQ0hJTkUgSEFTDQoAWUVTAE5PAEJBTktFRCBSQU0sIExPVyAgICAgAEJBTktFRCBSQU0sIEhJR0ggICAgAENMT0NLICAgICAgICAgICAgICAgAE1FTU9SWSBDQVJEICAgICAgICAgAFNFUklBTCBQT1JUICAgICAgICAgAEtFWUJPQVJEIEFORCBTVElDS1MgAFNPVU5EICAgICAgICAgICAgICAgAFZJREVPICAgICAgICAgICAgICAgAA"
+    },
+    "assembly/multicolor": {
+      "source": "samples/assembly/multicolor.asm",
+      "built": "cl65",
+      "bytes": 269,
+      "prg64": "CggKAKUyMDYwAAAArQ0DKYDQC6n2oAggkKAgk6BgeCC6CCA-CCBcCCBpCCCOCCBVCFgg1wh4IBWgIBigWGCtAZyiAL3uCI0BnIoJgI0BnOjgCNDvYKnIogFMpgipAKIHILAIqdCNAJxgqQCiACCwCKIAiin8CgoKhTygAJgYZTyNAJzIwCDQ9OjgGNDlYKkAogggsAiiBqAAIMMIjQCcyND3ytDyYI0BnIoJgI0BnGCNAZyKCUCNAZxgqVqFOqmlhTtgpTtKpTpqRTuFO2pFOoU6RTuFO2AgDKDJAPAFIAmggPQgDKDJAPD5IAmgYACIAAABDgEBTm8gdmlkZW8gY2FyZCBwcmVzZW50LgA"
+    },
+    "assembly/screen": {
+      "source": "samples/assembly/screen.asm",
+      "built": "cl65",
+      "bytes": 178,
+      "prg64": "CggKAKUyMDYwAAAArQ0DKYDwXSAYoKm0ICegqcmFQKnNhUGpu4VCqQaFQyB4CKm6hUCFQqkghUGiA9rmQyB4CPrK0PapyIVAqc2FQam8hULmQyB4CKIQoAggHqCgALmTCPAGICqgyID1ogCgFEweoKmboAggkKBgogikQyAeoKVAICqgohalQSAqoMrQ-KVCTCqgVEhFIEFDRQBOTyBTQ1JFRU4gVE8gRFJBVyBPTg0KAA"
+    },
+    "assembly/stick": {
+      "source": "samples/assembly/stick.asm",
+      "built": "cl65",
+      "bytes": 221,
+      "prg64": "CggKAKUyMDYwAAAAqX2gCCCQoCADoJD7yQ3Q9yCToKmeoAggkKAgSKAgOgipqKAIIJCgIEugIDoIYIVAZEGiAL1lCCVA0AvmQb1tCLx1CCCQoOjgCNDppUHQB6myoAggkKBMk6AQIECAAQIECLq-xMrR1NfaCAgICAgICAhIT0xEIEEgU1RJQ0ssIFRIRU4gUFJFU1MgRU5URVINCgBTVElDSyAxOiAAU1RJQ0sgMjogAE5PVEhJTkcAVVAgAERPV04gAExFRlQgAFJJR0hUIABBIABCIABYIABZIAA"
+    },
+    "assembly/ticker": {
+      "source": "samples/assembly/ticker.asm",
+      "built": "cl65",
+      "bytes": 178,
+      "prg64": "CggKAKUyMDYwAAAAnGgIqWugCCCQoHitAAONaQitAQONagipYo0AA6kIjQEDWCADoJD7yQ3Q93itaQiNAAOtagiNAQNYIJOgqYygCCCQoK1oCKIAIJagqaugCCCQoCCToGDuaAhsaQgAAABUWVBFIFNPTUVUSElORyBBTkQgUFJFU1MgRU5URVINCgBUSEUgUFJPQ0VTU09SIFdBUyBJTlRFUlJVUFRFRCAAIFRJTUVTAA"
+    },
+    "basic/bouncing-ball": {
+      "source": "samples/basic/bouncing-ball.bas",
+      "built": "bastok",
+      "bytes": 186,
+      "prg64": "BggKAKgAEAgUAFggPSAxABoIHgBEID0gMQArCCgAgSBUID0gMSCcIDQwADcIMgCpIDEyLCBYAEIIPACWICJPIjsASghGALIgMwBWCFAAqSAxMiwgWABhCFoAliAiICI7AG8IZABYID0gWCArIEQAhQhuAIogWCA-IDM4IJ8gRCA9IC0xAJkIeACKIFggPCAxIJ8gRCA9IDEAoQiCAIIgVACtCIwAqSAxMiwgWAC4CJYAliAiTyI7AAAA"
+    },
+    "basic/color-loop": {
+      "source": "samples/basic/color-loop.bas",
+      "built": "bastok",
+      "bytes": 106,
+      "prg64": "BggKAKgAFwgUAIEgQyA9IDEgnCAxNQAiCB4AqiBDLCAwAC8IKACpIDEyLCAxMABGCDIAliAiQ09MT1IiOyBDOyAiICAiAGAIPACrIDEsIDIwMCArIEMgKiA0MCwgMTAAaAhGAIIgQwAAAA"
+    },
+    "basic/goto-loop": {
+      "source": "samples/basic/goto-loop.bas",
+      "built": "bastok",
+      "bytes": 25,
+      "prg64": "DggKAJYgIkhFTExPIgAXCBQAiCAxMAAAAA"
+    },
+    "basic/guessing-game": {
+      "source": "samples/basic/guessing-game.bas",
+      "built": "bastok",
+      "bytes": 216,
+      "prg64": "MAgKAJYgIkkgQU0gVEhJTktJTkcgT0YgQSBOVU1CRVIgRlJPTSAxIFRPIDEwMCIASggUAE4gPSC3KLwoMSkgKiAxMDApICsgMQBYCB4AVCA9IFQgKyAxAGoIKACWICJHVUVTUyI7IFQ7AHIIMgCEIEcAkwg8AIogRyA8IE4gnyCWICJUT08gTE9XIiA6IIggMzAAtQhGAIogRyA-IE4gnyCWICJUT08gSElHSCIgOiCIIDMwANYIUACWICJHT1QgSVQgSU4iOyBUOyAiIEdVRVNTRVMiAAAA"
+    },
+    "basic/shopping": {
+      "source": "samples/basic/shopping.bas",
+      "built": "bastok",
+      "bytes": 183,
+      "prg64": "FggKAJYgIlNIT1BQSU5HIExJU1QiABwIFACWACUIHgCGIEkkADsIKACKIEkkID0gIkVORCIgnyA4MABJCDIATiA9IE4gKyAxAFsIPACWIE47ICIuICI7IEkkAGQIRgCIIDMwAGoIUACWAIQIWgCWIE47ICIgVEhJTkdTIFRPIEJVWSIAtQhkAIMgIkJSRUFEIiwgIk1JTEsiLCAiU09MREVSIiwgIkNPRkZFRSIsICJFTkQiAAAA"
+    },
+    "basic/times-table": {
+      "source": "samples/basic/times-table.bas",
+      "built": "bastok",
+      "bytes": 82,
+      "prg64": "HggKAJYgIlRIRSBTRVZFTiBUSU1FUyBUQUJMRSIALwgUAIEgTiA9IDEgnCAxMgBICB4AliBOOyAiIFggNyA9IjsgTiAqIDcAUAgoAIIgTgAAAA"
+    },
+    "basic/treasure": {
+      "source": "samples/basic/treasure.bas",
+      "built": "bastok",
+      "bytes": 592,
+      "prg64": "FggKAJYgIlRSRUFTVVJFIEdSSUQiAEMIFACWICJGT1VSIFJPV1MsIEZPVVIgQ09MVU1OUywgVEhSRUUgRElHUy4iAEkIHgCWAFUIKACFIEQoMTYpAG4IMgBUID0gtyi8KDEpICogMTYpICsgMQB-CEYAgSBHID0gMSCcIDMAiAhQAIwgNTAwAKIIWgCWICJESUciOyBHOyAiIC0gUk9XIjsAqghkAIQgUgDHCG4AliAiRElHIjsgRzsgIiAtIENPTFVNTiI7AM8IeACEIEMA5wiCAFAgPSAoUiAtIDEpICogNCArIEMAFgmMAIogUCA8IDEgoyBQID4gMTYgnyCWICJPRkYgVEhFIE1BUCIgOiCIIDIwMAAjCZYARChQKSA9IDEANwmgAIogUCA9IFQgnyCIIDMwMABNCaoAliAiTk9USElORyBUSEVSRSIAUwm0AJYAWwnIAIIgRwCECdIAliAiT1VUIE9GIERJR1MuIElUIFdBUyBBVCBTUVVBUkUiOyBUAIoJ3ACAAJQJLAGMIDUwMAC8CTYBliAiVFJFQVNVUkUuIEZPVU5EIElOIjsgRzsgIiBESUdTLiIAwglAAYAA0gn0AYEgWSA9IDEgnCA0AOIJ_gGBIFggPSAxIJwgNAD6CQgCUSA9IChZIC0gMSkgKiA0ICsgWAATChICiiBEKFEpID0gMCCfIJYgIi4gIjsALAocAoogRChRKSA9IDEgnyCWICJYICI7ADQKJgKCIFgAOgowApYAQgo6AoIgWQBICkQClgBOCk4CjQAAAA"
+    },
+    "basic/tune": {
+      "source": "samples/basic/tune.bas",
+      "built": "bastok",
+      "bytes": 268,
+      "prg64": "CQgKAKwgMTUAIQgUAJYgIlRXSU5LTEUgVFdJTktMRSIALAgeAIYgRiwgRAA9CCgAiiBGID0gMCCfIDgwAFUIMgCKIEYgPiAxIJ8gqyAxLCBGLCBEAGcIPACKIEYgPSAxIJ8gsiBEAHAIRgCIIDMwAIAIUACWICJUSEUgRU5EIgC9CFoAgyAyNjIsMjAsIDI2MiwyMCwgMzkyLDIwLCAzOTIsMjAsIDQ0MCwyMCwgNDQwLDIwLCAzOTIsNDAAAAlkAIMgMSwxMCwgMzQ5LDIwLCAzNDksMjAsIDMzMCwyMCwgMzMwLDIwLCAyOTQsMjAsIDI5NCwyMCwgMjYyLDQwAAoJbgCDIDAsMAAAAA"
+    },
+    "basic/whats-fitted": {
+      "source": "samples/basic/whats-fitted.bas",
+      "built": "bastok",
+      "bytes": 274,
+      "prg64": "DwgKAEggPSDDKDc4MSkAJAgUAJYgIlRISVMgQUNFIEhBUyIAKggeAJYARAgoAIogSCCiIDEyOCCfIJYgIlZJREVPIgBdCDIAiiBIIKIgNjQgnyCWICJTT1VORCIAhwg8AIogSCCiIDMyIJ8gliAiS0VZQk9BUkQgQU5EIEpPWVNUSUNLUyIAoQhGAIogSCCiIDE2IJ8gliAiU0VSSUFMIgC7CFAAiiBIIKIgOCCfIJYgIlNUT1JBR0UiANMIWgCKIEggoiA0IJ8gliAiQ0xPQ0siAPAIZACKIEggoiAzIJ8gliAiQkFOS0VEIFJBTSIA9ghuAJYAEAl4AJYgIkZSRUUgTUVNT1JZIjsguSgwKQAAAA"
+    }
+  }
+}

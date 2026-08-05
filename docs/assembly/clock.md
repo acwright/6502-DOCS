@@ -32,6 +32,11 @@ AND THE CLOCK CARD REMEMBERS 30
 OK
 ```
 
+<Emulator
+  sample="assembly/clock"
+  caption="Whatever the clock card says, at the moment you start it."
+/>
+
 `PrintTwo` at the bottom is the routine you will keep: `PrintDecU16` prints 9 as
 `9`, and a clock wants `09`. Repeated subtraction is the cheapest way to split a
 number under 100 into two digits, and the `pha` around the first `Chrout` is

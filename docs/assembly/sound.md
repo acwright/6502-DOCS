@@ -71,6 +71,12 @@ C E G C G C
 OK
 ```
 
+<Emulator
+  sample="assembly/fanfare"
+  sound
+  caption="Six notes, straight out of three tables. Turn something up first."
+/>
+
 Three parallel tables — low bytes, high bytes, lengths — indexed by one
 counter, is the shape almost every tune player has. Adding a fourth table of
 voice numbers is how you get chords.

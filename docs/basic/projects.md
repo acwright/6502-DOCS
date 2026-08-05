@@ -32,6 +32,11 @@ OK
 Line 20 picks the number: `RND(1)` gives something between 0 and 1, multiplying
 by 100 and taking `INT` gives 0 to 99, and the `+ 1` makes it 1 to 100.
 
+<Emulator
+  sample="basic/guessing-game"
+  caption="Click it, then type your guesses. It is thinking of a number from 1 to 100."
+/>
+
 ::: tip It picks the same number every time
 `RND` starts from the same place whenever the ACE is switched on, so the first
 game after a cold start is always the same. Add a line that counts while it
@@ -72,6 +77,11 @@ THE SEVEN TIMES TABLE
 OK
 ```
 
+<Emulator
+  sample="basic/times-table"
+  caption="The seven times table, printed the moment you start it."
+/>
+
 **Now change this:** ask which table with `INPUT` instead of fixing it at 7.
 
 ## A tune
@@ -84,6 +94,12 @@ Each pair in the `DATA` is a frequency and a duration. `0, 0` ends the tune, and
 a frequency of `1` means a rest — line 60 turns it into a `PAUSE` instead of a
 note.
 
+<Emulator
+  sample="basic/tune"
+  sound
+  caption="Turn something up first. Three voices, one melody, and a rest wherever the frequency is 1."
+/>
+
 **Now change this:** put a second verse in line 105 and watch how little of the
 program you have to touch.
 
@@ -93,6 +109,11 @@ program you have to touch.
 
 Draw, wait, erase, move, repeat. Lines 110 and 120 turn it round at the edges by
 flipping `D` between `1` and `-1`.
+
+<Emulator
+  sample="basic/bouncing-ball"
+  caption="One character, crossing the screen forty times and turning round at both walls."
+/>
 
 **Now change this:** add a `Y` that moves as well, so it bounces around the
 whole screen instead of along one line.
@@ -104,6 +125,11 @@ whole screen instead of along one line.
 One byte at address 781 holds a bit for every card the machine found at
 switch-on. This asks it, and prints the answer in English.
 
+<Emulator
+  sample="basic/whats-fitted"
+  caption="The same question, asked of the machine in this page. It has every card fitted."
+/>
+
 **Now change this:** make it print `HW=` and the byte in hexadecimal with
 `HEX()`, so it matches what `MEM` shows.
 
@@ -113,6 +139,11 @@ switch-on. This asks it, and prints the answer in English.
 
 The `"END"` on line 100 is what stops it — a sentinel, so the program doesn't
 need to know how long the list is.
+
+<Emulator
+  sample="basic/shopping"
+  caption="The list, read out of DATA until it reaches END."
+/>
 
 **Now change this:** add prices as a second item in each `DATA` pair and total
 them up.
@@ -124,6 +155,9 @@ them up.
 Six lines that list the memory card and load whatever you name. `LOAD` replaces
 the running program with the one it loaded, so this is a launcher — the last
 thing it does is hand over.
+
+This is the one program on the page you need a real machine for: it reads a
+memory card, and the machines on this page have no card in the slot.
 
 **Now change this:** `SAVE "MENU"` it, and put it on every card you own.
 
@@ -169,6 +203,11 @@ Line 130 is the one to study: `P = (R - 1) * 4 + C` turns a row and a column
 into a single number from 1 to 16, because [arrays here have only one
 dimension](/basic/arrays#one-dimension-only). The drawing subroutine at 500
 turns it back the other way.
+
+<Emulator
+  sample="basic/treasure"
+  caption="Four by four, three digs. Answer each question with a number and press Enter."
+/>
 
 **Now change this:** make the grid 5 × 5. You'll need to change the `16`, the
 `4`s and the loop limits — and if you do it right, nothing else.

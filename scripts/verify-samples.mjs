@@ -59,7 +59,12 @@ function discover(dir = SAMPLES) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (entry.name === 'build' || entry.name === 'lib') continue
+      // `build` and `lib` are working files. `embed` is the starter page the
+      // emulator chapter hands a reader: its `game.prg` is a deliverable rather
+      // than a case, written by `build-embeds.mjs` from a listing this harness
+      // already runs, and re-running it here would assert the same program
+      // twice under a name nobody has heard of.
+      if (entry.name === 'build' || entry.name === 'lib' || entry.name === 'embed') continue
       cases.push(...discover(path))
       continue
     }
