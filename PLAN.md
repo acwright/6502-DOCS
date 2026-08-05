@@ -1595,6 +1595,15 @@ than by planning.
   carries seven machines for eight programs and says which one needs a real
   one. And `/f18a/` has none, as decision 6 required.
 
+One late correction, from CI rather than from reading: **a 429 is not an
+answer either.** Phase 10 split link results into "HTTP errors fail, unreachable
+hosts print as unchecked", and `itch.io` — new to the site with this phase —
+rate-limits the GitHub runner, failing one build and passing the next two. That
+is the exact failure mode Phase 10 wanted to avoid, arriving through the one
+gap in its own rule: *rate-limited* says something about the address you are
+calling from, not about whether the page is there. It now prints as unchecked
+with the refused connections.
+
 **The itch.io upload is the one check still owed.** The starter was driven
 end to end in Chrome against a locally served build — the program loads by its
 resolved absolute address, `autotype` runs it, and no banner appears — and the

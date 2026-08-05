@@ -219,6 +219,15 @@ async function checkExternal(url) {
       const why = err.name === 'AbortError' ? 'timed out after 20s' : (err.cause?.code ?? err.message)
       return { unreachable: why }
     }
+
+    // 429 is not an answer about the link. It says "you are asking too often",
+    // and on a shared CI runner that is about every other client on the same
+    // address, not about this site — `itch.io` failed one run this way and
+    // passed the next two. It belongs with the refused connections: the same
+    // reasoning that keeps `www.analog.com` from failing the build applies, and
+    // a check that goes red at random is a check everyone learns to re-run.
+    if (status === 429) return { unreachable: 'HTTP 429 — rate-limited, not an answer' }
+
     return status >= 200 && status < 400 ? null : { broken: `HTTP ${status}` }
   })()
   externalCache.set(url, promise)

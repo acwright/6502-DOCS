@@ -409,8 +409,9 @@ npm run links:offline   # structure and anchors only, no network
 
 Needs `npm run docs:build` first: it reads the build, not the Markdown, which
 is how it sees component `src`s, the raw HTML cards and every anchor. An HTTP
-error fails it; a host that refuses the connection outright is reported as
-unchecked, because a reset is not an answer. It runs in CI after the build.
+error fails it; a host that refuses the connection outright, or answers 429, is
+reported as unchecked — a reset is not an answer, and neither is "you are asking
+too often" from a shared CI address. It runs in CI after the build.
 
 It also checks the emulator frame's query strings against the parameter table in
 `data/emulator.json`. The frame ignores a parameter it has never heard of, by
