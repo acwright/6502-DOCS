@@ -105,8 +105,7 @@ tightly.
 
 ## The full tables
 
-Cycle-exact matrices exist and are better than anything this page could
-reproduce:
+For cycle counts down to the opcode, in every addressing mode:
 
 - [masswerk's instruction set](https://www.masswerk.at/6502/6502_instruction_set.html)
   — every opcode, every mode, every cycle count

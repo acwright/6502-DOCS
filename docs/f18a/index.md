@@ -11,8 +11,8 @@ and when you turn that on the same card gains a second tile layer, hardware
 scrolling, 64 programmable colors out of 4096, sprites that flip and never
 flicker, a bitmap layer, and a small processor of its own.
 
-None of it is available until you ask. That is deliberate, and the reason is
-the best kind of engineering story — it is in [Turning it on](/f18a/unlocking).
+None of it is available until you ask. That is deliberate, and the reason it
+was built that way is [Turning it on](/f18a/unlocking).
 
 ::: warning This one needs the real thing
 F18A mode exists on hardware and nowhere else. The emulator is a faithful
@@ -125,8 +125,8 @@ the TI-99/4A and adopted by most of the machines that used the original chip.
 The Pico9918 is Troy Schrapel's re-creation of a 9918A on a Raspberry Pi Pico,
 and it implements the F18A's enhanced feature set as well.
 
-Two things follow from that, and they are worth knowing before you trust
-anything on these pages.
+Two things follow from that, and both matter the moment you read a register
+table from anywhere else.
 
 **The Pico9918 is not an F18A.** It reports itself differently on purpose, it
 adds registers and about 40 KB of memory the F18A never had, and it leaves out
@@ -137,8 +137,8 @@ so, and describe the card an ACE actually has.
 spreadsheet, a set of forum posts from the years the F18A was being designed,
 and the Pico9918's own reference. They do not entirely agree — several registers
 moved late in the F18A's development, and the forum posts describe a few
-features that never shipped. Where the sources conflict, these chapters say
-which one they followed and why, rather than picking one quietly.
+features that never shipped. Where the sources conflict, these chapters say so,
+and say which one they followed.
 
 ## The chapters
 

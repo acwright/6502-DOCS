@@ -62,7 +62,8 @@ THE SEVEN TIMES TABLE
 
 ## Going back the other way
 
-`bastok` runs in reverse, which is the part that makes this workflow honest:
+`bastok` runs in reverse too, which is what keeps the text and the binary from
+drifting apart:
 
 ```
 bastok -o - TABLE.PRG

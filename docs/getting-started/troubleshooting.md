@@ -86,10 +86,10 @@ OK
 The other time, it's a keyword that doesn't exist in this BASIC. `LIST` and
 look at the line carefully.
 
-## Asking the machine what it thinks it has
+## Asking the machine what it found
 
-There's one command that tells you what the ACE found when it looked itself
-over at startup. Type `MEM`:
+One command tells you what the ACE found when it looked itself over at startup.
+Type `MEM`:
 
 ```
 MEM

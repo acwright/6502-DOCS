@@ -1,14 +1,14 @@
 # The emulator
 
-An ACE you already own. Same ROM, same BASIC, same everything — it just runs on
-your laptop instead of your desk.
+The whole machine, in software. Same ROM, same BASIC, same everything — it just
+runs on your laptop instead of your desk.
 
 Use it to try the machine before you build one, to work on a program when the
 real one's in another room, or to test something without hunting for a
 CompactFlash card.
 
 <Emulator
-  caption="Here's one now. Same ROM, same BASIC, same 30718 bytes free."
+  caption="Here's one now, running in this page. Click it once to give it the keyboard, then type."
 />
 
 ## In the browser
@@ -90,10 +90,10 @@ its 4:3 shape whatever the window is doing.
 
 You've written a game. You want to show it to somebody.
 
-A `.prg` isn't a thing you can post — nobody's going to download a file and
-find an emulator to open it in. What you want is a link that just plays, and
-you can have one, because the emulator has a second page built to sit inside
-somebody else's:
+Posting the `.prg` won't do it — nobody is going to download a file and then go
+looking for an emulator to open it in. What you want is a link that just plays.
+The emulator has a second page for exactly that, `embed.html`, meant to sit
+inside a page of yours:
 
 ```html
 <iframe
@@ -125,21 +125,22 @@ out when you don't know it yet.
 
 ### On itch.io
 
-[itch.io](https://itch.io/) is where a link like that wants to live, and it
-takes a shape rather than a snippet: a zip containing an `index.html`, uploaded
-as an **HTML** project, with the viewport set to **640 × 520**.
+[itch.io](https://itch.io/) will host a page like that for you, free. What it
+wants is a zip containing an `index.html`, uploaded as an **HTML** project,
+with the viewport set to **640 × 520**.
 
-The catch is the one above. Itch decides your address when you upload, so you
-can't type it into the page beforehand — but the page can ask the browser what
-its own address is and work it out from there. That's the whole of the script
-in here:
+The `index.html` is where the warning above bites. Itch decides your address
+when you upload, so you can't type it into the page beforehand — but the page
+can ask the browser for its own address and work the rest out from there. That's
+all the script below does:
 
 <<< @/../samples/embed/itch/index.html{html}
 
-Put your `.prg` in the zip beside it, name it `game.prg` or change the one line
-that says otherwise, and you're done. Itch's CDN sends the
-`Access-Control-Allow-Origin` header the emulator needs in order to fetch a file
-from another site, which is the difference between this working and not.
+Put your `.prg` in the zip beside it, name it `game.prg` or change the line that
+names it, and you're done. This works on itch because its CDN sends the
+`Access-Control-Allow-Origin` header, which is what lets the emulator fetch a
+file from a site that isn't its own. Not every host does — if the machine boots
+but your program never appears, that header is the first thing to check.
 
 ::: warning Test it on itch, not by double-clicking
 Opening `index.html` from your own disk will boot the emulator but won't load
@@ -167,8 +168,8 @@ Now the link *is* the game. Nothing is fetched, so it works from anywhere —
 a comment box, a gist, a file on your desktop. The limit is URL length:
 a few tens of kilobytes is comfortable, a card image is not.
 
-This is what every machine on this site uses, which is why they run on a laptop
-with no network as happily as they do here.
+It's what every machine on this site uses, which is why the pages still run
+with no network.
 
 ### Sound
 

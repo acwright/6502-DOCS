@@ -58,10 +58,10 @@ you are navigating.
 | `$17` | `1 0 1 1 1` | `B` | `B` | 11 |
 
 ::: warning The code is not the value
-Nowhere do the two line up. Key `0` is code `$0A`. `C` to `F` run *backwards* —
-`$0C` is `F` and `$0F` is `C`. The encoder numbers the switches in the order
-they sit on the board, and the firmware turns that into a digit with a lookup
-table.
+They line up for `1` to `9` and nowhere else. Key `0` is code `$0A`, and `C` to
+`F` run *backwards* — `$0C` is `F` and `$0F` is `C`. The encoder numbers the
+switches in the order they sit on the board, and the firmware turns that into a
+digit with a lookup table.
 
 If you read a code off the port yourself, you must look it up. There is no
 arithmetic that gets you there.

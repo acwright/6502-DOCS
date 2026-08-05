@@ -1,8 +1,7 @@
 # Connectors
 
-Every socket, plug and header on the ACE, and what is on each pin. Read off the
-schematic rather than off the board, so it is right even where the silkscreen
-is crowded.
+Every socket, plug and header on the ACE, and what is on each pin — including
+the headers where the silkscreen is too crowded to label.
 
 ## Round the outside
 

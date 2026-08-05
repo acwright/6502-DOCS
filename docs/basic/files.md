@@ -85,7 +85,8 @@ OK
 ```
 
 Line 10 puts a value somewhere safe, line 20 writes that one byte to the card,
-line 30 proves it's really gone from memory, and line 40 brings it back.
+line 30 wipes it from memory so you can tell the reload really worked, and line
+40 brings it back.
 
 Address 2560 is in the free space above where BASIC keeps programs, which makes
 it a reasonable scratch address for a small program. For anything bigger, see

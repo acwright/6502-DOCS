@@ -85,14 +85,12 @@ into VRAM mode partway through a palette load. Do palette loads with interrupts
 off.
 
 ::: warning Which byte goes first
-The two sources this chapter is built from describe the byte order the opposite way
-around from each other. Hagerty's own worked example sends the red byte
-first; the Pico9918's reference describes the green-and-blue byte first.
+The two references disagree here. Hagerty's own worked example sends the red
+byte first; the Pico9918's reference describes the green-and-blue byte first.
 
-There is no way to settle it from here — this is a mode that only exists on
-hardware. Write four entries you will recognize, look at the screen, and swap
-the order if the colors come out wrong. It is a one-line fix and you will know
-within a second which way your card wants them.
+Only the card itself can settle it. Write four entries you will recognize, look
+at the screen, and swap the order if the colors come out wrong. It is a one-line
+fix and you will know within a second which way your card wants them.
 :::
 
 ::: tip Palettes outlive a reset

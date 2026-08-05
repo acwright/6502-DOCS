@@ -64,8 +64,8 @@ perfectly until the next thing loads over it.
 **`sei` while you swap.** Two bytes have to change, and an interrupt arriving
 between them jumps through half of each address.
 
-**Push nothing.** This is the one that is specific to this machine, and it is
-worth reading twice.
+**Push nothing.** This one is specific to this machine, and it is the one that
+bites:
 
 ::: warning Your link must leave the stack exactly as it found it
 The Kernal's handler works out whether it was called by `BRK` by reading the

@@ -206,8 +206,7 @@ Stop when memory changes rather than when the program reaches somewhere:
 
 `--watch read`, `--watch write` or `--watch access`, and `--end` covers a whole
 range. This is the tool for "something is scribbling on my variable and I don't
-know what" — arguably the single most valuable thing in the debugger, because it
-answers a question that is otherwise almost unanswerable.
+know what" — a question that is otherwise almost impossible to answer.
 
 ## Managing them
 

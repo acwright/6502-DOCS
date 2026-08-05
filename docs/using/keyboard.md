@@ -57,10 +57,10 @@ At the `OK` prompt, with nothing running, <kbd>Esc</kbd> does nothing. That's
 deliberate: it means you can't accidentally break something while you're just
 typing a line in.
 
-This is the one thing in the chapter you have to feel rather than read. The
-machine below already has a program in it that never stops on its own — a
-`GOTO` sending BASIC back to the same line for ever. Click it, type `RUN`, let
-`HELLO` fill the screen, and then press <kbd>Esc</kbd>.
+It's worth pressing once before you need it. The machine below already has a
+program in it that never stops on its own — a `GOTO` sending BASIC back to the
+same line for ever. Click it, type `RUN`, let `HELLO` fill the screen, and then
+press <kbd>Esc</kbd>.
 
 <Emulator
   sample="basic/goto-loop"

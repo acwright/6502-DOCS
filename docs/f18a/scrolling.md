@@ -11,8 +11,8 @@ Two registers move the screen. Write register 27 and the picture slides
 sideways; write register 28 and it slides up. One pixel at a time, no redraw,
 no cost.
 
-That sentence is the whole reason to care about F18A mode if you are writing a
-game.
+If you are writing a game, that is the single biggest reason to care about F18A
+mode.
 
 ## What you were doing before
 
@@ -142,8 +142,7 @@ another.
 
 <ol><li v-for="s in priority.stages" :key="s">{{ s }}</li></ol>
 
-The rules that fall out of that, which are all worth knowing before you spend an
-afternoon on it:
+The rules that fall out of that:
 
 <ul><li v-for="r in priority.rules" :key="r">{{ r }}</li></ul>
 

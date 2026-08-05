@@ -104,8 +104,7 @@ polite rather than crashing on an older machine.
 
 ## Every routine
 
-Grouped by what it is for. Each chapter listed goes into its group properly —
-this is the index, not the tutorial.
+Grouped by what it is for, with a link to the chapter that teaches each group.
 
 <div v-for="g in groups" :key="g.title">
   <h3>{{ g.title }}</h3>

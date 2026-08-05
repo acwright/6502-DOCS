@@ -60,9 +60,9 @@ AND NOW IT HOLDS: WRITTEN BY A PROGRAM
 OK
 ```
 
-The wipe in the middle is not ceremony — without it, a load that silently did
-nothing would leave the old bytes sitting in the buffer and the program would
-print them back happily.
+The wipe in the middle matters: without it, a load that silently did nothing
+would leave the old bytes sitting in the buffer and the program would print
+them back happily.
 
 ## Choosing a disk
 

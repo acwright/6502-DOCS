@@ -54,7 +54,7 @@ Everything works the same on macOS, Linux and Windows.
 |---|---|
 | [Why cross-develop](/crossdev/why) | What the loop looks like, and when to stay at the machine instead |
 | [Installing cc65](/crossdev/cc65) | The assembler, and the one version trap in this ecosystem |
-| [The tool belt](/crossdev/tools) | Six tools, what each is for, and how to prove each one works |
+| [The tool belt](/crossdev/tools) | Six tools, what each is for, and how to check each one is installed |
 | [Starting from a template](/crossdev/templates) | Clone a working project instead of building one |
 | [The Makefile](/crossdev/makefile) | Every target, and how to add your own |
 | [The linker config](/crossdev/linker) | Why a program starts at `$0800` and a cartridge at `$C000` |

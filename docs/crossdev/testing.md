@@ -4,8 +4,6 @@ A 6502 program can have a test suite. Not a simulation of one — the real ROM,
 the real BASIC, the real Kernal, booted and driven and asserted on, ten cases in
 about a second.
 
-This is the chapter that pays for the whole section.
-
 ## The method
 
 Five rules. The BIOS's own suite is built on them, and so is everything below.

@@ -64,8 +64,8 @@ LIST
 OK
 ```
 
-`NEW` there wasn't ceremony — it proves the point. The program really did come
-back off the card.
+The `NEW` matters: it throws the program away first, so what comes back really
+did come off the card rather than being what was already in memory.
 
 ::: tip Save early
 There's no autosave and no undo. If you've been typing for twenty minutes,
@@ -121,7 +121,7 @@ OK
 ```
 
 Line 10 puts 42 in memory. Line 20 writes that one byte to the card. Line 30
-wipes it. Line 40 reads it back, and line 50 proves it survived. That's the
+wipes it. Line 40 reads it back, and line 50 shows it survived. That's the
 whole shape of a save-game file.
 
 ## When there's no card

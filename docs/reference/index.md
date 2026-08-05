@@ -1,8 +1,8 @@
 # Reference cards
 
 Fourteen sheets, sized for letter paper, meant to be printed and kept next to
-the keyboard. Every one of them condenses a chapter — nothing is on a card that is
-not also somewhere in this guide, so a card is a shortcut, never the only copy.
+the keyboard. Each one condenses a chapter, so a card is a shortcut to something
+this guide also explains at length — never the only copy.
 
 They open as plain pages outside the guide. Use your browser's back button to
 come back.
@@ -16,9 +16,9 @@ Open the card, print, and set:
 - **Margins:** None
 - **Background graphics:** On — the black bars are part of the design
 
-Every card says the same thing in a strip along the top, which does not print.
-The fonts are in the page, so a card printed from a laptop with no internet
-looks the same as one printed online.
+Every card repeats those settings in a strip along the top of the screen, and
+that strip is not printed. The fonts are in the page, so a card printed from a
+laptop with no internet looks the same as one printed online.
 
 ## The machine
 

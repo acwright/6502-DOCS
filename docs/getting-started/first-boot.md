@@ -31,9 +31,9 @@ OK
   screen
 />
 
-Starting the machine below is the same as reaching for the switch. Watch for
-the splash, and take the five seconds if you want them — click it first, or the
-keys go to this page instead.
+The machine below starts cold, exactly as if you'd reached for the switch.
+Watch for the splash and take the five seconds if you want them — click it
+first, or your keys go to this page instead.
 
 <Emulator
   label="Switch it on"
