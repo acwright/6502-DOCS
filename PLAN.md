@@ -1209,6 +1209,79 @@ are recorded on the page as what they are; neither blocks Phase 10.
 
 Site live; zero broken links; ASSETS archived with every artefact accounted for.
 
+### What shipped
+
+The site is live at <https://acwright.github.io/6502-DOCS/>, landing directly
+in the guide with no hero page. `6502-ASSETS` is archived. One new script,
+`scripts/check-links.mjs`, and one new guard inside an old one.
+
+Every check was run against BIOS v1.5 and emulator 2.5.1 one more time: the
+fact base is current, 131/131 samples pass, all eleven screenshots re-take with
+zero differing pixels, and the link checker reports no broken links across 116
+pages, 9,549 internal links, 1,088 anchors and 46 external URLs.
+
+Five notes, three of which are things this phase got wrong first.
+
+- **The link checker had to read the build, not the Markdown.** VitePress
+  checks dead links between pages and stops there — it never opens a `<Figure
+  src>`, never opens the raw HTML cards under `docs/public/`, never checks that
+  an anchor exists in the page it points at, and never asks the network. Those
+  blind spots are most of this site's links. Reading `dist/` instead covers all
+  four at once, because that is the only place the prose, the cards, the images
+  and the anchors sit together in the shape a reader gets them. It found one
+  break: `basic/debugging` linked `#and-or-not-the-trap`, and VitePress had
+  slugged that heading's em dash into the id. Fixed with an explicit anchor
+  rather than a link carrying a dash.
+- **A 404 and a refused connection are not the same finding, and conflating
+  them makes the check worthless.** `www.analog.com` resolves and then
+  completes no connection here, from any client, while the same run reaches
+  forty-five other hosts; `gitlab.com` did the same on the second run and not
+  the first. Had those failed the build, the first person to see red would have
+  learned to re-run it. HTTP errors fail; unreachable hosts print as unchecked,
+  every run, so they stay visible without being a gate.
+- **Screenshots were reproducible all along.** Phase 8 left them
+  un-drift-checked on the reasoning that "asserting a committed PNG in CI means
+  asserting on an encoder" — but the encoder is deterministic, and the entire
+  38-byte diff from re-taking an unchanged screen was three ImageMagick `date:`
+  chunks and a `tIME`. Stripped, two runs are byte-identical, so
+  `npm run screens:verify` re-takes every shot and compares. It stays out of CI
+  for a different reason than the one Phase 8 gave: the Ubuntu runner ships
+  ImageMagick 6, and a v6/v7 encoder split would report drift that isn't there.
+- **The maintenance section's own advice was wrong when first written.** It
+  said to grep for a hardcoded `v1.5` and that there should be none outside
+  `data/` — there were six, two of them prose sentences that a firmware bump
+  would leave stating the wrong version on a live page. The footer reads the
+  fact base and cannot go stale; pages can, and three show the splash as a
+  transcript inside a code fence where nothing can interpolate. `check:voice`
+  now fails on any version stated next to the word *BIOS* that disagrees with
+  `data/boot.json`, so the instruction is a gate rather than a reminder. Two
+  other claims in the same section were checked before shipping and both were
+  wrong: archived cards are outside `cards:verify` but still policed by
+  `cards:check`, and `preflight` prints the emulator version rather than
+  checking it against anything.
+- **Retiring a repo means writing to it first.** Archiving makes a repository
+  read-only, so `6502-ASSETS`'s README had to be replaced before the switch, not
+  after — and it was the last document in the ecosystem still claiming v1.4 was
+  current and still printing the memory map that seeded **A4** and **A8**.
+  Rather than correct a document about to become permanent, it was replaced with
+  a notice saying where each folder went. That closes **A1**, the ledger's
+  oldest entry, which had sat at "moot once ASSETS is retired" since Phase 1.
+  An archived repo still clones, so CI's `migrate:check` — which re-walks that
+  tree and fails if it holds a path this repo does not account for — was
+  re-run against a fresh clone of the archived repo and still passes on all 66
+  paths.
+
+**Nothing else in the ecosystem referenced `6502-ASSETS`.** Phase 9 had already
+cleared the sibling READMEs; a GitHub code search across the account confirms
+the only remaining mentions are inside this repo, where they are the migration
+record, and the archived repo's own notice.
+
+**Two items stay open and both still need hardware**, unchanged from Phase 9:
+**A44**, the `BIOS V1.0` label on the EPROM in the site's first photograph,
+which needs a re-shoot; and **A48**, the two F18A claims that only an ACE with
+the enhanced firmware can settle. Neither is a launch blocker and both are
+recorded on the page as what they are.
+
 ---
 
 ## Appendix A — Proposed Site Map

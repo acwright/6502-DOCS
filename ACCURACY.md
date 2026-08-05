@@ -35,8 +35,8 @@ HEAD (`cl65 V2.19 - Git 547d92358`).
 
 | Status | Count |
 |---|---|
-| fixed | 44 |
-| confirmed | 4 |
+| fixed | 45 |
+| confirmed | 3 |
 | open | 4 |
 | wontfix | 3 |
 
@@ -48,6 +48,11 @@ A36, O2), `6502-ACE` (A20, A42), `6502-KIM` (A4), `6502-PRG` (A8, A33),
 one). What remains open is **A44** and **A48**, which need a camera and an ACE
 respectively, plus **A26** and **O5's** documentation notes, which are
 observations rather than defects.
+
+**Phase 10 closed A1**, the oldest entry here, in the only way it could be
+closed: `6502-ASSETS` is archived, and the README that called v1.4 current was
+replaced with a notice pointing at this site before the repo went read-only.
+The ledger opened on that claim and now outlives the document that made it.
 
 Three of the phase's findings are worth reading before the entries:
 
@@ -121,7 +126,8 @@ serial are false at the machine itself.
 | **Truth** | The BIOS is **v1.5**. |
 | **Source** | `BIOS.inc:134-135` (`BIOS_VERSION_MAJOR = 1`, `BIOS_VERSION_MINOR = 5`); splash literal `-- 6502 BIOS v1.5 --` at `Kernal.asm:3059` |
 | **Check** | GREP + RUN (the emulator prints the splash on boot) |
-| **Fix** | Moot once ASSETS is retired (Phase 10), but the v1.5 cards have to exist first (Phase 7). |
+| **Status** | `fixed` |
+| **Fix** | Phase 10 retired the repo. `6502-ASSETS` 7519e25 replaces that README wholesale with a notice pointing at this site, so the claim is gone rather than corrected — the v1.5 cards Phase 7 generated are the replacement it points to. The same commit removes the memory-map summary that carried **A4** and **A8**. |
 
 ### A2 — `6502-ASSETS/Documentation/ACE/ACE.html`: ROM boundary wrong
 
