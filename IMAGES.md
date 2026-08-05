@@ -51,7 +51,7 @@ page today, via `<PlaceholderImage>`) · `pending` (not placed on any page).
 | The board, without the keyboard | P | `docs/your-ace.md` | **done** | `photos/ace-board.jpg`, the top 1430 px of the same photograph. The tour chapter wants the parts filling the frame. |
 | The keys | P | `docs/using/keyboard.md` | **done** | `photos/ace-keyboard.jpg`, the bottom of the same photograph. |
 | The ACE keyboard layout | D | `docs/using/keyboard.md` | **done** | `keyboard.svg`, drawn from `assets/keyboard/keyboard-layout.json` by the shared drawing in `scripts/lib/keyboard.mjs` — the same one the printable card uses. Do not reach for `assets/keyboard/keyboard-layout.svg`: KLE's export draws the caps and omits every legend. |
-| Everything connected | P | `docs/getting-started/setup.md` | placeholder | **Wants a camera.** An ACE with all its cables in: power, VGA, audio, keyboard, joysticks, serial, each one traceable to its socket. No existing photograph shows a cabled machine. |
+| Everything connected | P | `docs/getting-started/setup.md` | **done** | `photos/everything-connected.jpg`, from `assets/photos/cables.png`. Shot as the kit laid out rather than a cabled machine — the caption says so ("before any of it is plugged in") rather than claiming a connection the picture doesn't show. |
 | The boot screen | G | `docs/getting-started/first-boot.md` | **done** | `screens/boot-splash.png`, caught 2.65 M cycles into a cold start — the probe finished, the countdown running, BASIC not started. That needs `--pause`: a machine that runs from the moment it is spawned is past the splash before the debug server answers. |
 | What happens in those five seconds | D | `docs/getting-started/first-boot.md` | **done** | `boot-flow.svg`. |
 | A first session | G | `docs/getting-started/first-ten-minutes.md` | **done** | `screens/first-program.png` — the chapter's own sums, then `hello-name.bas` typed in and answered. |
@@ -84,20 +84,17 @@ page today, via `<PlaceholderImage>`) · `pending` (not placed on any page).
 | Graphics Mode II | G | `docs/assembly/graphics.md` | **done** | `screens/graphics-2.png`. Not in the original plan; the chapter described the mode and showed nothing. |
 | Multicolor mode | G | `docs/assembly/graphics.md` | **done** | `screens/multicolor.png`. |
 | The cross-development toolchain | D | `docs/crossdev/index.md` | **done** | `toolchain.svg`. |
-| Burning a cartridge ROM | P | `docs/crossdev/to-hardware.md` | placeholder | **Wants a camera.** An AT28C256 in a TL866's ZIF socket, lid open, a finished cartridge board and its label beside it. |
+| Burning a cartridge ROM | P | `docs/crossdev/to-hardware.md` | **done** | `photos/cartridge-burn.jpg`, from `assets/photos/cartridge-burn.png`. The chip in the programmer, the cartridge board and its VC83 BASIC label waiting beside it. |
 | The character set | D | `docs/reference/character-set.md` | **done** | Phase 7's, drawn from `data/charset.json` — every glyph is an SVG built from its eight ROM bytes, so the picture is the pattern table rather than a font resembling it. |
 
-## The three placeholders that are left
+## The placeholder that's left
 
-All three need a camera and a machine on a desk, and nothing in any repo
-substitutes for them:
+One needs a camera and a machine on a desk, and nothing in any repo
+substitutes for it:
 
-1. **An ACE with every cable in** (`getting-started/setup.md`) — the setup
-   chapter's whole subject.
-2. **A laptop and an ACE showing the same prompt** (`using/serial.md`).
-3. **An EEPROM in a programmer** (`crossdev/to-hardware.md`).
+1. **A laptop and an ACE showing the same prompt** (`using/serial.md`).
 
-A fourth would be worth having and no page reserves a slot for it: **the whole
+A second would be worth having and no page reserves a slot for it: **the whole
 family lined up**, oldest to newest. `photos/family-desk.jpg` is a single older
 machine, not a line-up.
 

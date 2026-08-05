@@ -155,9 +155,10 @@ Chip into the cartridge board, cartridge into the ACE, power on. The cartridge
 supplies the reset vector, so it boots straight into your program with no splash
 and no BASIC.
 
-<PlaceholderImage
-  label="Burning a cartridge ROM"
-  caption="An AT28C256 in the ZIF socket of a TL866 programmer, lid open, with a finished cartridge board and its label beside it."
+<Figure
+  src="/images/photos/cartridge-burn.jpg"
+  alt="A chip programmer with an EEPROM seated in its ZIF socket and a red LED lit, next to a finished cartridge board and its printed VC83 BASIC label."
+  caption="Chip in the programmer, cartridge board waiting beside it. Once it's burned, the chip moves from one to the other."
 />
 
 ::: details Why the image is 32 KB when the cartridge is 16 KB

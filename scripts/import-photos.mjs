@@ -97,6 +97,18 @@ const PHOTOS = [
     to: 'family-desk.jpg',
     from: join(REPO, 'docs/public/images/6502.png'),
     subject: 'An earlier machine on a desk with a monitor and a separate keyboard, photographed when BASIC still announced itself as v1.0.'
+  },
+  {
+    // Not a board render — an original photograph, so its source lives in
+    // assets/photos/ rather than a sibling repo's Images/.
+    to: 'everything-connected.jpg',
+    from: join(REPO, 'assets/photos/cables.png'),
+    subject: 'The cable kit laid out: VGA, audio, power, PS/2, serial null-modem adapter, a joystick, and a CompactFlash card.'
+  },
+  {
+    to: 'cartridge-burn.jpg',
+    from: join(REPO, 'assets/photos/cartridge-burn.png'),
+    subject: 'An AT28C256 in the ZIF socket of a TL866 programmer, lid open, with a finished cartridge board and its label beside it.'
   }
 ]
 

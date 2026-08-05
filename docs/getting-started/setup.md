@@ -3,9 +3,10 @@
 Five minutes, a handful of cables, and you're done. There's no keyboard to
 find — the ACE has one built in. Switch the power on **last**.
 
-<PlaceholderImage
-  label="Everything connected"
-  caption="An ACE with all its cables attached, each one labeled: power, VGA, audio, keyboard, joysticks, serial."
+<Figure
+  src="/images/photos/everything-connected.jpg"
+  alt="A VGA cable, an audio cable, a power supply, a serial null-modem adapter, a joystick, and a CompactFlash card, laid out on a wooden table."
+  caption="Everything in the box, before any of it is plugged in: VGA, audio, power, a null-modem adapter for serial, a joystick, and a CompactFlash card."
 />
 
 ## 1. The monitor
