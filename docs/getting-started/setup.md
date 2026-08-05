@@ -6,7 +6,7 @@ find — the ACE has one built in. Switch the power on **last**.
 <Figure
   src="/images/photos/everything-connected.jpg"
   alt="A VGA cable, an audio cable, a power supply, a serial null-modem adapter, a joystick, and a CompactFlash card, laid out on a wooden table."
-  caption="Everything in the box, before any of it is plugged in: VGA, audio, power, a null-modem adapter for serial, a joystick, and a CompactFlash card."
+  caption="What you'll be connecting: VGA, audio, power, a null-modem adapter for serial, a joystick, and a CompactFlash card."
 />
 
 ## 1. The monitor
