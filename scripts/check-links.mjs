@@ -49,16 +49,7 @@ const offline = process.argv.includes('--offline')
 const verbose = process.argv.includes('--verbose')
 
 /** Repo notes that carry links but are never built into a page. */
-const NOTES = [
-  'README.md',
-  'PLAN.md',
-  'ACCURACY.md',
-  'IMAGES.md',
-  'ASSETS-MIGRATION.md',
-  'FEEDBACK.md',
-  'samples/README.md',
-  'assets/README.md'
-]
+const NOTES = ['README.md', 'ACCURACY.md', 'samples/README.md', 'assets/README.md']
 
 const failures = []
 const unreachable = []

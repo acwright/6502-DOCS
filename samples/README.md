@@ -25,7 +25,7 @@ A listing that cannot be verified does not go in.
 A sample under `basic/` or `assembly/` appears on a page, so it has to read as a
 program somebody wrote on purpose — it draws something, plays something, saves
 something. It asserts on its own real output with `expect`. **It never contains
-`PRINT "PASS"`.** See PLAN.md's *Voice & Style*, which is binding.
+`PRINT "PASS"`.** See *Voice & style* in the top-level README, which is binding.
 
 `_checks/` is where the pure regression cases live: memory-map spot checks, the
 truth-value convention, the storage command surface. Those exist to turn CI red
@@ -95,8 +95,8 @@ random-number generator. What these three cases check instead is the part that
 can genuinely break: the demo runs to the end, `InitVideo` puts text mode back,
 and BASIC's prompt reappears. A crash, a hang, or a mode left broken all fail.
 
-The pictures themselves are a screenshot problem, not a harness problem — see
-`IMAGES.md`.
+The pictures themselves are a screenshot problem, not a harness problem —
+`npm run screens` re-takes them.
 
 ## Cases that are not files
 

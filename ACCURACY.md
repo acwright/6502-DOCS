@@ -4,16 +4,12 @@ Every place where a document in this ecosystem disagrees with the machine, what
 the machine actually does, how that was established, and whether it has been
 fixed.
 
-This file is the working record for [Phase 9](PLAN.md#phase-9--cross-repo-accuracy-pass--backlinks),
-where each open item is fixed **in the repo that got it wrong**, not just worked
-around in the docs. It opens seeded with
-[PLAN.md Appendix C](PLAN.md#appendix-c--accuracy-findings-already-spotted) and
-grows as later phases audit more material.
+Each open item is fixed **in the repo that got it wrong**, not just worked
+around in the docs.
 
 ## How to read an entry
 
-**Check** is the verification method from
-[PLAN.md](PLAN.md#verification-method): `GREP` (read the source), `RUN` (execute
+**Check** is the verification method: `GREP` (read the source), `RUN` (execute
 it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 (read the KiCad schematic).
 
@@ -77,9 +73,8 @@ Three of the phase's findings are worth reading before the entries:
   and `FOR` stacks at `$0400–$05FF` when `BASIC.asm` says outright that they
   live on the CPU stack.
 
-Entries **A10–A13** were found while rewriting Phase 3 against PLAN.md's
-[Course Correction](PLAN.md#course-correction-post-phase-3), and **A14–A19** in
-the review pass that followed. Most are errors this project's **own first pass**
+Entries **A10–A13** were found while rewriting Phase 3 against the course
+correction that followed it, and **A14–A19** in the review pass after that. Most are errors this project's **own first pass**
 shipped, not inherited ones; A20 is an upstream README bug the review turned up.
 All are corrected in the current pages. They are recorded here because a ledger
 that only tracks other people's mistakes is not a ledger.
@@ -565,7 +560,7 @@ serial are false at the machine itself.
 
 | | |
 |---|---|
-| **Claim** | [PLAN.md's *Write from the seat*](PLAN.md#write-from-the-seat-not-from-the-harness) table says that, at the ACE, "the screen drops every code above 126 and all but four control codes". |
+| **Claim** | This project's own *Write from the seat* table said that, at the ACE, "the screen drops every code above 126 and all but four control codes". |
 | **Truth** | The filtering is in `Chrout`'s video path, which discards `$7F` and above and every control code except CR, LF, backspace and bell. The screen itself displays all 256 characters perfectly well — `VideoChroutRaw` puts any code on it, which is how a program draws with the box-drawing set. |
 | **Source** | `Kernal.asm` video Chrout implementation; confirmed by a program that draws a double-line box and centered title on a video machine |
 | **Check** | RUN |

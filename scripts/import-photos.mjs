@@ -39,7 +39,7 @@ const QUALITY = 82
 /**
  * Every photograph the site uses, and where it comes from.
  *
- * `subject` is what the picture shows — it goes in IMAGES.md and in the page's
+ * `subject` is what the picture shows — it goes in the page's
  * caption, and it is the thing to check when a photo is re-shot.
  */
 const PHOTOS = [
@@ -171,7 +171,7 @@ for (const photo of PHOTOS) {
 }
 
 if (problems) {
-  console.log(`\n${problems} photo(s) missing — see IMAGES.md`)
+  console.log(`\n${problems} photo(s) missing — import them with \`npm run photos\``)
   process.exit(1)
 }
 

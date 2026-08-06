@@ -4,9 +4,8 @@ Design sources. **Nothing here is served by the site** — everything the site
 loads lives under [`docs/public/`](../docs/public/). These are the editable
 originals kept so the published artefacts can be regenerated or corrected.
 
-They arrived from `6502-ASSETS` in
-[Phase 2](../PLAN.md#phase-2--assets-migration); every path's origin and fate is
-recorded in [`ASSETS-MIGRATION.md`](../ASSETS-MIGRATION.md).
+They arrived from `6502-ASSETS`, and `npm run migrate:check` re-walks that repo
+and fails if it holds a path this one does not account for.
 
 ## Layout
 

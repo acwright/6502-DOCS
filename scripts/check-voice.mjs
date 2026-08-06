@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //
-// Voice check (PLAN.md, "Voice & Style").
+// Voice check (README.md, "Voice & style").
 //
 // The docs are a user's guide. The verification method that keeps them honest
 // is real, necessary, and none of the reader's business — it belongs in
@@ -200,7 +200,7 @@ for (const file of markdownFiles(DOCS)) {
 }
 
 if (failures) {
-  console.log(`\n${failures} voice problem(s) — see PLAN.md, "Voice & Style"`)
+  console.log(`\n${failures} voice problem(s) — see README.md, "Voice & style"`)
   process.exit(1)
 }
 

@@ -308,9 +308,8 @@
 
 /**
  * Styled placeholder for an image that doesn't exist yet — one that needs a
- * camera and a machine on a desk. Every instance has a matching entry in
- * IMAGES.md, so "no blank spaces, no broken images" holds even before the
- * shot exists.
+ * camera and a machine on a desk. It keeps "no blank spaces, no broken images"
+ * true even before the shot exists.
  */
 .placeholder-image {
   display: flex;

@@ -8,8 +8,6 @@ companion to the more technical READMEs in the sibling repos below.
 Published at **<https://acwright.github.io/6502-DOCS/>**.
 
 Built with [VitePress](https://vitepress.dev/), deployed to GitHub Pages.
-See [`PLAN.md`](PLAN.md) for the full multi-phase build plan, sources of
-truth, and verification method.
 
 **The site describes BIOS v1.5, and every sample, screenshot and embedded
 program in it was produced by emulator 2.6.1.** Those are the two versions that
@@ -18,11 +16,11 @@ page stating a BIOS version the firmware disagrees with, and `npm run preflight`
 fails on an emulator that is not the one in `data/emulator.json`. See
 [Maintenance](#maintenance) for what to do when either moves.
 
-> **Read [`PLAN.md`'s *Voice & Style*](PLAN.md#voice--style) before writing a
-> page.** It is binding, it is enforced by `npm run check:voice`, and it exists
-> because the first pass at these docs read like a compliance report. Short
-> version: the guide is about the ACE, it talks to a person, and the
-> verification machinery that keeps it honest never appears on a page.
+> **Read [Voice & style](#voice--style) before writing a page.** It is binding,
+> it is enforced by `npm run check:voice`, and it exists because the first pass
+> at these docs read like a compliance report. Short version: the guide is about
+> the ACE, it talks to a person, and the verification machinery that keeps it
+> honest never appears on a page.
 
 ## Running locally
 
@@ -64,8 +62,33 @@ documented as an ACE add-on in `docs/addons/kim.md`.
 | `docs/family/` | The other four machines, for builders |
 
 Depth that would break the flow goes in a `::: details` or `::: tip` block
-rather than out of the chapter. See [`PLAN.md`](PLAN.md#voice--style) for the
-full rules and the list of banned vocabulary.
+rather than out of the chapter.
+
+### Voice & style
+
+Binding, and enforced by `npm run check:voice`. The whole of it is that a page
+is written from the seat, not from the harness — the reader came for the
+machine, and everything this repository does to stay honest is none of their
+business.
+
+| Rule | Instead |
+|---|---|
+| No verification vocabulary — *GREP*, *SCHEM*, *RUN-verified*, *verified against* | Say the thing. How it was checked belongs in `ACCURACY.md` |
+| No fact-base plumbing — `data/*.json`, *the fact base*, `npm run facts` | A generated table should just look like a table |
+| No source citations — `Kernal.asm:1234` | Line numbers belong in `ACCURACY.md` |
+| No project management — phase numbers, script names, `samples/` | The reader does not know this repository exists |
+| No embed mechanism — *iframe*, *base64*, *embed*, *postMessage* | A machine on the page is a machine. The one exception is the section of the emulator chapter that teaches framing one, where the mechanism is what the reader came for |
+| No `PRINT "PASS"` in a listing | A shown program should do something worth doing |
+| American English, American idiom | color, behavior, center, gray, initialize |
+| "the ACE" or "an ACE", never "your ACE" | The reader may not own one, and none of this is selling them one |
+
+Two version numbers are checked rather than trusted: any version a page states
+next to the word *BIOS* has to be the one the firmware reports, and any
+three-part version has to be the pinned emulator release. Both are quoted from
+machines inside code fences, where nothing can interpolate.
+
+`ACCURACY.md` is this project's own working notes. **None of its vocabulary
+belongs on the site.**
 
 ## The fact base
 
@@ -184,8 +207,8 @@ fact to one, add it to a chapter too.
 two KIM LED walk-throughs. They are kept as the record of what each firmware
 release documented, not as current documentation.
 
-See [`ASSETS-MIGRATION.md`](ASSETS-MIGRATION.md) for what moved from
-`6502-ASSETS`, what was recreated, and what was deliberately dropped:
+Everything under `assets/` moved out of `6502-ASSETS`, and the migration is
+re-walked rather than remembered:
 
 ```sh
 npm run migrate         # re-run the migration from a 6502-ASSETS checkout
@@ -195,9 +218,10 @@ npm run migrate:check   # fail if that repo holds anything this one doesn't
 ## Pictures
 
 Three kinds, three pipelines, and one rule: **a picture ships when it shows
-something the prose cannot say as quickly.** [`IMAGES.md`](IMAGES.md) is the
-ledger — every image the site uses, where it came from, and what is still a
-placeholder waiting on a camera.
+something the prose cannot say as quickly.** Each pipeline is its own ledger:
+`npm run screens:verify` re-takes the screenshots, `npm run diagrams:verify`
+redraws the diagrams, and `npm run photos:check` fails on a photograph a page
+references but the repo does not hold.
 
 ```sh
 npm run screens       # re-take every emulator screenshot
@@ -240,7 +264,7 @@ Pages use three components, all registered in
 ```
 
 A placeholder's caption **describes the picture and nothing else** — no phase
-numbers, no script names, no accuracy notes. Those go in `IMAGES.md`.
+numbers, no script names, no accuracy notes.
 
 ## Icons and link previews
 
@@ -333,9 +357,8 @@ ecosystem disagrees with the machine, what the machine actually does, and how
 that was established. A later phase fixes each open item in the repo that got
 it wrong, not just in these docs.
 
-This file, `PLAN.md`, `IMAGES.md` and `ASSETS-MIGRATION.md` are the project's
-own working notes. **None of their vocabulary belongs on the site** — see
-*Voice & Style*.
+This file and `ACCURACY.md` are the project's own working notes. **None of their
+vocabulary belongs on the site** — see [Voice & style](#voice--style).
 
 ## Maintenance
 
@@ -483,8 +506,6 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 | `docs/public/images/` | Screenshots, photographs and branding, served as-is |
 | `assets/` | Design sources — logos, label artwork, and the `.afdesign`/`.numbers` originals pending HTML recreation. Never served; see [`assets/README.md`](assets/README.md). |
 | `ACCURACY.md` | Ledger of factual discrepancies found and fixed |
-| `ASSETS-MIGRATION.md` | What moved out of `6502-ASSETS`, and the evidence for retiring it |
-| `IMAGES.md` | Every image the site uses, how it is made, and what is still a placeholder |
 
 ## Sibling repositories
 
