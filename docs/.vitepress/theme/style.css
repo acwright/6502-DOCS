@@ -274,6 +274,39 @@
 }
 
 /**
+ * The dark half of the two-tone board: the modifiers and the keys down the
+ * right-hand side, which on the real machine are black caps with white legends
+ * against white typing keys.
+ *
+ * The rest of the diagrams are currentColor at some opacity, so they invert
+ * with the theme and nobody minds. This one can't: it sits under a photo of
+ * the thing it draws, and a reader in the dark theme would see the alphas go
+ * dark and the modifiers go light — the layout backwards from the picture
+ * above it. So the dark cap is ink in the light theme and paper in the dark
+ * one, staying the darker of the two tones either way.
+ */
+.dg.keyboard {
+  --kb-dark-cap: currentColor;
+  --kb-dark-cap-opacity: 0.8;
+  --kb-dark-legend: var(--vp-c-bg);
+}
+
+.dark .dg.keyboard {
+  --kb-dark-cap: var(--ac-paper);
+  --kb-dark-cap-opacity: 1;
+  --kb-dark-legend: currentColor;
+}
+
+.dg.keyboard .kb-key-dark .kb-cap {
+  fill: var(--kb-dark-cap);
+  fill-opacity: var(--kb-dark-cap-opacity);
+}
+
+.dg.keyboard .kb-key-dark .kb-legend {
+  fill: var(--kb-dark-legend);
+}
+
+/**
  * Styled placeholder for an image that doesn't exist yet — one that needs a
  * camera and a machine on a desk. Every instance has a matching entry in
  * IMAGES.md, so "no blank spaces, no broken images" holds even before the

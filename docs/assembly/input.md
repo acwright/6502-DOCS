@@ -112,20 +112,22 @@ That is a genuine saving in a game loop, and it is safe: while the encoders are
 released the ports are static, and nothing in the Kernal's interrupt handler
 touches them.
 
-::: warning Keys are deaf while the ports are released
-Between `KBDisable` and `KBEnable` the keyboards cannot report anything. The
-window is short — a few hundred microseconds — but do not put anything slow
-inside it, and do not leave the encoders disabled while you draw a frame.
+::: warning Nothing arrives while the ports are released
+Between `KBDisable` and `KBEnable` the controller cannot hand a character over.
+A PS/2 keystroke is only delayed — it queues in the controller and lands when
+you give the port back — but the board's own keys are not being scanned at all.
+The window is short, a few hundred microseconds, and it should stay that way:
+do not put anything slow inside it, and do not leave the encoders disabled
+while you draw a frame.
 :::
 
-## Reading the keyboard as a keyboard
+## Is that key held down?
 
-There is no key-down/key-up interface: the encoders hand over finished ASCII
-characters, not scan codes. That means you cannot ask "is the space bar held
-right now", which is occasionally what a game wants.
+Nothing above can tell you. The encoders hand over finished ASCII characters,
+not scan codes, so `Chrin` says a key was *typed* and never says it is still
+down — which is occasionally exactly what a game wants to know.
 
-The usual answer is a joystick — that is what they are for. The other is to
-read the most recent key and let it decay:
+The cheap answer is to read the most recent key and let it decay:
 
 ```asm
   jsr Chrin
@@ -138,5 +140,45 @@ read the most recent key and let it decay:
   beq @Idle
   dec KeyTimer                  ; still counts as held
 ```
+
+The better answer for a game is a joystick — that is what they are for.
+
+## Reading the matrix yourself
+
+The real answer, when you want the keys themselves, is that the keyboard is an
+8 × 8 grid hanging off the same sixteen lines, and `KBDisable` hands it to you
+along with the joystick ports. Drive one row low on port A, read the columns
+back on port B, and a `0` bit is a key held at that intersection:
+
+```asm
+  jsr KBDisable                 ; both encoders let go of the ports
+  stz GPIO_PORTA                ; the level first, then the driver — the other
+  lda #%10000000                ;   way puts stale bits on the lines
+  sta GPIO_DDRA                 ; PA7 an output, the other seven left alone
+  ldx #10                       ; let the lines follow, ~50 cycles
+@Settle:
+  dex
+  bne @Settle
+  lda GPIO_PORTB                ; the eight columns of row PA7
+  stz GPIO_DDRA                 ; rows back to inputs before letting go
+  pha
+  jsr KBEnable
+  pla
+  and #%00001000                ; PB3 — the space bar
+  beq @SpaceHeld                ; zero means held, same as a joystick
+```
+
+Eight passes gets you all 67 keys, and the four the firmware ignores —
+<kbd>Caps Lock</kbd>, <kbd>Menu</kbd>, <kbd>Alt</kbd>, <kbd>Fn</kbd> — read like
+any other switch. [The keyboard matrix](/reference/keyboard-matrix) says which
+row and column each key sits on.
+
+::: warning There are no diodes in the grid
+Three keys held in a rectangle report a phantom fourth at the free corner. A
+modifier or two alongside a key is fine; chords are not. Sweep the rows and
+give the ports back, too: a PS/2 keyboard goes on filling the controller's
+buffer while you hold them, and the controller's own scan of the board's keys
+is suspended until you do.
+:::
 
 Next: [files on the memory card](/assembly/storage).

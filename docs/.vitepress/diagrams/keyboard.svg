@@ -13,9 +13,9 @@
 <g><rect class="kb-cap" x="541" y="1" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="567" y="17">)</text><text class="kb-legend" x="567" y="34">0</text></g>
 <g><rect class="kb-cap" x="595" y="1" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="621" y="17">_</text><text class="kb-legend" x="621" y="34">-</text></g>
 <g><rect class="kb-cap" x="649" y="1" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="675" y="17">+</text><text class="kb-legend" x="675" y="34">=</text></g>
-<g><rect class="kb-cap" x="703" y="1" width="106" height="52" rx="5"/><text class="kb-legend" x="756" y="31">Backspace</text></g>
-<g><rect class="kb-cap" x="838" y="1" width="52" height="52" rx="5"/><text class="kb-legend" x="864" y="31">Esc</text></g>
-<g><rect class="kb-cap" x="1" y="55" width="79" height="52" rx="5"/><text class="kb-legend" x="40.5" y="85">Tab</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="703" y="1" width="106" height="52" rx="5"/><text class="kb-legend" x="756" y="31">Backspace</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="838" y="1" width="52" height="52" rx="5"/><text class="kb-legend" x="864" y="31">Esc</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="1" y="55" width="79" height="52" rx="5"/><text class="kb-legend" x="40.5" y="85">Tab</text></g>
 <g><rect class="kb-cap" x="82" y="55" width="52" height="52" rx="5"/><text class="kb-legend" x="108" y="85">Q</text></g>
 <g><rect class="kb-cap" x="136" y="55" width="52" height="52" rx="5"/><text class="kb-legend" x="162" y="85">W</text></g>
 <g><rect class="kb-cap" x="190" y="55" width="52" height="52" rx="5"/><text class="kb-legend" x="216" y="85">E</text></g>
@@ -29,8 +29,8 @@
 <g><rect class="kb-cap" x="622" y="55" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="648" y="71">{</text><text class="kb-legend" x="648" y="88">[</text></g>
 <g><rect class="kb-cap" x="676" y="55" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="702" y="71">}</text><text class="kb-legend" x="702" y="88">]</text></g>
 <g><rect class="kb-cap" x="730" y="55" width="79" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="769.5" y="71">|</text><text class="kb-legend" x="769.5" y="88">\</text></g>
-<g><rect class="kb-cap" x="838" y="55" width="52" height="52" rx="5"/><text class="kb-legend" x="864" y="85">Insert</text></g>
-<g><rect class="kb-cap" x="1" y="109" width="93" height="52" rx="5"/><text class="kb-legend" x="47.5" y="139">Caps Lock</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="838" y="55" width="52" height="52" rx="5"/><text class="kb-legend" x="864" y="85">Insert</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="1" y="109" width="93" height="52" rx="5"/><text class="kb-legend" x="47.5" y="139">Caps Lock</text></g>
 <g><rect class="kb-cap" x="96" y="109" width="52" height="52" rx="5"/><text class="kb-legend" x="122" y="139">A</text></g>
 <g><rect class="kb-cap" x="150" y="109" width="52" height="52" rx="5"/><text class="kb-legend" x="176" y="139">S</text></g>
 <g><rect class="kb-cap" x="204" y="109" width="52" height="52" rx="5"/><text class="kb-legend" x="230" y="139">D</text></g>
@@ -42,9 +42,9 @@
 <g><rect class="kb-cap" x="528" y="109" width="52" height="52" rx="5"/><text class="kb-legend" x="554" y="139">L</text></g>
 <g><rect class="kb-cap" x="582" y="109" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="608" y="125">:</text><text class="kb-legend" x="608" y="142">;</text></g>
 <g><rect class="kb-cap" x="636" y="109" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="662" y="125">"</text><text class="kb-legend" x="662" y="142">'</text></g>
-<g><rect class="kb-cap" x="690" y="109" width="120" height="52" rx="5"/><text class="kb-legend" x="750" y="139">Enter</text></g>
-<g><rect class="kb-cap" x="838" y="109" width="52" height="52" rx="5"/><text class="kb-legend" x="864" y="139">Delete</text></g>
-<g><rect class="kb-cap" x="1" y="163" width="120" height="52" rx="5"/><text class="kb-legend" x="61" y="193">Shift</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="690" y="109" width="120" height="52" rx="5"/><text class="kb-legend" x="750" y="139">Enter</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="838" y="109" width="52" height="52" rx="5"/><text class="kb-legend" x="864" y="139">Delete</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="1" y="163" width="120" height="52" rx="5"/><text class="kb-legend" x="61" y="193">Shift</text></g>
 <g><rect class="kb-cap" x="123" y="163" width="52" height="52" rx="5"/><text class="kb-legend" x="149" y="193">Z</text></g>
 <g><rect class="kb-cap" x="177" y="163" width="52" height="52" rx="5"/><text class="kb-legend" x="203" y="193">X</text></g>
 <g><rect class="kb-cap" x="231" y="163" width="52" height="52" rx="5"/><text class="kb-legend" x="257" y="193">C</text></g>
@@ -55,16 +55,16 @@
 <g><rect class="kb-cap" x="501" y="163" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="527" y="179">&lt;</text><text class="kb-legend" x="527" y="196">,</text></g>
 <g><rect class="kb-cap" x="555" y="163" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="581" y="179">&gt;</text><text class="kb-legend" x="581" y="196">.</text></g>
 <g><rect class="kb-cap" x="609" y="163" width="52" height="52" rx="5"/><text class="kb-legend kb-legend-shift" x="635" y="179">?</text><text class="kb-legend" x="635" y="196">/</text></g>
-<g><rect class="kb-cap" x="663" y="163" width="120" height="52" rx="5"/><text class="kb-legend" x="723" y="193">Shift</text></g>
-<g><rect class="kb-cap" x="784" y="163" width="52" height="52" rx="5"/><text class="kb-legend" x="810" y="193">↑</text></g>
-<g><rect class="kb-cap" x="1" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="34" y="247">Ctrl</text></g>
-<g><rect class="kb-cap" x="69" y="217" width="52" height="52" rx="5"/><text class="kb-legend" x="95" y="247">Menu</text></g>
-<g><rect class="kb-cap" x="123" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="156" y="247">Alt</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="663" y="163" width="120" height="52" rx="5"/><text class="kb-legend" x="723" y="193">Shift</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="784" y="163" width="52" height="52" rx="5"/><text class="kb-legend" x="810" y="193">↑</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="1" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="34" y="247">Ctrl</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="69" y="217" width="52" height="52" rx="5"/><text class="kb-legend" x="95" y="247">Menu</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="123" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="156" y="247">Alt</text></g>
 <g><rect class="kb-cap" x="190" y="217" width="336" height="52" rx="5"/></g>
-<g><rect class="kb-cap" x="528" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="561" y="247">Alt</text></g>
-<g><rect class="kb-cap" x="595" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="628" y="247">Fn</text></g>
-<g><rect class="kb-cap" x="663" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="696" y="247">Ctrl</text></g>
-<g><rect class="kb-cap" x="730" y="217" width="52" height="52" rx="5"/><text class="kb-legend" x="756" y="247">←</text></g>
-<g><rect class="kb-cap" x="784" y="217" width="52" height="52" rx="5"/><text class="kb-legend" x="810" y="247">↓</text></g>
-<g><rect class="kb-cap" x="838" y="217" width="52" height="52" rx="5"/><text class="kb-legend" x="864" y="247">→</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="528" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="561" y="247">Alt</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="595" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="628" y="247">Fn</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="663" y="217" width="66" height="52" rx="5"/><text class="kb-legend" x="696" y="247">Ctrl</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="730" y="217" width="52" height="52" rx="5"/><text class="kb-legend" x="756" y="247">←</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="784" y="217" width="52" height="52" rx="5"/><text class="kb-legend" x="810" y="247">↓</text></g>
+<g class="kb-key-dark"><rect class="kb-cap" x="838" y="217" width="52" height="52" rx="5"/><text class="kb-legend" x="864" y="247">→</text></g>
 </svg>

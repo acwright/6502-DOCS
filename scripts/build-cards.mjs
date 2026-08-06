@@ -928,9 +928,11 @@ function keyboardLayout() {
               [cmd('Arrow keys'), desc('Send codes <code>$1C</code> to <code>$1F</code>. Nothing in BASIC listens for them &mdash; they are there for programs you write')],
               [cmd('Reset'), desc('<strong>Warm start.</strong> The machine comes back to <code>OK</code> with your program and variables intact. The cold start is the power switch')]
             ])),
-          section('Keys that do nothing',
-            note('Caps Lock, Menu, Alt and Fn are dead.',
-              'The controller reads them and drops them &mdash; they send no character and hold no state.'),
+          section('Keys that send nothing',
+            note('Caps Lock, Menu, Alt and Fn send no character.',
+              'The controller scans them like every other key and drops them &mdash; no character, ' +
+              'no state. Their switches are still in the grid, and a program that scans the matrix ' +
+              'itself reads them like any other key. See the Keyboard Matrix card.'),
             note('Caps Lock has nothing to lock.',
               'Letters come out as capitals whatever you do; Shift changes the symbols and the number ' +
               'row only. Lower case exists over the serial line and nowhere else, which is worth ' +

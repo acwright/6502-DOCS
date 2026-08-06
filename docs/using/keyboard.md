@@ -19,8 +19,9 @@ line. This chapter is the rest.
 
 The ACE types in upper case, period. There is no lower case from the
 keyboard — hold <kbd>Shift</kbd> and you get the symbol on a number key, but a
-letter is a capital either way. <kbd>Caps Lock</kbd> is a real key with a real
-switch under it, and it does nothing at all.
+letter is a capital either way. <kbd>Caps Lock</kbd> has a real switch under it
+like every other key, but the controller sends nothing when you press it —
+there is no case for it to lock.
 
 This suits BASIC, which wants its keywords in capitals anyway. Text in quotes
 is stored exactly as you type it, so `PRINT "HELLO"` prints `HELLO` — and
@@ -103,7 +104,7 @@ memory properly and BASIC comes up from scratch, banner and all.
 Neither one saves anything for you. If it matters, `SAVE` it first — see
 [Storage](/using/storage).
 
-## Ctrl and the arrow keys
+## Ctrl, and the keys nothing listens for
 
 Holding <kbd>Ctrl</kbd> sends a control code instead of a letter:
 <kbd>Ctrl</kbd>+<kbd>A</kbd> through <kbd>Ctrl</kbd>+<kbd>Z</kbd> send codes 1
@@ -117,6 +118,18 @@ The **arrow keys**, <kbd>Ins</kbd> and <kbd>Del</kbd> each send a code too.
 BASIC doesn't act on them — there's no cursor movement at the `OK` prompt — but
 a program reading the keyboard directly can use them, and that's how you'd
 build a menu or a game that reads the arrows.
+
+<kbd>Caps Lock</kbd>, <kbd>Menu</kbd>, <kbd>Alt</kbd> and <kbd>Fn</kbd> go one
+step further and send nothing at all. The controller sees the press and passes
+no character on, so as far as anything typing is concerned they aren't there.
+
+That's the firmware's choice, though, not the board's. All 67 switches are
+wired into one 8 × 8 grid, and a program in assembly can ask the controller to
+let go of that grid for a moment and read it itself. Do that and
+<kbd>Caps Lock</kbd> and <kbd>Alt</kbd> are simply two more buttons — and you
+can ask whether a key is *held* rather than waiting for it to be typed.
+[The keyboard matrix](/reference/keyboard-matrix) is the grid;
+[the keyboard and the sticks](/assembly/input) is the code.
 
 ::: details What `PRINT CHR$()` can and can't do
 `PRINT CHR$(13)` gives you a new line, and `CHR$(7)` rings the bell. Beyond

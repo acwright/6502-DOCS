@@ -99,9 +99,10 @@
         serial line, and only there.
       </div>
       <div class="note-box">
-        <strong>Four keys do nothing at all.</strong> Caps Lock, Menu, Alt and Fn produce no
-        output and track no state. Caps Lock in particular is not a lock: there is nothing for
-        it to switch.
+        <strong>Four keys send nothing.</strong> Caps Lock, Menu, Alt and Fn are scanned like
+        every other key and then dropped: no character, no state. Caps Lock in particular is not
+        a lock, because there is no case for it to switch. The switches are in the grid all the
+        same &mdash; see below.
       </div>
       <div class="note-box">
         <strong>Ctrl sends a control code.</strong> <code>Ctrl</code>+<code>A</code> through
@@ -130,6 +131,15 @@
         The same two VIA ports carry the joysticks. That is why the Kernal disables the encoder
         before a raw read and enables it again afterwards, and why reading a stick by hand needs
         the <code>KBDisable</code> &rarr; read &rarr; <code>KBEnable</code> dance.
+      </div>
+      <div class="note-box">
+        <strong>Scanning it yourself.</strong> With the encoders released the sixteen lines are
+        yours: drive one row low through <code>GPIO_DDRA</code> / <code>GPIO_PORTA</code>, read the
+        columns on <code>GPIO_PORTB</code>, and a <code>0</code> bit is a key held at that
+        intersection. Eight rows gets all 67 keys as switches, the four ignored ones included.
+        Give the ports back promptly &mdash; the controller cannot hand a character over while you
+        hold them, and is not scanning the board's own keys either &mdash; and remember there are
+        no diodes: three keys in a rectangle report a phantom fourth.
       </div>
     </div>
 

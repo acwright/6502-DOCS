@@ -20,6 +20,33 @@ const U = 54
 const GAP = 1
 const CAP = 52
 
+// The board is two-tone: white caps for everything that types a character, dark
+// caps for the modifiers and the keys down the right-hand side. The spacebar is
+// white and `\` is white; every other non-typing key is dark.
+//
+// This does *not* come from the layout file's `c` values. Those are the KLE
+// mock-up's colors, and the keyboard that got built doesn't match them — KLE
+// has a dark spacebar and a light Tab, the board has the opposite. The photo in
+// the keyboard chapter is the machine, so the machine wins.
+const DARK = new Set([
+  'Esc',
+  'Backspace',
+  'Tab',
+  'Insert',
+  'Caps Lock',
+  'Enter',
+  'Delete',
+  'Shift',
+  'Ctrl',
+  'Menu',
+  'Alt',
+  'Fn',
+  '↑',
+  '↓',
+  '←',
+  '→'
+])
+
 /** Parse the KLE layout into flat `{ x, y, w, legend }` keys, in units. */
 export function keyboardKeys(path) {
   const layout = JSON.parse(readFileSync(path, 'utf-8'))
@@ -76,8 +103,12 @@ export function keyboardSvg(path, { escape, className = 'keyboard' } = {}) {
       const cls = lines.length === 1 || i === 1 ? 'kb-legend' : 'kb-legend kb-legend-shift'
       return `<text class="${cls}" x="${cx}" y="${ty}">${escape(line)}</text>`
     })
+    // The shade goes on the group rather than the cap, so a stylesheet that
+    // wants it can reach both the cap and its legend, and one that doesn't —
+    // the printable card, which stays white-on-black for the toner — ignores it.
+    const shade = DARK.has(key.legend) ? ' class="kb-key-dark"' : ''
     parts.push(
-      `<g><rect class="kb-cap" x="${kx}" y="${ky}" width="${kw}" height="${CAP}" rx="5"/>${text.join('')}</g>`
+      `<g${shade}><rect class="kb-cap" x="${kx}" y="${ky}" width="${kw}" height="${CAP}" rx="5"/>${text.join('')}</g>`
     )
   }
 
