@@ -28,7 +28,7 @@ const DIST = join(REPO, 'docs/.vitepress/dist')
 const BASE = '/6502-DOCS/'
 
 /**
- * The emulator frame, and every parameter it answers to.
+ * The two emulator frames, and every parameter each one answers to.
  *
  * A frame URL is a link like any other and gets checked like one. Its query
  * string does not: the frame ignores a parameter it has never heard of, on
@@ -36,14 +36,27 @@ const BASE = '/6502-DOCS/'
  * for a reader's page and wrong for this one — here a misspelled or renamed
  * parameter is a silently broken example, which is the worst kind. So the
  * spellings are checked against the contract instead.
+ *
+ * The ACE and the KIM are separate machines with separate contracts, and the
+ * overlap between them is the trap: both take `bin`, `autotype` and `controls`,
+ * neither takes the other's media parameter. Checking a KIM frame against the
+ * union would pass `prg64=` on a machine with no BASIC to load it into, which is
+ * exactly the silence this check exists to prevent. So each frame is checked
+ * against its own set, matched by which host the URL names.
  */
-const EMULATOR = JSON.parse(readFileSync(join(REPO, 'data/emulator.json'), 'utf8'))
-const FRAME_PARAMETERS = new Set([
-  ...EMULATOR.parameters.media,
-  ...EMULATOR.parameters.media.map((name) => `${name}64`),
-  ...EMULATOR.parameters.flags,
-  ...EMULATOR.parameters.other
-])
+const CONTRACTS = ['emulator', 'kimulator'].map((name) => {
+  const contract = JSON.parse(readFileSync(join(REPO, `data/${name}.json`), 'utf8'))
+  return {
+    name,
+    contract,
+    parameters: new Set([
+      ...contract.parameters.media,
+      ...contract.parameters.media.map((media) => `${media}64`),
+      ...contract.parameters.flags,
+      ...contract.parameters.other
+    ])
+  }
+})
 
 const offline = process.argv.includes('--offline')
 const verbose = process.argv.includes('--verbose')
@@ -358,22 +371,19 @@ function checkNotes(external) {
 }
 
 // ---------------------------------------------------------------------------
-// The emulator frame
+// The emulator frames
 // ---------------------------------------------------------------------------
 
 /**
  * Every frame URL this repository writes, and every parameter it sets.
  *
- * Three sources, because the site reaches the frame three ways and all three
- * can be wrong independently: the examples a chapter prints, the starter page a
- * reader is invited to upload, and the component that builds a URL at run time.
- * Only the first two are text in the build; the component's are read out of its
+ * Four sources, because the site reaches a frame four ways and all four can be
+ * wrong independently: the examples a chapter prints, the starter page a reader
+ * is invited to upload, and the two components that build a URL at run time.
+ * Only the first two are text in the build; a component's are read out of its
  * source, since a URL assembled in the browser is in no HTML file to scan.
  */
 function checkFrame(external) {
-  external.add(EMULATOR.web.frame)
-  checked.frames++
-
   const seen = []
 
   // A frame URL printed in a chapter arrives here HTML-escaped — `&` between
@@ -388,17 +398,32 @@ function checkFrame(external) {
       .replace(/&gt;/g, '>')
       .replace(/&amp;/g, '&')
 
+  /**
+   * Which contract a printed URL is held to: the one whose frame it names.
+   *
+   * A chapter is allowed to abbreviate — `…/embed.html?prg64=…` is how the
+   * emulator chapter writes a URL whose host it has already given a paragraph
+   * earlier — so a URL that names no host answers to the ACE, which is the
+   * machine every one of those paragraphs is about.
+   */
+  const contractFor = (url) =>
+    CONTRACTS.find((c) => url.includes(c.contract.web.frame)) ?? CONTRACTS[0]
+
   // A parameter can be written two ways: into the URL, or set on it afterwards.
   // The starter page does the second — it cannot know the program's address
   // until it has loaded — so a scan for `embed.html?…` alone would stop
-  // checking the one page a reader is invited to copy.
+  // checking the one page a reader is invited to copy. That form carries no
+  // host either, and it is the ACE's starter: the KIM has nothing to fetch.
   const scan = (where, text) => {
     const decoded = decode(text)
-    for (const m of decoded.matchAll(/embed\.html\?([^\s"'<>]+)/g)) {
-      seen.push({ where, query: m[1] })
+    // Greedy, so the match carries the host back to `contractFor`. Lazy would
+    // start at `embed.html` every time and hand it a URL with no host in it,
+    // which every frame on the site would then answer to the ACE's contract.
+    for (const m of decoded.matchAll(/\S*embed\.html\?([^\s"'<>]+)/g)) {
+      seen.push({ where, query: m[1], of: contractFor(m[0]) })
     }
     for (const m of decoded.matchAll(/searchParams\.set\(\s*['"]([^'"]+)['"]/g)) {
-      seen.push({ where, query: `${m[1]}=` })
+      seen.push({ where, query: `${m[1]}=`, of: CONTRACTS[0] })
     }
   }
 
@@ -410,31 +435,44 @@ function checkFrame(external) {
   const starter = join(REPO, 'samples/embed/itch/index.html')
   if (existsSync(starter)) scan('samples/embed/itch/index.html', readFileSync(starter, 'utf8'))
 
-  for (const { where, query } of seen) {
+  for (const { where, query, of } of seen) {
     checked.frames++
     for (const pair of query.split('&')) {
       const name = decodeURIComponent(pair.split('=')[0])
       if (!name) continue
-      if (!FRAME_PARAMETERS.has(name)) {
-        report(where, `embed.html?…${name}=…`, `the frame has no "${name}" parameter — it would be ignored`)
+      if (!of.parameters.has(name)) {
+        report(where, `embed.html?…${name}=…`,
+          `the ${of.name} frame has no "${name}" parameter — it would be ignored`)
       }
     }
   }
 
-  // The component, whose URLs never exist as text anywhere.
-  const component = join(REPO, 'docs/.vitepress/theme/Emulator.vue')
-  if (existsSync(component)) {
+  // The components, whose URLs never exist as text anywhere.
+  const components = [
+    { file: 'docs/.vitepress/theme/Emulator.vue', of: CONTRACTS[0] },
+    { file: 'docs/.vitepress/theme/KIM.vue', of: CONTRACTS[1] }
+  ]
+
+  for (const { file, of } of components) {
+    external.add(of.contract.web.frame)
+    checked.frames++
+
+    const component = join(REPO, file)
+    if (!existsSync(component)) continue
+
     const source = readFileSync(component, 'utf8')
     for (const m of source.matchAll(/params\.set\(\s*'([^']+)'/g)) {
       checked.frames++
-      if (!FRAME_PARAMETERS.has(m[1])) {
-        report('docs/.vitepress/theme/Emulator.vue', `params.set('${m[1]}')`,
-          `the frame has no "${m[1]}" parameter — it would be ignored`)
+      if (!of.parameters.has(m[1])) {
+        report(file, `params.set('${m[1]}')`,
+          `the ${of.name} frame has no "${m[1]}" parameter — it would be ignored`)
       }
     }
     // The one parameter this site must never send. See data/emulator.json.
-    if (/params\.set\(\s*'persist'/.test(source)) {
-      report('docs/.vitepress/theme/Emulator.vue', "params.set('persist')", EMULATOR.banned.persist)
+    // The KIM has no such parameter — nothing on that machine persists — so
+    // the ban is only asked about where it exists.
+    if (of.contract.banned?.persist && /params\.set\(\s*'persist'/.test(source)) {
+      report(file, "params.set('persist')", of.contract.banned.persist)
     }
   }
 }

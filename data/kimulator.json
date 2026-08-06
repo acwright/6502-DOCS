@@ -1,0 +1,44 @@
+{
+  "$meta": {
+    "title": "The KIMulator this site is written against",
+    "description": "The KIM's own emulator, a sibling repository like 6502-EMULATOR and pinned the same way. Separate from emulator.json on purpose: they are two machines, with two embed contracts and two postMessage prefixes, and a file that merged them would let a page reach for a parameter the other one answers to. Carries the release the KIM chapter's frame was written against, and the shape of that contract, so the link checker fails on a parameter this release has never heard of.",
+    "sources": [
+      {
+        "file": "6502-KIMULATOR/package.json",
+        "authority": "The release number itself."
+      },
+      {
+        "file": "6502-KIMULATOR/docs/EMBEDDING.md",
+        "authority": "The embed contract — the parameter table, the panel names, the pad's key names, the documented frame sizes."
+      }
+    ],
+    "warning": "Hand-authored file. Bumping the version here is what moves the KIM chapter to a new release."
+  },
+
+  "version": "1.0.0",
+
+  "web": {
+    "app": "https://acwright.github.io/6502-KIMULATOR/",
+    "frame": "https://acwright.github.io/6502-KIMULATOR/embed.html",
+    "contract": "https://github.com/acwright/6502-KIMULATOR/blob/main/docs/EMBEDDING.md"
+  },
+
+  "frame": {
+    "width": 720,
+    "height": 480,
+    "allow": "fullscreen",
+    "note": "There is no raster to double here — a KIM is four panels beside each other, so the size follows `panels`, and this is the contract's figure for all four. It is read as a shape rather than a size: the panels scale to whatever box they are given, so the site gives them the width of its own column and keeps only the proportion."
+  },
+
+  "parameters": {
+    "media": ["rom", "bin"],
+    "flags": ["autostart", "serialcard"],
+    "other": ["accessory", "panels", "keys", "autotype", "controls", "origins"],
+    "note": "`rom` and `bin` also have a `64` twin carrying the bytes in the URL itself. There is no `prg`, `cart`, `cf`, `muted`, `persist` or `freq`: every one of those went with hardware a KIM does not carry. An unrecognized parameter is ignored silently by the frame, which is right for a reader's page and wrong for this one, so the link checker spells them out."
+  },
+
+  "splash": {
+    "keys": "ESC",
+    "note": "The machine boots to `--ESC TO START--` and means it — nothing runs until a key arrives. An embed that should show a working monitor rather than a waiting one says so, which is the hardware and not a quirk of the frame."
+  }
+}

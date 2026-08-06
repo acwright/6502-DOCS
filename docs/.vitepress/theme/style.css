@@ -389,26 +389,33 @@
 }
 
 /**
- * A machine on the page, rendered by <Emulator>.
+ * A machine on the page, rendered by <Emulator> or <KIM>.
  *
- * The frame is 640×520 — the video output doubled, plus the emulator's own
- * control bar — and holds that ratio at any width, so the panel a reader clicks
- * is exactly the shape of the machine that replaces it and nothing on the page
- * moves when it does.
+ * Two machines share this box and they are not the same shape: an ACE is a
+ * video raster doubled plus a control bar, a KIM is four panels beside each
+ * other. Each component sets `--frame-aspect` from its own contract, so neither
+ * shape is written down twice, and the box holds that ratio at any width — the
+ * panel a reader clicks is exactly the shape of the machine that replaces it,
+ * and nothing on the page moves when it does.
+ *
+ * The width is the column's, not the contract's. Both emulators scale their
+ * panels to whatever box they are given rather than in whole steps, so a frame
+ * capped at the ACE's 640 px sat in a 688 px column with 48 px of nothing
+ * beside it — a smaller machine and a ragged right edge, for no gain.
  *
  * Before the click there is no frame at all: the button below is the whole
  * component, which is why it carries the machine's proportions rather than
  * being a line of text.
  */
 .doc-emulator {
+  --frame-aspect: 640 / 520;
   margin: 2em 0;
 }
 
 .doc-emulator-frame {
   position: relative;
   width: 100%;
-  max-width: 640px;
-  aspect-ratio: 640 / 520;
+  aspect-ratio: var(--frame-aspect);
   border: 1px solid var(--vp-c-divider);
   background: var(--vp-c-default-soft);
 }
@@ -467,7 +474,6 @@
   flex-wrap: wrap;
   gap: 0.4em 1.2em;
   justify-content: space-between;
-  max-width: 640px;
   margin-top: 0.6em;
   font-size: 0.88em;
   line-height: 1.5;

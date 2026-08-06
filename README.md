@@ -302,10 +302,11 @@ differ, so it stays the 16×16 original and the PNGs carry the sizes it lacks.
 
 ## Running machines on a page
 
-Twenty-seven machines sit on nineteen pages, each beside the listing it belongs
-to, in a frame around the emulator's second web entry point. That page is served
-from the same origin as this site, so a frame costs no third-party request and
-no CSP allowance.
+Twenty-eight machines sit on twenty pages, each beside the listing it belongs
+to, in a frame around an emulator's second web entry point. Twenty-seven are
+ACEs; the twenty-eighth is the KIM, below. Both pages are served from the same
+origin as this site, so a frame costs no third-party request and no CSP
+allowance.
 
 ```
 <Emulator caption="…" />                             an empty machine
@@ -349,6 +350,36 @@ Samples that read a memory card are not embeddable — the frame's card is blank
 and the smallest image `cffs` makes is a megabyte, which is not going in a URL.
 There are no embeds under `/f18a/` either: the emulator is a faithful TMS9918A
 and masks the register writes those chapters are about.
+
+### The KIM
+
+The KIM chapter carries a machine too, and it is a different machine: different
+firmware, a keypad and a two-line display in place of the video and the
+keyboard, and its own emulator at `6502-KIMULATOR`, pinned in
+`data/kimulator.json`.
+
+```
+<KIM accessory="led-latch" caption="…" />
+```
+
+`<KIM>` is a separate component rather than a mode of `<Emulator>`, for the same
+reason the two emulators are separate applications: the contracts overlap
+without agreeing, and one component taking a `machine` prop would let a KIM page
+reach for `prg64`, get silence, and read as a broken listing rather than a
+parameter that was never going to work. `scripts/check-links.mjs` holds each
+component to its own contract.
+
+It ships no program in the URL, which is the one rule `<Emulator>` has that this
+does not need. The ACE component carries the printed listing as `prg64` so a
+**Run this** button cannot run something else; here the reader keys the bytes in
+from the card themselves, which is the exercise, so there is nothing to keep in
+step. The machine arrives with the LED latch on the bus at `$9400` and an `ESC`
+already pressed — the firmware boots to a splash and waits for a key, so a frame
+that sent nothing would show a waiting machine rather than a working one.
+
+Both frames take the width of the page's column rather than the size their
+contract names. Neither emulator scales in whole steps, so the contract figures
+are read as proportions and the machine is as big as the column allows.
 
 ## Accuracy
 
@@ -436,6 +467,11 @@ every three-part version in `docs/` has to be the pinned one, which catches the
 two chapters that quote `6502 --version` and `6502 dbg info` inside a code
 fence, where nothing can interpolate.
 
+`data/kimulator.json` pins the KIM's emulator the same way, and is not part of
+that gate: no sample, screenshot or payload comes off that release, so there is
+nothing for `npm run preflight` to compare. What it pins is the embed contract
+the link checker holds the `<KIM>` component to.
+
 To bump it:
 
 ```sh
@@ -480,13 +516,18 @@ every other Actions job on it. Without one the check still works — sixty an ho
 is plenty for one person — and an exhausted quota reports as unchecked rather
 than as a broken link.
 
-It also checks the emulator frame's query strings against the parameter table in
-`data/emulator.json`. The frame ignores a parameter it has never heard of, by
-design, so that a page pinned to an old release keeps working — which means a
-misspelled or renamed parameter here would fail silently and forever. Three
-places are covered: the examples the emulator chapter prints, the starter page a
-reader is invited to upload, and the `<Emulator>` component, whose URLs are
-assembled in the browser and appear as text nowhere.
+It also checks each emulator frame's query strings against the parameter table
+in `data/emulator.json` or `data/kimulator.json`. A frame ignores a parameter it
+has never heard of, by design, so that a page pinned to an old release keeps
+working — which means a misspelled or renamed parameter here would fail silently
+and forever. Four places are covered: the examples the emulator chapter prints,
+the starter page a reader is invited to upload, and the `<Emulator>` and `<KIM>`
+components, whose URLs are assembled in the browser and appear as text nowhere.
+
+The two contracts are checked separately rather than as a union, matched by the
+host the URL names. They overlap — both take `bin`, `autotype` and `controls` —
+and the overlap is the trap: `prg64=` on a KIM is a parameter for a BASIC the
+machine does not have, and the union would wave it through.
 
 ## Deploying
 

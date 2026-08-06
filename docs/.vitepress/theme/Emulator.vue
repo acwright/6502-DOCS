@@ -146,7 +146,10 @@ const label = computed(
 </script>
 
 <template>
-  <figure class="doc-emulator">
+  <figure
+    class="doc-emulator"
+    :style="{ '--frame-aspect': `${facts.emulator.frame.width} / ${facts.emulator.frame.height}` }"
+  >
     <div class="doc-emulator-frame">
       <iframe
         v-if="started"

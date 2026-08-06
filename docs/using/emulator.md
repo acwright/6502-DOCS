@@ -28,6 +28,21 @@ settings.
 Grab it from the
 [6502-EMULATOR releases page](https://github.com/acwright/6502-EMULATOR).
 
+## The KIM has its own
+
+Fit the [KIM keypad](/addons/kim) and you aren't running an ACE any more: the
+Keypad Card's ROM replaces BASIC and the Monitor, and the video and keyboard
+give way to a two-line display and twenty-four keys. That's a different machine,
+so it gets a different emulator — the **KIMulator**, at
+<https://acwright.github.io/6502-KIMULATOR/>, with desktop builds on
+[its releases page](https://github.com/acwright/6502-KIMULATOR).
+
+Everything below is about this one. The KIMulator has the same shape — a
+browser build, a desktop app, a command line, and the same trick for putting a
+machine on a page of your own — with its own set of controls, because the
+hardware it stands for is different. The [KIM chapter](/addons/kim) has one
+running on the page.
+
 ## The toolbar
 
 Everything happens from the row of buttons across the top:

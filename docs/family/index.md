@@ -45,5 +45,10 @@ the same memory map. A program written on any of them runs on all of them, as
 long as the hardware it wants is fitted — and the BIOS checks that at startup so
 nothing crashes when it isn't.
 
+The KIM is the exception that proves it. Its Keypad Card brings its own ROM and
+takes the top of the memory map, so there's no BASIC and no Monitor while it's
+fitted — but the Kernal underneath is the same Kernal, and the programs you key
+in on the pad call it exactly as an ACE program would.
+
 That's the whole reason the family holds together, and it's why the ACE could be
 built by absorbing the others rather than starting over.

@@ -1,8 +1,16 @@
 # The KIM keypad
 
-Three small boards turn an ACE into a **KIM-1** — the 1976 single-board
-computer that taught a generation what a microprocessor was. Twenty-four keys,
-a two-line display, and nothing between you and the bytes.
+Three small boards turn an ACE into a machine built in the likeness of the
+**KIM-1** — the 1976 single-board computer that taught a generation what a
+microprocessor was. Twenty-four keys, a two-line display, and nothing between
+you and the bytes.
+
+A cousin, not a clone. It works the way a KIM-1 works — key an address, key the
+bytes, press run — but the ROM on the Keypad Card is the **KC Monitor**,
+written for this board, and not MOS Technology's. A listing out of a 1976 KIM-1
+manual will not run here, and the keys are not where that manual says they are.
+What carries over is the way you program the thing, which is the part that was
+worth having.
 
 <Figure
   src="/images/photos/kim.jpg"
@@ -43,8 +51,10 @@ What it *doesn't* replace is the BIOS Kernal underneath, which stays exactly
 where it is and stays callable. Programs you write on the keypad can still ask
 the Kernal to print a character, read the clock, or talk to the serial port.
 
-This takeover is also why the KIM is the one machine in the family the
-[emulator](/using/emulator) can't currently pretend to be.
+This takeover is also why the KIM has an emulator of its own rather than a
+setting in the ACE's. From the CPU's point of view it is a different machine,
+running different firmware, with a keypad and a two-line display where the
+video and the keyboard used to be.
 :::
 
 ## Using the keypad
@@ -101,6 +111,32 @@ table of patterns rather than code. [Type-in card →](/cards/archive/kim-led-ki
 
 Each card has the bytes laid out in a grid to key in, the assembly source they
 came from, and the steps to run them.
+
+## A KIM to key them into
+
+You don't need the boards to try this, and you don't need the breadboard
+either. Here is a KIM with the LED circuit already on the bus at `$9400`:
+
+<KIM
+  accessory="led-latch"
+  caption="A KIM, with eight LEDs on the bus. Click the pad once to give it the keyboard, then key a program in."
+/>
+
+Open a card in another tab and work down its grid: key `0800`, press `INS`, then
+each byte followed by `►`. `INS` again at the end, `0800` once more, and `▲`.
+`ESC` brings you back.
+
+Click the pad and your own keyboard works too — the number and letter keys are
+the hex digits, <kbd>Esc</kbd>, <kbd>Insert</kbd>, <kbd>Delete</kbd>,
+<kbd>PgUp</kbd> and <kbd>PgDn</kbd> are the keys they're named after, and the
+left, right and up arrows are `◄`, `►` and `▲`. Eighteen bytes go in faster
+than you'd think.
+
+The terminal on the left is the serial monitor described below, on the same
+machine at the same time. There's a full version at
+<https://acwright.github.io/6502-KIMULATOR/>, and a desktop application on
+[its releases page](https://github.com/acwright/6502-KIMULATOR) that can load
+your own `KC Monitor.bin` and attach a real serial port.
 
 ## The serial monitor
 

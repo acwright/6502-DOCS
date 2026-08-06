@@ -81,5 +81,6 @@ They're all open hardware, and they're all documented at the
 [back of this guide](/family/) if you'd like to build one.
 
 The KIM is the interesting one, because it isn't really a separate machine any
-more — three small boards turn an ACE *into* a KIM-1. That's
+more — three small boards turn an ACE into a hex keypad, a two-line display and
+nothing else, the way a KIM-1 was in 1976. That's
 [its own chapter](/addons/kim).

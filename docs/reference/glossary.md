@@ -68,8 +68,9 @@ files, sound, the clock. Spelled with an `a`, following Commodore's original
 typo. See [The Kernal](/assembly/kernal).
 
 **KIM** — a 1976 single-board computer, and here the three-board
-[add-on](/addons/kim) that turns an ACE into one: a hex keypad, a two-line
-display, and a monitor ROM.
+[add-on](/addons/kim) built in its likeness: a hex keypad, a two-line display,
+and a monitor ROM of its own. It works the way the original worked; it does not
+run the original's software.
 
 **Monitor** — the machine-code monitor in ROM, reached with `BRK` or by
 pressing <kbd>Esc</kbd> at boot. Lets you look at memory, disassemble it,
