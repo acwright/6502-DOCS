@@ -74,8 +74,22 @@ the monitor with everything intact.
 
 ## Two programs to type in
 
-Both of these want eight LEDs wired to `$9400` — a row on a breadboard is
-perfect, and it's the traditional first thing to build.
+Both of these want eight LEDs at `$9400` — the traditional first thing to
+build, and a row on a breadboard is perfect for it. The LEDs can't hang off the
+bus by themselves, though: something has to notice the write and hold the byte
+afterwards. That is all the demo circuit does. A `74HC138` picks `$9400` out of
+the eight I/O slots, a couple of gates turn a write to it into a latch pulse,
+and a `74HC373` holds the byte on eight LEDs behind 330 Ω resistors. Four
+chips, a 2×20 header onto the bus, and an evening.
+
+<div class="card-link">
+
+📐 **[LED demo schematic (PDF)](/schematics/kim-demo.pdf)** — one page, every
+part and every bus pin. The KiCad project it was drawn in is
+[in this site's repository](https://github.com/acwright/6502-DOCS/tree/main/assets/kim-demo)
+if you'd rather change it than copy it.
+
+</div>
 
 **Binary counter** — counts 0 to 255 in binary on the LEDs, about twice a
 second, then rolls over and starts again. Eighteen bytes.

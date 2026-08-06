@@ -504,7 +504,8 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 | `scripts/` | Fact extractor, sample harness, voice check, link check, toolchain preflight, asset migration, card/diagram/embed builders, screenshot capture, photo import |
 | `docs/.vitepress/diagrams/` | Generated SVG diagrams, inlined into pages by `<Diagram>` |
 | `docs/public/images/` | Screenshots, photographs and branding, served as-is |
-| `assets/` | Design sources — logos, label artwork, and the `.afdesign`/`.numbers` originals pending HTML recreation. Never served; see [`assets/README.md`](assets/README.md). |
+| `docs/public/schematics/` | Schematic PDFs a chapter links for download, served as-is |
+| `assets/` | Design sources — logos, label artwork, the KIM LED demo's KiCad project, and the `.afdesign`/`.numbers` originals pending HTML recreation. Never served; see [`assets/README.md`](assets/README.md). |
 | `ACCURACY.md` | Ledger of factual discrepancies found and fixed |
 
 ## Sibling repositories

@@ -4,7 +4,7 @@ Design sources. **Nothing here is served by the site** — everything the site
 loads lives under [`docs/public/`](../docs/public/). These are the editable
 originals kept so the published artefacts can be regenerated or corrected.
 
-They arrived from `6502-ASSETS`, and `npm run migrate:check` re-walks that repo
+Most arrived from `6502-ASSETS`, and `npm run migrate:check` re-walks that repo
 and fails if it holds a path this one does not account for.
 
 ## Layout
@@ -13,6 +13,7 @@ and fails if it holds a path this one does not account for.
 |---|---|---|
 | `branding/` | Logo and favicon masters — `.afdesign`, `.aseprite`, and the PNG/ICO exports | **Current.** The exports are wired into the site; these are the files to edit if the mark changes. |
 | `labels/` | Cartridge label artwork and blank templates (`.afdesign`) | **Current.** Print artwork with no web equivalent; documented in the cartridge chapter. |
+| `kim-demo/` | The KiCad project for the eight-LED demo board the KIM type-in programs drive | **Current.** Schematic only — the `.kicad_pcb` is an empty stub, since the circuit has only ever been built on a breadboard. Its PDF export is served as `docs/public/schematics/kim-demo.pdf` and linked from the KIM chapter; edit the schematic and that export has to be re-made by hand. |
 | `keyboard/` | Keyboard layout as KLE JSON, SVG, and PNG | **Current, with one caveat.** The JSON round-trips through [keyboard-layout-editor.com](https://www.keyboard-layout-editor.com) and is what the layout card is drawn from. The `.svg` is *not* used: KLE's SVG export draws the keycaps and omits every legend, so it is 40 KB of blank rectangles. Only the `.png` carried the labels. |
 | `affinity/` | `.afdesign` sources for the memory map, connectors, and character set sheets | **Superseded.** The HTML cards are canonical — see below. |
 | `numbers/` | `.numbers` spreadsheets behind the character map, keyboard matrix, and keypad mapping sheets | **Superseded.** The HTML cards are canonical — see below. |
