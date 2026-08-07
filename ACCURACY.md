@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.1, cc65 built from
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.2, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
@@ -730,7 +730,7 @@ serial are false at the machine itself.
 | **Truth** | Loading a program before the machine has booted is the supported way to do it and the way every embed on this site does it: the store writes the image, sets `loadWarning` as a *status*, and clears it when the end-of-program pointers are fixed up a moment later. `EmbedApp.vue` snapshotted that status once at mount and pushed it into `problems`, a permanent list rendered in red. The condition it describes resolves in about a second; the banner did not. |
 | **Source** | Emulator 2.6.0, `dist/web/embed.html` |
 | **Check** | RUN |
-| **Status** | `fixed` — `6502-EMULATOR` d3632c1, released as **2.6.1**, which is what this site is pinned to. The warning is read *after* BASIC is ready rather than before, so only a load that genuinely failed reaches the banner; under `autostart=0` it waits for the machine to be started at all, since a program that has had no chance to load has not failed to load. The banner is also restyled from red to a neutral note, because nothing that reaches it is fatal — a malformed parameter has already fallen back to its default, and a file that would not load leaves a working BASIC prompt behind it. Verified by building both ways and driving the frame in Chrome: the banner is present at 2 s, 5 s and 9 s before the change and absent after. |
+| **Status** | `fixed` — `6502-EMULATOR` d3632c1, released as **2.6.1**, which this site has been pinned at or past ever since. The warning is read *after* BASIC is ready rather than before, so only a load that genuinely failed reaches the banner; under `autostart=0` it waits for the machine to be started at all, since a program that has had no chance to load has not failed to load. The banner is also restyled from red to a neutral note, because nothing that reaches it is fatal — a malformed parameter has already fallen back to its default, and a file that would not load leaves a working BASIC prompt behind it. Verified by building both ways and driving the frame in Chrome: the banner is present at 2 s, 5 s and 9 s before the change and absent after. |
 | **Consequence** | It was on every embed on this site that carries a program — twenty of them — announcing a fault, in red, on a machine that was working. Nothing in the docs described it, so there is no prose to correct; what needed correcting was the frame. |
 
 ### A53 — `autotype` cannot answer the boot menu, because it waits for BASIC

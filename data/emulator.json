@@ -15,7 +15,7 @@
     "warning": "Hand-authored file. Bumping the version here is what moves the whole site to a new release, and nothing will pass until the samples and screenshots have been re-run against it."
   },
 
-  "version": "2.6.1",
+  "version": "2.6.2",
 
   "web": {
     "app": "https://acwright.github.io/6502-EMULATOR/",
