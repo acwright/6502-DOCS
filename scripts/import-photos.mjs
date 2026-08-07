@@ -29,6 +29,9 @@ import { fileURLToPath } from 'node:url'
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const HOME = process.env.HOME ?? ''
 const KICAD = join(HOME, 'Developer/Kicad')
+// The PicoCalc port is firmware rather than a board, so its photograph lives
+// with the code instead of in a KiCad repo's `Images/`.
+const PICOCALC = join(HOME, 'Developer/Pi/6502-PICOCALC')
 const OUT = 'docs/public/images/photos'
 
 // Wide enough for a full-bleed figure on a retina display, small enough that a
@@ -73,6 +76,14 @@ const PHOTOS = [
     from: join(KICAD, '6502-KIM/Images/6502-KIM.png'),
     crop: '1620x1700+1900+900',
     subject: 'The 24-key pad close up: 0–F, and the eight command keys down the sides.'
+  },
+  {
+    // The one portrait photograph on the site, and the only machine here that
+    // is a handheld — cropping it to landscape would lose the keyboard, which
+    // is half of what the chapter is about.
+    to: 'picocalc.jpg',
+    from: join(PICOCALC, 'images/PicoCalc.png'),
+    subject: 'A PicoCalc handheld showing the boot splash on its square screen, above the QWERTY keyboard and arrow pad.'
   },
   {
     to: 'cob.jpg',

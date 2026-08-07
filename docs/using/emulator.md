@@ -28,6 +28,17 @@ settings.
 Grab it from the
 [6502-EMULATOR releases page](https://github.com/acwright/6502-EMULATOR).
 
+## On a handheld
+
+There's a third place this machine runs, and it isn't a window on a computer at
+all: a [ClockworkPi PicoCalc](/using/picocalc) — a pocket-sized keyboard and
+screen — will run the whole ACE as its firmware. One file onto the Pico inside
+it and the handheld boots to the `OK` prompt with nothing else involved: no host
+computer, no application, and a battery.
+
+It has a launcher and an SD card of its own, so it gets
+[its own chapter](/using/picocalc).
+
 ## The KIM has its own
 
 Fit the [KIM keypad](/addons/kim) and you aren't running an ACE any more: the

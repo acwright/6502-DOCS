@@ -174,7 +174,8 @@ export default defineConfig({
           { text: 'Storage', link: '/using/storage' },
           { text: 'Serial and a terminal', link: '/using/serial' },
           { text: 'The Monitor', link: '/using/monitor' },
-          { text: 'The emulator', link: '/using/emulator' }
+          { text: 'The emulator', link: '/using/emulator' },
+          { text: 'On a PicoCalc', link: '/using/picocalc' }
         ]
       },
       {

@@ -66,6 +66,7 @@ If you don't have an ACE in front of you, here is one. Start it, wait for the
 | have it plugged in and want to see it boot | [First power-on](/getting-started/first-boot) |
 | are at the `OK` prompt right now | [Your first ten minutes](/getting-started/first-ten-minutes) |
 | don't have one yet | [The emulator](/using/emulator) — it's a complete ACE, in your browser |
+| want one you can carry | [On a PicoCalc](/using/picocalc) — the same machine, as a handheld |
 | want to know what's on the board | [The ACE](/the-ace) |
 
 Everything in this guide works the same on real hardware and in the emulator.

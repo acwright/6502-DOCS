@@ -248,10 +248,11 @@ inlined into the page by `<Diagram>` rather than linked as an `<img>` — an
 in `docs/.vitepress/theme/style.css`, under the `.dg-*` classes.
 
 **Photographs** (`docs/public/images/photos/`) are imported from the `Images/`
-directory of each KiCad repo by `scripts/import-photos.mjs`, which records the
-crop and the resize so the same command produces the same picture. The sources
-live in sibling repos, so the import runs on a machine that has them and the
-outputs are committed; CI only checks that every declared file is present.
+directory of each KiCad repo — plus `6502-PICOCALC/images/`, since that machine
+is firmware rather than a board — by `scripts/import-photos.mjs`, which records
+the crop and the resize so the same command produces the same picture. The
+sources live in sibling repos, so the import runs on a machine that has them and
+the outputs are committed; CI only checks that every declared file is present.
 
 Pages use three components, all registered in
 [`docs/.vitepress/theme/index.ts`](docs/.vitepress/theme/index.ts):
@@ -555,6 +556,7 @@ site and publishes it to GitHub Pages automatically. No manual steps.
 |---|---|
 | [6502-BIOS](https://github.com/acwright/6502-BIOS) | Shared BIOS — Kernal, BASIC, Monitor. Source of truth for software behavior. |
 | [6502-EMULATOR](https://github.com/acwright/6502-EMULATOR) | Desktop/browser emulator and CLI used to verify every sample in these docs. |
+| [6502-PICOCALC](https://github.com/acwright/6502-PICOCALC) | The same machine as firmware for a ClockworkPi PicoCalc — documented in `docs/using/picocalc.md`. |
 | [6502-ACE](https://github.com/acwright/6502-ACE) | **The machine this site documents.** All-in-one single-board computer. |
 | [6502-COB](https://github.com/acwright/6502-COB) | Backplane and card-based system. Builder-facing. |
 | [6502-DEV](https://github.com/acwright/6502-DEV) | Teensy-emulated CPU development vehicle. Builder-facing. |
