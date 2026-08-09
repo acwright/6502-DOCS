@@ -1,6 +1,6 @@
 {
   "name": "6502-docs",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "User's and programmer's guide for the ACE, flagship of the AC6502 family.",
   "private": true,
   "type": "module",

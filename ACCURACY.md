@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.2, cc65 built from
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.3, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
