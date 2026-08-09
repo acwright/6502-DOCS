@@ -93,6 +93,14 @@ after that is arithmetic.
   caption="One byte, eight controls. Pushing the stick up turns bit 4 off, not on — which is why every test in this chapter ends in = 0."
 />
 
+::: tip No joystick in reach
+At the emulator, the keyboard is one. The numeric keypad drives `JOY(1)` as it
+stands — <kbd>8</kbd> <kbd>4</kbd> <kbd>6</kbd> <kbd>2</kbd> to move,
+<kbd>0</kbd> to fire — and a laptop with no keypad can put the stick on the
+arrow keys instead. [Playing without a joystick](/using/emulator#playing-without-a-joystick)
+has the rest, including the second stick.
+:::
+
 ## PAUSE
 
 `PAUSE n` does nothing for `n` hundredths of a second. It's how you slow a

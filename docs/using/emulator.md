@@ -99,6 +99,49 @@ to the emulator's own blank card.
 
 The **NVRAM** row works the same way, for the 256 battery-backed bytes.
 
+## Playing without a joystick
+
+A gamepad plugged into the computer needs no setting at all: the first one is
+[`JOY(1)`](/basic/controls#joysticks), the second is `JOY(2)`. With no gamepad,
+the keyboard stands in for one, which is how most people end up playing a
+cartridge on a machine that lives in a window.
+
+The first stick always has a keyboard behind it, and **Settings → Joystick**
+decides which:
+
+| **Keyboard for `JOY(1)`** | Up | Down | Left | Right | A | B | X | Y |
+|---|---|---|---|---|---|---|---|---|
+| **Numpad** | <kbd>8</kbd> | <kbd>2</kbd> | <kbd>4</kbd> | <kbd>6</kbd> | <kbd>0</kbd> | <kbd>.</kbd> | <kbd>5</kbd> | <kbd>Enter</kbd> |
+| **Arrows + Space** | <kbd>↑</kbd> | <kbd>↓</kbd> | <kbd>←</kbd> | <kbd>→</kbd> | <kbd>Space</kbd> | <kbd>/</kbd> | <kbd>.</kbd> | <kbd>,</kbd> |
+
+The numeric keypad is the default, and it's the one that stays out of your way:
+the ACE has no keypad of its own, so nothing you press there can arrive at the
+`OK` prompt as a typed character. You can leave a program listed on the screen
+and play with the keypad without disturbing a line of it.
+
+**Arrows + Space** is for a laptop, where there is no keypad to press. It is not
+free: while it's selected the cursor keys drive the stick, so they stop moving
+around the line you're editing in BASIC or the Monitor. Set it back to
+**Numpad** — or to **Off**, which unbinds the keyboard entirely and leaves the
+stick to a gamepad — when you want to go back to typing.
+
+The second stick is off until you ask for it. **WASD keyboard for `JOY(2)`**
+arms it: <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move,
+<kbd>Space</kbd> for A, <kbd>E</kbd> for B, <kbd>Q</kbd> for X, <kbd>R</kbd> for
+Y. Every one of those is a letter you would otherwise be typing, which is why it
+isn't on by default — arm it for a two-player game, turn it off to write one.
+
+The toolbar keeps a small readout of what is driving each stick right now —
+`JOY1: NUM`, `JOY1: ARROW`, `JOY1: PAD`, or `off` — so a stick that isn't
+answering is a glance rather than a guess.
+
+::: tip Nothing changes for the program
+The keyboard is standing in for a joystick, not pretending to be one somewhere
+else: `JOY(1)` reads the same port and returns the same bits either way. A game
+written against a real stick plays on the keypad, and a game written at the
+keypad plays on a real stick, with nothing to change in the listing.
+:::
+
 ## Talking to real hardware
 
 The desktop app can open one of your computer's serial ports. Pick the port,
