@@ -32,9 +32,9 @@ release they were found on; where that matters — A31 and A32 — the entry say
 
 | Status | Count |
 |---|---|
-| fixed | 46 |
+| fixed | 47 |
 | confirmed | 4 |
-| open | 4 |
+| open | 5 |
 | wontfix | 4 |
 
 **Phase 9 closed the ledger's upstream backlog.** Every confirmed item that
@@ -755,6 +755,28 @@ serial are false at the machine itself.
 | **Check** | RUN |
 | **Status** | `confirmed` — inherent rather than fixable. The frame cannot read the parent's URL cross-origin, so it has no way to resolve against the host page even in principle. It is a documentation defect, in this repo's plan and in `EMBEDDING.md`'s example — the latter corrected in `6502-EMULATOR` d3632c1 (2.6.1). |
 | **Consequence** | It is the difference between the starter folder working as uploaded and not working at all, and it fails *quietly* — a visitor gets a BASIC prompt rather than a blank frame, so a page can look almost right. `samples/embed/itch/index.html` resolves the address at load time with `new URL('game.prg', location.href)`, which is also the only way to do it on itch, where the address is not known until after the upload. `docs/using/emulator.md` gives the trap its own warning block and shows an absolute URL in the one-frame example. PLAN.md's Phase 11 note is corrected in its *What shipped* section rather than in the plan text, which is a record of what was believed at the time. |
+
+### A55 — Three instruction timings were the NMOS 6502's, not the W65C02S's
+
+| | |
+|---|---|
+| **Claim** | Both emulators present themselves as W65C02S machines, and every cycle budget, `wait --cycles` and `dbg info` reading is denominated in their counter. The KIM series' episode 16 rests on the claim that a hand count off the data sheet and a measurement on the emulator agree exactly. |
+| **Truth** | Three timings were the NMOS part's. `BRA` cost 4 cycles and 5 across a page, because the opcode table carried a base of 3 — the taken-branch total — while the handler added the taken cycle again the way the conditional branches do; it is 3 and 4. The read-modify-write forms of absolute indexed with X (`ASL`, `ROL`, `LSR`, `ROR`, `INC`, `DEC`) cost a flat 7; on this part they are 6, and 7 only when the page boundary is crossed. `JMP ($nnnn)` cost 5; on this part it is 6, which is what the CMOS page-boundary fix costs. |
+| **Source** | W65C02S data sheet, **Table 4-1 Addressing Mode Table** (page 20), whose W65C02S column differs from the NMOS column in exactly the two places above, plus its three notes: page boundary +1 (and `STA abs,X` +1 regardless), branch taken +1, read-modify-write +2. Worth knowing where this lives: the data sheet prices **addressing modes**, not instructions — Table 5-1, the per-instruction table, has no cycle column at all. |
+| **Check** | RUN — single-stepped with `dbg step` and the cycle counter read either side, then pinned by tests. |
+| **Status** | `fixed` — `6502-KIMULATOR` bef8d23 and 40f9f31 (v1.0.2), `6502-EMULATOR` 82e9c3d and b56ecc9 (v2.6.4). Both carry a Table 4-1 conformance suite that times every addressing mode against the table and its notes, in the crossing and non-crossing directions, so a regression fails a test rather than a slide. It times ticks rather than reading the opcode table, because `cpu.cycles` is totalled at decode and never sees what a handler adds. |
+| **Consequence** | Every measured cycle figure taken on either emulator was one cycle high per `BRA` executed, which for a loop is one cycle a frame: `6502-ASSEMBLY/01-KIM`'s episode 11 frame was recorded as 502,444 and is 502,443. Nothing in a *program* changes — this is the measuring instrument, not the machine — but anything that published a number from it needs re-reading. The KIM series' episode 16 was written around a metronome whose beat is exactly 500,000 cycles; on the old build it measured 500,001, which is what turned this up. |
+
+### A56 — Whether a taken `BBR`/`BBS` costs an extra cycle is unverified
+
+| | |
+|---|---|
+| **Claim** | Both emulators time the Rockwell bit-branches at 5 cycles and add 1 when the branch is taken, by analogy with Table 4-1's note 2. |
+| **Truth** | Unknown from here. Zero page + relative is not one of Table 4-1's sixteen modes — it came from Rockwell, and the W65C02S data sheet prices it nowhere. Published tables agree on the base of 5; the taken case is where sources go quiet. |
+| **Source** | Absence of one: W65C02S data sheet Table 4-1, which has no row for the mode. |
+| **Check** | RUN — needs a bench measurement on real silicon, or a WDC document that lists it. |
+| **Status** | `open` |
+| **Consequence** | At most one cycle, and only in a program that uses `BBR`/`BBS`, which nothing in the repositories does today. It is recorded because A55's whole lesson is that "close enough" timing hides for years. The conformance suites in both emulators pin the untaken 5 and deliberately assert nothing about the taken case, so whichever way this lands, the test that has to change is the one that says so. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
