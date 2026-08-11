@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.3, cc65 built from
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.4, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
@@ -765,7 +765,7 @@ serial are false at the machine itself.
 | **Source** | W65C02S data sheet, **Table 4-1 Addressing Mode Table** (page 20), whose W65C02S column differs from the NMOS column in exactly the two places above, plus its three notes: page boundary +1 (and `STA abs,X` +1 regardless), branch taken +1, read-modify-write +2. Worth knowing where this lives: the data sheet prices **addressing modes**, not instructions — Table 5-1, the per-instruction table, has no cycle column at all. |
 | **Check** | RUN — single-stepped with `dbg step` and the cycle counter read either side, then pinned by tests. |
 | **Status** | `fixed` — `6502-KIMULATOR` bef8d23 and 40f9f31 (v1.0.2), `6502-EMULATOR` 82e9c3d and b56ecc9 (v2.6.4). Both carry a Table 4-1 conformance suite that times every addressing mode against the table and its notes, in the crossing and non-crossing directions, so a regression fails a test rather than a slide. It times ticks rather than reading the opcode table, because `cpu.cycles` is totalled at decode and never sees what a handler adds. |
-| **Consequence** | Every measured cycle figure taken on either emulator was one cycle high per `BRA` executed, which for a loop is one cycle a frame: `6502-ASSEMBLY/01-KIM`'s episode 11 frame was recorded as 502,444 and is 502,443. Nothing in a *program* changes — this is the measuring instrument, not the machine — but anything that published a number from it needs re-reading. The KIM series' episode 16 was written around a metronome whose beat is exactly 500,000 cycles; on the old build it measured 500,001, which is what turned this up. |
+| **Consequence** | Every measured cycle figure taken on either emulator was one cycle high per `BRA` executed, which for a loop is one cycle a frame: `6502-ASSEMBLY/01-KIM`'s episode 11 frame was recorded as 502,444 and is 502,443. Nothing in a *program* changes — this is the measuring instrument, not the machine — but anything that published a number from it needs re-reading. The KIM series' episode 16 was written around a metronome whose beat is exactly 500,000 cycles; on the old build it measured 500,001, which is what turned this up. This site published three figures and all three were re-read against v2.6.4: the testing chapter's boot-to-prompt cost falls from 5,359,120 to **5,354,440**, the 4,680 cycles being one per `BRA` in the boot menu's five-second wait; the build-and-run chapter's `--json` line stays at **439,400**, because a carriage return takes the menu's default and never enters that wait; and the debugging chapter's `dbg info` count is a free-running snapshot rather than a measurement, so it was re-taken rather than corrected. |
 
 ### A56 — Whether a taken `BBR`/`BBS` costs an extra cycle is unverified
 

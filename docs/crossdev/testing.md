@@ -8,7 +8,7 @@ about a second.
 
 Five rules. The BIOS's own suite is built on them, and so is everything below.
 
-**Boot once.** Booting to the `OK` prompt costs 5,359,120 emulated cycles.
+**Boot once.** Booting to the `OK` prompt costs 5,354,440 emulated cycles.
 Doing that per case is the difference between a suite you run constantly and one
 you avoid.
 
