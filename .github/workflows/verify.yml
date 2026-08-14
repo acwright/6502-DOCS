@@ -14,7 +14,7 @@ env:
   # checks `6502 --version` against `data/emulator.json` — the site's samples,
   # screenshots and embedded payloads all came off one release, and a run on a
   # different one is not the check it looks like. Bump both together.
-  EMULATOR_REF: v2.6.4
+  EMULATOR_REF: v2.6.5
   CC65_REF: master
   CFFS_REF: main
   BASTOK_REF: main

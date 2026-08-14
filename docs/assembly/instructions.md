@@ -95,10 +95,17 @@ see [Reaching the machine](/basic/machine).
 ## Decimal mode
 
 `SED` makes `ADC` and `SBC` work in packed decimal: `$09 + $01` gives `$10`
-rather than `$0A`. It is genuinely useful for a score you intend to print
-digit by digit, and genuinely dangerous if you forget to `CLD` afterwards,
-because everything else — including any interrupt that arrives — is still doing
-arithmetic in the mode you left set.
+rather than `$0A`, and each costs a cycle more than it does in binary. It is
+genuinely useful for a score you intend to print digit by digit, and genuinely
+dangerous if you forget to `CLD` afterwards, because every `ADC` and `SBC` you
+reach later is still doing arithmetic in the mode you left set.
+
+An interrupt is the one thing that does not inherit it. The processor clears
+**D** as it takes the vector, so a handler always starts in binary — and the
+mode you were in was pushed first, so `RTI` gives it back. That is one of the
+65C02's fixes: on the original 6502 a handler ran in whatever mode it
+interrupted, which is why 6502 handlers open with `CLD`. Here that `CLD` is
+redundant.
 
 The Kernal clears it at power-on and never sets it. If you use it, bracket it
 tightly.

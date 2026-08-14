@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.4, cc65 built from
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.5, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
@@ -32,7 +32,7 @@ release they were found on; where that matters — A31 and A32 — the entry say
 
 | Status | Count |
 |---|---|
-| fixed | 47 |
+| fixed | 49 |
 | confirmed | 4 |
 | open | 5 |
 | wontfix | 4 |
@@ -761,10 +761,10 @@ serial are false at the machine itself.
 | | |
 |---|---|
 | **Claim** | Both emulators present themselves as W65C02S machines, and every cycle budget, `wait --cycles` and `dbg info` reading is denominated in their counter. The KIM series' episode 16 rests on the claim that a hand count off the data sheet and a measurement on the emulator agree exactly. |
-| **Truth** | Three timings were the NMOS part's. `BRA` cost 4 cycles and 5 across a page, because the opcode table carried a base of 3 — the taken-branch total — while the handler added the taken cycle again the way the conditional branches do; it is 3 and 4. The read-modify-write forms of absolute indexed with X (`ASL`, `ROL`, `LSR`, `ROR`, `INC`, `DEC`) cost a flat 7; on this part they are 6, and 7 only when the page boundary is crossed. `JMP ($nnnn)` cost 5; on this part it is 6, which is what the CMOS page-boundary fix costs. |
+| **Truth** | Three timings were the NMOS part's. `BRA` cost 4 cycles and 5 across a page, because the opcode table carried a base of 3 — the taken-branch total — while the handler added the taken cycle again the way the conditional branches do; it is 3 and 4. The read-modify-write forms of absolute indexed with X cost a flat 7; on this part the four shifts — `ASL`, `ROL`, `LSR`, `ROR` — are 6, and 7 only when the page boundary is crossed. `INC` and `DEC` were named here as well and should not have been: the CMOS optimization never reached the counters, and **A57** puts them back at the flat 7. `JMP ($nnnn)` cost 5; on this part it is 6, which is what the CMOS page-boundary fix costs. |
 | **Source** | W65C02S data sheet, **Table 4-1 Addressing Mode Table** (page 20), whose W65C02S column differs from the NMOS column in exactly the two places above, plus its three notes: page boundary +1 (and `STA abs,X` +1 regardless), branch taken +1, read-modify-write +2. Worth knowing where this lives: the data sheet prices **addressing modes**, not instructions — Table 5-1, the per-instruction table, has no cycle column at all. |
 | **Check** | RUN — single-stepped with `dbg step` and the cycle counter read either side, then pinned by tests. |
-| **Status** | `fixed` — `6502-KIMULATOR` bef8d23 and 40f9f31 (v1.0.2), `6502-EMULATOR` 82e9c3d and b56ecc9 (v2.6.4). Both carry a Table 4-1 conformance suite that times every addressing mode against the table and its notes, in the crossing and non-crossing directions, so a regression fails a test rather than a slide. It times ticks rather than reading the opcode table, because `cpu.cycles` is totalled at decode and never sees what a handler adds. |
+| **Status** | `fixed` — `6502-KIMULATOR` bef8d23 and 40f9f31 (v1.0.2), `6502-EMULATOR` 82e9c3d and b56ecc9 (v2.6.4), with the `INC`/`DEC` half corrected again in v1.0.4 and v2.6.5 (A57). Both carry a Table 4-1 conformance suite that times every addressing mode against the table and its notes, in the crossing and non-crossing directions, so a regression fails a test rather than a slide. It times ticks rather than reading the opcode table, because `cpu.cycles` is totalled at decode and never sees what a handler adds. |
 | **Consequence** | Every measured cycle figure taken on either emulator was one cycle high per `BRA` executed, which for a loop is one cycle a frame: `6502-ASSEMBLY/01-KIM`'s episode 11 frame was recorded as 502,444 and is 502,443. Nothing in a *program* changes — this is the measuring instrument, not the machine — but anything that published a number from it needs re-reading. The KIM series' episode 16 was written around a metronome whose beat is exactly 500,000 cycles; on the old build it measured 500,001, which is what turned this up. This site published three figures and all three were re-read against v2.6.4: the testing chapter's boot-to-prompt cost falls from 5,359,120 to **5,354,440**, the 4,680 cycles being one per `BRA` in the boot menu's five-second wait; the build-and-run chapter's `--json` line stays at **439,400**, because a carriage return takes the menu's default and never enters that wait; and the debugging chapter's `dbg info` count is a free-running snapshot rather than a measurement, so it was re-taken rather than corrected. |
 
 ### A56 — Whether a taken `BBR`/`BBS` costs an extra cycle is unverified
@@ -777,6 +777,28 @@ serial are false at the machine itself.
 | **Check** | RUN — needs a bench measurement on real silicon, or a WDC document that lists it. |
 | **Status** | `open` |
 | **Consequence** | At most one cycle, and only in a program that uses `BBR`/`BBS`, which nothing in the repositories does today. It is recorded because A55's whole lesson is that "close enough" timing hides for years. The conformance suites in both emulators pin the untaken 5 and deliberately assert nothing about the taken case, so whichever way this lands, the test that has to change is the one that says so. |
+
+### A57 — Six ways the emulated core was not a W65C02S
+
+| | |
+|---|---|
+| **Claim** | Both emulators call their core a W65C02S, and this site describes the processor in an ACE as one — the 65C02 chapter's *What it fixed*, the flag byte in the registers chapter, the cartridge chapter's account of what is true at reset. |
+| **Truth** | Six places disagreed with the data sheet, four of them in what a program *does* rather than what it costs. The interrupt sequence did not clear **D**, so a handler reached during a BCD routine did its own arithmetic in decimal — NMOS behavior, and the reason NMOS handlers open with `CLD`. `RESET` left **I** clear, so an interrupt could be taken before the reset routine ran an instruction. `BIT $nn,X` (`$34`) and `BIT $nnnn,X` (`$3C`) were absent, decoded as *implied* NOPs that consumed no operand byte, so everything after one decoded from the wrong address. `ADC` and `SBC` in decimal mode took **N** and **Z** from the binary intermediate — the NMOS defect the CMOS part fixed — and were not charged the extra cycle decimal costs. `INC $nnnn,X` and `DEC $nnnn,X` had been moved to 6 cycles with a crossing penalty by A55's fix and are a flat 7 (A55). And bit 5 of P, which reads 1 on silicon, came back clear from `RTI` and `PHP`. |
+| **Source** | W65C02S data sheet: the reset and interrupt sequences, the opcode matrix (which carries `$34` and `$3C`, and prices `INC`/`DEC` absolute indexed at 7 with no crossing note), and Table 4-1's decimal note. |
+| **Check** | RUN — stepped on 2.6.5 with `dbg regs` either side. `SED` then `BRK` enters the handler at `P=$24`: **D** clear, **I** set, bit 5 set. `SED`/`CLC`/`LDA #$50`/`ADC #$50` gives `A=$00` with **Z** set and **N** clear. `disasm` decodes `34 10` and `3C 00 20` as `BIT $10,X` and `BIT $2000,X`. Timed by stepping and reading the cycle counter: `INC $nnnn,X` 7 either side of a page boundary, `ASL $nnnn,X` 6 and 7, decimal `ADC`/`SBC` 3 against binary's 2. |
+| **Status** | `fixed` — `6502-EMULATOR` v2.6.5 and `6502-KIMULATOR` v1.0.4, which share the core. Both now check all 256 entries of the instruction table against the opcode matrix — mnemonic, mode and cycle count — which is what turned up the missing `BIT` forms. |
+| **Consequence** | Nothing published here moved. The three figures A55 had re-read were re-measured on 2.6.5 and are unchanged — boot to the `OK` prompt is still **5,354,440** cycles and the build-and-run chapter's `--json` line is still **439,400** — because the BIOS boot path uses no decimal arithmetic and no `INC`/`DEC` absolute indexed; all 131 sample cases pass and all 11 screenshots are byte-identical. What changed is that three pages that were already describing the real part are now describing the emulator as well: the 65C02 chapter's decimal-mode flags, the registers chapter's diagram caption that bit 5 always reads 1, and the cartridge chapter's "interrupts are off" at reset. The one page that disagreed with the part is **A58**. |
+
+### A58 — The instruction set chapter said an interrupt inherits decimal mode
+
+| | |
+|---|---|
+| **Claim** | `docs/assembly/instructions.md`, *Decimal mode*: forgetting `CLD` is dangerous "because everything else — including any interrupt that arrives — is still doing arithmetic in the mode you left set." |
+| **Truth** | An interrupt is the one thing that does not inherit it. The W65C02S clears **D** as it takes the vector, after pushing the flags, so a handler starts in binary and `RTI` returns the interrupted code to decimal. The warning is right about the rest of your own code and wrong about the one case it names — and it names that case because it is the famous one on the NMOS part, where it is true. |
+| **Source** | W65C02S data sheet, interrupt sequence. |
+| **Check** | RUN — the `SED`/`BRK` step in A57: `P=$2C` at the `BRK`, `P=$24` at the handler's first instruction. |
+| **Status** | `fixed` — the paragraph now says the processor clears the flag and that the `CLD` an NMOS handler opens with is redundant here. The 65C02 chapter's *What it fixed* gains the same fact next to the decimal-flag cleanup it already described, and the interrupts chapter states it where a reader is writing a handler. |
+| **Consequence** | It is advice that reads as a hazard and is not one: a reader who believed it would write a defensive `CLD` at the top of every handler, which is harmless, or — worse — distrust decimal mode near interrupts entirely and hand-roll BCD instead. It survived because the emulator agreed with it (A57): the sentence was true of the machine the docs were checked against, and false of the machine they describe. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.

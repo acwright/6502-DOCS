@@ -23,7 +23,7 @@ never drift apart in version.
 ```
 
 ```
-2.6.4
+2.6.5
 ```
 
 If you don't have the app yet, it's on the

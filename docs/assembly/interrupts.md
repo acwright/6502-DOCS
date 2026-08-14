@@ -87,6 +87,14 @@ the keyboards too — everything the Kernal's handler was doing. That is a
 reasonable thing for a game to do; it is not a reasonable thing to do by
 accident.
 
+::: tip A handler starts in binary, with interrupts off
+The processor sets **I** and clears **D** as it takes the vector, and it does
+that *after* pushing the flags — so decimal mode cannot leak into your handler,
+nothing else can interrupt it until you say so, and `rti` hands both flags back
+exactly as the interrupted code left them. The `cld` that 6502 handlers open
+with is not needed here.
+:::
+
 ## Where interrupts come from
 
 The keyboard card's VIA is the busiest source: one interrupt per key, on either
