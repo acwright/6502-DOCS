@@ -102,6 +102,20 @@
 }
 
 /**
+ * A sidebar section that is one page rather than a group of them.
+ *
+ * Every other section in the sidebar is collapsible, and VitePress pads a
+ * collapsed one by 10px along the bottom; an open group gets 24px, which is
+ * the air between its last entry and the rule under it. A section that is
+ * itself the link has no entries, so it takes the open group's 24px and shows
+ * it as a gap below its only line — an inch of nothing where its neighbors
+ * have a title sitting on their divider. Match the sections it sits between.
+ */
+.VPSidebarItem.level-0:not(.collapsible) {
+  padding-bottom: 10px;
+}
+
+/**
  * Center the site title against the wordmark beside it.
  *
  * The nav bar centers its items by line box, and Bebas Neue's line box is not

@@ -1,0 +1,63 @@
+name: Add software to the list
+description: Suggest a program for the software list in the guide
+title: 'Software: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for writing something. The list lives at
+        [Software](https://acwright.github.io/6502-DOCS/software/), and it links
+        to your repository rather than carrying a copy of the program — so
+        whatever you fix after this issue is what people get.
+
+  - type: input
+    id: name
+    attributes:
+      label: What's it called?
+    validations:
+      required: true
+
+  - type: input
+    id: link
+    attributes:
+      label: Where does it live?
+      description: A repository, a release page, an itch.io page — wherever the current version is.
+      placeholder: https://github.com/you/your-program
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What is it?
+      description: A sentence or two, the way you'd describe it to somebody deciding whether to try it.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: form
+    attributes:
+      label: How does it run?
+      options:
+        - A cartridge (.crt)
+        - A program file (.prg / .bin)
+        - A BASIC listing
+        - Something else — described below
+    validations:
+      required: true
+
+  - type: textarea
+    id: needs
+    attributes:
+      label: What does it need?
+      description: Video card, joystick, clock card, memory card, the keypad, F18A mode — anything that isn't on a bare board. Say so if it needs nothing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: anything
+    attributes:
+      label: Anything else?
+      description: Controls, a screenshot, whether it's finished. Unfinished is fine.
+    validations:
+      required: false

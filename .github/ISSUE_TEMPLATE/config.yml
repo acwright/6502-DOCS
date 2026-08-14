@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Something on the site is wrong
+    url: https://github.com/acwright/6502-DOCS/issues/new
+    about: A blank issue is the right shape for a correction, a broken link, or a page that doesn't match the machine.

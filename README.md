@@ -59,6 +59,7 @@ documented as an ACE add-on in `docs/addons/kim.md`.
 | `docs/basic/` | The BASIC guide — tutorial, then reference |
 | `docs/crossdev/` | Building on your own computer: cc65, the templates, debugging, testing |
 | `docs/assembly/` | The assembly guide — the 65C02, the memory map, the Kernal, then a chapter per peripheral |
+| `docs/software/` | Programs other people have written, linked rather than hosted |
 | `docs/family/` | The other four machines, for builders |
 
 Depth that would break the flow goes in a `::: details` or `::: tip` block

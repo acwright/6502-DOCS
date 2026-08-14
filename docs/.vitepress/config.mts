@@ -278,6 +278,10 @@ export default defineConfig({
         collapsed: true,
         items: [{ text: 'The KIM keypad', link: '/addons/kim' }]
       },
+      // A section of one, so it is the link rather than a group holding a
+      // single entry — a chevron that only ever opens onto its own title is
+      // just a second click on the way to the same page.
+      { text: 'Software', link: '/software/' },
       {
         text: 'Reference',
         collapsed: true,
