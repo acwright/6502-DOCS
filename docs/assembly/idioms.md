@@ -93,8 +93,9 @@ bit operations, which are the best thing on the chip for flags:
   bbs0 Flags, PlayerIsDead      ; test and branch, one instruction
 ```
 
-Each is five cycles and does what would otherwise be a load, an or, a store —
-or a load, an and, a branch.
+`smb` and `rmb` are five cycles and do what would otherwise be a load, an or,
+a store. `bbs` and `bbr` are six — flat, whether the branch is taken or not —
+against a load, an and, a branch.
 
 ## `WAI` beats a polling loop
 

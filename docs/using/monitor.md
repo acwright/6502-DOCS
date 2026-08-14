@@ -21,7 +21,7 @@ Three ways, all landing in the same place:
 BRK
 6502 MONITOR v1.1
 BRK AT $E9D1
-PC=E9D3 A=00 X=FF Y=68 SP=FA ---B-IZC
+PC=E9D3 A=00 X=FF Y=68 SP=FA ---B--ZC
 .
 ```
 

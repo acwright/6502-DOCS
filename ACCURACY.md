@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.5, cc65 built from
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.6, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
@@ -32,9 +32,9 @@ release they were found on; where that matters — A31 and A32 — the entry say
 
 | Status | Count |
 |---|---|
-| fixed | 49 |
+| fixed | 51 |
 | confirmed | 4 |
-| open | 5 |
+| open | 4 |
 | wontfix | 4 |
 
 **Phase 9 closed the ledger's upstream backlog.** Every confirmed item that
@@ -767,16 +767,16 @@ serial are false at the machine itself.
 | **Status** | `fixed` — `6502-KIMULATOR` bef8d23 and 40f9f31 (v1.0.2), `6502-EMULATOR` 82e9c3d and b56ecc9 (v2.6.4), with the `INC`/`DEC` half corrected again in v1.0.4 and v2.6.5 (A57). Both carry a Table 4-1 conformance suite that times every addressing mode against the table and its notes, in the crossing and non-crossing directions, so a regression fails a test rather than a slide. It times ticks rather than reading the opcode table, because `cpu.cycles` is totalled at decode and never sees what a handler adds. |
 | **Consequence** | Every measured cycle figure taken on either emulator was one cycle high per `BRA` executed, which for a loop is one cycle a frame: `6502-ASSEMBLY/01-KIM`'s episode 11 frame was recorded as 502,444 and is 502,443. Nothing in a *program* changes — this is the measuring instrument, not the machine — but anything that published a number from it needs re-reading. The KIM series' episode 16 was written around a metronome whose beat is exactly 500,000 cycles; on the old build it measured 500,001, which is what turned this up. This site published three figures and all three were re-read against v2.6.4: the testing chapter's boot-to-prompt cost falls from 5,359,120 to **5,354,440**, the 4,680 cycles being one per `BRA` in the boot menu's five-second wait; the build-and-run chapter's `--json` line stays at **439,400**, because a carriage return takes the menu's default and never enters that wait; and the debugging chapter's `dbg info` count is a free-running snapshot rather than a measurement, so it was re-taken rather than corrected. |
 
-### A56 — Whether a taken `BBR`/`BBS` costs an extra cycle is unverified
+### A56 — `BBR`/`BBS` are a flat 6 cycles, not 5 and a penalty
 
 | | |
 |---|---|
-| **Claim** | Both emulators time the Rockwell bit-branches at 5 cycles and add 1 when the branch is taken, by analogy with Table 4-1's note 2. |
-| **Truth** | Unknown from here. Zero page + relative is not one of Table 4-1's sixteen modes — it came from Rockwell, and the W65C02S data sheet prices it nowhere. Published tables agree on the base of 5; the taken case is where sources go quiet. |
-| **Source** | Absence of one: W65C02S data sheet Table 4-1, which has no row for the mode. |
-| **Check** | RUN — needs a bench measurement on real silicon, or a WDC document that lists it. |
-| **Status** | `open` |
-| **Consequence** | At most one cycle, and only in a program that uses `BBR`/`BBS`, which nothing in the repositories does today. It is recorded because A55's whole lesson is that "close enough" timing hides for years. The conformance suites in both emulators pin the untaken 5 and deliberately assert nothing about the taken case, so whichever way this lands, the test that has to change is the one that says so. |
+| **Claim** | Both emulators timed the Rockwell bit-branches at 5 cycles and added 1 when the branch was taken, by analogy with Table 4-1's note 2. `docs/assembly/idioms.md` priced all six bit operations together: "Each is five cycles". |
+| **Truth** | Six, taken or not, with nothing to add. Zero page + relative is not one of Table 4-1's sixteen modes — it came from Rockwell, and the W65C02S data sheet prices it nowhere, which is why every secondary table guessed and why they guessed 5. A bus trace settles it: the part reads the zero page byte and writes it back unchanged — the read-modify-write sequence it shares with `RMB` and `SMB`, which are the same silicon — and then reads the branch target whether it is going to take the branch or not. Six accesses every time, so there is no taken case to price. `RMB` and `SMB` are 5, which is the half the page had right. |
+| **Source** | Tom Harte's `ProcessorTests` (`wdc65c02` v1), whose cases carry the bus cycles one at a time. |
+| **Check** | RUN — stepped on 2.6.6 with the cycle counter read either side: `BBS0 $40` and `BBR0 $40` are 6 in all four combinations of stored bit and branch direction, `SMB0` and `RMB0` are 5. |
+| **Status** | `fixed` — `6502-EMULATOR` v2.6.6 and `6502-KIMULATOR` v1.0.5, the release that ran the outside suites (A59). The idioms chapter now prices the two groups separately rather than together. |
+| **Consequence** | The entry was opened because A55's lesson is that "close enough" timing hides for years, and it hid for one more release than A55 did: the conformance suites written beside the code pinned the untaken 5 and deliberately asserted nothing about the taken case, so the number they were built to protect was the wrong one. Nothing here measured it — the site's own listings all assemble as plain `65C02`, which has no bit-branch — so the cost of the error was a sentence a reader would have budgeted a loop with. |
 
 ### A57 — Six ways the emulated core was not a W65C02S
 
@@ -799,6 +799,17 @@ serial are false at the machine itself.
 | **Check** | RUN — the `SED`/`BRK` step in A57: `P=$2C` at the `BRK`, `P=$24` at the handler's first instruction. |
 | **Status** | `fixed` — the paragraph now says the processor clears the flag and that the `CLD` an NMOS handler opens with is redundant here. The 65C02 chapter's *What it fixed* gains the same fact next to the decimal-flag cleanup it already described, and the interrupts chapter states it where a reader is writing a handler. |
 | **Consequence** | It is advice that reads as a hazard and is not one: a reader who believed it would write a defensive `CLD` at the top of every handler, which is harmless, or — worse — distrust decimal mode near interrupts entirely and hand-roll BCD instead. It survived because the emulator agreed with it (A57): the sentence was true of the machine the docs were checked against, and false of the machine they describe. |
+
+### A59 — Seven more, found by running other people's tests
+
+| | |
+|---|---|
+| **Claim** | A57 closed with the core checked against the data sheet and against its own suite — all 256 opcodes against the opcode matrix, mnemonic, mode and cycle count. That is the strongest claim a suite written beside the code can make. |
+| **Truth** | Not strong enough, by seven. Certifying the core against four suites written by other people for real silicon — Tom Harte's `ProcessorTests`, Klaus Dormann's functional and 65C02 extended tests, Bruce Clark's decimal test, and AllSuiteA — found six more defects in what a program does, plus A56's timing. `BRK` pushed the status byte with **I** already set, so the `RTI` ending a handler restored a byte that said interrupts were masked: one `BRK` and the machine stopped being interrupted by anything, with nothing wrong at the point of failure to look at. `SEI` suppressed a request that was already waiting; the part samples the mask before an instruction's last cycle, so that one is taken once, on the way in — a critical section is looser on the board than it looked here. Decimal `SBC` corrected each nybble separately and rejoined them, which is `$10` out whenever the low nybble's borrow has to propagate, with **N** following it; decimal `ADC` took **V** off the high nybble before that nybble was corrected. Branch targets were never wrapped to 16 bits, so a backward branch from low memory left the address space. |
+| **Source** | The four suites, none of which had heard of this emulator, plus the data sheet's interrupt sequence for the `BRK` push. |
+| **Check** | RUN — `npm run test:conformance` upstream, 258 cases over 2.54 million generated ones. Spot-checked here on 2.6.6: `CLI` then `BRK` leaves `$30` on the stack — **I** clear, **B** and bit 5 set — under a live `P` of `$24`, and returns to the `BRK` plus two. |
+| **Status** | `fixed` — `6502-EMULATOR` v2.6.6 and `6502-KIMULATOR` v1.0.5, byte-for-byte the same core. One divergence is left, recorded upstream in the test that pins it rather than closed quietly: interrupts are sampled at instruction decode rather than the penultimate cycle, worth up to one instruction of latency. It is jitter rather than a wrong answer, and closing it would change what a single debugger step means. |
+| **Consequence** | No measured figure moved — boot to the `OK` prompt is still **5,354,440** cycles, the build-and-run chapter's `--json` line still **439,400**, and all 131 sample cases pass, because the BIOS does no decimal arithmetic on the way to a prompt and every listing on this site assembles as plain `65C02`. Two screenshots did move, and what they show is the `BRK` fix arriving on the page. The Monitor greets a `BRK` by printing the processor's state at the moment it arrived, and that line has read `---B-IZC` in every release until now — an **I** the interrupted program never set, put there by the push. It reads `---B--ZC` on this one. `docs/using/monitor.md` and `docs/basic/machine.md` carry the same line as a hand-typed transcript and were corrected to match; `images/screens/monitor.png` and `wozmon.png` were re-taken. The idioms chapter's bit-operation costs are A56. What the entry is really recording is the lesson: A57 was found by reading the data sheet against the code, and this was found by running code neither had seen. The second kind catches what the first cannot, because it does not share the first's idea of what is worth looking at. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
