@@ -375,8 +375,9 @@ does not need. The ACE component carries the printed listing as `prg64` so a
 **Run this** button cannot run something else; here the reader keys the bytes in
 from the card themselves, which is the exercise, so there is nothing to keep in
 step. The machine arrives with the LED latch on the bus at `$9400` and an `ESC`
-already pressed — the firmware boots to a splash and waits for a key, so a frame
-that sent nothing would show a waiting machine rather than a working one.
+already pressed — the firmware boots to a splash and holds there for `ESC` and
+nothing else, so a frame that sent nothing would show a waiting machine rather
+than a working one.
 
 Both frames take the width of the page's column rather than the size their
 contract names. Neither emulator scales in whole steps, so the contract figures

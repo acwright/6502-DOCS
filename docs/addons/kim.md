@@ -35,9 +35,11 @@ board files and a bill of materials.
 Power off. Keypad Card into the cartridge slot, LCD Helper onto the Keypad
 Card, keypad onto the LCD Helper. Power on.
 
-You won't get BASIC. You'll get the **KC Monitor** — an address on the left of
-the display, the byte at that address on the right, and a keypad that edits it.
-That's the whole interface, and it's the point.
+You won't get BASIC. The display comes up on `--ESC TO START--` and holds there
+until you press `ESC`, which is the only key it takes. Then you're in the **KC
+Monitor** — an address on the left of the display, the byte at that address on
+the right, and a keypad that edits it. That's the whole interface, and it's the
+point.
 
 To go back to being an ACE, pull the card out.
 
@@ -68,7 +70,8 @@ and do things:
   keying two hex digits writes a byte and `►` moves on.
 - **`DEL`** writes `$00` at the address you're on.
 - **`▲`** runs the code at the address on the display.
-- **`ESC`** stops a running program and comes back to the monitor.
+- **`ESC`** starts the machine at the splash, and afterwards stops a running
+  program and comes back to the monitor.
 
 The hex keys do double duty: while you're navigating, each one you press shifts
 into the address a nibble at a time, KIM-1 style — key `0`, `8`, `0`, `0` and
@@ -144,6 +147,12 @@ Fit a serial cable ([Serial and a terminal](/using/serial)) and the KC Monitor
 gives you a Wozmon-compatible monitor over it at the same time as the keypad —
 so you can examine and change memory from a laptop and from the keys at once.
 Handy when you're typing in something longer than a few bytes.
+
+The terminal gets the same `--ESC TO START--` splash, and <kbd>Esc</kbd> typed
+there does what `ESC` on the pad does: either one starts the machine, and both
+consoles come up together. The `>` prompt follows, so a prompt in the terminal
+means the monitor is reading you. Anything sent before that press is thrown
+away, so start the machine first and paste afterwards.
 
 ## Building a KIM on its own
 

@@ -15,7 +15,7 @@
     "warning": "Hand-authored file. Bumping the version here is what moves the KIM chapter to a new release."
   },
 
-  "version": "1.0.2",
+  "version": "1.0.3",
 
   "web": {
     "app": "https://acwright.github.io/6502-KIMULATOR/",
@@ -39,6 +39,6 @@
 
   "splash": {
     "keys": "ESC",
-    "note": "The machine boots to `--ESC TO START--` and means it — nothing runs until a key arrives. An embed that should show a working monitor rather than a waiting one says so, which is the hardware and not a quirk of the frame."
+    "note": "The machine boots to `--ESC TO START--` and means it — `ESC` is the only key that starts it, from the pad or from the wire, and one press starts both consoles. Nothing else does anything, and anything arriving before that press is discarded rather than held over. An embed that should show a working monitor rather than a waiting one says so, which is the hardware and not a quirk of the frame."
   }
 }
