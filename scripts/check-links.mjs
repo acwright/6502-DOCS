@@ -26,6 +26,7 @@ import { fileURLToPath } from 'node:url'
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(REPO, 'docs/.vitepress/dist')
 const BASE = '/6502-DOCS/'
+const SITE = `https://acwright.github.io${BASE}`
 
 /**
  * The two emulator frames, and every parameter each one answers to.
@@ -107,6 +108,24 @@ function linksInMarkdown(md) {
 // ---------------------------------------------------------------------------
 // Internal resolution
 // ---------------------------------------------------------------------------
+
+/**
+ * The site's own address, rewritten as a path this build can answer.
+ *
+ * Every page carries a canonical tag naming its deployed URL, and the notes
+ * link to the live site — so a run collects a handful of links pointing back
+ * here and would ask the network about them. That is the one host whose answer
+ * is worth less than the build sitting in `dist`: a page added in this commit
+ * has never been deployed, so the network says 404 about a link that is correct
+ * and about to be live, and every new page turns CI red on its way in. The
+ * build is what that URL is going to serve, so ask the build.
+ *
+ * Returns null for anything else, which is every genuinely external link.
+ */
+function ownAddress(url) {
+  if (url === SITE.slice(0, -1)) return BASE
+  return url.startsWith(SITE) ? BASE + url.slice(SITE.length) : null
+}
 
 /**
  * Map a served URL path to the file that answers it. VitePress serves
@@ -293,12 +312,13 @@ function checkBuiltSite(external) {
       const link = raw.trim()
       if (!link || link.startsWith('data:') || link.startsWith('mailto:')) continue
 
-      if (/^(https?:)?\/\//.test(link)) {
+      const own = ownAddress(link)
+      if (!own && /^(https?:)?\/\//.test(link)) {
         external.add(link.startsWith('//') ? `https:${link}` : link)
         continue
       }
 
-      const [pathPart, hash] = link.split('#')
+      const [pathPart, hash] = (own ?? link).split('#')
       let target = page
 
       if (pathPart) {
@@ -347,6 +367,25 @@ function checkNotes(external) {
 
     for (const link of linksInMarkdown(readFileSync(file, 'utf8'))) {
       if (link.startsWith('mailto:')) continue
+
+      // A note linking to the live site is asking about a page in this build,
+      // and the build is the better authority — see `ownAddress`.
+      const own = ownAddress(link)
+      if (own) {
+        const [servedPath, servedHash] = own.split('#')
+        checked.internal++
+        const target = resolveServed(servedPath.split('?')[0])
+        if (!target) {
+          report(note, link, 'resolves to nothing in the build')
+        } else if (servedHash) {
+          checked.anchors++
+          if (!anchorsOf(target).has(decodeURIComponent(servedHash))) {
+            report(note, link, `no #${servedHash} in ${relative(DIST, target)}`)
+          }
+        }
+        continue
+      }
+
       if (/^https?:\/\//.test(link)) {
         external.add(link)
         continue
