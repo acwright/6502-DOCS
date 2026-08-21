@@ -53,7 +53,7 @@ with `6502 dbg sym load`.
 ```
 
 ```
-headless 2.6.6 — serial console, 1 MHz, turbo, 20911280 cycles
+headless 2.6.7 — serial console, 1 MHz, turbo, 20506200 cycles
 ```
 
 ::: tip Ports

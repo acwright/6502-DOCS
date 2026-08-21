@@ -18,6 +18,19 @@ CompactFlash card.
 Nothing to install. Open it, and you get the splash and the `OK` prompt in a
 tab. Everything in this guide works there.
 
+It works on a phone too. The picture keeps its 4:3 shape however the screen is
+turned, the controls wrap rather than running off the edge, and the **⌨** button
+puts the ACE's keyboard on the glass — see
+[below](#the-keyboard-on-the-screen). Turn the phone sideways and the keyboard
+moves to sit beside the picture instead of under it.
+
+::: tip The machines on these pages want a keyboard
+A machine running in one of these pages starts, resets and can be watched on a
+phone, but it takes its keys from a keyboard rather than putting one on the
+screen — that one belongs to the full emulator. So on a phone the **Open the
+full emulator** link under any machine here is the one that lets you type.
+:::
+
 ## On your desktop
 
 There's a proper application for macOS, Windows and Linux, and it's the better
@@ -68,6 +81,7 @@ Everything happens from the row of buttons across the top:
 | **⏻** | Power cycle — the cold start. Memory is cleared. |
 | **1 MHz / 2 MHz** | Switch CPU speed |
 | **Speaker** | Mute and unmute |
+| **⌨** | Put the ACE's keyboard on the screen |
 | **Clipboard** | Paste text in as keystrokes |
 | **⚙** | Settings |
 
@@ -84,6 +98,29 @@ Ordinary ⌘V / Ctrl+V won't work, because the emulator sends every keystroke
 straight to the machine. Use the **Clipboard** button instead: paste your
 listing into the box it opens, and the emulator types it in for you. It's the
 quickest way to try anything longer than a couple of lines.
+:::
+
+## The keyboard on the screen
+
+The **⌨** button raises the ACE's own keyboard under the picture: the same 67
+keys, in the same places, at the same widths as the ones soldered to the board.
+
+It is the way in on a phone or a tablet, which have no keyboard to type on. It
+is also the quickest way to reach <kbd>Fn</kbd>, <kbd>Ins</kbd> or the arrows on
+a laptop that has put them somewhere else, so it is there at every size.
+
+What it is not is a phone keyboard. There is no autocorrect and there are no
+symbol layers, because the board has neither, and it types
+[in capitals](/using/keyboard#everything-is-in-capitals) like the board does —
+<kbd>Shift</kbd> gives you the symbol on a number key and leaves letters alone.
+The four keys that [send nothing](/using/keyboard#ctrl-and-the-keys-nothing-listens-for)
+on the hardware send nothing here either, and like the hardware's they are still
+switches in the grid, so a program reading the matrix itself sees them held.
+
+::: tip One finger, two keys
+<kbd>Shift</kbd>, <kbd>Ctrl</kbd>, <kbd>Alt</kbd> and <kbd>Fn</kbd> latch rather
+than needing to be held: tap one to arm it for the next key you press, tap again
+to lock it down for a run of them, and a third time to let go.
 :::
 
 ## Attaching a card

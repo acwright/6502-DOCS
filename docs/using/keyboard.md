@@ -70,6 +70,13 @@ press <kbd>Esc</kbd>.
   caption="Loaded and waiting. Type RUN, watch it go, and take it back with Esc."
 />
 
+::: tip Nothing to press these keys on
+These 67 keys exist on the screen as well: the emulator will
+[draw the board's keyboard](/using/emulator#the-keyboard-on-the-screen) and type
+from it, which is how you use a machine from a phone, and how you find
+<kbd>Fn</kbd> or <kbd>Ins</kbd> on a laptop that hasn't got one.
+:::
+
 ## Editing a line
 
 There's no full-screen editor here. To change line 30, type line 30 again — the

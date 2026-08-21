@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.6, cc65 built from
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.7, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
@@ -32,8 +32,8 @@ release they were found on; where that matters — A31 and A32 — the entry say
 
 | Status | Count |
 |---|---|
-| fixed | 51 |
-| confirmed | 4 |
+| fixed | 52 |
+| confirmed | 5 |
 | open | 4 |
 | wontfix | 4 |
 
@@ -810,6 +810,28 @@ serial are false at the machine itself.
 | **Check** | RUN — `npm run test:conformance` upstream, 258 cases over 2.54 million generated ones. Spot-checked here on 2.6.6: `CLI` then `BRK` leaves `$30` on the stack — **I** clear, **B** and bit 5 set — under a live `P` of `$24`, and returns to the `BRK` plus two. |
 | **Status** | `fixed` — `6502-EMULATOR` v2.6.6 and `6502-KIMULATOR` v1.0.5, byte-for-byte the same core. One divergence is left, recorded upstream in the test that pins it rather than closed quietly: interrupts are sampled at instruction decode rather than the penultimate cycle, worth up to one instruction of latency. It is jitter rather than a wrong answer, and closing it would change what a single debugger step means. |
 | **Consequence** | No measured figure moved — boot to the `OK` prompt is still **5,354,440** cycles, the build-and-run chapter's `--json` line still **439,400**, and all 131 sample cases pass, because the BIOS does no decimal arithmetic on the way to a prompt and every listing on this site assembles as plain `65C02`. Two screenshots did move, and what they show is the `BRK` fix arriving on the page. The Monitor greets a `BRK` by printing the processor's state at the moment it arrived, and that line has read `---B-IZC` in every release until now — an **I** the interrupted program never set, put there by the push. It reads `---B--ZC` on this one. `docs/using/monitor.md` and `docs/basic/machine.md` carry the same line as a hand-typed transcript and were corrected to match; `images/screens/monitor.png` and `wozmon.png` were re-taken. The idioms chapter's bit-operation costs are A56. What the entry is really recording is the lesson: A57 was found by reading the data sheet against the code, and this was found by running code neither had seen. The second kind catches what the first cannot, because it does not share the first's idea of what is worth looking at. |
+
+### A60 — The picture was stretched in portrait, so the shape the page promises was false on a phone
+
+| | |
+|---|---|
+| **Claim** | `docs/using/emulator.md`, *Fullscreen*: "The picture keeps its 4:3 shape whatever the window is doing." The same chapter offers the browser build as a place where everything in this guide works. |
+| **Truth** | True of a landscape window and false of a portrait one. The canvas asked for `height: 100%` with `aspect-ratio: 320/240` and `max-width: 100%`, and the comment beside it said the max-width was what handled a narrow viewport. It is not: a box that already has a definite height ignores its aspect ratio when a max-width clamps it, so the width shrank, the height did not follow, and a 320 × 240 picture came out stretched down the phone. The control bar was the same error in a second place — `.app-main` centered its children, which made the bar shrink to fit its contents, so it never had the full width to wrap into and ran off both edges instead. |
+| **Source** | `6502-EMULATOR` `src/renderer/src/components/VideoCanvas.vue`, `.canvas-screen`, at v2.6.6 against v2.6.7. |
+| **Check** | GREP — the rule is now `width: min(100%, calc(100cqh * 4 / 3))`, which takes the ratio out of the arithmetic rather than out of a fallback. |
+| **Status** | `fixed` — `6502-EMULATOR` v2.6.7 and `6502-KIMULATOR` v1.0.6. The KIMulator's terminal already had the working form and the comment explaining it, so this is one sibling catching up with the other. |
+| **Consequence** | The sentence was written at a desktop window, where it was true, and nothing in this repository could have caught it: the screenshots are taken through the CLI, which has no window to be the wrong shape, and the link checker reads addresses rather than pixels. It is A58's shape upside down — there the page was wrong and the machine agreed with it; here the page said what the machine ought to do and the machine on the reader's phone did something else. The chapter now says what a phone actually gets, which is the shape, controls that wrap, and a keyboard. |
+
+### A61 — A machine on these pages has no keyboard of its own
+
+| | |
+|---|---|
+| **Claim** | Twenty pages carry a machine — twenty-eight of them in all — and most are captioned with an instruction to type into one: *click it once to give it the keyboard, then type* on the front page, *type `RUN`, watch it go, and take it back with Esc* in the keyboard chapter, *click it first so the keys come here* in the first ten minutes. |
+| **Truth** | On a phone there is nothing to type with. Both applications grew an on-screen keyboard in this release and neither frame did: the frame's controls are run, reset, sound and fullscreen, with a power cycle and the speed switch under `controls=full`, and no keyboard among them in either build. There is no text field in the frame either, so a tap raises no keyboard the way tapping a form field would. A machine on these pages starts, resets and can be watched on a phone, and takes its keys only from a keyboard the reader already has. |
+| **Source** | `6502-EMULATOR/src/renderer/src/components/EmbedControlBar.vue` and the KIMulator's, at v2.6.7 and v1.0.6. |
+| **Check** | GREP — `Show keyboard` appears once in each deployed bundle, in the application's control bar; neither frame mounts the component. |
+| **Status** | `confirmed` — documented here rather than fixed upstream. It follows a line the embed contract draws on purpose: everything that implies a session of the reader's own, from loading files to settings to paste, belongs to the application, and a keyboard is on that side of it. |
+| **Consequence** | The captions are advice a phone reader cannot take, and it fails quietly — the machine is plainly running, the tap plainly did something, and nothing types. The emulator chapter now says so where somebody on a phone is looking, and points at the **Open the full emulator** link that every machine on this site already carries under it, which is the way in. The captions themselves are left as they are: they are right for a reader with a keyboard, which is most of them, and one that hedged for both would be describing the page instead of the machine. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.

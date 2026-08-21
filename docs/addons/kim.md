@@ -141,6 +141,15 @@ machine at the same time. There's a full version at
 [its releases page](https://github.com/acwright/6502-KIMULATOR) that can load
 your own `KC Monitor.bin` and attach a real serial port.
 
+The full version fits a phone. Where there is no room for two columns it shows
+one panel at a time — **KIM** for the display and the pad, **TERM** for the
+terminal, **BAY** for whatever is on the bus — chosen from a switch at the left
+of its controls. Its **⌨** button raises
+[the ACE's keyboard](/using/keyboard) on the screen, wired to the serial line: a
+KIM has no keyboard of its own, so what that one types arrives at the terminal
+the way a board on the other end of the cable would send it. The pad is the
+machine's own way in and is unaffected.
+
 ## The serial monitor
 
 Fit a serial cable ([Serial and a terminal](/using/serial)) and the KC Monitor
