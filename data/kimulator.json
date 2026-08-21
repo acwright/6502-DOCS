@@ -15,7 +15,7 @@
     "warning": "Hand-authored file. Bumping the version here is what moves the KIM chapter to a new release."
   },
 
-  "version": "1.0.6",
+  "version": "1.0.7",
 
   "web": {
     "app": "https://acwright.github.io/6502-KIMULATOR/",
@@ -25,15 +25,15 @@
 
   "frame": {
     "width": 720,
-    "height": 480,
+    "height": 560,
     "allow": "fullscreen",
-    "note": "There is no raster to double here — a KIM is four panels beside each other, so the size follows `panels`, and this is the contract's figure for all four. It is read as a shape rather than a size: the panels scale to whatever box they are given, so the site gives them the width of its own column and keeps only the proportion."
+    "note": "There is no raster to double here — a KIM is four panels beside each other, so the size follows `panels`, and this is the contract's figure for all four. It is read as a shape rather than a size: the panels scale to whatever box they are given, so the site gives them the width of its own column and keeps only the proportion. The height is load-bearing in a way the width is not: two columns need a box wider than it is tall and over 480 points high, and below that the four panels take turns behind a switch. The contract said 720x480 until v1.0.7, which sits exactly on that line."
   },
 
   "parameters": {
     "media": ["rom", "bin"],
     "flags": ["autostart", "serialcard"],
-    "other": ["accessory", "panels", "keys", "autotype", "controls", "origins"],
+    "other": ["accessory", "panels", "keys", "autotype", "controls", "keyboard", "origins"],
     "note": "`rom` and `bin` also have a `64` twin carrying the bytes in the URL itself. There is no `prg`, `cart`, `cf`, `muted`, `persist` or `freq`: every one of those went with hardware a KIM does not carry. An unrecognized parameter is ignored silently by the frame, which is right for a reader's page and wrong for this one, so the link checker spells them out."
   },
 

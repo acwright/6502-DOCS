@@ -24,11 +24,11 @@ puts the ACE's keyboard on the glass — see
 [below](#the-keyboard-on-the-screen). Turn the phone sideways and the keyboard
 moves to sit beside the picture instead of under it.
 
-::: tip The machines on these pages want a keyboard
-A machine running in one of these pages starts, resets and can be watched on a
-phone, but it takes its keys from a keyboard rather than putting one on the
-screen — that one belongs to the full emulator. So on a phone the **Open the
-full emulator** link under any machine here is the one that lets you type.
+::: tip On a phone the keyboard comes up by itself
+Every machine running in these pages checks what it is being read on. A touch
+screen with no mouse gets the board's keyboard on the glass without being asked;
+a laptop does not, because there is already one on the desk. Either way the
+**⌨** button in the machine's own controls opens and closes it.
 :::
 
 ## On your desktop
@@ -108,6 +108,9 @@ keys, in the same places, at the same widths as the ones soldered to the board.
 It is the way in on a phone or a tablet, which have no keyboard to type on. It
 is also the quickest way to reach <kbd>Fn</kbd>, <kbd>Ins</kbd> or the arrows on
 a laptop that has put them somewhere else, so it is there at every size.
+
+Every machine on this site has the same button, and on a device with no keyboard
+of its own it starts open.
 
 What it is not is a phone keyboard. There is no autocorrect and there are no
 symbol layers, because the board has neither, and it types
@@ -276,6 +279,23 @@ a few tens of kilobytes is comfortable, a card image is not.
 
 It's what every machine on this site uses, which is why the pages still run
 with no network.
+
+### On a phone
+
+Somebody will open your link on a phone, and a phone has no keyboard to give the
+machine. The frame works that out for itself: a touch screen with no mouse gets
+the board's keyboard drawn under the picture, a laptop gets the picture and
+nothing else, and a **⌨** in the control bar changes its mind either way.
+
+`keyboard=1` opens it whatever the device, `keyboard=0` never opens it, and the
+default is `keyboard=auto`, which is the checking above. `controls=none` has no
+bar to put the toggle in, so there `keyboard=1` is the only way to have one.
+
+Leave it room. The keyboard takes about a third of the frame's height, so a page
+that will be read on a phone wants at least 320 × 380 — give the frame the width
+of the column it sits in and let the height follow the 640 × 520 shape. Turned
+sideways the keys move beside the picture rather than under it, where a short
+wide frame has the room to spare.
 
 ### Sound
 

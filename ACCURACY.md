@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.7, cc65 built from
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.8, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
@@ -32,9 +32,9 @@ release they were found on; where that matters — A31 and A32 — the entry say
 
 | Status | Count |
 |---|---|
-| fixed | 52 |
-| confirmed | 5 |
-| open | 4 |
+| fixed | 54 |
+| confirmed | 4 |
+| open | 5 |
 | wontfix | 4 |
 
 **Phase 9 closed the ledger's upstream backlog.** Every confirmed item that
@@ -827,11 +827,33 @@ serial are false at the machine itself.
 | | |
 |---|---|
 | **Claim** | Twenty pages carry a machine — twenty-eight of them in all — and most are captioned with an instruction to type into one: *click it once to give it the keyboard, then type* on the front page, *type `RUN`, watch it go, and take it back with Esc* in the keyboard chapter, *click it first so the keys come here* in the first ten minutes. |
-| **Truth** | On a phone there is nothing to type with. Both applications grew an on-screen keyboard in this release and neither frame did: the frame's controls are run, reset, sound and fullscreen, with a power cycle and the speed switch under `controls=full`, and no keyboard among them in either build. There is no text field in the frame either, so a tap raises no keyboard the way tapping a form field would. A machine on these pages starts, resets and can be watched on a phone, and takes its keys only from a keyboard the reader already has. |
+| **Truth** | On a phone there is nothing to type with. Both applications grew an on-screen keyboard in v2.6.7 and v1.0.6 and neither frame did: the frame's controls are run, reset, sound and fullscreen, with a power cycle and the speed switch under `controls=full`, and no keyboard among them in either build. There is no text field in the frame either, so a tap raises no keyboard the way tapping a form field would. A machine on these pages starts, resets and can be watched on a phone, and takes its keys only from a keyboard the reader already has. |
 | **Source** | `6502-EMULATOR/src/renderer/src/components/EmbedControlBar.vue` and the KIMulator's, at v2.6.7 and v1.0.6. |
 | **Check** | GREP — `Show keyboard` appears once in each deployed bundle, in the application's control bar; neither frame mounts the component. |
-| **Status** | `confirmed` — documented here rather than fixed upstream. It follows a line the embed contract draws on purpose: everything that implies a session of the reader's own, from loading files to settings to paste, belongs to the application, and a keyboard is on that side of it. |
-| **Consequence** | The captions are advice a phone reader cannot take, and it fails quietly — the machine is plainly running, the tap plainly did something, and nothing types. The emulator chapter now says so where somebody on a phone is looking, and points at the **Open the full emulator** link that every machine on this site already carries under it, which is the way in. The captions themselves are left as they are: they are right for a reader with a keyboard, which is most of them, and one that hedged for both would be describing the page instead of the machine. |
+| **Status** | `fixed` — `6502-EMULATOR` v2.6.8 and `6502-KIMULATOR` v1.0.7, one release later. The mobile work had gone into `index.html` and `App.vue`, which `embed.html` shares neither of, so what came along was whatever happened to live in a shared file. Both frames now carry the keyboard behind a **⌨** in the control bar and a `keyboard=` parameter: `auto` by default, which opens it where the browser reports a touch screen and no mouse and leaves it closed where there is a keyboard on the desk. `controls=none` has no bar to hold a toggle, so `keyboard=1` is how a frame with no chrome gets one. |
+| **Consequence** | For one release the captions were advice a phone reader could not take, and it failed quietly: the machine plainly running, the tap plainly doing something, and nothing typing. The default answers all twenty-eight of them at once — no machine here asks for a `keyboard=`, so every one of them gets `auto` and draws the board by itself on a device with none. The chapter that had to explain where the keyboard was now says it comes up on its own, and the keyboard chapter says the machine beside those 67 keys is typed at with a finger. The entry is worth keeping for its shape rather than its lifetime: this repository is downstream of a contract, and a page here can be made false by a release that never mentions it — which is the argument for re-reading the pages a bump touches and not only the numbers. |
+
+### A62 — The KIM's suggested frame size sat exactly on the two-column line
+
+| | |
+|---|---|
+| **Claim** | This repository frames the KIM at the contract's figure for all four panels, 720 × 480, and the chapter that carries one says "the terminal on the left is the serial monitor described below, on the same machine at the same time". |
+| **Truth** | Two columns need a frame wider than it is tall and **over 480 points high**. 720 × 480 is exactly on that line and falls the wrong side of it, so a frame built to the suggestion gets the four panels taking turns behind a KIM / TERM / BAY switch rather than standing beside each other. The figure was harmless until v1.0.7, because until then the switch existed in the application only and a frame drew whatever it was given at whatever size it was given. The contract now suggests 720 × 560, and its loader's default height moved with it. |
+| **Source** | `6502-KIMULATOR/docs/EMBEDDING.md` at v1.0.6 against v1.0.7 — the sizing table, and its new *A narrow frame*. |
+| **Check** | GREP — the row read `all four (default) | 720 × 480` and now reads `720 × 560`, against a threshold the same document states. |
+| **Status** | `fixed` — `data/kimulator.json` carries 560, in the same commit as the pin. |
+| **Consequence** | It is the interaction that is worth recording rather than either release on its own: v1.0.6 changed nothing about this frame, v1.0.7 gave the frame a behavior the application already had, and a number that had been decorative became load-bearing between the two. A pin moved without reading the contract would have left the KIM chapter describing a terminal on the left of a machine that had stopped putting one there. The height is still only a proportion here — the frame takes the width of the page's column and derives the rest — so what it settles is where the switch starts appearing, not whether it ever does: on a phone the column is narrow enough that the panels take turns whatever this number says, which is what the chapter now describes. |
+
+### A63 — On a phone the frames here are shorter than the keyboard wants
+
+| | |
+|---|---|
+| **Claim** | The emulator chapter now tells a reader that a machine on these pages draws the board's keyboard where the device has none of its own, and the contract says a frame that will be read on a phone wants at least 320 × 380 with that keyboard up. |
+| **Truth** | The frames here are shorter than that. A machine on this site takes the width of the page's column and derives its height from the shape the contract names — 640 × 520 for the ACE — so about 350 points of column on a phone gives a frame about 284 points high, against the 380 the keyboard is sized for. It works rather than breaks: the keyboard takes `min(34dvh, 13rem)` of what there is and the picture keeps its 4:3 in the rest. Both are simply small. |
+| **Source** | The 640 × 520 shape in `data/emulator.json`, the width of a column on this site at phone size, and `EMBEDDING.md`'s *On a phone*. |
+| **Check** | Arithmetic from the contract's own figures. Not measured on a handset, which is the reason this is open rather than fixed. |
+| **Status** | `open` — the fix is a taller shape for a coarse pointer in this repository's stylesheet, and it wants looking at on a real phone rather than reasoning about on a laptop. |
+| **Consequence** | Nobody is stopped: a reader on a phone can now type into all twenty-eight machines here, which they could not before v2.6.8. What they get is a smaller picture over the keys than the frame could give them. It is recorded rather than guessed at because a media query written blind is exactly how a layout gets worse on the device that nobody who tested it owns. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.

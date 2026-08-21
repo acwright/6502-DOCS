@@ -71,10 +71,11 @@ press <kbd>Esc</kbd>.
 />
 
 ::: tip Nothing to press these keys on
-These 67 keys exist on the screen as well: the emulator will
-[draw the board's keyboard](/using/emulator#the-keyboard-on-the-screen) and type
-from it, which is how you use a machine from a phone, and how you find
-<kbd>Fn</kbd> or <kbd>Ins</kbd> on a laptop that hasn't got one.
+These 67 keys exist on the screen as well. Every machine on this site
+[draws the board's keyboard](/using/emulator#the-keyboard-on-the-screen) when the
+device reading it hasn't got one, so the machine above is typed at with a finger
+on a phone — and on a laptop the same button is the quickest way to find
+<kbd>Fn</kbd> or <kbd>Ins</kbd> when the keyboard in front of you has neither.
 :::
 
 ## Editing a line

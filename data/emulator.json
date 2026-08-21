@@ -15,7 +15,7 @@
     "warning": "Hand-authored file. Bumping the version here is what moves the whole site to a new release, and nothing will pass until the samples and screenshots have been re-run against it."
   },
 
-  "version": "2.6.7",
+  "version": "2.6.8",
 
   "web": {
     "app": "https://acwright.github.io/6502-EMULATOR/",
@@ -28,13 +28,13 @@
     "height": 520,
     "videoHeight": 480,
     "allow": "autoplay; gamepad; fullscreen",
-    "note": "The video output is 320x240. Doubling it and allowing for the control bar gives 640x520; controls=none needs only the video, so 640x480 fits exactly."
+    "note": "The video output is 320x240. Doubling it and allowing for the control bar gives 640x520; controls=none needs only the video, so 640x480 fits exactly. On a touch device the on-screen keyboard opens under the picture and takes `min(34dvh, 13rem)` of whatever the frame has, so the contract asks for at least 320x380 on a phone."
   },
 
   "parameters": {
     "media": ["rom", "cart", "prg", "bin", "cf"],
     "flags": ["autostart", "muted", "persist"],
-    "other": ["autotype", "controls", "freq", "cfsize", "origins"],
+    "other": ["autotype", "controls", "freq", "cfsize", "keyboard", "origins"],
     "note": "Every media parameter also has a `64` twin — rom64, cart64, prg64, bin64, cf64 — carrying the bytes in the URL itself. An unrecognized parameter is ignored silently by the frame, which is right for a reader's page and wrong for this one, so the link checker spells them out."
   },
 
