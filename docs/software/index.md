@@ -46,7 +46,7 @@ are there.
 A program loads into memory and runs there, leaving BASIC and the Monitor where
 they are.
 
-**[Bit Rally](https://github.com/acwright/6502-ASM/tree/main/Bit%20Rally)** by
+**[Bit Rally](https://github.com/acwright/6502-ASM/tree/main/BitRally)** by
 A.C. Wright. A two-ended *Kill the Bit* for the keypad. One bit runs back and
 forth across eight LEDs, and each end of the row belongs to a player: press `◄`
 the instant the bit reaches the far left, `►` the instant it reaches the far
