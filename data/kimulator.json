@@ -27,7 +27,7 @@
     "width": 720,
     "height": 560,
     "allow": "fullscreen",
-    "note": "There is no raster to double here — a KIM is four panels beside each other, so the size follows `panels`, and this is the contract's figure for all four. It is read as a shape rather than a size: the panels scale to whatever box they are given, so the site gives them the width of its own column and keeps only the proportion. The height is load-bearing in a way the width is not: two columns need a box wider than it is tall and over 480 points high, and below that the four panels take turns behind a switch. The contract said 720x480 until v1.0.7, which sits exactly on that line."
+    "note": "There is no raster to double here — a KIM is four panels beside each other, so the size follows `panels`, and this is the contract's figure for all four. It is read as a shape rather than a size: the panels scale to whatever box they are given, so the site gives them the width of its own column and keeps only the proportion. It is the contract's suggestion and not a description of what this site draws: two columns need a box over 700 points wide, over 480 high and not in portrait, and the column here is 688 \u2014 so a KIM on these pages shows one panel at a time behind a KIM / TERM / BAY switch at every window size, which is what its chapter describes. The contract said 720x480 until v1.0.7, which sits exactly on the height line and is the reason this number moved."
   },
 
   "parameters": {

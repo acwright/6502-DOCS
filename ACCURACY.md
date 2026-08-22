@@ -32,8 +32,8 @@ release they were found on; where that matters — A31 and A32 — the entry say
 
 | Status | Count |
 |---|---|
-| fixed | 54 |
-| confirmed | 4 |
+| fixed | 55 |
+| confirmed | 5 |
 | open | 5 |
 | wontfix | 4 |
 
@@ -838,11 +838,11 @@ serial are false at the machine itself.
 | | |
 |---|---|
 | **Claim** | This repository frames the KIM at the contract's figure for all four panels, 720 × 480, and the chapter that carries one says "the terminal on the left is the serial monitor described below, on the same machine at the same time". |
-| **Truth** | Two columns need a frame wider than it is tall and **over 480 points high**. 720 × 480 is exactly on that line and falls the wrong side of it, so a frame built to the suggestion gets the four panels taking turns behind a KIM / TERM / BAY switch rather than standing beside each other. The figure was harmless until v1.0.7, because until then the switch existed in the application only and a frame drew whatever it was given at whatever size it was given. The contract now suggests 720 × 560, and its loader's default height moved with it. |
+| **Truth** | The contract's stated bound is a frame wider than it is tall and **over 480 points high** — half of the real rule, which is a width rule first; see A64. 720 × 480 is exactly on that line and falls the wrong side of it, so a frame built to the suggestion gets the four panels taking turns behind a KIM / TERM / BAY switch rather than standing beside each other. The figure was harmless until v1.0.7, because until then the switch existed in the application only and a frame drew whatever it was given at whatever size it was given. The contract now suggests 720 × 560, and its loader's default height moved with it. |
 | **Source** | `6502-KIMULATOR/docs/EMBEDDING.md` at v1.0.6 against v1.0.7 — the sizing table, and its new *A narrow frame*. |
 | **Check** | GREP — the row read `all four (default) | 720 × 480` and now reads `720 × 560`, against a threshold the same document states. |
-| **Status** | `fixed` — `data/kimulator.json` carries 560, in the same commit as the pin. |
-| **Consequence** | It is the interaction that is worth recording rather than either release on its own: v1.0.6 changed nothing about this frame, v1.0.7 gave the frame a behavior the application already had, and a number that had been decorative became load-bearing between the two. A pin moved without reading the contract would have left the KIM chapter describing a terminal on the left of a machine that had stopped putting one there. The height is still only a proportion here — the frame takes the width of the page's column and derives the rest — so what it settles is where the switch starts appearing, not whether it ever does: on a phone the column is narrow enough that the panels take turns whatever this number says, which is what the chapter now describes. |
+| **Status** | `fixed` — `data/kimulator.json` carries 560, in the same commit as the pin. The figure is right; the inference drawn from it was not, and A64 is that. |
+| **Consequence** | It is the interaction that is worth recording rather than either release on its own: v1.0.6 changed nothing about this frame, v1.0.7 gave the frame a behavior the application already had, and a number that had been decorative became load-bearing between the two. A pin moved without reading the contract would have left the KIM chapter describing a terminal on the left of a machine that had stopped putting one there. The height is only a proportion here — the frame takes the width of the page's column and derives the rest — and what this entry got wrong is thinking that settled anything for this site at all. It does not: the column is 688 points, the threshold is a width before it is a height, and the panels have been taking turns at every size since v1.0.7. That is A64. |
 
 ### A63 — On a phone the frames here are shorter than the keyboard wants
 
@@ -854,6 +854,28 @@ serial are false at the machine itself.
 | **Check** | Arithmetic from the contract's own figures. Not measured on a handset, which is the reason this is open rather than fixed. |
 | **Status** | `open` — the fix is a taller shape for a coarse pointer in this repository's stylesheet, and it wants looking at on a real phone rather than reasoning about on a laptop. |
 | **Consequence** | Nobody is stopped: a reader on a phone can now type into all twenty-eight machines here, which they could not before v2.6.8. What they get is a smaller picture over the keys than the frame could give them. It is recorded rather than guessed at because a media query written blind is exactly how a layout gets worse on the device that nobody who tested it owns. |
+
+### A64 — The two-column threshold is a width rule, and no frame on this site has ever cleared it
+
+| | |
+|---|---|
+| **Claim** | A62 recorded that two columns need a frame wider than it is tall and over 480 points high, moved `data/kimulator.json` to 720 × 560 on that basis, and closed. The KIM chapter went on saying "the terminal on the left is the serial monitor described below". |
+| **Truth** | The height was never the bound that governs here. The application decides with one media query — `(max-width: 700px), (max-height: 480px), (orientation: portrait)` — and any one of the three clauses puts the panels behind the KIM / TERM / BAY switch. A machine on this site takes the width of the page's column, which VitePress sets at **688 points**, so the first clause matches on a desktop exactly as it does on a phone. The KIM frame here has shown one panel at a time since v1.0.7, at every window size, on every device — and the sentence about a terminal on the left described a layout no reader has ever been given. `EMBEDDING.md` states the rule as "wider than it is tall and big enough in both directions" and names only the 481-point height in its sizing table; 700 appears nowhere in the contract. |
+| **Source** | `6502-KIMULATOR/src/renderer/src/composables/useNarrowLayout.ts`, the `QUERY` constant, at v1.0.7, against `docs/EMBEDDING.md`'s *A narrow frame* and its sizing table. |
+| **Check** | RUN — headless Chrome over CDP against the deployed `embed.html`, at 342 × 266 (the box this site's column gives a KIM on a phone) and at 688 × 535 (the box it gives one on a desktop). Both draw the switch. GREP for the query confirms which clause fires. |
+| **Status** | `confirmed` — the pages and the note in this repository are corrected, in v1.6.7. What is unfixed is upstream: the contract does not state the bound that decides, so a reader sizing a frame against its sizing table gets the switch without being told why. |
+| **Consequence** | 720 × 560 is still the right figure to carry — it is what the contract suggests, and a frame actually built to it does get two columns. What was wrong was the inference. The height moved, the entry closed, and nobody asked what the width of a column on this site is. Two guards might have caught it and neither could: the pin sequence re-reads the contract, but the contract does not state the governing bound, and the link checker reads parameters rather than pixels. Worth recording for how cheap the measurement turned out to be — a browser, a box of the right size, and a look at what came back — against two rounds of reasoning from a documented threshold that produced the wrong answer both times. |
+
+### A65 — The emulator chapter promised the application a behavior only a framed machine has
+
+| | |
+|---|---|
+| **Claim** | `docs/using/emulator.md`, under *In the browser*: "On a phone the keyboard comes up by itself — Every machine running in these pages checks what it is being read on. A touch screen with no mouse gets the board's keyboard on the glass without being asked." That section is about the full web build. The same claim ran again under *The keyboard on the screen*: "on a device with no keyboard of its own it starts open." The same section put the toolbar "across the top". |
+| **Truth** | True of `embed.html`, false of the application. `keyboard=auto` is an embed parameter, resolved once at frame load against `(pointer: coarse) and (hover: none)`; the app has no such check anywhere. `App.vue` opens with `keyboardOpen = ref(false)` whatever it was opened on, and the KIMulator's `showKeyboard` is the same constant. A reader who followed the chapter to the app on a phone got BASIC, a toolbar, and nothing to type with. The toolbar is under the picture rather than over it — `ControlBar` renders after the stage — and wraps into rows on a narrow window. |
+| **Source** | `6502-EMULATOR/src/renderer/src/App.vue` and `EmbedApp.vue` at v2.6.8; `6502-KIMULATOR/src/renderer/src/App.vue` at v1.0.7. |
+| **Check** | RUN — headless Chrome over CDP, phone metrics and a touch pointer. The deployed app draws no keyboard until the control bar's *Show keyboard* is clicked; the deployed `embed.html` at 342 × 278 draws the board unasked, over a 137 × 102 picture. The toolbar is at the foot of the window at 1280 × 800 and stacked into three rows at 390 × 844. |
+| **Status** | `fixed` — this repository, v1.6.7. The tip now tells a phone reader to tap **⌨** in the app and keeps the automatic half where it belongs, which is a machine framed in a page. |
+| **Consequence** | This is A61's fix landing in the wrong sentence. A61 closed on a change to both *frames*, and the paragraph announcing it was written into the section about the *application* — one heading above the section that teaches framing, where it would have been true. Both programs carry a **⌨** and share one 67-key board between them, which is what made the two easy to run together, and the chapter covers three ways to run this machine — a tab, an application, and a frame in someone else's page — with the keyboard behaving differently in one of them. A sentence in a chapter like that has to say which machine it means, and neither the voice checker nor the link checker can tell when it doesn't. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
