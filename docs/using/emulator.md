@@ -18,17 +18,17 @@ CompactFlash card.
 Nothing to install. Open it, and you get the splash and the `OK` prompt in a
 tab. Everything in this guide works there.
 
-It works on a phone too. The picture keeps its 4:3 shape however the screen is
-turned, the controls wrap rather than running off the edge, and the **⌨** button
-puts the ACE's keyboard on the glass — see
-[below](#the-keyboard-on-the-screen). Turn the phone sideways and the keyboard
-moves to sit beside the picture instead of under it.
+It works on a phone too. The picture keeps its 4:3 shape whichever way you turn
+the phone, the controls rearrange themselves to fit, and the **⌨** button puts
+[the ACE's keyboard](#the-keyboard-on-the-screen) on the screen. Turned sideways,
+the keyboard moves to sit beside the picture instead of under it.
 
-::: tip On a phone the keyboard comes up by itself
-Every machine running in these pages checks what it is being read on. A touch
-screen with no mouse gets the board's keyboard on the glass without being asked;
-a laptop does not, because there is already one on the desk. Either way the
-**⌨** button in the machine's own controls opens and closes it.
+::: tip On a phone, tap **⌨** before you try to type
+The app starts with the keyboard down whatever you opened it on, so on a phone
+there is nothing to type into BASIC with until you tap that button. The machines
+running inside these pages are the other way around: they check what they are
+being read on, and a touch screen with no mouse gets the board without asking,
+because a frame you can't type into is a picture rather than an emulator.
 :::
 
 ## On your desktop
@@ -69,7 +69,7 @@ running on the page.
 
 ## The toolbar
 
-Everything happens from the row of buttons across the top:
+Everything happens from the row of buttons under the picture:
 
 | Button | What it does |
 |---|---|
@@ -109,8 +109,8 @@ It is the way in on a phone or a tablet, which have no keyboard to type on. It
 is also the quickest way to reach <kbd>Fn</kbd>, <kbd>Ins</kbd> or the arrows on
 a laptop that has put them somewhere else, so it is there at every size.
 
-Every machine on this site has the same button, and on a device with no keyboard
-of its own it starts open.
+Every machine on this site has the same button. In a page like this one it opens
+itself on a device with no keyboard of its own; in the app it waits to be asked.
 
 What it is not is a phone keyboard. There is no autocorrect and there are no
 symbol layers, because the board has neither, and it types
