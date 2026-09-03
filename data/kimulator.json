@@ -10,12 +10,16 @@
       {
         "file": "6502-KIMULATOR/docs/EMBEDDING.md",
         "authority": "The embed contract — the parameter table, the panel names, the pad's key names, the documented frame sizes."
+      },
+      {
+        "file": "6502-KIMULATOR/assets/roms/README.md",
+        "authority": "The KC Monitor build bundled with the release, and what changed in it. The contract is not the only thing a bump moves: the ROM travels with it, so a release that leaves EMBEDDING.md untouched can still change what the machine on the page does. Read it as well as the contract. v1.0.8 is the case that proves it — serial `R` became a call, and nothing about the frame moved at all."
       }
     ],
     "warning": "Hand-authored file. Bumping the version here is what moves the KIM chapter to a new release."
   },
 
-  "version": "1.0.7",
+  "version": "1.0.8",
 
   "web": {
     "app": "https://acwright.github.io/6502-KIMULATOR/",

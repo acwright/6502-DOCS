@@ -162,6 +162,12 @@ gives you a Wozmon-compatible monitor over it at the same time as the keypad —
 so you can examine and change memory from a laptop and from the keys at once.
 Handy when you're typing in something longer than a few bytes.
 
+The commands are Wozmon's: `0800` shows the byte at an address, `0800.0810` a
+range, `0800: A9 41` deposits, and `0800 R` runs the program there. That last
+one is a subroutine call, exactly as `▲` is on the pad, so a program ending in
+`RTS` comes back to a fresh `>` prompt with the machine still yours. The two
+consoles agree about what running a program means.
+
 The terminal gets the same `--ESC TO START--` splash, and <kbd>Esc</kbd> typed
 there does what `ESC` on the pad does: either one starts the machine, and both
 consoles come up together. The `>` prompt follows, so a prompt in the terminal

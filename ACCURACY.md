@@ -32,7 +32,7 @@ release they were found on; where that matters — A31 and A32 — the entry say
 
 | Status | Count |
 |---|---|
-| fixed | 55 |
+| fixed | 56 |
 | confirmed | 5 |
 | open | 5 |
 | wontfix | 4 |
@@ -876,6 +876,17 @@ serial are false at the machine itself.
 | **Check** | RUN — headless Chrome over CDP, phone metrics and a touch pointer. The deployed app draws no keyboard until the control bar's *Show keyboard* is clicked; the deployed `embed.html` at 342 × 278 draws the board unasked, over a 137 × 102 picture. The toolbar is at the foot of the window at 1280 × 800 and stacked into three rows at 390 × 844. |
 | **Status** | `fixed` — this repository, v1.6.7. The tip now tells a phone reader to tap **⌨** in the app and keeps the automatic half where it belongs, which is a machine framed in a page. |
 | **Consequence** | This is A61's fix landing in the wrong sentence. A61 closed on a change to both *frames*, and the paragraph announcing it was written into the section about the *application* — one heading above the section that teaches framing, where it would have been true. Both programs carry a **⌨** and share one 67-key board between them, which is what made the two easy to run together, and the chapter covers three ways to run this machine — a tab, an application, and a frame in someone else's page — with the keyboard behaving differently in one of them. A sentence in a chapter like that has to say which machine it means, and neither the voice checker nor the link checker can tell when it doesn't. |
+
+### A66 — The card promised Wozmon byte for byte, and then `R` stopped being Wozmon's
+
+| | |
+|---|---|
+| **Claim** | `docs/public/cards/kim.html`, *Did you know?*: the KC Monitor's serial half "speaks the Apple I's **Wozmon** command language, byte for byte — so `bin2woz` output pastes straight in. The only difference is the prompt: `>` rather than a backslash." The card's serial table gives `XXXX R` as "Run the program at XXXX" and says nothing more, while the keypad page opposite it says code launched from `▲` runs as a subroutine and comes back on `RTS`. |
+| **Truth** | There are two differences now, and the second is the one a reader trips over. `XXXX R` is a `JSR` through `XAML` in the KC Monitor build this site pins, not Wozmon's `JMP (XAML)`, so a program ending in `RTS` returns to the parser and gets a fresh `> ` prompt — which is what the pad has always done, and the reason the firmware changed. The old build did not merely leave the prompt off: `SER_IDX` still pointed into the line that launched the program, so the next line typed was appended to the live `XXXX R` and re-ran it rather than being parsed. |
+| **Source** | `6502-KIMULATOR/assets/roms/KCMonitor.bin` at v1.0.7 (`029fb5bd…`) against v1.0.8 (`06601fb6…`), built from `6502-KIM` @ `3b5aa805`; `assets/roms/README.md`, *Serial `R` is a call in this build*. |
+| **Check** | RUN — the same four lines into both ROMs through the KIMulator's headless CLI: deposit `A9 5A 8D 00 09 60` at `$0800`, `0800 R`, then `0900`. On v1.0.8 the run returns, the prompt reprints, and the line after it is answered `0900: 5A`. On v1.0.7, over `--card-rom`, the terminal shows `0800: A90900` — the address typed after the run swallowed into the line that launched it — and the run never ends. |
+| **Status** | `fixed` — this repository, v1.6.8, in the same commit as the pin. The card names both differences and its `R` row says the program comes back on `RTS`; the KIM chapter's *The serial monitor* now gives the command set and says the two consoles agree about what running a program means. |
+| **Consequence** | Nothing shipped wrong: the claim was true of every build this site has ever pinned, and stopped being true at the moment of the bump. That is the point of recording it. A61 argued for re-reading the pages a bump touches rather than only its numbers; this is the same lesson with the contract taken out — `EMBEDDING.md` is byte-identical between these two releases, the parameter table and the frame shape did not move, and the link checker, which is the one guard that reads a release at all, had nothing to report. What moved was 8 KB of firmware bundled inside the release, described in a file the pin had never listed as a source. `data/kimulator.json` names `assets/roms/README.md` now, so the next bump is told where else to look. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
