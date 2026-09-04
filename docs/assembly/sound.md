@@ -108,7 +108,7 @@ The control register is where the character comes from:
 | 6 | Pulse |
 | 5 | Sawtooth |
 | 4 | Triangle |
-| 3 | Test — resets the oscillator |
+| 3 | Test — holds the oscillator at zero |
 | 2 | Ring modulation with the voice below |
 | 1 | Sync with the voice below |
 | 0 | **Gate** — the note starts when this goes high and releases when it goes low |
@@ -132,6 +132,20 @@ and letting go is `lda #%00100000` — the same byte with the gate bit cleared.
 The release phase then plays out on its own, which is why `SidSilence` clears
 gates rather than frequencies: zeroing an oscillator mid-note freezes the
 waveform at whatever level it had reached and you hear a thump.
+
+::: details The test bit, and reading voice 3 back
+Bit 3 is the other way to stop a voice, and the tidy one. It holds the
+oscillator at zero for as long as it is set, and what the voice puts out while
+it is held is a defined value rather than wherever the waveform had got to: a
+pulse goes hard to the top of its range, a triangle or a sawtooth to the bottom.
+That is the difference between parking a voice and abandoning it.
+
+`SID_OSC3` at `$981B` reads back the top eight bits of voice 3's waveform, which
+is the usual reason a program gives that voice up to modulation duty: run it at
+a frequency nobody can hear and read it for vibrato, an arpeggio, or something
+on the screen to move in time. Held by the test bit it reads `$FF` for a pulse
+and `$00` for a triangle or a sawtooth, so a parked voice reads as parked.
+:::
 
 `SID_MODE_VOL` at `$9818` holds the master volume in its low nibble; the high
 nibble selects the filters, which is a rabbit hole with a

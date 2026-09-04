@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.8, cc65 built from
+**Baseline for every entry below:** BIOS v1.5, emulator 2.6.9, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
@@ -32,7 +32,7 @@ release they were found on; where that matters — A31 and A32 — the entry say
 
 | Status | Count |
 |---|---|
-| fixed | 56 |
+| fixed | 57 |
 | confirmed | 5 |
 | open | 5 |
 | wontfix | 4 |
@@ -887,6 +887,17 @@ serial are false at the machine itself.
 | **Check** | RUN — the same four lines into both ROMs through the KIMulator's headless CLI: deposit `A9 5A 8D 00 09 60` at `$0800`, `0800 R`, then `0900`. On v1.0.8 the run returns, the prompt reprints, and the line after it is answered `0900: 5A`. On v1.0.7, over `--card-rom`, the terminal shows `0800: A90900` — the address typed after the run swallowed into the line that launched it — and the run never ends. |
 | **Status** | `fixed` — this repository, v1.6.8, in the same commit as the pin. The card names both differences and its `R` row says the program comes back on `RTS`; the KIM chapter's *The serial monitor* now gives the command set and says the two consoles agree about what running a program means. |
 | **Consequence** | Nothing shipped wrong: the claim was true of every build this site has ever pinned, and stopped being true at the moment of the bump. That is the point of recording it. A61 argued for re-reading the pages a bump touches rather than only its numbers; this is the same lesson with the contract taken out — `EMBEDDING.md` is byte-identical between these two releases, the parameter table and the frame shape did not move, and the link checker, which is the one guard that reads a release at all, had nothing to report. What moved was 8 KB of firmware bundled inside the release, described in a file the pin had never listed as a source. `data/kimulator.json` names `assets/roms/README.md` now, so the next bump is told where else to look. |
+
+### A67 — The test bit held the waveform generator as well as the oscillator
+
+| | |
+|---|---|
+| **Claim** | The sound chapter's control-register table gives bit 3 as the test bit, and the paragraph above it warns that stopping a note the wrong way — zeroing an oscillator mid-note — "freezes the waveform at whatever level it had reached and you hear a thump". |
+| **Truth** | Until v2.6.9 the test bit did the thing that paragraph warns about. `clockOscillator()` returned early on the bit, which is right for the phase accumulator and the noise LFSR — the part does hold both still — but the early return also skipped the last line of the function, which regenerates the voice's output. The waveform generator is combinational on the real chip, a function of the accumulator rather than a register that latches, so holding the accumulator does not stop it producing a value from it. The same control-register write that sets the test bit zeroes the accumulator, so a held voice has a defined output: `$FFF` for a pulse, which the test bit forces high, and `$000` for a triangle or a sawtooth. This build left the voice on whatever sample it happened to be on and went on mixing that under the envelope for as long as the bit was held. The pulse's special case inside `generateWaveform()` had been correct all along and was unreachable, because its only caller returned before it. |
+| **Source** | `6502-EMULATOR/src/core/IO/Sound.ts`, `clockOscillator()`, at v2.6.8 against v2.6.9. |
+| **Check** | RUN — voice 3 driven from the debugger on 2.6.9. Running a pulse with no test bit, `SID_OSC3` reads `$00` and then `$FF` as it oscillates; with the test bit set it reads `$FF` and stays there, and `$00` for a triangle and again for a sawtooth. |
+| **Status** | `fixed` — `6502-EMULATOR` v2.6.9, one line moved out of an early return. Three tests pin it, each landing the oscillator on a wrong output first, because on the high half of a pulse the assertion would pass by luck. `6502-KIMULATOR` is not implicated: it has no SID, and `Sound.ts` is not among the files kept byte-identical between the two. |
+| **Consequence** | Nothing here plays it. No listing on this site sets the test bit, the BIOS never does, and the sound samples let a note go through the gate rather than parking it, so all 131 cases pass and all 11 screenshots are byte-identical. The cost was to a reader who went from the control-register table to the bit itself: they would have heard exactly the thump this chapter blames on the other way of stopping a voice, and reasonably concluded the test bit was that same mistake under a different name. Ported music is where it would have been loud, and there is none here. The chapter now says what the bit actually gives — a defined value, and a voice 3 that reads back through `SID_OSC3` — so the two ways of stopping a voice can be told apart at the machine and not only on the page. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
