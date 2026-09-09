@@ -41,6 +41,17 @@ and the Kernal underneath is still the same Kernal. Nothing prebuilt is waiting
 in the repository for this one: you build it yourself with cc65, and the steps
 are there.
 
+**[Wizards Lab](https://github.com/acwright/WIZARDSLAB)** by A.C. Wright.
+Potions fall down a well three to a stack. Line up three or more of a color —
+across, down or diagonally — and they react and vanish, dropping whatever sat
+above them into new arrangements. Arcane reagents fall in among them: a
+fireball takes every tile of its color off the board, a bolt clears a whole row
+and column, a bomb the three by three around it, a star multiplies the cascade,
+a prism matches any color. Reagents match on color like any other tile, so you
+aim one exactly the way you'd aim a potion — and a reagent caught in another
+one's blast goes off too. Joystick, or WASD and the cursor keys. One set of
+sources builds the same game for the VIC-20 and the Commodore 64 as well.
+
 ## Programs
 
 A program loads into memory and runs there, leaving BASIC and the Monitor where
