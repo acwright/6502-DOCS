@@ -508,3 +508,87 @@
     display: none;
   }
 }
+
+/**
+ * The legacy edition banner. Fixed above the nav, which VitePress moves down by
+ * --vp-layout-top-height, as it does the sidebar and the page. Ink on paper
+ * inverted, so it reads as a notice in either appearance.
+ */
+:root {
+  --vp-layout-top-height: 40px;
+}
+
+.legacy-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: calc(var(--vp-z-index-nav) + 1);
+  height: var(--vp-layout-top-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 16px;
+  overflow: hidden;
+  background: var(--ac-ink);
+  color: var(--ac-paper);
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.legacy-banner-link {
+  flex-shrink: 0;
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* The machine list needs a wide window; narrower ones get the short notice. */
+.legacy-banner-short {
+  display: none;
+}
+
+@media (max-width: 1199px) {
+  .legacy-banner-long {
+    display: none;
+  }
+
+  .legacy-banner-short {
+    display: inline;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --vp-layout-top-height: 52px;
+  }
+
+  .legacy-banner {
+    flex-direction: column;
+    gap: 2px;
+    font-size: 13px;
+    line-height: 17px;
+    text-align: center;
+  }
+}
+
+@media print {
+  .legacy-banner-long {
+    display: inline;
+  }
+
+  .legacy-banner-short {
+    display: none;
+  }
+
+  .legacy-banner {
+    position: static;
+    height: auto;
+    padding: 6px 0;
+    background: none;
+    color: #000;
+    border-bottom: 1px solid #000;
+  }
+}

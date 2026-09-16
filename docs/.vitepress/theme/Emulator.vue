@@ -24,8 +24,8 @@ import { data as facts } from '../data/facts.data.mts'
  * CPUs on a laptop that only wanted to read.
  *
  * **There is no `persist` prop, on purpose.** Persistence is one IndexedDB
- * record per origin, and this site shares its origin with the full web
- * emulator: an embed that saved its own small card would become what a reader's
+ * record per origin, and this site shares its origin with the web
+ * emulators: an embed that saved its own small card would become what a reader's
  * app restores. The parameter is not accepted rather than defaulted off.
  */
 const props = withDefaults(

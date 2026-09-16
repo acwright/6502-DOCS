@@ -12,7 +12,7 @@ hand will write something that looks right, and looking right is not a property
 ## The short version
 
 Point your agent at
-[**AGENTS.md**](https://github.com/acwright/6502-EMULATOR/blob/main/docs/AGENTS.md)
+[**AGENTS.md**](https://github.com/acwright/6502-EMULATOR/blob/v2.7.0/docs/AGENTS.md)
 in the emulator's repository. It's written to be copied into your own project's
 agent instructions, and it covers the whole method with runnable examples.
 

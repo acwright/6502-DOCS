@@ -1,0 +1,22 @@
+name: Redeploy Pages from main
+
+# This branch is the frozen legacy edition, published under /6502-DOCS/v1/.
+# Pages publishes one artifact for the whole site, and only main's deploy
+# workflow builds both editions into it. So a push here asks main to redeploy
+# rather than deploying anything itself: an artifact built here would hold
+# only v1 and would replace the whole site.
+on:
+  push:
+    branches: [v1]
+
+permissions:
+  actions: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run main's deploy workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY" --ref main

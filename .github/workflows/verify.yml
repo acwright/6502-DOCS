@@ -14,10 +14,14 @@ env:
   # checks `6502 --version` against `data/emulator.json` — the site's samples,
   # screenshots and embedded payloads all came off one release, and a run on a
   # different one is not the check it looks like. Bump both together.
+  #
+  # On this frozen branch the other three are pinned to commits as well, taken
+  # when v1 was cut: bastok gains BIOS 2.x tokens on its main, and nothing here
+  # should move with it.
   EMULATOR_REF: v2.7.0
-  CC65_REF: master
-  CFFS_REF: main
-  BASTOK_REF: main
+  CC65_REF: e11fb5c39371046ebe25485f984f644c5a0d65d3
+  CFFS_REF: 0a30f621e61ce992d4385b0364c2cd07b8e773eb
+  BASTOK_REF: 646d210cc0935ce76fb244f5591a79e90a455814
 
 jobs:
   # Cheap, dependency-free checks on the migrated assets. Split out from
@@ -176,7 +180,10 @@ jobs:
       - name: Build cc65
         if: steps.cc65-cache.outputs.cache-hit != 'true'
         run: |
-          git clone --depth 1 --branch "$CC65_REF" https://github.com/cc65/cc65.git .cc65-src
+          # `clone --branch` takes no commit, so fetch the pinned one directly.
+          git init -q .cc65-src
+          git -C .cc65-src fetch --depth 1 https://github.com/cc65/cc65.git "$CC65_REF"
+          git -C .cc65-src checkout -q FETCH_HEAD
           make -C .cc65-src -j"$(nproc)" bin PREFIX="$HOME/.cc65"
           # Asking cc65 for one target by name skips the pass that would have
           # created lib/, so make it first.

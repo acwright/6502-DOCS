@@ -13,7 +13,7 @@ CompactFlash card.
 
 ## In the browser
 
-<https://acwright.github.io/6502-EMULATOR/>
+<https://acwright.github.io/6502-EMULATOR/v2/>
 
 Nothing to install. Open it, and you get the splash and the `OK` prompt in a
 tab. Everything in this guide works there.
@@ -38,8 +38,9 @@ option if you're going to use it much: it can attach a CompactFlash image,
 connect to a real serial port, keep a debug server running, and remember your
 settings.
 
-Grab it from the
-[6502-EMULATOR releases page](https://github.com/acwright/6502-EMULATOR).
+Grab release 2.7.0 from the
+[6502-EMULATOR releases page](https://github.com/acwright/6502-EMULATOR/releases/tag/v2.7.0).
+That's the release everything in this guide was checked on.
 
 ## On a handheld
 
@@ -206,7 +207,7 @@ inside a page of yours:
 
 ```html
 <iframe
-  src="https://acwright.github.io/6502-EMULATOR/embed.html?prg=https://your-site.example/game.prg&autostart=1&autotype=RUN%5Cr"
+  src="https://acwright.github.io/6502-EMULATOR/v2/embed.html?prg=https://your-site.example/game.prg&autostart=1&autotype=RUN%5Cr"
   width="640" height="520"
   allow="autoplay; gamepad; fullscreen"
   style="border: 0"
@@ -342,7 +343,7 @@ Everything above happens as the frame loads. It can also be driven afterwards â€
 a **Run this** button next to a listing, a reset button, keystrokes sent on
 demand â€” over `postMessage`. That's a web developer's job rather than a
 BASIC programmer's, and it's documented in
-[EMBEDDING.md](https://github.com/acwright/6502-EMULATOR/blob/main/docs/EMBEDDING.md)
+[EMBEDDING.md](https://github.com/acwright/6502-EMULATOR/blob/v2.7.0/docs/EMBEDDING.md)
 along with every parameter above.
 :::
 

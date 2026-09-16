@@ -18,9 +18,9 @@
   "version": "2.7.0",
 
   "web": {
-    "app": "https://acwright.github.io/6502-EMULATOR/",
-    "frame": "https://acwright.github.io/6502-EMULATOR/embed.html",
-    "contract": "https://github.com/acwright/6502-EMULATOR/blob/main/docs/EMBEDDING.md"
+    "app": "https://acwright.github.io/6502-EMULATOR/v2/",
+    "frame": "https://acwright.github.io/6502-EMULATOR/v2/embed.html",
+    "contract": "https://github.com/acwright/6502-EMULATOR/blob/v2.7.0/docs/EMBEDDING.md"
   },
 
   "frame": {
@@ -39,6 +39,6 @@
   },
 
   "banned": {
-    "persist": "Persistence is one IndexedDB record per origin, and this site shares its origin with the full web emulator. An embed that saved a small card would become what a reader's app restores — so the component does not accept the parameter at all, rather than defaulting it off."
+    "persist": "Persistence is one IndexedDB record per origin, and this site shares its origin with the web emulators. An embed that saved a small card would become what a reader's app restores — so the component does not accept the parameter at all, rather than defaulting it off."
   }
 }

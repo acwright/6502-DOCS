@@ -27,7 +27,7 @@ never drift apart in version.
 ```
 
 If you don't have the app yet, it's on the
-[releases page](https://github.com/acwright/6502-EMULATOR/releases), and
+[releases page](https://github.com/acwright/6502-EMULATOR/releases/tag/v2.7.0), and
 [The emulator](/using/emulator) covers what it does with a window open. Here it
 is a build tool: it boots your program, prints what the program printed, and
 exits with a status.

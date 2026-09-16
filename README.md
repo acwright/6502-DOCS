@@ -5,7 +5,13 @@ family of homebrew 65C02 computers. A friendly, tutorial-first manual in the
 spirit of the Commodore 64 and VIC-20 books that came in the box, and a
 companion to the more technical READMEs in the sibling repos below.
 
-Published at **<https://acwright.github.io/6502-DOCS/>**.
+Published at **<https://acwright.github.io/6502-DOCS/v1/>**.
+
+> **This branch is the frozen legacy edition.** It documents the TMS9918A video
+> card and BIOS v1.6, the last 1.x release, for the COB, DEV, KIM, VCS,
+> PicoCalc and ACEs still on the original video card. It stays pinned to BIOS
+> v1.6 and emulator 2.7.0 and is not bumped. Fix mistakes here; new material
+> goes on `main`, which is published at <https://acwright.github.io/6502-DOCS/>.
 
 Built with [VitePress](https://vitepress.dev/), deployed to GitHub Pages.
 
@@ -340,7 +346,7 @@ Four rules the component enforces rather than documents:
 - **An embed never replaces a picture.** Every page that gained one kept the
   screenshot it had; print and no-JS readers lose nothing.
 - **There is no `persist` prop.** Persistence is one IndexedDB record per
-  origin, shared with the full web emulator on this same origin — an embed that
+  origin, shared with the web emulators on this same origin — an embed that
   saved its own small card would become what a reader's app restores. The
   parameter is not accepted rather than defaulted off.
 - **Captions describe the machine, not the mechanism.** `npm run check:voice`
@@ -412,6 +418,10 @@ statement the ROM stops accepting is a broken sample, and the harness will say
 so before a reader does.
 
 ### After a BIOS release
+
+On this branch there are no more: v1.6 is the last 1.x release. A fix from
+6502-BIOS `v1.x` is the only reason to re-run the steps below here. Every other
+release is documented on `main`.
 
 Run these in order from a checkout with the new firmware built. Each one either
 prints `ok` or tells you what moved.
@@ -534,8 +544,10 @@ machine does not have, and the union would wave it through.
 
 ## Deploying
 
-Pushes to `main` trigger `.github/workflows/deploy.yml`, which builds the
-site and publishes it to GitHub Pages automatically. No manual steps.
+This branch does not deploy itself. A push to `v1` runs
+`.github/workflows/redeploy.yml`, which starts `deploy.yml` on `main`. That
+workflow builds `main` at the site root, builds this branch into `/v1/`, and
+publishes both as one Pages artifact.
 
 ## Repository layout
 

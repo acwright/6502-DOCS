@@ -20,7 +20,7 @@ const BIOS_VERSION: string = JSON.parse(
 // browser resolves, but a link preview is assembled by a scraper on someone
 // else's machine, and Open Graph requires those URLs absolute — a path-only
 // `og:image` is simply dropped. Everything social below is built from this.
-const BASE = '/6502-DOCS/'
+const BASE = '/6502-DOCS/v1/'
 const SITE = `https://acwright.github.io${BASE}`
 const OG_CARD = `${SITE}images/og-card.png`
 

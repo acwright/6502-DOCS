@@ -1,3 +1,4 @@
+import { h } from 'vue'
 import DefaultTheme from 'vitepress/theme'
 import type { Theme } from 'vitepress'
 import './style.css'
@@ -6,10 +7,13 @@ import Diagram from './Diagram.vue'
 import Emulator from './Emulator.vue'
 import Figure from './Figure.vue'
 import KIM from './KIM.vue'
+import LegacyBanner from './LegacyBanner.vue'
 import PlaceholderImage from './PlaceholderImage.vue'
 
 export default {
   extends: DefaultTheme,
+  // The frozen legacy edition says so at the top of every page.
+  Layout: () => h(DefaultTheme.Layout, null, { 'layout-top': () => h(LegacyBanner) }),
   enhanceApp({ app }) {
     app.component('ColorChart', ColorChart)
     app.component('Diagram', Diagram)

@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url'
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(REPO, 'docs/.vitepress/dist')
-const BASE = '/6502-DOCS/'
+const BASE = '/6502-DOCS/v1/'
 const SITE = `https://acwright.github.io${BASE}`
 
 /**
