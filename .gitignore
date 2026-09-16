@@ -4,3 +4,8 @@ node_modules/
 samples/**/build/
 *.state
 .DS_Store
+
+# Planning documents are kept local
+VDP-ASSESSMENT.md
+VDP-PLAN.md
+/PLAN.md
