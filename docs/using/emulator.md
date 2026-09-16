@@ -39,7 +39,7 @@ connect to a real serial port, keep a debug server running, and remember your
 settings.
 
 Grab it from the
-[6502-EMULATOR releases page](https://github.com/acwright/6502-EMULATOR).
+[6502-EMULATOR releases page](https://github.com/acwright/6502-EMULATOR/releases).
 
 ## On a handheld
 

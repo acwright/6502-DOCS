@@ -161,8 +161,8 @@ See [which ROM am I on?](/assembly/detection#which-rom-am-i-on)
 :::
 
 ::: tip No clock card, no slots
-The slots live on the clock card, so a machine without one, a KIM for example,
-gets carry set from every one of the six. `NvFormat` empties all 16 at once.
+The slots live on the clock card, so a machine without one, like a KIM built on
+its own from COB cards, gets carry set from every one of the six. `NvFormat` empties all 16 at once.
 :::
 
 BASIC can read and write the same slots, so a save manager written in BASIC can
