@@ -537,6 +537,13 @@ machine does not have, and the union would wave it through.
 Pushes to `main` trigger `.github/workflows/deploy.yml`, which builds the
 site and publishes it to GitHub Pages automatically. No manual steps.
 
+The same run builds the frozen legacy edition from branch `v1` (cut from `main`
+at `929524c`, BIOS v1.6 and emulator 2.7.0) and publishes it under
+`/6502-DOCS/v1/`. Pages takes one artifact for the whole site, so both editions
+always deploy together, and a `v1` that fails to build fails the deploy. A push
+to `v1` runs its `redeploy.yml`, which starts this workflow on `main`; the
+**Run workflow** button on `deploy.yml` does the same by hand.
+
 ## Repository layout
 
 | Path | Purpose |

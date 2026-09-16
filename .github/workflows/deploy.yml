@@ -3,6 +3,8 @@ name: Deploy docs to Pages
 on:
   push:
     branches: [main]
+  # Also how a push to `v1` redeploys: v1's redeploy.yml dispatches this
+  # workflow on main.
   workflow_dispatch:
 
 permissions:
@@ -32,6 +34,31 @@ jobs:
 
       - name: Build
         run: npm run docs:build
+
+      # The frozen legacy edition, built by its own branch with its own base
+      # (/6502-DOCS/v1/) and its own lockfile, and nested into this artifact.
+      # Pages publishes one artifact for the whole site, so leaving v1 out would
+      # take /v1/ down. A failed v1 build therefore fails the deploy.
+      - name: Checkout v1
+        uses: actions/checkout@v7
+        with:
+          ref: v1
+          path: .v1
+
+      - name: Install v1 dependencies
+        working-directory: .v1
+        run: npm ci
+
+      - name: Build v1
+        working-directory: .v1
+        run: npm run docs:build
+
+      - name: Nest v1 under /v1/
+        run: |
+          test ! -e docs/.vitepress/dist/v1
+          cp -R .v1/docs/.vitepress/dist docs/.vitepress/dist/v1
+          test -f docs/.vitepress/dist/v1/index.html
+          grep -q '/6502-DOCS/v1/' docs/.vitepress/dist/v1/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
