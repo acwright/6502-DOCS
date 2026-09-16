@@ -1,0 +1,11 @@
+# "Save slots" — the save manager's subroutines, driven by a few lines of its
+# own: list, save slot 3, list, load it back, erase it, list.
+#
+# The harness boots with an all-zero NVRAM, so every slot starts free.
+
+expect ^ 16 SLOTS FREE\s*\r?\nSAVED SLOT 3 AS ID 42
+expect ^SLOT 3: ID 42$
+expect ^ 15 SLOTS FREE\s*$
+expect ^LOADED SLOT 3, LAST BYTE 169\s*$
+expect ^ERASED SLOT 3\r?\n 16 SLOTS FREE\s*$
+absent ^SLOT +\d+: DAMAGED

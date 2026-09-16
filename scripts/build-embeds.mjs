@@ -73,6 +73,7 @@ const EMBEDS = [
   'assembly/fanfare.asm',
   'assembly/stick.asm',
   'assembly/clock.asm',
+  'assembly/save-slots.asm',
   'assembly/ticker.asm',
   'assembly/inventory.asm',
   'assembly/bank-store.asm',

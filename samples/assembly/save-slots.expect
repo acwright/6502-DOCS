@@ -1,0 +1,10 @@
+# "Save slots" — find a slot, save a 14-byte record, load it back, then damage
+# one byte behind the Kernal's back and have NvRead refuse it.
+#
+# The harness boots with an all-zero NVRAM, so there is no save yet and slot 0
+# is the first free one.
+
+expect ^NO SAVE YET - USING FREE SLOT 0$
+expect ^LOADED LEVEL 3, SCORE 1250, ADA$
+expect ^SLOT 0 IS DAMAGED - OWNER 90$
+absent NO SAVE SLOTS|DID NOT ANSWER|EVERY SLOT

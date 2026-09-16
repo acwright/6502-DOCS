@@ -108,7 +108,7 @@ uses something a particular release added, ask:
   cmp #1
   bcc TooOld
   bne NewEnough
-  cpx #5
+  cpx #6                        ; the save slots arrived in 1.6
   bcc TooOld
 NewEnough:
 ```

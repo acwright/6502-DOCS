@@ -97,6 +97,11 @@ your turn.
 **PRG** — a program file with a two-byte load address on the front. What `SAVE`
 writes and `LOAD` reads.
 
+**save slot** — one of 16 slices of the NVRAM, 16 bytes each: an owner ID, a
+checksum and 14 bytes of save. Programs that keep to the slots can share the
+clock card. Not the same as a *slot*. See [The clock](/assembly/clock#save-slots) and
+[Time and memory that lasts](/basic/clock#save-slots).
+
 **slot** — one of the eight 1 KB windows between `$8000` and `$9FFF`, one per
 piece of hardware. The machine works out at power-on which ones answer.
 See [What's fitted](/assembly/detection).

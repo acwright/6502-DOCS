@@ -304,9 +304,9 @@ differ, so it stays the 16×16 original and the PNGs carry the sizes it lacks.
 
 ## Running machines on a page
 
-Twenty-eight machines sit on twenty pages, each beside the listing it belongs
-to, in a frame around an emulator's second web entry point. Twenty-seven are
-ACEs; the twenty-eighth is the KIM, below. Both pages are served from the same
+Twenty-nine machines sit on twenty pages, each beside the listing it belongs
+to, in a frame around an emulator's second web entry point. Twenty-eight are
+ACEs; the twenty-ninth is the KIM, below. Both pages are served from the same
 origin as this site, so a frame costs no third-party request and no CSP
 allowance.
 

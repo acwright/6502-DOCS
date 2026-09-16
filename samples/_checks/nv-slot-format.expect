@@ -1,0 +1,13 @@
+# BASIC's save-slot checksum, as published in the save-slot section, against
+# the Kernal's. BASIC writes slot 3 byte by byte with its own routine; a
+# machine-code stub at 20000 ($4E20) then calls NvStat and leaves A and Y at
+# 20016/20017 ($4E30/$4E31).
+#
+#   LDX #3 / JSR $A09F / STA $4E30 / STY $4E31 / RTS
+#
+# NvStat must call the slot valid (1) and owned by 42, and BASIC's status
+# routine must agree. Flipping one payload byte must turn both to damaged (2).
+# Without this the BASIC listing only agrees with itself.
+
+expect ^PASS$
+absent ^FAIL
