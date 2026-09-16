@@ -44,6 +44,8 @@ emulator's frozen 2.7.0 build, for every machine that stays on the TMS9918A.
 | P2 | 6502-EMULATOR `v2.7.0` tagged, with BIOS 1.6 bundled (step 2) | A2–A10 (pins, samples, screenshots, CI) | `6502 --version` prints `2.7.0`; `6502 dbg mem A09F 3` on it shows a JMP that is not the reserved stub's target |
 | P3 | Emulator 2.7.0's web build deployed at `/6502-EMULATOR/` | Merging A | The unpinned frame on `main` must already boot a v1.6 splash, or new save-slot machines call `RTS` stubs |
 | P4 | Emulator's frozen build live at `/6502-EMULATOR/v2/` | B4 onward (and so publishing `v1`) | `curl -sI https://acwright.github.io/6502-EMULATOR/v2/embed.html` is 200; `check-links.mjs:496` adds the frame URL to the network check, so `npm run links` on `v1` fails until then |
+| P5 | 6502-KIMULATOR `v1.0.9` released, with BIOS 1.6 bundled | A4b, and so B1 | `6502-kim --version` prints `1.0.9`; its `assets/roms/README.md` names BIOS v1.6 |
+| P6 | 6502-PICOCALC's release with BIOS 1.6 | B1 (`docs/using/picocalc.md` names it) | the release exists on GitHub |
 
 The legacy include copies (cross-repo step 4) do not block this repo: `samples/lib/6502.inc`
 is generated here (A1).
@@ -180,6 +182,19 @@ If the contract moved, update `data/emulator.json` `parameters`/`frame` to match
 - `.github/workflows/verify.yml:17` → `EMULATOR_REF: v2.7.0`.
 - `package.json` / `package-lock.json` → `1.7.0`.
 - `npm run preflight` (installed CLI must report `2.7.0`).
+
+### A4b. Pin KIMULATOR 1.0.9
+
+KIMULATOR ships BIOS 1.6 too, as 1.0.9. On a KIM the only visible change is `KernalVersion`
+reporting 1.6: there's no RTC, so the save slots return carry set.
+
+- Read first: `git -C ~/Developer/NodeJS/6502-KIMULATOR diff v1.0.8 v1.0.9 -- docs/EMBEDDING.md assets/roms/`.
+  If the contract moved, update `data/kimulator.json` to match.
+- `data/kimulator.json` → `"version": "1.0.9"`, and grep `docs/` for any `1.0.8` or KIM-side
+  `BIOS v1.5` text.
+- `docs/addons/kim.md`: if it says which BIOS the KIM runs, it says 1.6. The save-slot sections
+  note that they need an RTC card, which a KIM doesn't have.
+- `npm run links` (the embed contract check covers KIMULATOR).
 
 ### A5. Hand-typed versions and transcripts
 
@@ -320,7 +335,8 @@ Starts after A merges and P4 holds. Nothing on `main` changes between A's merge 
 
 ### B1. Cut the branch
 
-`git branch v1 <A's merge commit> && git push origin v1`. Record the SHA in `main`'s
+Only once P5 and P6 hold, so the frozen docs name the KIMULATOR and PicoCalc releases that
+carry 1.6. `git branch v1 <A's merge commit> && git push origin v1`. Record the SHA in `main`'s
 README (B7).
 
 ### B2. Base path, on `v1`
@@ -560,6 +576,7 @@ jobs:
 | 6502-BIOS | **Delivered in `v1.6`, nothing outstanding.** The jump-table line format is kept, the six entries have a `; --- NVRAM save slots (DS1511Y) ---` heading, and the header reads `; Reserved entries ($A0B1-$A0FE)`. Each `Nv*Impl` has an `Input:`/`Output:`/`Modifies:` block, and `NV_ID := $0390` sits above the `; RAM Card \| IO 1` banner. `SAVEMGR.BAS` is in the README. The table stays at 85 slots (59 + 26), which the BIOS plan also says. The one wrapped doc line (A1) is handled here, in A2. Any later 1.x change comes from branch `v1.x`, not `main`. |
 | 6502-EMULATOR | P2, P3, P4. `/6502-EMULATOR/v2/embed.html` and `/v2/` are a contract for `v1`: never move them. Storage namespacing (its assessment §C) is theirs. **Keep the TMS9918A as the default card on `main`'s deployed build until 6502-DOCS Part 2 lands**, or tell this repo first (§8 risk 1). Once A merges, `docs/handoff/6502-DOCS.md` §1 is superseded by this plan's §8 risk 1. |
 | 6502-ASSEMBLY | After B7: rung 5 (legacy VDP) links `https://acwright.github.io/6502-DOCS/v1/…` (`assembly/video`, `assembly/graphics`, `f18a/`) rather than the unversioned site. |
+| 6502-KIMULATOR | Ships BIOS 1.6 as 1.0.9 (decided). Pin it in A4b before cutting `v1`. The `v1` docs embed the live, unversioned `/6502-KIMULATOR/`; that is safe because the KIM stays legacy, but a later KIMULATOR release that changes its embed contract must tell this repo, since `v1` is frozen. |
 | 6502-PICOCALC | Ships BIOS 1.6 (decided): it re-embeds the `v1.6` ROM and releases a new UF2. Its RTC already models burst mode (`CTRLB_BME` in `src/machine/rtc.c`) and keeps NVRAM in flash, so the save-slot sections apply to it unchanged. `docs/using/picocalc.md` names the release that carries 1.6. |
 
 ---
