@@ -3,7 +3,7 @@
     "title": "Memory map",
     "description": "RAM regions, ROM segments and the I/O window, with every named symbol in each.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.5",
+    "biosVersion": "1.6",
     "sources": [
       {
         "file": "BIOS.cfg",
@@ -11,7 +11,7 @@
       },
       {
         "file": "BIOS.inc",
-        "sha256": "badfb994c70b2ace7bc1733fdc6a384cdfce53e33e0dad28862785e29085b3d3"
+        "sha256": "5720c2f055913d48ef0e63abdff466ab77145acbe90aaea43445387a6abe162d"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -146,7 +146,7 @@
           "symbol": "STACK",
           "address": "$0100",
           "end": "$01FF",
-          "source": "BIOS.inc:46"
+          "source": "BIOS.inc:50"
         }
       ],
       "source": "BIOS.inc",
@@ -163,7 +163,7 @@
           "symbol": "INPUT_BUFFER",
           "address": "$0200",
           "end": "$02FF",
-          "source": "BIOS.inc:49"
+          "source": "BIOS.inc:53"
         }
       ],
       "source": "BIOS.inc",
@@ -174,331 +174,337 @@
       "start": "$0300",
       "end": "$03FF",
       "size": 256,
-      "purpose": "Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers",
+      "purpose": "Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID",
       "symbols": [
         {
           "symbol": "KERNAL_VARS",
           "address": "$0300",
           "end": "$03FF",
-          "source": "BIOS.inc:52"
+          "source": "BIOS.inc:56"
         },
         {
           "symbol": "IRQ_PTR",
           "address": "$0300",
           "end": "$0301",
-          "source": "BIOS.inc:53"
+          "source": "BIOS.inc:57"
         },
         {
           "symbol": "BRK_PTR",
           "address": "$0302",
           "end": "$0303",
-          "source": "BIOS.inc:54"
+          "source": "BIOS.inc:58"
         },
         {
           "symbol": "NMI_PTR",
           "address": "$0304",
           "end": "$0305",
-          "source": "BIOS.inc:55"
+          "source": "BIOS.inc:59"
         },
         {
           "symbol": "IO_MODE",
           "address": "$0306",
           "description": "Bit 0: 0=video, 1=serial output",
-          "source": "BIOS.inc:56"
+          "source": "BIOS.inc:60"
         },
         {
           "symbol": "VID_CURSOR_X",
           "address": "$0307",
           "description": "Video cursor column (0-39)",
-          "source": "BIOS.inc:57"
+          "source": "BIOS.inc:61"
         },
         {
           "symbol": "VID_CURSOR_Y",
           "address": "$0308",
           "description": "Video cursor row (0-23)",
-          "source": "BIOS.inc:58"
+          "source": "BIOS.inc:62"
         },
         {
           "symbol": "VID_CURSOR_ADDR",
           "address": "$0309",
           "description": "Video cursor VRAM address ($0309-$030A)",
-          "source": "BIOS.inc:59"
+          "source": "BIOS.inc:63"
         },
         {
           "symbol": "RTC_BUF_CENT",
           "address": "$030B",
           "description": "Century value from last RtcReadDate / for RtcWriteDate",
-          "source": "BIOS.inc:60"
+          "source": "BIOS.inc:64"
         },
         {
           "symbol": "RTC_TMP",
           "address": "$030C",
           "description": "Scratch byte for BCD conversion",
-          "source": "BIOS.inc:61"
+          "source": "BIOS.inc:65"
         },
         {
           "symbol": "HW_PRESENT",
           "address": "$030D",
           "description": "Hardware present bitmask (set during Reset probe)",
-          "source": "BIOS.inc:62"
+          "source": "BIOS.inc:66"
         },
         {
           "symbol": "BAS_PENDKEY",
           "address": "$030E",
           "description": "Pending key from BasCheckBreak (1 byte)",
-          "source": "BIOS.inc:72"
+          "source": "BIOS.inc:76"
         },
         {
           "symbol": "CF_DISK",
           "address": "$030F",
           "description": "Current CF \"disk\" bank (0-255); base LBA = CF_DISK * FS_DISK_SECTORS",
-          "source": "BIOS.inc:73"
+          "source": "BIOS.inc:77"
         },
         {
           "symbol": "BRK_P",
           "address": "$0310",
           "description": "Saved P at time of BRK",
-          "source": "BIOS.inc:74"
+          "source": "BIOS.inc:78"
         },
         {
           "symbol": "BRK_PCL",
           "address": "$0311",
           "description": "Saved PCL at time of BRK (points to BRK+2)",
-          "source": "BIOS.inc:75"
+          "source": "BIOS.inc:79"
         },
         {
           "symbol": "BRK_PCH",
           "address": "$0312",
           "description": "Saved PCH at time of BRK",
-          "source": "BIOS.inc:76"
+          "source": "BIOS.inc:80"
         },
         {
           "symbol": "BRK_A",
           "address": "$0313",
           "description": "Saved A at time of BRK",
-          "source": "BIOS.inc:77"
+          "source": "BIOS.inc:81"
         },
         {
           "symbol": "BRK_X",
           "address": "$0314",
           "description": "Saved X at time of BRK",
-          "source": "BIOS.inc:78"
+          "source": "BIOS.inc:82"
         },
         {
           "symbol": "BRK_Y",
           "address": "$0315",
           "description": "Saved Y at time of BRK",
-          "source": "BIOS.inc:79"
+          "source": "BIOS.inc:83"
         },
         {
           "symbol": "BRK_SP",
           "address": "$0316",
           "description": "Saved SP at time of BRK",
-          "source": "BIOS.inc:80"
+          "source": "BIOS.inc:84"
         },
         {
           "symbol": "XFER_REMAIN",
           "address": "$0317",
           "end": "$0318",
           "description": "Remaining bytes to transfer (2 bytes)",
-          "source": "BIOS.inc:81"
+          "source": "BIOS.inc:85"
         },
         {
           "symbol": "XFER_IO_SAVE",
           "address": "$0319",
           "description": "Saved IO_MODE before switching to serial",
-          "source": "BIOS.inc:82"
+          "source": "BIOS.inc:86"
         },
         {
           "symbol": "BAS_DATAPTR",
           "address": "$031A",
           "end": "$031B",
           "description": "DATA read position (2 bytes)",
-          "source": "BIOS.inc:83"
+          "source": "BIOS.inc:87"
         },
         {
           "symbol": "BAS_STOPLINE",
           "address": "$031C",
           "end": "$031D",
           "description": "Saved BAS_CURLINE for CONT (2 bytes)",
-          "source": "BIOS.inc:84"
+          "source": "BIOS.inc:88"
         },
         {
           "symbol": "BAS_STOPTXT",
           "address": "$031E",
           "end": "$031F",
           "description": "Saved BAS_TXTPTR for CONT (2 bytes)",
-          "source": "BIOS.inc:85"
+          "source": "BIOS.inc:89"
         },
         {
           "symbol": "SCROLL_BUF",
           "address": "$0320",
           "end": "$0347",
           "description": "40-byte scroll temp buffer",
-          "source": "BIOS.inc:86"
+          "source": "BIOS.inc:90"
         },
         {
           "symbol": "FS_START_SEC",
           "address": "$0348",
           "end": "$0349",
           "description": "File start sector (2 bytes)",
-          "source": "BIOS.inc:88"
+          "source": "BIOS.inc:92"
         },
         {
           "symbol": "FS_FILE_SIZE",
           "address": "$034A",
           "end": "$034B",
           "description": "File size in bytes (2 bytes)",
-          "source": "BIOS.inc:89"
+          "source": "BIOS.inc:93"
         },
         {
           "symbol": "FS_SEC_COUNT",
           "address": "$034C",
           "description": "Number of sectors to read/write",
-          "source": "BIOS.inc:90"
+          "source": "BIOS.inc:94"
         },
         {
           "symbol": "FS_DIR_IDX",
           "address": "$034D",
           "description": "Directory entry index (0-15)",
-          "source": "BIOS.inc:91"
+          "source": "BIOS.inc:95"
         },
         {
           "symbol": "FS_NEXT_SEC",
           "address": "$034E",
           "end": "$034F",
           "description": "Next free sector for allocation (2 bytes)",
-          "source": "BIOS.inc:92"
+          "source": "BIOS.inc:96"
         },
         {
           "symbol": "FS_FNAME_BUF",
           "address": "$0350",
           "end": "$035A",
           "description": "11-byte filename buffer (8 name + 3 ext)",
-          "source": "BIOS.inc:93"
+          "source": "BIOS.inc:97"
         },
         {
           "symbol": "BOOT_VECTOR",
           "address": "$035B",
           "end": "$035C",
           "description": "Cart/boot redirect vector (2 bytes, 0=normal boot)",
-          "source": "BIOS.inc:94"
+          "source": "BIOS.inc:98"
         },
         {
           "symbol": "BAS_TXTTAB",
           "address": "$035D",
           "end": "$035E",
           "description": "Start of program text (= $0800)",
-          "source": "BIOS.inc:97"
+          "source": "BIOS.inc:101"
         },
         {
           "symbol": "BAS_VARTAB",
           "address": "$035F",
           "end": "$0360",
           "description": "End-of-program / start-of-vars pointer",
-          "source": "BIOS.inc:98"
+          "source": "BIOS.inc:102"
         },
         {
           "symbol": "BAS_ARYTAB",
           "address": "$0361",
           "end": "$0362",
           "description": "Start of arrays",
-          "source": "BIOS.inc:99"
+          "source": "BIOS.inc:103"
         },
         {
           "symbol": "BAS_STREND",
           "address": "$0363",
           "end": "$0364",
           "description": "End of arrays",
-          "source": "BIOS.inc:100"
+          "source": "BIOS.inc:104"
         },
         {
           "symbol": "BAS_FRETOP",
           "address": "$0365",
           "end": "$0366",
           "description": "Top-of-string-heap pointer",
-          "source": "BIOS.inc:101"
+          "source": "BIOS.inc:105"
         },
         {
           "symbol": "BAS_MEMSIZ",
           "address": "$0367",
           "end": "$0368",
           "description": "End of usable memory (= $8000)",
-          "source": "BIOS.inc:102"
+          "source": "BIOS.inc:106"
         },
         {
           "symbol": "BAS_CURLIN",
           "address": "$0369",
           "end": "$036A",
           "description": "Currently executing line ($FFFF=direct mode)",
-          "source": "BIOS.inc:103"
+          "source": "BIOS.inc:107"
         },
         {
           "symbol": "BAS_OLDLIN",
           "address": "$036B",
           "end": "$036C",
           "description": "Saved line for CONT",
-          "source": "BIOS.inc:104"
+          "source": "BIOS.inc:108"
         },
         {
           "symbol": "BAS_OLDTEXT",
           "address": "$036D",
           "end": "$036E",
           "description": "Saved text ptr for CONT",
-          "source": "BIOS.inc:105"
+          "source": "BIOS.inc:109"
         },
         {
           "symbol": "BAS_WARM",
           "address": "$036F",
           "description": "Warm-start magic ($A5 = previously initialized)",
-          "source": "BIOS.inc:106"
+          "source": "BIOS.inc:110"
         },
         {
           "symbol": "BAS_POSX",
           "address": "$0370",
           "description": "PRINT column counter (0-39 video / 0-79 serial)",
-          "source": "BIOS.inc:107"
+          "source": "BIOS.inc:111"
         },
         {
           "symbol": "BAS_INPSAV",
           "address": "$0371",
           "end": "$0372",
           "description": "Saved TXTPTR across INPUT REDO retry",
-          "source": "BIOS.inc:108"
+          "source": "BIOS.inc:112"
         },
         {
           "symbol": "BAS_FNPTR",
           "address": "$0373",
           "end": "$0374",
           "description": "FN variable slot addr held across FnCall's expression evaluations (out of ZP so FrmEvl/Garbag cannot touch it)",
-          "source": "BIOS.inc:109"
+          "source": "BIOS.inc:113"
         },
         {
           "symbol": "BAS_STKBASE",
           "address": "$0375",
           "description": "Stack pointer the READY loop restores before each direct-mode line: $FF with no",
-          "source": "BIOS.inc:110"
+          "source": "BIOS.inc:114"
         },
         {
           "symbol": "FS_IO_ADDR",
           "address": "$037F",
           "end": "$0380",
           "description": "Load/save target address for FsLoadFileAddr/FsSaveFileAddr",
-          "source": "BIOS.inc:114"
+          "source": "BIOS.inc:118"
         },
         {
           "symbol": "BAS_FNAME",
           "address": "$0381",
           "end": "$038D",
           "description": "13-byte scratch for null-terminated 8.3 filename (12-char \"NAME.EXT\" + null)",
-          "source": "BIOS.inc:115"
+          "source": "BIOS.inc:119"
         },
         {
           "symbol": "PRG_IMAGE_END",
           "address": "$038E",
           "end": "$038F",
           "description": "End address of a program image placed at PROGRAM_START by a loader",
-          "source": "BIOS.inc:116"
+          "source": "BIOS.inc:120"
+        },
+        {
+          "symbol": "NV_ID",
+          "address": "$0390",
+          "description": "Owner ID input for NvWrite ($00 is refused — that is NvErase)",
+          "source": "BIOS.inc:125"
         }
       ],
       "source": "BIOS.inc",
@@ -516,7 +522,7 @@
           "address": "$0400",
           "end": "$07FF",
           "description": "see above; Wozmon's input buffer",
-          "source": "BIOS.inc:143"
+          "source": "BIOS.inc:150"
         }
       ],
       "source": "BIOS.inc",
@@ -534,7 +540,7 @@
           "address": "$0600",
           "end": "$07FF",
           "description": "512-byte sector buffer (overlaps BAS_TOKBUF/BAS_STRBUF)",
-          "source": "BIOS.inc:120"
+          "source": "BIOS.inc:127"
         }
       ],
       "source": "BIOS.inc",
@@ -551,7 +557,7 @@
           "symbol": "PROGRAM_START",
           "address": "$0800",
           "end": "$7FFF",
-          "source": "BIOS.inc:146"
+          "source": "BIOS.inc:153"
         }
       ],
       "source": "BIOS.inc",

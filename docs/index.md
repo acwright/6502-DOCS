@@ -15,7 +15,7 @@ There is no operating system to log into and nothing to install. You switch it
 on, you get this:
 
 ```
--- 6502 BIOS v1.5 --
+-- 6502 BIOS v1.6 --
 ENTER=BASIC  ESC=MONITOR
 
 6502 BASIC V2.0

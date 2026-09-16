@@ -3,7 +3,7 @@
     "title": "Character set",
     "description": "All 256 CP437 glyphs, eight pixel rows each, as the video card is seeded with them.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.5",
+    "biosVersion": "1.6",
     "sources": [
       {
         "file": "Chars.asm",

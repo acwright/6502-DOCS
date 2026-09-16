@@ -71,7 +71,7 @@ printf '\rRUN\r' | 6502 run --headless --exit-on 'LIFT OFF' --timeout 20s build/
 ```
 
 ```
--- 6502 BIOS v1.5 --
+-- 6502 BIOS v1.6 --
 ENTER=BASIC  ESC=MONITOR
 
 6502 BASIC V2.0

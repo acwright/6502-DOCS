@@ -490,7 +490,7 @@ function kernalJumpTable() {
     ['Files', ['FsLoadFileAddr', 'FsSaveFileAddr', 'FsLoadFile', 'FsSaveFile', 'FsDeleteFile', 'FsFormatDisk', 'FsSetDisk', 'FsGetDisk', 'FsPrintDisk']],
     ['The card itself', ['StReadSector', 'StWriteSector', 'StWaitReady']],
     ['Serial', ['InitSC', 'SerialChrout', 'XModemLoad', 'XModemSave']],
-    ['Clock and lasting memory', ['RtcReadTime', 'RtcReadDate', 'RtcWriteTime', 'RtcWriteDate', 'RtcReadNVRAM', 'RtcWriteNVRAM']],
+    ['Clock and lasting memory', ['RtcReadTime', 'RtcReadDate', 'RtcWriteTime', 'RtcWriteDate', 'RtcReadNVRAM', 'RtcWriteNVRAM', 'NvStat', 'NvRead', 'NvWrite', 'NvErase', 'NvFind', 'NvFormat']],
     ['The machine', ['SysDelay', 'KernalInit', 'KernalVersion']]
   ]
 
@@ -748,7 +748,7 @@ function memoryMap() {
           section('RAM, in detail', ram),
           section('ROM segments', rom,
             note('One EEPROM, three version numbers.',
-              'BIOS v1.5, BASIC V2.0 and Monitor v1.1 all ship in the same 32 KB chip.')),
+              `BIOS v${version}, BASIC V2.0 and Monitor v1.1 all ship in the same 32 KB chip.`)),
           section('The I/O window', slots,
             note('What the machine found.',
               `<code>${esc(hardware.hwPresent.address)}</code> holds one bit per slot, written by the ` +

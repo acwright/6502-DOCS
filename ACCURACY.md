@@ -22,7 +22,7 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.5, emulator 2.6.9, cc65 built from
+**Baseline for every entry below:** BIOS v1.6, emulator 2.7.0, cc65 built from
 HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
 release they were found on; where that matters — A31 and A32 — the entry says so.
 
@@ -901,7 +901,7 @@ serial are false at the machine itself.
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
-  Three version numbers ship in one ROM: BIOS v1.5, BASIC V2.0, Monitor v1.1.
+  Three version numbers ship in one ROM: BIOS v1.6, BASIC V2.0, Monitor v1.1.
   The docs should say so rather than let a reader assume one number covers all.
 - **`HW=$7F` on a headless machine is correct.** `MEM` reports `HW_PRESENT`
   (`$030D`), and bit 7 is the video card. Booted headless the BIOS finds no

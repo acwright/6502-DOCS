@@ -9,8 +9,8 @@ Published at **<https://acwright.github.io/6502-DOCS/>**.
 
 Built with [VitePress](https://vitepress.dev/), deployed to GitHub Pages.
 
-**The site describes BIOS v1.5, and every sample, screenshot and embedded
-program in it was produced by emulator 2.6.9.** Those are the two versions that
+**The site describes BIOS v1.6, and every sample, screenshot and embedded
+program in it was produced by emulator 2.7.0.** Those are the two versions that
 move, and both are now gates rather than notes: `npm run check:voice` fails on a
 page stating a BIOS version the firmware disagrees with, and `npm run preflight`
 fails on an emulator that is not the one in `data/emulator.json`. See
@@ -106,7 +106,7 @@ npm run facts:check   # fail if either is stale (run before committing)
 | File | Extracted from |
 |---|---|
 | `boot.json` | Version, splash strings, and the boot menu — `BIOS.inc`, `Kernal.asm` |
-| `kernal.json` | All 53 published jump-table slots plus the reserved range — `Kernal.asm` |
+| `kernal.json` | All 59 published jump-table slots plus the reserved range — `Kernal.asm` |
 | `memory-map.json` | RAM regions, ROM segments, I/O window, every named symbol — `BIOS.inc`, `BIOS.cfg` |
 | `hardware.json` | `HW_PRESENT` bits, the eight I/O slots and their registers — `BIOS.inc` |
 | `basic-keywords.json` | Every keyword, token and dispatch target — `BASIC.asm` |
@@ -451,7 +451,7 @@ disagrees with the fact base:
 
 ```
 docs/reference/glossary.md:24  stale BIOS version — "BIOS v1.4"
-       the firmware reports v1.5; re-run `npm run facts` and fix the page
+       the firmware reports v1.6; re-run `npm run facts` and fix the page
 ```
 
 Links into `cards/archive/` are exempt, since naming an old version is what

@@ -2,7 +2,7 @@
 ;   6502.inc — Kernal API and hardware constants for the AC6502 family
 ; ===========================================================================
 ;
-;   BIOS       : v1.5
+;   BIOS       : v1.6
 ;   CPU        : WDC 65C02S
 ;   Assembler  : ca65 (cc65 toolchain)
 ;
@@ -97,7 +97,15 @@ PrintDecU16         := $A096    ; Print unsigned 16-bit decimal (A=lo, X=hi), no
 KBDisable           := $A099    ; Release both encoders and settle; ports free for raw read
 KBEnable            := $A09C    ; Re-enable both encoders
 
-; 32 reserved slots at $A09F-$A0FE — each is a bare RTS.
+; --- NVRAM save slots (DS1511Y) ---
+NvStat              := $A09F    ; Slot status (X=slot) → A=status, Y=owner ID
+NvRead              := $A0A2    ; Copy a valid slot's payload (X=slot, A/Y=dest lo/hi)
+NvWrite             := $A0A5    ; Write a slot (X=slot, A/Y=src lo/hi, NV_ID=owner ID)
+NvErase             := $A0A8    ; Zero all 16 bytes of a slot (X=slot)
+NvFind              := $A0AB    ; Lowest slot owned by A ($00 = first free) → X
+NvFormat            := $A0AE    ; Erase all 16 slots
+
+; 26 reserved slots at $A0B1-$A0FE — each is a bare RTS.
 
 ; ===========================================================================
 ;   ZERO PAGE
@@ -176,6 +184,7 @@ BAS_STKBASE         := $0375    ; Stack pointer the READY loop restores before e
 FS_IO_ADDR          := $037F    ; through $0380 — Load/save target address for FsLoadFileAddr/FsSaveFileAddr
 BAS_FNAME           := $0381    ; through $038D — 13-byte scratch for null-terminated 8.3 filename (12-char "NAME.EXT" + null)
 PRG_IMAGE_END       := $038E    ; through $038F — End address of a program image placed at PROGRAM_START by a loader
+NV_ID               := $0390    ; Owner ID input for NvWrite ($00 is refused — that is NvErase)
 
 ; ===========================================================================
 ;   KEY MEMORY LOCATIONS
@@ -314,7 +323,17 @@ VC_STATUS           := $9C01    ; Read
 
 ; --- BIOS version ---
 BIOS_VERSION_MAJOR   = 1
-BIOS_VERSION_MINOR   = 5
+BIOS_VERSION_MINOR   = 6
+
+; --- NVRAM save slots ---
+NV_SLOTS             = 16       ; Save slots in RTC NVRAM
+NV_SLOT_SIZE         = 16       ; Bytes per slot (slot n at NVRAM n*16)
+NV_SLOT_DATA         = 14       ; Payload bytes per slot
+NV_CK_SEED           = $A6      ; Checksum seed
+NV_EMPTY             = 0        ; NvStat: slot is free
+NV_VALID             = 1        ; NvStat: owner ID set, checksum agrees
+NV_BAD               = 2        ; NvStat: owner ID set, checksum does not
+NV_PTR              := STR_PTR  ; $02-$03 - caller's buffer during a slot copy
 
 ; --- ASCII control characters ---
 CHAR_BEL             = $07      ; Bell (beep via SID)

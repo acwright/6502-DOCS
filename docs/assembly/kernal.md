@@ -15,9 +15,20 @@ const groups = [
   ['Files', ['FsLoadFileAddr', 'FsSaveFileAddr', 'FsLoadFile', 'FsSaveFile', 'FsDeleteFile', 'FsFormatDisk', 'FsSetDisk', 'FsGetDisk', 'FsPrintDisk'], '/assembly/storage'],
   ['The card itself', ['StReadSector', 'StWriteSector', 'StWaitReady'], '/assembly/storage'],
   ['Serial', ['InitSC', 'SerialChrout', 'XModemLoad', 'XModemSave'], '/assembly/serial'],
-  ['Clock and lasting memory', ['RtcReadTime', 'RtcReadDate', 'RtcWriteTime', 'RtcWriteDate', 'RtcReadNVRAM', 'RtcWriteNVRAM'], '/assembly/clock'],
+  ['Clock and lasting memory', ['RtcReadTime', 'RtcReadDate', 'RtcWriteTime', 'RtcWriteDate', 'RtcReadNVRAM', 'RtcWriteNVRAM', 'NvStat', 'NvRead', 'NvWrite', 'NvErase', 'NvFind', 'NvFormat'], '/assembly/clock'],
   ['The machine', ['SysDelay', 'KernalInit', 'KernalVersion'], '/assembly/detection']
 ].map(([title, names, link]) => ({ title, link, slots: names.map((n) => bySlot[n]) }))
+
+// Fail the build on a slot no group names, rather than leaving it off the page
+// (the Kernal card guards its own grouping the same way).
+const listed = new Set(groups.flatMap((g) => g.slots.map((s) => s?.name)))
+const ungrouped = kernal.slots.filter((s) => !listed.has(s.name))
+if (ungrouped.length) {
+  throw new Error(`assembly/kernal.md: ${ungrouped.length} slot(s) ungrouped: ${ungrouped.map((s) => s.name).join(', ')}`)
+}
+if (groups.some((g) => g.slots.includes(undefined))) {
+  throw new Error('assembly/kernal.md: a group names a slot the Kernal does not have')
+}
 
 const id = (name) => 'k-' + name.toLowerCase()
 </script>

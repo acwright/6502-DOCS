@@ -94,8 +94,12 @@ export function parseDocBlock(block) {
     }
 
     // A continuation of the field we are already inside.
+    // One that starts lower-case finishes the previous entry's sentence rather
+    // than starting an entry of its own (NvRead's Output: in BIOS v1.6).
     if (current && /^\s{2,}/.test(raw)) {
-      doc[current].push(line)
+      const entries = doc[current]
+      if (entries.length && /^[a-z]/.test(line)) entries[entries.length - 1] += ' ' + line
+      else entries.push(line)
       continue
     }
 

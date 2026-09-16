@@ -3,24 +3,24 @@
     "title": "Kernal jump table",
     "description": "Every published entry point, in slot order, plus the reserved range.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.5",
+    "biosVersion": "1.6",
     "sources": [
       {
         "file": "Kernal.asm",
-        "sha256": "166c5dc1e0219f8ec9742ea7e81e3e1b57cb68e9f7cbc4ee5848c3678047b7bf"
+        "sha256": "e38b994242088af2183da64ff8ee23032c57c38fbbeab426ecea0714d9eae7eb"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
   },
   "base": "$A000",
   "slotSize": 3,
-  "publishedSlots": 53,
+  "publishedSlots": 59,
   "reserved": {
-    "count": 32,
-    "start": "$A09F",
+    "count": 26,
+    "start": "$A0B1",
     "end": "$A0FE",
     "behavior": "Each reserved slot jumps to UnimplementedStub, which is a bare RTS.",
-    "source": "Kernal.asm:96",
+    "source": "Kernal.asm:103",
     "check": "GREP"
   },
   "totalSlots": 85,
@@ -37,7 +37,8 @@
     "System",
     "Disk banking / addressed storage",
     "General output utilities (console = IO_MODE-routed via Chrout)",
-    "Keyboard encoder control (raw port access)"
+    "Keyboard encoder control (raw port access)",
+    "NVRAM save slots (DS1511Y)"
   ],
   "slots": [
     {
@@ -1040,6 +1041,134 @@
         "Sets CB2 low (enable matrix encoder) and CA2 low (enable PS/2 encoder)"
       ],
       "source": "Kernal.asm:94",
+      "check": "GREP"
+    },
+    {
+      "name": "NvStat",
+      "address": "$A09F",
+      "addressDecimal": 41119,
+      "slot": 53,
+      "group": "NVRAM save slots (DS1511Y)",
+      "summary": "Slot status (X=slot) → A=status, Y=owner ID",
+      "target": "NvStatImpl",
+      "description": "Report a slot's state",
+      "input": [
+        "X = slot (0-15)"
+      ],
+      "output": [
+        "A = NV_EMPTY / NV_VALID / NV_BAD, Y = owner ID, C clear",
+        "C set on no RTC or bad slot (A, Y undefined)"
+      ],
+      "modifies": [
+        "Flags (D and I preserved), A, Y"
+      ],
+      "source": "Kernal.asm:96",
+      "check": "GREP"
+    },
+    {
+      "name": "NvRead",
+      "address": "$A0A2",
+      "addressDecimal": 41122,
+      "slot": 54,
+      "group": "NVRAM save slots (DS1511Y)",
+      "summary": "Copy a valid slot's payload (X=slot, A/Y=dest lo/hi)",
+      "target": "NvReadImpl",
+      "description": "Copy a valid slot's 14 payload bytes to the caller's buffer",
+      "input": [
+        "X = slot (0-15), A/Y = destination lo/hi"
+      ],
+      "output": [
+        "A = status, Y = owner ID; C clear and the buffer written only if A = NV_VALID",
+        "C set on no RTC or bad slot (A, Y undefined), or a slot that is not valid (A = its status, Y = its owner ID) — the buffer is untouched"
+      ],
+      "modifies": [
+        "Flags (D and I preserved), A, Y, NV_PTR"
+      ],
+      "source": "Kernal.asm:97",
+      "check": "GREP"
+    },
+    {
+      "name": "NvWrite",
+      "address": "$A0A5",
+      "addressDecimal": 41125,
+      "slot": 55,
+      "group": "NVRAM save slots (DS1511Y)",
+      "summary": "Write a slot (X=slot, A/Y=src lo/hi, NV_ID=owner ID)",
+      "target": "NvWriteImpl",
+      "description": "Write a slot: owner ID, checksum and 14 payload bytes",
+      "input": [
+        "X = slot (0-15), A/Y = source lo/hi, NV_ID = owner ID ($01-$FF)"
+      ],
+      "output": [
+        "C clear; C set on no RTC, bad slot, or NV_ID = 0 (nothing written)"
+      ],
+      "modifies": [
+        "Flags (D and I preserved), A, Y, NV_PTR"
+      ],
+      "source": "Kernal.asm:98",
+      "check": "GREP"
+    },
+    {
+      "name": "NvErase",
+      "address": "$A0A8",
+      "addressDecimal": 41128,
+      "slot": 56,
+      "group": "NVRAM save slots (DS1511Y)",
+      "summary": "Zero all 16 bytes of a slot (X=slot)",
+      "target": "NvEraseImpl",
+      "description": "Zero all 16 bytes of a slot, so nothing of the old save is legible",
+      "input": [
+        "X = slot (0-15)"
+      ],
+      "output": [
+        "C clear; C set on no RTC or bad slot"
+      ],
+      "modifies": [
+        "Flags (I preserved), A, Y"
+      ],
+      "source": "Kernal.asm:99",
+      "check": "GREP"
+    },
+    {
+      "name": "NvFind",
+      "address": "$A0AB",
+      "addressDecimal": 41131,
+      "slot": 57,
+      "group": "NVRAM save slots (DS1511Y)",
+      "summary": "Lowest slot owned by A ($00 = first free) → X",
+      "target": "NvFindImpl",
+      "description": "Find the lowest slot whose owner ID is A",
+      "input": [
+        "A = owner ID"
+      ],
+      "output": [
+        "X = slot, C clear; C set if no slot matched (X undefined)"
+      ],
+      "modifies": [
+        "Flags (I preserved), A, X, RTC_TMP"
+      ],
+      "notes": [
+        "Matches any non-free slot, valid or damaged; A = $00 finds the lowest free slot."
+      ],
+      "source": "Kernal.asm:100",
+      "check": "GREP"
+    },
+    {
+      "name": "NvFormat",
+      "address": "$A0AE",
+      "addressDecimal": 41134,
+      "slot": 58,
+      "group": "NVRAM save slots (DS1511Y)",
+      "summary": "Erase all 16 slots",
+      "target": "NvFormatImpl",
+      "description": "Erase all 16 slots",
+      "output": [
+        "C clear; C set on no RTC"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "source": "Kernal.asm:101",
       "check": "GREP"
     }
   ]

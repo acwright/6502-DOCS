@@ -19,7 +19,7 @@
     "warning": "Hand-authored file. Bumping the version here is what moves the KIM chapter to a new release."
   },
 
-  "version": "1.0.8",
+  "version": "1.0.9",
 
   "web": {
     "app": "https://acwright.github.io/6502-KIMULATOR/",

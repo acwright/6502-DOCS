@@ -3,7 +3,7 @@
     "title": "The five machines",
     "description": "What each AC6502 system is and what it carries. The ACE is the machine this guide documents, and its record describes the computer as shipped — banked RAM and CompactFlash storage included, with the separate-PCB and Rev 1.0 caveats moved to builderNotes. The other four records serve the builder-facing family appendix. Hand-maintained: the KiCad repos' READMEs are structured too differently to parse, so each record was authored from its README and confirmed against the schematics.",
     "generator": "hand-maintained (not written by scripts/extract-facts.mjs)",
-    "biosVersion": "1.5",
+    "biosVersion": "1.6",
     "sources": [
       {
         "file": "6502-ACE/README.md",

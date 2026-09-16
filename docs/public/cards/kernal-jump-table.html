@@ -17,15 +17,15 @@
 
   <div class="pg-header">
     <h1>Kernal Jump Table</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>Kernal &middot; BIOS v1.5</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Kernal &middot; BIOS v1.6</div>
   </div>
 
   <div class="pg-body">
     <div class="section">
       <span class="sec-title">The contract</span>
-      <div class="note-box"><strong>Call the slot, never the implementation.</strong> 53 entry points, three bytes each, starting at <code>$A000</code> and in an order that does not change. <code>jsr $A000</code> prints a character on this ROM and on the next one. <code>6502.inc</code> gives every slot its name, so you will write <code>jsr Chrout</code>.</div>
+      <div class="note-box"><strong>Call the slot, never the implementation.</strong> 59 entry points, three bytes each, starting at <code>$A000</code> and in an order that does not change. <code>jsr $A000</code> prints a character on this ROM and on the next one. <code>6502.inc</code> gives every slot its name, so you will write <code>jsr Chrout</code>.</div>
       <div class="note-box"><strong>Arguments go in registers.</strong> A, X and Y in, A, X, Y or the carry flag out. Nothing is passed on the stack.</div>
-      <div class="note-box"><strong>The tail of the table.</strong> 32 slots from <code>$A09F</code> to <code>$A0FE</code> are reserved. Each is a real jump to a bare <code>RTS</code>, so calling one is harmless now and may do something later. Do not put your own code there.</div>
+      <div class="note-box"><strong>The tail of the table.</strong> 26 slots from <code>$A0B1</code> to <code>$A0FE</code> are reserved. Each is a real jump to a bare <code>RTS</code>, so calling one is harmless now and may do something later. Do not put your own code there.</div>
     </div>
     <div class="section">
       <span class="sec-title">Console</span>
@@ -102,7 +102,7 @@
 
   <div class="pg-header">
     <h1>Kernal Jump Table</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>Kernal &middot; BIOS v1.5</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Kernal &middot; BIOS v1.6</div>
   </div>
 
   <div class="pg-body">
@@ -157,6 +157,12 @@
           <tr><td class="td-addr">$A063</td><td class="td-label">RtcWriteDate</td><td class="td-desc">Set RTC date<br><strong>in</strong> A = day of month (binary), X = month (binary), Y = year (binary); RTC_BUF_CENT = century (binary)</td></tr>
           <tr><td class="td-addr">$A066</td><td class="td-label">RtcReadNVRAM</td><td class="td-desc">Read NVRAM byte<br><strong>in</strong> X = NVRAM address ($00-$FF) &middot; <strong>out</strong> A = data byte</td></tr>
           <tr><td class="td-addr">$A069</td><td class="td-label">RtcWriteNVRAM</td><td class="td-desc">Write NVRAM byte<br><strong>in</strong> X = NVRAM address ($00-$FF), A = data byte</td></tr>
+          <tr><td class="td-addr">$A09F</td><td class="td-label">NvStat</td><td class="td-desc">Slot status (X=slot) → A=status, Y=owner ID<br><strong>in</strong> X = slot (0-15) &middot; <strong>out</strong> A = NV_EMPTY / NV_VALID / NV_BAD, Y = owner ID, C clear; C set on no RTC or bad slot (A, Y undefined)</td></tr>
+          <tr><td class="td-addr">$A0A2</td><td class="td-label">NvRead</td><td class="td-desc">Copy a valid slot's payload (X=slot, A/Y=dest lo/hi)<br><strong>in</strong> X = slot (0-15), A/Y = destination lo/hi &middot; <strong>out</strong> A = status, Y = owner ID; C clear and the buffer written only if A = NV_VALID; C set on no RTC or bad slot (A, Y undefined), or a slot that is not valid (A = its status, Y = its owner ID) — the buffer is untouched</td></tr>
+          <tr><td class="td-addr">$A0A5</td><td class="td-label">NvWrite</td><td class="td-desc">Write a slot (X=slot, A/Y=src lo/hi, NV_ID=owner ID)<br><strong>in</strong> X = slot (0-15), A/Y = source lo/hi, NV_ID = owner ID ($01-$FF) &middot; <strong>out</strong> C clear; C set on no RTC, bad slot, or NV_ID = 0 (nothing written)</td></tr>
+          <tr><td class="td-addr">$A0A8</td><td class="td-label">NvErase</td><td class="td-desc">Zero all 16 bytes of a slot (X=slot)<br><strong>in</strong> X = slot (0-15) &middot; <strong>out</strong> C clear; C set on no RTC or bad slot</td></tr>
+          <tr><td class="td-addr">$A0AB</td><td class="td-label">NvFind</td><td class="td-desc">Lowest slot owned by A ($00 = first free) → X<br><strong>in</strong> A = owner ID &middot; <strong>out</strong> X = slot, C clear; C set if no slot matched (X undefined)</td></tr>
+          <tr><td class="td-addr">$A0AE</td><td class="td-label">NvFormat</td><td class="td-desc">Erase all 16 slots<br><strong>out</strong> C clear; C set on no RTC</td></tr>
         </tbody>
       </table>
     </div>

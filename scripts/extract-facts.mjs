@@ -161,6 +161,15 @@ function extractKernal(src) {
 
   const reserved = readReservedRange(lines)
 
+  // Self-check: the reserved range starts where the published slots end, or the
+  // header comment was not updated when entries were added.
+  const firstReserved = JUMP_TABLE_BASE + slots.length * SLOT_SIZE
+  if (reserved.start !== hex(firstReserved)) {
+    throw new Error(
+      `${reserved.source}: reserved range documents ${reserved.start} but the ${slots.length} published slots end at ${hex(firstReserved)}`
+    )
+  }
+
   return {
     $meta: meta(
       'Kernal jump table',
@@ -220,7 +229,7 @@ const RAM_REGIONS = [
   { start: 0x0000, end: 0x00ff, name: 'Zero page', purpose: 'Kernal, BASIC, Monitor and XModem workspace; $003A-$00FF is unclaimed by the Kernal' },
   { start: 0x0100, end: 0x01ff, name: 'CPU stack', purpose: 'Hardware stack; BASIC keeps its FOR and GOSUB frames here' },
   { start: 0x0200, end: 0x02ff, name: 'Keyboard ring buffer', purpose: '256-byte input buffer filled by the encoders, drained by Chrin' },
-  { start: 0x0300, end: 0x03ff, name: 'Kernal variables', purpose: 'Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers' },
+  { start: 0x0300, end: 0x03ff, name: 'Kernal variables', purpose: 'Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID' },
   { start: 0x0400, end: 0x05ff, name: 'BASIC line buffers', purpose: 'BAS_LINBUF raw input line ($0400) and BAS_TOKBUF tokenized scratch ($0500)' },
   { start: 0x0600, end: 0x07ff, name: 'CompactFlash sector buffer', purpose: '512-byte sector buffer; any filesystem call clobbers it' },
   { start: 0x0800, end: 0x7fff, name: 'Program RAM', purpose: 'BASIC program text grows up from $0800; variables, then arrays, then the string heap growing down from $8000' }
@@ -1228,6 +1237,21 @@ function renderInclude(facts) {
   equate('BIOS_VERSION_MAJOR', facts.boot.version.major, '', ' =')
   equate('BIOS_VERSION_MINOR', facts.boot.version.minor, '', ' =')
 
+  // Named from BIOS.inc rather than typed here, because the legacy include
+  // copies in the other repositories use the same names.
+  block('NVRAM save slots')
+  const incSymbols = parseIncSymbols(facts.inc)
+  for (const name of ['NV_SLOTS', 'NV_SLOT_SIZE', 'NV_SLOT_DATA', 'NV_CK_SEED', 'NV_EMPTY', 'NV_VALID', 'NV_BAD']) {
+    const s = incSymbols.find((sym) => sym.symbol === name && sym.assigned === '=')
+    if (!s) throw new Error(`BIOS.inc: cannot find the save-slot constant ${name}`)
+    equate(name, s.literal, s.comment, ' =')
+  }
+  const alias = facts.inc.lines
+    .map((l) => l.match(/^NV_PTR\s*:=\s*(\w+)\s*(?:;\s*(.*))?$/))
+    .find(Boolean)
+  if (!alias) throw new Error('BIOS.inc: cannot find NV_PTR')
+  equate('NV_PTR', alias[1], alias[2]?.trim())
+
   block('ASCII control characters')
   for (const [name, value, comment] of [
     ['CHAR_BEL', '$07', 'Bell (beep via SID)'],
@@ -1332,7 +1356,8 @@ function main() {
     boot: outputs['boot.json'],
     kernal: outputs['kernal.json'],
     memoryMap: outputs['memory-map.json'],
-    hardware: outputs['hardware.json']
+    hardware: outputs['hardware.json'],
+    inc: src.inc
   })
   files.push({
     label: 'samples/lib/6502.inc',

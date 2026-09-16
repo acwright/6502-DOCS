@@ -3,7 +3,7 @@
 Switch it on. You'll hear a short beep, and the screen says:
 
 ```
--- 6502 BIOS v1.5 --
+-- 6502 BIOS v1.6 --
 ENTER=BASIC  ESC=MONITOR
 ```
 
@@ -26,7 +26,7 @@ OK
 
 <Figure
   src="/images/screens/boot-splash.png"
-  alt="A screen showing two centered lines: dash dash 6502 BIOS v1.5 dash dash, and below it ENTER=BASIC  ESC=MONITOR."
+  alt="A screen showing two centered lines: dash dash 6502 BIOS v1.6 dash dash, and below it ENTER=BASIC  ESC=MONITOR."
   caption="The five seconds you get to choose. Do nothing and BASIC starts."
   screen
 />
@@ -59,7 +59,7 @@ kilobytes, which in BASIC is a lot: a substantial game fits in half of it.
 
 ::: details Three version numbers, all different
 The ROM contains three pieces of software and they don't share a version
-number. The **BIOS** is v1.5 — that's the top line. **BASIC** is V2.0 — the
+number. The **BIOS** is v1.6 — that's the top line. **BASIC** is V2.0 — the
 banner underneath. The **Monitor** is v1.1, and doesn't announce itself until
 you go there. Don't be alarmed when they disagree; they're meant to.
 :::

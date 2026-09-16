@@ -17,7 +17,7 @@
 
   <div class="pg-header">
     <h1>Memory Map</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>Memory map &middot; BIOS v1.5</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Memory map &middot; BIOS v1.6</div>
   </div>
 
   <div class="pg-body">
@@ -50,7 +50,7 @@
           <tr><td class="td-addr">$0000&ndash;$00FF</td><td class="td-desc">256 B</td><td class="td-desc">Kernal, BASIC, Monitor and XModem workspace; $003A-$00FF is unclaimed by the Kernal</td></tr>
           <tr><td class="td-addr">$0100&ndash;$01FF</td><td class="td-desc">256 B</td><td class="td-desc">Hardware stack; BASIC keeps its FOR and GOSUB frames here</td></tr>
           <tr><td class="td-addr">$0200&ndash;$02FF</td><td class="td-desc">256 B</td><td class="td-desc">256-byte input buffer filled by the encoders, drained by Chrin</td></tr>
-          <tr><td class="td-addr">$0300&ndash;$03FF</td><td class="td-desc">256 B</td><td class="td-desc">Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers</td></tr>
+          <tr><td class="td-addr">$0300&ndash;$03FF</td><td class="td-desc">256 B</td><td class="td-desc">Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID</td></tr>
           <tr><td class="td-addr">$0400&ndash;$05FF</td><td class="td-desc">512 B</td><td class="td-desc">BAS_LINBUF raw input line ($0400) and BAS_TOKBUF tokenized scratch ($0500)</td></tr>
           <tr><td class="td-addr">$0600&ndash;$07FF</td><td class="td-desc">512 B</td><td class="td-desc">512-byte sector buffer; any filesystem call clobbers it</td></tr>
           <tr><td class="td-addr">$0800&ndash;$7FFF</td><td class="td-desc">30 KB</td><td class="td-desc">BASIC program text grows up from $0800; variables, then arrays, then the string heap growing down from $8000</td></tr>
@@ -70,7 +70,7 @@
           <tr><td class="td-addr">$FFFA&ndash;$FFFF</td><td class="td-desc">6 B</td><td class="td-desc">VECTORS</td></tr>
         </tbody>
       </table>
-      <div class="note-box"><strong>One EEPROM, three version numbers.</strong> BIOS v1.5, BASIC V2.0 and Monitor v1.1 all ship in the same 32 KB chip.</div>
+      <div class="note-box"><strong>One EEPROM, three version numbers.</strong> BIOS v1.6, BASIC V2.0 and Monitor v1.1 all ship in the same 32 KB chip.</div>
     </div>
     <div class="section">
       <span class="sec-title">The I/O window</span>
@@ -104,7 +104,7 @@
 
   <div class="pg-header">
     <h1>Memory Map</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>Memory map &middot; BIOS v1.5</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Memory map &middot; BIOS v1.6</div>
   </div>
 
   <div class="pg-body">

@@ -3,23 +3,23 @@
     "title": "Boot sequence",
     "description": "Version, the boot menu, and the strings the machine prints on the way up.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.5",
+    "biosVersion": "1.6",
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "badfb994c70b2ace7bc1733fdc6a384cdfce53e33e0dad28862785e29085b3d3"
+        "sha256": "5720c2f055913d48ef0e63abdff466ab77145acbe90aaea43445387a6abe162d"
       },
       {
         "file": "Kernal.asm",
-        "sha256": "166c5dc1e0219f8ec9742ea7e81e3e1b57cb68e9f7cbc4ee5848c3678047b7bf"
+        "sha256": "e38b994242088af2183da64ff8ee23032c57c38fbbeab426ecea0714d9eae7eb"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
   },
   "version": {
     "major": 1,
-    "minor": 5,
-    "string": "v1.5",
+    "minor": 6,
+    "string": "v1.6",
     "source": "BIOS.inc:134-135",
     "check": "GREP"
   },
@@ -28,15 +28,15 @@
   "strings": [
     {
       "symbol": "@SplashTitle",
-      "text": "-- 6502 BIOS v1.5 --",
+      "text": "-- 6502 BIOS v1.6 --",
       "derivedFrom": "BIOS_VERSION_MAJOR/MINOR",
-      "source": "Kernal.asm:3135",
+      "source": "Kernal.asm:3408",
       "check": "GREP"
     },
     {
       "symbol": "@SplashMenu",
       "text": "ENTER=BASIC  ESC=MONITOR",
-      "source": "Kernal.asm:3136",
+      "source": "Kernal.asm:3409",
       "check": "GREP"
     }
   ],
