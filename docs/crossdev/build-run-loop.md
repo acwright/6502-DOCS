@@ -121,11 +121,13 @@ And for a machine-readable summary, add `--json`, which prints one line to
 stderr on exit:
 
 ```json
-{"reason":"exit-on","cycles":439400,"wallMs":54}
+{"reason":"exit-on","cycles":439400,"wallMs":54,"output":"-- 6502 BIOS v1.6 --\r\nENTER=BASIC  ESC=MONITOR\r\n\r\n6502 BASIC V2.0\r\n30671 BYTES FREE\r\n\r\nOK\r\nRUN\r\n10\r\n9\r\n8\r\n7\r\n6\r\n5\r\n4\r\n3\r\n2\r\n1\r\nLIFT OFF\r\n"}
 ```
 
 `reason` tells you *why* it stopped — `exit-on`, `timeout`, `max-cycles` — which
-is more useful than the exit code alone when a run can end several ways.
+is more useful than the exit code alone when a run can end several ways. With
+`--exit-on`, `output` carries everything the machine printed on the way, so a
+script can check it without capturing the console separately.
 
 ## Useful ways to start a machine
 
