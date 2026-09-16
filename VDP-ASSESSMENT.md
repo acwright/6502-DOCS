@@ -29,12 +29,17 @@ whose last release is **1.6**.
   - The PICOVDP work in `6502-EMULATOR`'s `docs/handoff/6502-BIOS.md` (branch `v3-vdp`):
     card detection, hardware scroll, port B for interrupt handlers, `WaitVBlank`.
   - A console in the PICOVDP's **Text mode** (`VMODE $1`, 40×24, 6×8 cells) with a
-    **per-cell colour table**. It keeps the ROM font and every screen layout.
+    **per-cell colour table**. It keeps the same font and every screen layout.
   - **No Monitor.** The machine **boots straight to BASIC**, with a new header and a colour
-    logo drawn from the ROM font's CP437 block characters. Wozmon stays at `$FF00`.
-  - **BASIC takes the Monitor's 4.3 KB** (`$C000–$FEFF`). The Kernal (`$A000–$B7FF`) and
-    the character set (`$B800`) do not move, because cartridges overlay `$C000–$FFFF`.
-    The Kernal holds the primitives cartridges need; BASIC-only work lives in BASIC.
+    logo drawn from the font's CP437 block characters. Wozmon stays at `$FF00`.
+  - **The font lives in the PICOVDP firmware.** The card loads it into VRAM at reset and
+    on command (a new register and a capability bit, SPEC draft 0.5). ROM `$B800` holds
+    no font on 2.x.
+  - **ROM layout:** BASIC takes the Monitor's 4.3 KB (`$C000–$FEFF`), and the Kernal takes
+    all of `$A000–$BFFF`, including the space the font used. Nothing the Kernal needs goes
+    above `$C000`, because cartridges overlay `$C000–$FFFF`. The Kernal holds the
+    primitives cartridges need; BASIC-only work lives in BASIC.
+  - **No TMS9918A support.** BIOS 2.x runs only with a PICOVDP, with no fallback paths.
   - **New BASIC commands with matching Kernal entries.**
     - Core: `SCREEN`, `VPOKE`/`VPEEK`, `VREG`, `PALETTE`, `VSYNC`, `VLOAD`.
     - Second tier, if room is found: `SPRITE`, `SCROLL`, `LAYER`, `VSTAT`.
@@ -74,11 +79,15 @@ whose last release is **1.6**.
 
 **Part 2: the VDP**
 
-6. **6502-PICOVDP:** firmware proven on the PRO (its Phases 9–11). This gates the
-   hardware switch, not the software work.
+6. **6502-PICOVDP:**
+   - SPEC draft 0.5 adds the built-in font and its load command. The emulator's PICOVDP
+     card implements it first, then the firmware.
+   - Firmware proven on the PRO (its Phases 9–11) gates the hardware switch, not the
+     software work.
 7. **6502-EMULATOR:** `v3-vdp` merged, with the card as an option; tagged 3.x.
 8. **6502-BIOS:** 2.0 on `main`. This can start once step 1 is done, because the `v3-vdp`
-   emulator already runs the PICOVDP.
+   emulator already runs the PICOVDP. Its console work needs the built-in font in the
+   emulator (step 6).
 9. **6502-ASM** sets the VDP include convention. 6502-CRT, 6502-PRG, 6502-BIN and 6502-C
    follow it.
 10. **Everything else follows BIOS 2.0:**
@@ -188,6 +197,9 @@ Follow the handoff section by section, then the BIOS 2.x changes it predates:
     `samples/lib/6502.inc`.
   - `monitor-commands.json` has no source on 2.x, so the extractor stops producing it on
     `main`.
+  - `charset.json` and the character-set reference page: on `main` the glyphs come from
+    6502-PICOVDP's font source, because `Chars.asm` leaves 6502-BIOS `main`. `v1` keeps
+    extracting from `Chars.asm`.
 - **BIOS 2.x changes beyond the handoff:**
   - **Monitor gone.** `using/monitor.md`, its nav entry and card, and every
     "ESC=MONITOR", `BRK`-statement and Monitor `L`/`S` mention stay in `v1` only.
@@ -197,6 +209,11 @@ Follow the handoff section by section, then the BIOS 2.x changes it predates:
     BASIC with the new colour header, and no menu.
   - **Console.** Text mode with per-cell colour. `COLOR fg[,bg[,border]]` sets the pen;
     `CLS` fills with it.
+  - **Memory map.** No character set at `$B800`; the Kernal is `$A000–$BFFF`; the font is
+    in the card, loaded at reset and by `VdpLoadFont`. Document the load command for
+    programs that replace the pattern table.
+  - **Requirements.** BIOS 2.x needs a PICOVDP (and a firmware version with the built-in
+    font); it does not run on a TMS9918A.
   - **BASIC reference.** Document every new keyword: `SCREEN`, `VPOKE`/`VPEEK`, `VREG`,
     `PALETTE`, `VSYNC`, `VLOAD`, the second tier and the save-slot commands, whichever
     ship. Note the token-stability promise (1.x programs run unchanged, except `BRK`)
@@ -219,7 +236,7 @@ Follow the handoff section by section, then the BIOS 2.x changes it predates:
 |---|---|---|
 | 6502-EMULATOR | `~/Developer/NodeJS/6502-EMULATOR` | 2.7.0 with BIOS 1.6 (A); frozen `/v2/` build (B); card parameter and 3.x tag (D); `docs/handoff/6502-DOCS.md` on `v3-vdp` |
 | 6502-BIOS | `~/Developer/Assembly/6502-BIOS` | Facts are extracted from `v1.6`/`v1.x` for `v1` and from `main` for the rewrite; its assessment lists the 2.x changes |
-| 6502-PICOVDP | `~/Developer/C/6502-PICOVDP` | `SPEC.md` is the source for the new chapters; firmware release and flashing |
+| 6502-PICOVDP | `~/Developer/C/6502-PICOVDP` | `SPEC.md` is the source for the new chapters; the font source for `charset.json` on `main`; firmware release and flashing |
 | 6502-ACE | `~/Developer/Kicad/6502-ACE` | Hardware requirement (PRO v2.0), cards |
 | bastok | `~/Developer/NodeJS/bastok` | Builds the BASIC embeds: 1.x table for `v1`, 2.x table for `main` |
 | 6502-ASSEMBLY | `~/Developer/YouTube/6502-ASSEMBLY` | Episode 5 teaches the legacy VDP and links to these docs, and should link to `v1` |
