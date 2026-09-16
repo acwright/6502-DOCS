@@ -6,6 +6,12 @@
 > 6502-BIOS `56a9944` (latest tag `v1.5`, 1.6 not yet written) and 6502-EMULATOR `v2.6.9`.
 > Line numbers drift; file and heading names are the durable references. Anything not
 > checked against a file is marked **unverified**.
+>
+> **Status, 2026-09-16:** 6502-BIOS `v1.6` is released (tag at `71e1e66`, GitHub release
+> published) and `v1.x` is cut from it, so P1 holds. The extractor was run against the
+> tagged source in a scratch copy of this repo. §3, A1 and §7 now record what it produced
+> instead of predictions, and two things it turned up are added to A1 and A2. P2–P4 wait on
+> the emulator's 2.7.0 release.
 
 ---
 
@@ -34,7 +40,7 @@ emulator's frozen 2.7.0 build, for every machine that stays on the TMS9918A.
 
 | # | Precondition | Blocks | How to confirm |
 |---|---|---|---|
-| P1 | 6502-BIOS tag `v1.6` exists (cross-repo step 1) | All of A | `git -C ~/Developer/Assembly/6502-BIOS tag -l v1.6` |
+| P1 | ~~6502-BIOS tag `v1.6` exists (cross-repo step 1)~~ **Done:** `v1.6` at `71e1e66`, `v1.x` cut | All of A | `git -C ~/Developer/Assembly/6502-BIOS tag -l v1.6` |
 | P2 | 6502-EMULATOR `v2.7.0` tagged, with BIOS 1.6 bundled (step 2) | A2–A10 (pins, samples, screenshots, CI) | `6502 --version` prints `2.7.0`; `6502 dbg mem A09F 3` on it shows a JMP that is not the reserved stub's target |
 | P3 | Emulator 2.7.0's web build deployed at `/6502-EMULATOR/` | Merging A | The unpinned frame on `main` must already boot a v1.6 splash, or new save-slot machines call `RTS` stubs |
 | P4 | Emulator's frozen build live at `/6502-EMULATOR/v2/` | B4 onward (and so publishing `v1`) | `curl -sI https://acwright.github.io/6502-EMULATOR/v2/embed.html` is 200; `check-links.mjs:496` adds the frame URL to the network check, so `npm run links` on `v1` fails until then |
@@ -53,12 +59,12 @@ hashes (`meta()`, `extract-facts.mjs:1270-1280`), even where its content does no
 | Output | What changes | Notes |
 |---|---|---|
 | `data/boot.json` | `version` → `v1.6`; the `@SplashTitle` text → `-- 6502 BIOS v1.6 --` | Title is interpolated from the equates (`extractBoot`). `source` strings `BIOS.inc:134-135` (`:1095`) and `Kernal.asm:738-765` (`:1116`) are hard-coded and will be stale once the files shift. Provenance only, no gate |
-| `data/kernal.json` | `publishedSlots` 53 → 59; six new slot records; `reserved` 32 → 26 | `extractKernal` reads `Name: jmp Target ; $ADDR - summary` lines and stops at `; Reserved entries` (`:129`). The group is the nearest `; --- … ---` heading above, so without a new heading the six land under "Keyboard encoder control". `readReservedRange` (`:195-209`) takes start/end from the **header comment**, not from the count: if 6502-BIOS leaves `; Reserved entries ($A09F-$A0FE)`, the site will say 26 slots from `$A09F`. `totalSlots` stays **85**, since 59 + 26 = 85 (6502-BIOS `PLAN.md` §3 says "85 → 91", which does not add up) |
-| `data/memory-map.json` | `NV_ID` ($0390) under "Kernal variables", **only if** it sits in the RAM half of `BIOS.inc` | `parseIncSymbols` (`:327-338`) counts a `:=` as an address only above the `; RAM Card \| IO 1` banner (`BIOS.inc:149`). `NV_PTR := STR_PTR` is dropped silently, because the regex needs a numeric value (the existing `PE_PTR := CF_BUF_PTR` is dropped the same way). The `NV_*` `=` constants never reach any output |
-| `data/hardware.json` | Meta only | `RTC_CTRL_B_BME` (`%00100000`) is outside slot 3's window, like `RTC_CTRL_B_TE` today |
-| `data/basic-keywords.json` | Meta only (README hash) | No new keywords. `readmeBasicForms` reads only the README's `### BASIC` tables, so a `SAVEMGR.BAS` code block there is harmless |
-| `data/monitor-commands.json`, `errors.json`, `charset.json` | Meta only | |
-| `samples/lib/6502.inc` | Header `BIOS : v1.6`; six `Nv*` equates; `NV_ID` if extracted; `BIOS_VERSION_MINOR = 6`; reserved-slot comment | **No `NV_*` constants and no `NV_PTR`** (see above). A2 adds them |
+| `data/kernal.json` | `publishedSlots` 53 → 59; six new slot records; `reserved` 32 → 26 | **Confirmed against `v1.6`:** `publishedSlots: 59`, `reserved` `{count: 26, start: "$A0B1", end: "$A0FE"}`, `totalSlots: 85`. 1.6 gave the six a `; --- NVRAM save slots (DS1511Y) ---` heading, so their extracted group is "NVRAM save slots (DS1511Y)". It updated the `; Reserved entries ($A0B1-$A0FE)` comment that `readReservedRange` (`:195-209`) reads. Two quirks of 1.6's doc blocks: see A1 |
+| `data/memory-map.json` | `NV_ID` ($0390) under "Kernal variables" | **Confirmed against `v1.6`:** 1.6 put `NV_ID` above the `; RAM Card \| IO 1` banner, so `parseIncSymbols` (`:327-338`) extracts it. `NV_PTR := STR_PTR` is dropped silently, because the regex needs a numeric value (the existing `PE_PTR := CF_BUF_PTR` is dropped the same way). The `NV_*` `=` constants never reach any output |
+| `data/hardware.json` | Meta, and every `source` line reference (`BIOS.inc` grew 18 lines) | **Confirmed against `v1.6`:** no other content changes. `RTC_CTRL_B_BME` (`%00100000`) is outside slot 3's window, like `RTC_CTRL_B_TE` |
+| `data/basic-keywords.json` | Meta only (README hash) | **Confirmed against `v1.6`:** still 85 keywords. The README's new `#### SAVEMGR.BAS` subsection under `### BASIC` is a code block, which `readmeBasicForms` ignores |
+| `data/monitor-commands.json`, `errors.json`, `charset.json` | Meta only | **Confirmed against `v1.6`** |
+| `samples/lib/6502.inc` | Header `BIOS : v1.6`; six `Nv*` equates; `NV_ID`; `BIOS_VERSION_MINOR = 6`; reserved-slot comment | **Confirmed against `v1.6`** (369 lines). **No `NV_*` constants and no `NV_PTR`**, as predicted. A2 adds them |
 
 Downstream of the fact base:
 
@@ -114,12 +120,23 @@ the save slots (A8–A12).
    so the BIOS checkout's own branch is left alone).
 2. `npm run facts -- --bios /tmp/bios-v1.6`, then `git diff data/ samples/lib/`. Confirm:
    - `kernal.json`: `publishedSlots: 59`, `reserved.count: 26`, `reserved.start: "$A0B1"`,
-     and six slots `NvStat` `$A09F` … `NvFormat` `$A0AE`, each with `input`/`output`
-     read from its doc block.
+     and six slots `NvStat` `$A09F` … `NvFormat` `$A0AE`, each with `output`, and `input`
+     on the five that take arguments.
    - `memory-map.json` lists `NV_ID` at `$0390` under Kernal variables.
    - `boot.json` `version.string` is `v1.6` and `splashMatchesVersion` is `true`.
-3. If `reserved.start` is still `$A09F`, or `NV_ID` is missing, or a slot has no
-   `input`, stop and raise it with 6502-BIOS (§7). Do not patch around it here.
+
+   **All of this already held in a scratch run against the tag (2026-09-16).** Two things
+   to expect:
+   - **`NvFormat` has no `input`, and that is correct.** It takes no arguments, like 28
+     existing slots (`Chrin`, `PrintCRLF` and others). It is not a missing doc block.
+   - **`NvRead`'s `output` has three entries where it means two.** Its doc block wraps a
+     sentence across two `; Output:` continuation lines ("…or a slot that is not" / "valid
+     (A = its status, Y = its owner ID) — the buffer is untouched"). The extractor makes
+     each line an entry. No other slot wraps like this. Fix it in A2, not in 6502-BIOS,
+     because `v1.6` is tagged.
+3. If `reserved.start` is still `$A09F`, or `NV_ID` is missing, or one of the five
+   slots that take arguments has no `input`, stop and raise it with 6502-BIOS (§7). Do not
+   patch around it here.
 
 ### A2. Harden the extractor (same commit)
 
@@ -133,6 +150,9 @@ In `scripts/extract-facts.mjs`:
   `NV_PTR := STR_PTR` as an alias line. Names must match `BIOS.inc` exactly, because the
   legacy include copies (cross-repo step 4) use them too.
 - `RAM_REGIONS` "Kernal variables" purpose (`:223`): add "save-slot owner ID".
+- The doc-block reader behind `input`/`output`: join a line that starts with a lowercase
+  letter onto the entry before it, so `NvRead`'s wrapped sentence becomes one entry (A1).
+  It is the only such line in `v1.6`, so check that nothing else in `kernal.json` changes.
 - Leave the hard-coded `source` line ranges (`:1095`, `:1116`) alone, or re-read them
   from the source. Either way, not a gate.
 
@@ -203,8 +223,10 @@ In `docs/assembly/clock.md`, a new `## Save slots` between "The 256 bytes" (`:51
   and exclusive-OR over the ID and the payload. States free/valid/damaged. A table
   generated from `facts.kernal` for the six entries, not typed.
 - The conventions: carry set means nothing happened; on a failed `NvRead`, A holds the
-  status; the destination is untouched on failure; `NvRead`/`NvWrite` clobber `STR_PTR`;
-  `NV_ID` carries the owner for `NvWrite`.
+  status and Y the owner ID; the destination is untouched on failure; `NvRead`/`NvWrite`
+  clobber `STR_PTR`; `NV_ID` is an input for `NvWrite` only, and nothing writes it back;
+  `X` is preserved by all but `NvFind` and `NvFormat`; D and I come back as the caller had
+  them. The 6502-BIOS README's "NVRAM Save Slots" subsection is the source for all of it.
 - Version check: on an older ROM these six are reserved slots, a bare `RTS` that leaves
   carry as the caller had it. So a cartridge checks `KernalVersion` (1, ≥ 6) first. Link
   `/assembly/detection#which-rom-am-i-on`.
@@ -230,13 +252,19 @@ following the chapter's voice (no Kernal names, no hex beyond what `NVRAM` takes
 - The same layout in BASIC terms: slot `S` starts at `S * 16`, the first byte says who owns
   it, the second is a check number, and 14 bytes are yours. The layout is shared with
   cartridges, so a BASIC program that keeps to it can read a game's save and the reverse.
-- Listing `samples/basic/savemgr.bas` + `.expect`, derived from the `SAVEMGR.BAS` that
-  6502-BIOS adds to its README (PLAN §6, §8.7). If that is not published at `v1.6`, write
-  it here against the same format. It lists all 16 slots as `FREE`, `SAVE nn` or
-  `DAMAGED`, writes one save, and erases a slot. The check-number routine is the subject.
-  There is no XOR keyword, so it uses `(K OR B) - (K AND B)`. The rotate is
-  `C = INT(K / 128) : K = K * 2 - C * 255`. The `.expect` asserts the listing before and
-  after one save and one erase. Uses `send` if the program asks which slot.
+- Listing `samples/basic/savemgr.bas` + `.expect`, derived from the `SAVEMGR.BAS` that is
+  published in the 6502-BIOS README at `v1.6` (its `#### SAVEMGR.BAS` subsection). As
+  published, lines 10–100 list all 16 slots as `SLOT n : FREE`, `SLOT n : ID n` or
+  `SLOT n : DAMAGED ID n`. Subroutines follow: 1000 is status (`T`, `I`), 1500 the
+  checksum step, 2000 write, 3000 read, 4000 erase. The check-number routine is the
+  subject:
+  - There is no XOR keyword, so line 1520 uses `C = (C OR V) - (C AND V)`.
+  - The rotate is line 1510, `C = C * 2 : IF C > 255 THEN C = C - 255`.
+
+  The demo writes and erases nothing, so the sample's own main lines do, using those
+  subroutines. The `.expect` asserts the listing before and after one save and one erase.
+  Keep the subroutine lines identical to the README, so the BIOS suite's check (A10) covers
+  them too.
 - The existing three-line high-score program (`:69-73`) stays. Add a sentence pointing
   from raw bytes to slots when two programs share the card.
 - `data/basic-examples.json`: no change (no new keyword).
@@ -248,6 +276,11 @@ byte with the BASIC routine from A9, POKEs a stub (`LDX #3`, `JSR $A09F`, `STA`,
 `RTS`) above the program and its variables, `SYS`es it, and asserts A = 1 (`NV_VALID`)
 and Y = the owner ID. Then it flips one payload byte and asserts A = 2. Without this, the
 BASIC listing only agrees with itself.
+
+6502-BIOS already holds its README listing to the ROM in both directions
+(`tests/probe/savemgr-and-the-kernal-agree-on-the-slot-format.mjs`). This check is still
+needed, because it covers the copy this repo publishes and runs it on the emulator the
+docs pin.
 
 ### A11. Surrounding pages
 
@@ -524,7 +557,7 @@ jobs:
 
 | To | What |
 |---|---|
-| 6502-BIOS | For the extractor (A1): keep the jump-table line format; give the six entries a `; --- … ---` heading; update the `; Reserved entries ($A0B1-$A0FE)` header; a doc block with `Input:`/`Output:`/`Modifies:` directly above each `Nv*Impl`; put `NV_ID := $0390` with the other `$03xx` equates above the `; RAM Card \| IO 1` banner (the `NV_*` constants can go anywhere). `SAVEMGR.BAS` in the README is the source for A9. `PLAN.md` §3 says "85 → 91 slots", but the table stays 85 (59 + 26). |
+| 6502-BIOS | **Delivered in `v1.6`, nothing outstanding.** The jump-table line format is kept, the six entries have a `; --- NVRAM save slots (DS1511Y) ---` heading, and the header reads `; Reserved entries ($A0B1-$A0FE)`. Each `Nv*Impl` has an `Input:`/`Output:`/`Modifies:` block, and `NV_ID := $0390` sits above the `; RAM Card \| IO 1` banner. `SAVEMGR.BAS` is in the README. The table stays at 85 slots (59 + 26), which the BIOS plan also says. The one wrapped doc line (A1) is handled here, in A2. Any later 1.x change comes from branch `v1.x`, not `main`. |
 | 6502-EMULATOR | P2, P3, P4. `/6502-EMULATOR/v2/embed.html` and `/v2/` are a contract for `v1`: never move them. Storage namespacing (its assessment §C) is theirs. **Keep the TMS9918A as the default card on `main`'s deployed build until 6502-DOCS Part 2 lands**, or tell this repo first (§8 risk 1). Once A merges, `docs/handoff/6502-DOCS.md` §1 is superseded by this plan's §8 risk 1. |
 | 6502-ASSEMBLY | After B7: rung 5 (legacy VDP) links `https://acwright.github.io/6502-DOCS/v1/…` (`assembly/video`, `assembly/graphics`, `f18a/`) rather than the unversioned site. |
 | 6502-PICOCALC | Ships BIOS 1.6 (decided): it re-embeds the `v1.6` ROM and releases a new UF2. Its RTC already models burst mode (`CTRLB_BME` in `src/machine/rtc.c`) and keeps NVRAM in flash, so the save-slot sections apply to it unchanged. `docs/using/picocalc.md` names the release that carries 1.6. |
@@ -550,9 +583,10 @@ jobs:
 2. **One artifact couples the editions.** A broken `v1` build (for example, `npm ci`
    against a registry outage) blocks deploying `main`. That is intended, since publishing
    without it deletes `/v1/`. The fix is on `v1`, or a re-run.
-3. **Extractor silent drops.** `NV_PTR` (alias) is always dropped. `NV_ID` is dropped if it
-   is placed below the I/O banner. A stale reserved-range header is copied as-is. A1 and
-   A2 catch all three, but only if the diff is read.
+3. **Extractor silent drops.** `NV_PTR` (alias) is always dropped, and A2 emits it by hand.
+   At `v1.6`, `NV_ID` is above the I/O banner and the reserved-range header is current, so
+   those two drops don't happen. A wrapped doc line becomes a broken entry, as in `NvRead`
+   (A1, A2). A1 and A2 catch these, but only if the diff is read.
 4. **`kernal.md` omits ungrouped slots silently** until A3 adds the guard.
 5. **Kernal card may spill onto a third page.** `cards:check` does not measure layout
    (A3 print preview).
