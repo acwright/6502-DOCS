@@ -1,7 +1,7 @@
 # Sound and video
 
-The ACE has three voices of SID sound and a 40×24 screen in 16 colors. Here
-is how to reach both from BASIC.
+The ACE has three voices of SID sound and a 40×24 screen where every character
+has colors of its own. Here is how to reach both from BASIC.
 
 ## Making a noise
 
@@ -60,7 +60,8 @@ colors**. Three statements:
 - **`LOCATE row, column`** moves the cursor.
 - **`COLOR foreground, background`** sets the colors for what is printed next,
   each number from 0 to 15. What is already on the screen keeps its own, and
-  `CLS` fills the whole screen with the new pair:
+  `CLS` fills the whole screen with the new pair. The border around the text
+  follows the background:
 
 <ColorChart />
 

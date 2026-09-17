@@ -158,9 +158,9 @@
 }
 
 /**
- * A screenshot is a 40×24 character grid of hard pixels. Smoothing it on the
- * way up turns the character set into porridge, so it is scaled the way the
- * video card draws it: one pixel becomes four.
+ * A screenshot is the video card's 320×240 frame of hard pixels. Smoothing it
+ * on the way up turns the character set into porridge, so it is scaled the way
+ * the card draws it: one pixel becomes four.
  */
 .doc-figure.is-screen img {
   image-rendering: pixelated;
@@ -373,7 +373,7 @@
 }
 
 /**
- * The sixteen TMS9918 text-mode colors, rendered by <ColorChart>. This is
+ * The sixteen text-mode colors, palette row 0, rendered by <ColorChart>. This is
  * the one place actual color is deliberate against the site's otherwise
  * grayscale chrome — the swatch's color is the entire content of the row, the
  * same way a screenshot is shown in color rather than converted to match the

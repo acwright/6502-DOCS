@@ -64,11 +64,13 @@ const EMBEDS = [
   'assembly/hello.asm',
   'assembly/greeting.asm',
   'assembly/screen.asm',
+  'assembly/rainbow.asm',
   'assembly/fanfare.asm',
   'assembly/stick.asm',
   'assembly/clock.asm',
   'assembly/save-slots.asm',
   'assembly/ticker.asm',
+  'assembly/frames.asm',
   'assembly/inventory.asm',
   'assembly/bank-store.asm',
   'assembly/from-basic.bas'

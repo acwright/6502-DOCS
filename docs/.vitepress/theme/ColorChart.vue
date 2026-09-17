@@ -1,8 +1,8 @@
 <script setup lang="ts">
-// The TMS9918's sixteen text-mode colors — `data/hardware.json`'s `colors`
-// field, extracted in `scripts/extract-facts.mjs` from the same names
-// `6502.inc` gives assembly programs, with the RGB the emulator renders each
-// one as. See ACCURACY.md A45 for how that was checked.
+// The sixteen text-mode colors: row 0 of the 6502-PICOVDP's default palette,
+// which puts the TMS9918's colors at their old numbers. `data/hardware.json`'s
+// `colors` field, with the `TMS_*` names `6502-VDP.inc` gives assembly programs
+// and the 12-bit RGB the card draws each one as.
 import { data as facts } from '../data/facts.data.mts'
 
 defineProps<{
@@ -33,7 +33,7 @@ const colors = facts.hardware.colors.entries
     </tbody>
   </table>
   <p class="color-chart-note">
-    0 and 1 look the same — <code>TRANSPARENT</code> has nothing behind it on a
-    VGA monitor, so it comes out black too.
+    0 and 1 look the same — text mode draws color 0 as black. In a graphics
+    layer, 0 is usually transparent instead.
   </p>
 </template>

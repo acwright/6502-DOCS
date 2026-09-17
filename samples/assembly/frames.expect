@@ -1,0 +1,8 @@
+# "The video card's interrupts" — a handler on port B counts the end of every
+# picture for one second of SysDelay. Sixty a second, near enough.
+
+console video
+cycles 3000000
+
+screen ^COUNTING PICTURES FOR ONE SECOND\s*$
+screen ^60 PICTURES\s*$

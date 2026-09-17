@@ -1,0 +1,11 @@
+# "A color for every character" — each line printed in its own pen, then one
+# palette entry changed after a key. The text proves the lines are there; the
+# picture proves the colors, including entry 13 turned orange.
+
+console video
+send X
+
+screen ^EVERY LINE IN ITS OWN PEN\s*$
+screen ^13 MAGENTA\s*$
+screen ^PRESS A KEY TO PUT IT BACK\s*$
+picture 31d58a41

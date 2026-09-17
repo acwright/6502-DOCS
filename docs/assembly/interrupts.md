@@ -127,6 +127,59 @@ clears the serial one, writing the timer's latch clears the timer's. Miss one
 and the processor spends the rest of its life in your handler.
 :::
 
+## The video card's interrupts
+
+The card can interrupt at four moments: when it finishes drawing a picture —
+sixty times a second — when it reaches a chosen line of the screen, when too many
+sprites share a line, and when two sprites touch. It does none of them until a
+program sets the matching bit of its `IRQEN` register.
+
+Talking to the card from a handler has a trap the other chips don't. Every
+command to the card is *two* writes, and the Kernal and BASIC are sending those
+all the time, with interrupts on. A handler that used the same addresses could
+arrive between the two halves of one, and both would be garbled. So the card
+has a second set of addresses, **port B** at `$9C02`–`$9C03`, that the Kernal
+never touches. A handler that uses port B can't collide with anything, and
+there is no need to turn interrupts off around video work.
+
+This program counts the pictures the card draws in one second:
+
+<<< @/../samples/assembly/frames.asm{asm}
+
+```
+RUN
+COUNTING PICTURES FOR ONE SECOND
+60 PICTURES
+
+OK
+```
+
+<Emulator
+  sample="assembly/frames"
+  caption="A second of the video card's interrupts, counted by a handler that never touches the Kernal's side of the card."
+/>
+
+Four details make it work.
+
+**The handler reads `STAT1`.** Port B's status address is set to show status
+register 1, which says which of the card's interrupts are waiting — bit 0 for
+the end of a picture — and reading it is also how the handler tells the card it
+has been dealt with. It clears nothing the foreground might be waiting for.
+
+**It pushes A and pulls it again before chaining.** That is the rule from the
+warning above, kept: the stack is as the processor left it when the `jmp`
+happens.
+
+**The interrupt is switched on after the first thing is printed.** Bringing the
+text screen up — which happens on the first output — sets `IRQEN` to zero, and
+so does anything else that calls `InitVideo`. A program that uses the card's
+interrupts switches them on after the screen is up, and again after anything
+that puts text mode back.
+
+**`VBANK` and `VINC` belong to both ports.** This handler never changes them. A
+handler that does must put them back before it returns, because the Kernal's
+next command on port A depends on them.
+
 ## `BRK`
 
 `BRK` is a software interrupt, and on this machine it stops the program and

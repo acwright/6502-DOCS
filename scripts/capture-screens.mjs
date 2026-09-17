@@ -106,6 +106,13 @@ const SHOTS = [
     lines: ['SYS 65280', 'FF00.FF07']
   },
   {
+    name: 'rainbow',
+    subject: 'Fourteen lines in fourteen pens, with color 13 turned orange by one palette write.',
+    where: 'docs/assembly/video.md',
+    program: 'samples/assembly/rainbow.asm',
+    sends: ['X']
+  },
+  {
     name: 'framed-sign',
     subject: 'A framed sign drawn character by character, in the box-drawing glyphs PRINT cannot reach.',
     where: 'docs/assembly/video.md',

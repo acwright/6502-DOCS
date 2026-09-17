@@ -4,7 +4,7 @@ import { withBase } from 'vitepress'
 /**
  * A photograph or a screenshot, with a caption.
  *
- * `screen` marks a picture that came off the video card: 320×192 hard pixels,
+ * `screen` marks a picture that came off the video card: 320×240 hard pixels,
  * which the browser must not smooth on the way up.
  */
 const props = defineProps<{
