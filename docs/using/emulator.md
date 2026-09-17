@@ -70,7 +70,8 @@ only the built-in BIOS follows the card.
 
 There's a third place this machine runs, and it isn't a window on a computer at
 all: a [ClockworkPi PicoCalc](/using/picocalc) — a pocket-sized keyboard and
-screen — will run the whole ACE as its firmware. One file onto the Pico inside
+screen — will run the whole ACE as its firmware. It's the ACE with the older
+video card and BIOS 1.6, which its chapter explains. One file onto the Pico inside
 it and the handheld boots to the `OK` prompt with nothing else involved: no host
 computer, no application, and a battery.
 

@@ -6,6 +6,15 @@ you can put your own firmware on. Put this firmware on it and the handheld *is*
 an ACE — the same ROM, the same BASIC, the same Monitor, the same
 cards answering in the same slots.
 
+::: info The PicoCalc runs BIOS 1.6
+The ACE this firmware turns the handheld into is the one with a TMS9918A video
+card, running BIOS 1.6: the splash, the Monitor, and the screen modes of that
+chip, rather than the 6502-PICOVDP and BIOS 2.0 the rest of this guide
+describes. For programming it, the reference is the
+[BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/using/picocalc) of
+this guide. This page is about the handheld, and holds either way.
+:::
+
 It's a pocket machine rather than a program on a laptop. There's no operating
 system underneath and nothing to launch: one file goes onto the Pico, and from
 the moment you press the power button the 65C02 owns the screen, the keyboard

@@ -200,7 +200,19 @@ export default defineConfig({
     // each theme takes the variant whose plate matches its paper and disappears.
     logo: { light: '/images/logo-bow.png', dark: '/images/logo.png' },
 
-    nav: [{ text: 'Guide', link: '/' }],
+    // Which edition this is, and the way to the other one. The BIOS 1.6 edition
+    // is frozen with a banner of its own that links back here, so the menu is
+    // what a reader with a TMS9918A machine needs on every page of this one.
+    nav: [
+      { text: 'Guide', link: '/' },
+      {
+        text: `BIOS ${BIOS_VERSION}`,
+        items: [
+          { text: `BIOS ${BIOS_VERSION} · 6502-PICOVDP`, link: '/' },
+          { text: 'BIOS v1.6 · TMS9918A', link: V1, target: '_self' }
+        ]
+      }
+    ],
 
     sidebar: [
       {

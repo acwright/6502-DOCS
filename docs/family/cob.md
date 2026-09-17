@@ -5,6 +5,14 @@ const cob = facts.systems.systems.find(s => s.id === 'cob')
 
 # COB — Computer On a Backplane
 
+::: info The COB runs BIOS 1.6
+The COB's video cards are the TMS9918A and its Pico9918 stand-in.
+It runs BIOS 1.6, not the BIOS 2.0 this guide describes, so its programming
+reference — the Monitor, the TMS9918A's screen modes, the BIOS it boots — is the
+[BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/family/cob) of this guide.
+The rest of this page is about the machine itself, and holds either way.
+:::
+
 The first machine in the family, and still the best one to build if you want to
 *see* how a 6502 computer works.
 
