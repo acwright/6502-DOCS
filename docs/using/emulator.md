@@ -13,10 +13,13 @@ CompactFlash card.
 
 ## In the browser
 
-<https://acwright.github.io/6502-EMULATOR/>
+<https://acwright.github.io/6502-EMULATOR/?vdp=picovdp>
 
-Nothing to install. Open it, and you get the splash and the `OK` prompt in a
-tab. Everything in this guide works there.
+Nothing to install. Open it, and you get the AC6502 logo, the header and the
+`OK` prompt in a tab. Everything in this guide works there. That address opens
+it with [the video card](#the-video-card) this guide is written for; the app
+remembers whichever card you last chose, and the address overrides it for that
+visit.
 
 It works on a phone too. The picture keeps its 4:3 shape whichever way you turn
 the phone, the controls rearrange themselves to fit, and the **⌨** button puts
@@ -40,6 +43,28 @@ settings.
 
 Grab it from the
 [6502-EMULATOR releases page](https://github.com/acwright/6502-EMULATOR/releases).
+The first time it opens, check **Settings → VIDEO CARD** says
+**6502-PICOVDP**.
+
+## The video card
+
+The emulator can fit either of two video cards in the machine, and the one it
+fits decides which BIOS it boots:
+
+| Settings → VIDEO CARD | Boots | Documented in |
+|---|---|---|
+| **6502-PICOVDP (BIOS 2.x)** | `AC6502 BIOS v2.0`, straight to BASIC | This guide |
+| **TMS9918A (BIOS 1.6)** | The older ACE, with its splash and Monitor | [The BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/using/emulator) |
+
+An ACE in this guide is always the 6502-PICOVDP. If the machine greets you with
+a splash and a countdown instead of the logo and `AC6502 BIOS v2.0`, it has the
+other card fitted, and half of what these pages say won't work on it.
+
+Changing the card is a power cycle with the other card in the slot: memory is
+cleared and the machine boots again, while the CompactFlash card and the clock
+card's memory are kept. The choice is saved, in the desktop app's settings or
+in the browser. A ROM you loaded yourself stays loaded whichever card you pick;
+only the built-in BIOS follows the card.
 
 ## On a handheld
 
@@ -190,6 +215,11 @@ of a real serial cable. Which means you can use it as the terminal for a real
 ACE, or move files between the two with XModem. See
 [Serial and a terminal](/using/serial).
 
+Tick **RTS/CTS flow control** under **Settings → SERIAL** as well. It is off
+until you turn it on, and without it a long listing pasted in from the other
+end arrives with lines missing: the machine asks the sender to wait while
+BASIC stores each line, and only a connection with flow control on listens.
+
 ## Fullscreen
 
 <kbd>F11</kbd>, or <kbd>⌘</kbd>+<kbd>Return</kbd> on a Mac. The picture keeps
@@ -206,17 +236,22 @@ inside a page of yours:
 
 ```html
 <iframe
-  src="https://acwright.github.io/6502-EMULATOR/embed.html?prg=https://your-site.example/game.prg&autostart=1&autotype=RUN%5Cr"
+  src="https://acwright.github.io/6502-EMULATOR/embed.html?vdp=picovdp&prg=https://your-site.example/game.prg&autostart=1&autotype=RUN%5Cr"
   width="640" height="520"
   allow="autoplay; gamepad; fullscreen"
   style="border: 0"
 ></iframe>
 ```
 
-That's the whole integration. `prg` is your program; `autostart` boots the
-machine as the page opens; `autotype` types `RUN` once BASIC is up, so a visitor
-gets a game rather than an `OK` prompt and a puzzle. `%5Cr` is how a `\r` — the
-Enter key — survives being written in a URL.
+That's the whole integration. `vdp=picovdp` fits the video card, and with it
+BIOS 2.0; `prg` is your program; `autostart` boots the machine as the page
+opens; `autotype` types `RUN` once BASIC is up, so a visitor gets a game rather
+than an `OK` prompt and a puzzle. `%5Cr` is how a `\r` — the Enter key —
+survives being written in a URL.
+
+Always name the card. A frame never reads the card a visitor chose in their own
+copy of the emulator, so without `vdp=` it boots whichever card the emulator
+currently starts with, and a program written for this machine needs this one.
 
 640 × 520 is the video output doubled, plus the emulator's control bar. Add
 `&controls=none` and 640 × 480 fits the picture exactly.
@@ -270,7 +305,7 @@ base64 < game.prg | tr '+/' '-_' | tr -d '=\n'
 Paste the result in place of the whole `prg=…`:
 
 ```
-…/embed.html?prg64=AQgLCAoAmSJIRUxMTyIAAAA&autostart=1&autotype=RUN%5Cr
+…/embed.html?vdp=picovdp&prg64=AQgLCAoAmSJIRUxMTyIAAAA&autostart=1&autotype=RUN%5Cr
 ```
 
 Now the link *is* the game. Nothing is fetched, so it works from anywhere —
@@ -352,17 +387,26 @@ The desktop app installs a `6502` command (**Settings → Command Line →
 Install**). It's how you'd fold the emulator into a build:
 
 ```
-6502 run --headless mygame.prg
+6502 run --headless --vdp picovdp --flow-control mygame.prg
 ```
 
 `--headless` runs with no window at all, wired to your terminal. Useful flags:
 
 | Flag | What it does |
 |---|---|
+| `--vdp picovdp` | Fit the 6502-PICOVDP, and boot BIOS 2.0 — give it every time |
+| `--flow-control` | Hold typed or piped input while the machine asks it to wait, so a long listing arrives whole |
 | `--cf disk.img` | Attach a card image |
 | `--console video` | Use the video screen instead of the serial console |
+| `--screenshot shot.png` | Save the last picture on the screen when it stops (with `--console video`) |
 | `--freq 2` | Run the CPU at 2 MHz |
 | `--timeout 30s` | Stop after a while, whatever happens |
 
+`--vdp` picks the BIOS even when there's no screen: a serial console has no
+video card fitted, but the machine still boots the BIOS that goes with the card
+you named.
+
 There's a debugger in there too — breakpoints, single-stepping, memory
-watching, screenshots — which the assembly chapters of this guide use heavily.
+watching, screenshots — which the [cross-development
+chapters](/crossdev/debugging) of this guide use heavily. A snapshot of a
+machine remembers which video card it had, and loads only on that card.
