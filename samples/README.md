@@ -17,7 +17,7 @@ A listing that cannot be verified does not go in.
 | `embed/` | The starter page the emulator chapter hands a reader who wants their program on the web |
 | `_checks/` | Regression cases that are **never shown** in the docs |
 | `_harness/` | Cases that test the harness itself, not the machine |
-| `lib/` | `6502.cfg` (linker config) and `6502.inc` (**generated** — see below) |
+| `lib/` | `6502.cfg` (linker config) and `6502-VDP.inc` (**a copy of 6502-ASM's** — see below) |
 | `build/` | Assembler output and boot snapshots. Git-ignored, rebuilt every run. |
 
 ### Shown versus not shown
@@ -101,6 +101,7 @@ One directive per line; `#` starts a comment. A case must assert something.
 | `absent <regex>` | Console output must not match |
 | `pass` | Shorthand for `expect ^PASS$` + `absent ^FAIL$` — `_checks/` only |
 | `screen <regex>` | `dbg screen text` must match — implies `console video` |
+| `picture <hash>` | `dbg screen hash` must be exactly these eight hex digits — implies `console video` |
 | `console serial\|video\|storage` | Which machine to run on (default `serial`) |
 | `wait <regex>` | What `RUN` waits for before asserting (default `OK`, serial only) |
 | `cycles <n>` | Emulated cycles to advance after each send (video only, default 2,000,000) |
@@ -120,6 +121,13 @@ its own machine booted with `--console video`.
 
 Screen rows are padded to the full 40 columns, so anchor with `\s*$` rather than
 `$`.
+
+A program that draws tiles, sprites or colors rather than text asserts with
+`picture`: the digest of the whole frame, taken once the last `send` has
+settled. The machine is deterministic — pinned clock, fixed cycle budgets — so
+the same program draws the same frame, and one wrong pixel changes the digest.
+To take a new one, run the case with a placeholder digest and copy the one the
+failure reports, after looking at the picture (`npm run screens` shows it).
 
 ### Storage cases
 
@@ -148,7 +156,7 @@ The method is the one in
 
 - **Boot once.** One emulator per console mode, clock pinned with
   `--rtc 2026-01-01T00:00:00`, snapshotted at the `OK` prompt.
-- **Restore per case.** About a millisecond, against 5.36 million cycles to
+- **Restore per case.** About a millisecond, against the 330,000 cycles it takes to
   boot — and exact, so one case cannot leak into the next.
 - **Wait, never sleep.** Serial cases block on a console pattern; video cases
   advance a fixed *emulated-cycle* budget, so the result does not depend on how
@@ -160,14 +168,16 @@ The method is the one in
 cannot fail is not testing anything, so that case is reported `ok` when its
 assertions do *not* hold — and goes red if they ever do.
 
-## `lib/6502.inc` is generated
+## `lib/6502-VDP.inc` is a copy
 
-It is written by `npm run facts` from the BIOS source, so a sample can never
-assemble against a stale address. Do not edit it; change the BIOS and
-regenerate.
+It is [`6502-ASM`](https://github.com/acwright/6502-ASM)'s `6502-VDP.inc`,
+byte for byte — the include a reader's `make VDP=1` project uses, and the one
+the [`6502-PRG`](https://github.com/acwright/6502-PRG) and
+[`6502-CRT`](https://github.com/acwright/6502-CRT) templates ship. So every
+listing on the site says `.include "6502-VDP.inc"` exactly as the reader's own
+program would.
 
-Reader-facing projects use the equivalent file shipped with the
-[`6502-PRG`](https://github.com/acwright/6502-PRG) and
-[`6502-CRT`](https://github.com/acwright/6502-CRT) templates. The two are
-derived from the same machine; diffing them is tracked in
-[`ACCURACY.md`](../ACCURACY.md).
+Do not edit it here. `npm run facts` and `npm run facts:check` hold it to the
+fact base — every Kernal slot, `HW_*` flag, I/O register and palette row 0
+color, and every RAM variable it names — and fail if the BIOS has moved on
+without it. The fix is a fresh copy from `6502-ASM`, never a local change.

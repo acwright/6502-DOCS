@@ -23,7 +23,7 @@
   <div class="pg-body">
     <div class="section">
       <span class="sec-title">The contract</span>
-      <div class="note-box"><strong>Call the slot, never the implementation.</strong> 72 entry points, three bytes each, starting at <code>$A000</code> and in an order that does not change. <code>jsr $A000</code> prints a character on this ROM and on the next one. <code>6502.inc</code> gives every slot its name, so you will write <code>jsr Chrout</code>.</div>
+      <div class="note-box"><strong>Call the slot, never the implementation.</strong> 72 entry points, three bytes each, starting at <code>$A000</code> and in an order that does not change. <code>jsr $A000</code> prints a character on this ROM and on the next one. <code>6502-VDP.inc</code> gives every slot its name, so you will write <code>jsr Chrout</code>.</div>
       <div class="note-box"><strong>Arguments go in registers.</strong> A, X and Y in, A, X, Y or the carry flag out. Nothing is passed on the stack.</div>
       <div class="note-box"><strong>The tail of the table.</strong> 13 slots from <code>$A0D8</code> to <code>$A0FE</code> are reserved. Each is a real jump to a bare <code>RTS</code>, so calling one is harmless now and may do something later. Do not put your own code there.</div>
     </div>

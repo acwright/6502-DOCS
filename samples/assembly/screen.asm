@@ -7,7 +7,7 @@
 
 .setcpu "65C02"
 
-.include "6502.inc"
+.include "6502-VDP.inc"
 
 .segment "CODE"
 

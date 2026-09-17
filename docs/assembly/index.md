@@ -47,7 +47,7 @@ that make 65C02 code fast.
 **Call the slot, not the implementation.** Every routine in the ROM has two
 addresses: the one in the jump table at the bottom of the Kernal, and the one
 the code actually sits at. The first never changes. The second moves whenever
-the ROM is rebuilt. Use the names in `6502.inc` and this will never be your
+the ROM is rebuilt. Use the names in `6502-VDP.inc` and this will never be your
 problem.
 
 Start with [the 65C02](/assembly/65c02).

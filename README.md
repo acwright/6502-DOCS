@@ -99,7 +99,7 @@ the site is generated from these files at build time — no address, opcode,
 keyword or error string on this site is typed in by hand.
 
 ```sh
-npm run facts         # regenerate data/ and samples/lib/6502.inc
+npm run facts         # regenerate data/, and check samples/lib/6502-VDP.inc against it
 npm run facts:check   # fail if either is stale (run before committing)
 ```
 

@@ -34,8 +34,8 @@ OK
 **`.setcpu "65C02"`** tells the assembler which processor it is writing for, so
 that `bra` and `stz` are allowed.
 
-**`.include "6502.inc"`** brings in every Kernal routine, hardware register and
-useful constant by name. It comes with the
+**`.include "6502-VDP.inc"`** brings in every Kernal routine, hardware register
+and useful constant by name. It comes with the
 [program template](/crossdev/templates), and it is why the program says
 `jsr PrintStr` instead of `jsr $A090`.
 

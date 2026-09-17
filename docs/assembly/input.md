@@ -26,7 +26,9 @@ already called it by the time your program runs.
 ```
 
 One byte each, and **every bit is upside down**: a bit reads 1 while nothing is
-happening and drops to 0 while that direction or button is held.
+happening and drops to 0 while that direction or button is held. The include
+doesn't name the bits, so the names below are the ones the program further down
+gives them itself.
 
 | Bit | Mask | |
 |---|---|---|

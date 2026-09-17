@@ -431,7 +431,7 @@ function kernalJumpTable() {
               `${kernal.publishedSlots} entry points, three bytes each, starting at ` +
               `<code>${esc(kernal.base)}</code> and in an order that does not change. ` +
               `<code>jsr ${esc(kernal.base)}</code> prints a character on this ROM and on the next one. ` +
-              `<code>6502.inc</code> gives every slot its name, so you will write <code>jsr Chrout</code>.`),
+              `<code>6502-VDP.inc</code> gives every slot its name, so you will write <code>jsr Chrout</code>.`),
             note('Arguments go in registers.',
               'A, X and Y in, A, X, Y or the carry flag out. Nothing is passed on the stack.'),
             note('The tail of the table.',

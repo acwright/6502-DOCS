@@ -6,12 +6,23 @@
 
 .setcpu "65C02"
 
-.include "6502.inc"
+.include "6502-VDP.inc"
 
 .segment "CODE"
 
 BasicStartup:
   .byte $0A, $08, $0A, $00, $A5, $32, $30, $36, $30, $00, $00, $00
+
+; One bit per direction and button. The include names the routines that read a
+; stick but not the bits, so they are named here.
+JOY_R = %10000000
+JOY_L = %01000000
+JOY_D = %00100000
+JOY_U = %00010000
+JOY_Y = %00001000
+JOY_X = %00000100
+JOY_B = %00000010
+JOY_A = %00000001
 
 Reading := $40
 Anything := $41

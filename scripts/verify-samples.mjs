@@ -166,6 +166,10 @@ function discoverExamples() {
  *   expect <pattern>     console output must match this regex
  *   absent <pattern>     console output must not match this regex
  *   screen <pattern>     `dbg screen text` must match — implies console video
+ *   picture <hash>       `dbg screen hash` must be exactly this — implies console
+ *                        video. For a program that draws rather than prints:
+ *                        the text reading of a tile screen says nothing, and
+ *                        the digest changes if one pixel of it does
  *   pass                 shorthand for: expect ^PASS$ / absent ^FAIL$
  *   expect-failure       this case is meant to fail; the harness inverts it
  */
@@ -179,6 +183,7 @@ function parseExpect(path) {
     expect: [],
     absent: [],
     screen: [],
+    picture: null,
     expectFailure: false,
     file: relative(ROOT, path)
   }
@@ -222,6 +227,13 @@ function parseExpect(path) {
         spec.screen.push({ pattern: value, where })
         spec.console = 'video'
         break
+      case 'picture':
+        if (!/^[0-9a-f]{8}$/.test(value)) {
+          throw new Error(`${where}: picture must be the eight hex digits \`dbg screen hash\` prints`)
+        }
+        spec.picture = { hash: value, where }
+        spec.console = 'video'
+        break
       case 'pass':
         spec.expect.push({ pattern: '^PASS$', where })
         spec.absent.push({ pattern: '^FAIL$', where })
@@ -234,7 +246,7 @@ function parseExpect(path) {
     }
   }
 
-  if (!spec.expect.length && !spec.absent.length && !spec.screen.length) {
+  if (!spec.expect.length && !spec.absent.length && !spec.screen.length && !spec.picture) {
     throw new Error(`${spec.file}: asserts nothing`)
   }
 
@@ -388,7 +400,7 @@ function buildAssembly(caseFile) {
     [
       '-t', 'none',
       '-C', join(SAMPLES, 'lib', '6502.cfg'),
-      // The generated 6502.inc lives in samples/lib, next to the config.
+      // 6502-VDP.inc, 6502-ASM's include, lives in samples/lib, next to the config.
       '--asm-include-dir', join(SAMPLES, 'lib'),
       '-o', prg,
       caseFile.path
@@ -477,6 +489,14 @@ function runCase(machine, caseFile) {
     output += `\n--- screen ---\n${screen}`
     for (const { pattern, where } of spec.screen) {
       if (!new RegExp(pattern, 'm').test(screen)) failures.push(`${where}: screen expected /${pattern}/`)
+    }
+  }
+
+  if (spec.picture) {
+    const { hash } = JSON.parse(machine.dbg(['screen', 'hash', '--json'], { required: true }).out)
+    output += `\n--- picture ---\n${hash}`
+    if (hash !== spec.picture.hash) {
+      failures.push(`${spec.picture.where}: picture is ${hash}, expected ${spec.picture.hash}`)
     }
   }
 
