@@ -1,0 +1,6 @@
+# "Layers and sprites" — a 4-bit layer, a text layer over it and four sprites,
+# in Full mode, held still until a key. Asserted on that still picture.
+
+console video
+
+picture feaa520a

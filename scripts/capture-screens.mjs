@@ -113,6 +113,18 @@ const SHOTS = [
     sends: ['X']
   },
   {
+    name: 'tiles',
+    subject: 'Four 4-bit tiles repeated across a Graphics-mode screen, a palette row per cell.',
+    where: 'docs/assembly/graphics.md',
+    program: 'samples/assembly/tiles.asm'
+  },
+  {
+    name: 'sprites',
+    subject: 'Full mode: a scrolling sea on layer 0, a line of text on layer 1, and four sprites.',
+    where: 'docs/assembly/layers.md',
+    program: 'samples/assembly/sprites.asm'
+  },
+  {
     name: 'framed-sign',
     subject: 'A framed sign drawn character by character, in the box-drawing glyphs PRINT cannot reach.',
     where: 'docs/assembly/video.md',

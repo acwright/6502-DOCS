@@ -1,3 +1,7 @@
+<script setup>
+import { data as facts } from '../.vitepress/data/facts.data.mts'
+</script>
+
 # Where to start
 
 BASIC is a good place to live. Assembly is where you go when you want the
@@ -31,7 +35,7 @@ how instructions reach memory, and what lives where. Read them once, then come
 back when something surprises you.
 
 [The Kernal](/assembly/kernal) is the chapter everything else leans on. It is
-the machine's API — 53 routines at fixed addresses that do the hard parts, and
+the machine's API — {{ facts.kernal.publishedSlots }} routines at fixed addresses that do the hard parts, and
 the reason a twelve-line program can print on the screen.
 
 After that the chapters are by job: putting characters on the screen, making a

@@ -1,0 +1,6 @@
+# "The graphics modes" — four 4-bit tiles on a Graphics-mode screen, a palette
+# row per cell. Nothing on it is text, so the picture is what is asserted.
+
+console video
+
+picture 5c7b490d

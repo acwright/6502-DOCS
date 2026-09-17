@@ -1,0 +1,10 @@
+# "What's fitted" — VdpInfo on the emulator's 6502-PICOVDP: firmware 0.5 and
+# every feature bit this card sets.
+
+console video
+
+screen ^6502-PICOVDP, FIRMWARE 0\.5\s*$
+screen ^TWO LAYERS\s+YES\s*$
+screen ^256-COLOR TILES\s+YES\s*$
+screen ^64 KB OF MEMORY\s+YES\s*$
+screen ^CHARACTER SET\s+YES\s*$

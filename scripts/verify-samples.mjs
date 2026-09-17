@@ -169,7 +169,10 @@ function discoverExamples() {
  *   picture <hash>       `dbg screen hash` must be exactly this — implies console
  *                        video. For a program that draws rather than prints:
  *                        the text reading of a tile screen says nothing, and
- *                        the digest changes if one pixel of it does
+ *                        the digest changes if one pixel of it does. Only for
+ *                        a picture that has stopped changing: the machine runs
+ *                        free between sends, so a moving one is caught at a
+ *                        different frame every run
  *   pass                 shorthand for: expect ^PASS$ / absent ^FAIL$
  *   expect-failure       this case is meant to fail; the harness inverts it
  */

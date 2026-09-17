@@ -65,6 +65,8 @@ const EMBEDS = [
   'assembly/greeting.asm',
   'assembly/screen.asm',
   'assembly/rainbow.asm',
+  'assembly/tiles.asm',
+  'assembly/sprites.asm',
   'assembly/fanfare.asm',
   'assembly/stick.asm',
   'assembly/clock.asm',
@@ -72,6 +74,7 @@ const EMBEDS = [
   'assembly/ticker.asm',
   'assembly/frames.asm',
   'assembly/inventory.asm',
+  'assembly/which-card.asm',
   'assembly/bank-store.asm',
   'assembly/from-basic.bas'
 ]

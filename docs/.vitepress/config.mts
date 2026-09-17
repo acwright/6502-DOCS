@@ -300,6 +300,7 @@ export default defineConfig({
           { text: 'Console in and out', link: '/assembly/console' },
           { text: 'The screen', link: '/assembly/video' },
           { text: 'The graphics modes', link: '/assembly/graphics' },
+          { text: 'Layers and sprites', link: '/assembly/layers' },
           { text: 'Sound', link: '/assembly/sound' },
           { text: 'The keyboard and the sticks', link: '/assembly/input' },
           { text: 'Files on the card', link: '/assembly/storage' },
