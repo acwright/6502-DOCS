@@ -15,15 +15,33 @@ Work through these in order:
 2. **Is the monitor on the right input?** VGA monitors are cheerfully silent
    about being on the wrong channel.
 3. **Try the serial port.** If you have a USB-to-serial adapter, plug it in,
-   open a terminal at 19200 8-N-1, and press reset. If the splash appears
+   open a terminal at 19200 8-N-1, and press reset. If the header appears
    there, the computer is fine and the problem is the video path — cable,
-   monitor, or the video module not seated.
+   monitor, or the video card. The next section is about the card.
 4. **Press reset and listen.** A beep means the machine got as far as booting.
 
 If there is genuinely nothing — no picture, no beep, no serial output — the
-machine may have stopped before the splash because it couldn't find *any*
+machine may have stopped before the header because it couldn't find *any*
 console. Get a serial cable on it; that's the fastest way to find out what it
 thinks is going on.
+
+## The header comes out on serial, and `VDP` isn't in it
+
+The third line of the header lists the cards the machine found, and a missing
+`VDP` means it didn't count the video card as a screen. So it did the next best
+thing and sent the whole console down the serial port.
+
+The machine only takes a video card that identifies itself as a 6502-PICOVDP
+*and* carries its own character set, because the ROM has none: the letters on
+the screen come from the card. Three things fail that test:
+
+- **The card isn't seated,** or its IO ENABLE switch is off.
+- **It's still running the Pico9918's original firmware,** which behaves as a
+  TMS9918A. That card is for BIOS 1.6 — see
+  [Setting up](/getting-started/setup).
+- **Its 6502-PICOVDP firmware is older than the built-in character set.**
+  Update the firmware.
+
 
 ## No sound
 
@@ -116,9 +134,8 @@ up the values for everything that's there:
   </tbody>
 </table>
 
-So `HW=$7F` is everything except video — which is exactly what you'd expect on
-a machine being driven over a serial cable with no monitor attached. And
-`HW=$FF` is everything.
+So `HW=$7F` is everything except video — which is what you'd see on a machine
+with no video card, driven over a serial cable. And `HW=$FF` is everything.
 :::
 
 ## Still stuck

@@ -19,6 +19,15 @@ than a passive adapter, which won't work at all.
 The picture is 640×480. On a widescreen monitor it'll come up as a squarish
 window in the middle, or stretched, depending on the monitor's own settings.
 
+::: tip Which video card
+Everything in this guide is written for an ACE whose video card is a
+**PICO9918 PRO v2.0** running the **6502-PICOVDP** firmware. The firmware for the
+real board hasn't been released yet — until it is, the
+[emulator](/using/emulator) is where that card runs. The earlier Pico9918 boards
+can't run it at all, and an ACE fitted with one has the BIOS 1.6 edition of this
+guide instead: [acwright.github.io/6502-DOCS/v1](https://acwright.github.io/6502-DOCS/v1/).
+:::
+
 ## 2. The keyboard
 
 Nothing to do. The ACE's keyboard is soldered to the board — 67 mechanical

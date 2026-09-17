@@ -24,16 +24,19 @@ It is slow. It's also completely comprehensible, which is the point: there is
 nothing happening inside the ACE that you can't eventually understand.
 
 **Next to it, two 32 KB chips.** One is RAM (what your programs live in while
-they run); one is ROM, holding the BIOS — BASIC, the Monitor, and the routines
-that drive everything else. There's another half a megabyte of RAM on board as
+they run); one is ROM, holding the BIOS — BASIC, the Kernal routines that drive
+everything else, and a copy of the Apple I's Wozmon. There's another half a megabyte of RAM on board as
 well, reached a slice at a time when a program needs more room than BASIC's
 32 KB.
 
-**The little black module** near the video connector is a **Pico9918**. It
-pretends to be a TMS9918A, the video chip from the ColecoVision and the MSX,
-and drives a plain VGA monitor. That's where your 40×24 text screen and its 16
-colors come from. It has a second personality, F18A mode, that it keeps to
-itself until a program asks for it.
+**The little black module** near the video connector is the video card: a
+**PICO9918 PRO** running **6502-PICOVDP** firmware, a video chip written for this
+family and driving a plain VGA monitor. That's where the 40×24 text screen
+comes from, with a color of its own for every character. Underneath the text it
+has four screen layouts up to 320×240, 256 colors on screen out of 4,096, two
+layers that scroll independently and 64 sprites — and a program written for the
+text and simplest graphics modes of the TMS9918A, the ColecoVision and MSX chip
+it grew out of, still runs on it.
 
 **The socketed 28-pin chip** is an **ARMSID** — a drop-in replacement for the
 MOS 6581, the sound chip from the Commodore 64. Three voices, real filters, RCA
@@ -56,9 +59,9 @@ and a 5 V barrel jack.
 **reset button** sits just above the <kbd>Esc</kbd> key, where you can reach it
 without looking — and it is *not* the same as switching off:
 
-- **Reset** restarts the machine but leaves the memory alone. Your program and
-  your variables are still there afterwards; type `LIST` and see. Use it to get
-  out of anything.
+- **Reset** restarts BASIC but keeps your program. The header comes back, the
+  variables start from nothing, and `LIST` shows the program still there. Use it
+  to get out of anything.
 - **Power off, then on** is the clean slate. Memory is cleared and BASIC starts
   from scratch.
 
@@ -100,7 +103,7 @@ which part is misbehaving.
 ::: details Building one yourself
 The ACE is open hardware — the KiCad project, the bill of materials and the
 production files are all in the
-[6502-ACE repository](https://github.com/acwright/6502-ACE). Two things worth
+[6502-ACE repository](https://github.com/acwright/6502-ACE). A few things worth
 knowing before you order boards:
 
 <ul>

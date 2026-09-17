@@ -88,8 +88,8 @@
         },
         {
           "role": "Video",
-          "part": "Pico9918",
-          "detail": "VGA 640×480, TMS9918A-compatible",
+          "part": "PICO9918 PRO v2.0",
+          "detail": "6502-PICOVDP firmware: VGA 640×480, text and tile modes up to 320×240, 256 colors from 4,096, two layers, 64 sprites",
           "slot": 8
         },
         {
@@ -177,11 +177,12 @@
         }
       ],
       "verified": true,
-      "check": "SCHEM — Hardware/ACE Board/Rev 1.0 and Rev 1.1, Hardware/ACE CF Adapter/Rev 1.0 (6502-ACE.kicad_sch): confirms W65C02S, AS6C62256, AT28C256, Pico9918, 6581/ARMSID, 65C51+MAX238, 65C22, DS1511Y, AS6C4008, ATmega1284-P, PS/2 connector, X1, SW70, J1/J6/J8. Rev 1.1 revision note confirmed directly: R1-R4/R25 read 1k in Rev 1.0 and 10k in Rev 1.1, C31 (10uF) exists only in Rev 1.1, and U23 (74HC02) appears four times in Rev 1.1 driving the LOADL/LOADH global labels the note describes, absent from Rev 1.0.",
+      "check": "SCHEM — Hardware/ACE Board/Rev 1.0 and Rev 1.1, Hardware/ACE CF Adapter/Rev 1.0 (6502-ACE.kicad_sch): confirms W65C02S, AS6C62256, AT28C256, the Pico9918 footprint at U3 (the PICO9918 PRO v2.0 fits it with no board change; its firmware is 6502-PICOVDP, per 6502-PICOVDP SPEC.md §2), 6581/ARMSID, 65C51+MAX238, 65C22, DS1511Y, AS6C4008, ATmega1284-P, PS/2 connector, X1, SW70, J1/J6/J8. Rev 1.1 revision note confirmed directly: R1-R4/R25 read 1k in Rev 1.0 and 10k in Rev 1.1, C31 (10uF) exists only in Rev 1.1, and U23 (74HC02) appears four times in Rev 1.1 driving the LOADL/LOADH global labels the note describes, absent from Rev 1.0.",
       "optional": [],
       "builderNotes": [
         "The ACE CF Adapter is a separate small board that plugs into the Storage header — part of the machine, but its own PCB and its own BOM.",
-        "Rev 1.0 boards need the ACE RAM Patch for the banked SRAM to latch reliably. Rev 1.1 fixes it on the board."
+        "Rev 1.0 boards need the ACE RAM Patch for the banked SRAM to latch reliably. Rev 1.1 fixes it on the board.",
+        "The video card is a PICO9918 PRO v2.0 flashed with 6502-PICOVDP firmware. The earlier Pico9918 boards, built on the RP2040, cannot run that firmware; an ACE fitted with one runs BIOS 1.6."
       ],
       "hero": true
     },

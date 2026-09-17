@@ -50,11 +50,13 @@ If you don't have an ACE in front of you, here is one. Start it, wait for the
   in, run them, save them to the memory card.
 - **Make noise.** Three voices of SID sound, the same chip that gave the
   Commodore 64 its voice.
-- **Draw on the screen.** 40 columns by 24 rows, 16 colors, out to any VGA
-  monitor.
+- **Draw on the screen.** 40 columns by 24 rows of text with a color for every
+  character, and underneath it a video card with 256 colors on screen at once,
+  two scrolling layers and 64 sprites, out to any VGA monitor.
 - **Plug in joysticks.** Two Atari-style ports, which is all a good game needs.
-- **Go all the way down.** Underneath BASIC there's a machine-code Monitor, and
-  underneath that there's the bare 65C02. You can get to both.
+- **Go all the way down.** Underneath BASIC there's the bare 65C02. BASIC will
+  load machine code, call it and show you the registers it left behind — and
+  Wozmon, the Apple I's own monitor, is one `SYS` away.
 
 ## Where to go next
 
