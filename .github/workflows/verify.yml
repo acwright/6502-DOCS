@@ -17,7 +17,8 @@ env:
   EMULATOR_REF: v3.1.0
   CC65_REF: master
   CFFS_REF: main
-  BASTOK_REF: main
+  # v1.1.0 is the first release with the BIOS 2.x token table (`--bios 2`).
+  BASTOK_REF: v1.1.0
 
 jobs:
   # Cheap, dependency-free checks on the migrated assets. Split out from

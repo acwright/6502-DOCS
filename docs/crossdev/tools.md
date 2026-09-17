@@ -51,13 +51,18 @@ npm install -g bastok
 ```
 
 ```
-bastok game.txt          # text → game.prg
-bastok game.prg          # program → game.txt
-bastok --tokens          # print the token table
+bastok -b 2 game.txt     # text → game.prg
+bastok -b 2 game.prg     # program → game.txt
+bastok -T -b 2           # print the token table
 ```
 
-It works out the direction from the file extension. [BASIC from your
-editor](/crossdev/basic) is the chapter that uses it.
+It works out the direction from the file extension. **Give it `-b 2` every
+time.** BIOS 2.0 added keywords, and `bastok` starts from the older machine's
+table unless told otherwise. A listing that uses `SCREEN` or `NVSAVE` comes out
+wrong without it (`bastok` prints a warning naming the line), while one that
+doesn't comes out the same either way, which is how a missing `-b 2` hides in a
+build script until the day a program needs a new keyword.
+[BASIC from your editor](/crossdev/basic) is the chapter that uses it.
 
 ## cffs
 

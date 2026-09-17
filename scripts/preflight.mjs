@@ -107,7 +107,7 @@ const checks = [
   { name: '6502', required: true, run: checkEmulator },
   { name: 'cl65', required: true, run: checkCc65 },
   { name: 'cl65-w65c02', required: false, run: checkCc65W65C02 },
-  { name: 'bastok', required: false, run: () => checkOptional('bastok', ['--version'], 'Tokenize .bas text into a .prg') },
+  { name: 'bastok', required: true, run: checkBastok },
   { name: 'cffs', required: false, run: () => checkOptional('cffs', ['--version'], 'Build CompactFlash disk images') },
   { name: 'bin2woz', required: false, run: () => checkOptional('bin2woz', ['--version'], 'Turn a binary into a Wozmon paste-able upload') },
   { name: 'minipro', required: false, run: () => checkOptional('minipro', ['--version'], 'Burn AT28C256 EEPROMs with a TL866') }
@@ -166,6 +166,31 @@ function checkEmulator() {
   }
 
   return { ok: true, version, detail: via }
+}
+
+/**
+ * The oldest bastok that can tokenize for BIOS 2.x.
+ *
+ * `build-embeds.mjs` builds every BASIC payload with `--bios 2`. An older
+ * bastok has no 2.x table, and one without the option at all would stop on it,
+ * so this says why before the embeds check does. CI pins the same release
+ * (`BASTOK_REF` in verify.yml).
+ */
+export const BASTOK_MIN_VERSION = '1.1.0'
+
+function checkBastok() {
+  const result = run('bastok', ['--version'])
+  const purpose = 'Tokenize .bas text into a .prg (the Run this payloads)'
+  if (!result.ok) {
+    return { ok: false, detail: `${purpose}. Not installed: npm install -g bastok` }
+  }
+  const version = (result.stdout + result.stderr).trim().split('\n')[0]
+  const parts = (v) => v.split('.').map(Number)
+  const [a, b] = [parts(version), parts(BASTOK_MIN_VERSION)]
+  const older = a.some(Number.isNaN) || a[0] < b[0] || (a[0] === b[0] && (a[1] < b[1] || (a[1] === b[1] && a[2] < b[2])))
+  return older
+    ? { ok: false, version, detail: `need >= ${BASTOK_MIN_VERSION}, the first with the BIOS 2.x token table (--bios 2)` }
+    : { ok: true, version, detail: `${purpose}, --bios 2` }
 }
 
 /** cc65 is installed and can assemble what the samples and templates use. */

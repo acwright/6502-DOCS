@@ -31,6 +31,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SAMPLES = join(ROOT, 'samples')
 const OUT = join(ROOT, 'data', 'embeds.json')
 
+/** The token table every BASIC payload is built with: the site's BIOS major. */
+const BASTOK_BIOS = '2'
+
 /**
  * Every program a chapter offers to run, by its path under `samples/`.
  *
@@ -95,9 +98,15 @@ const STARTER = { from: 'basic/treasure.bas', to: 'embed/itch/game.prg' }
 // Building one program
 // ---------------------------------------------------------------------------
 
-/** Tokenize a BASIC listing the way `SAVE` would, as a raw image at $0800. */
+/**
+ * Tokenize a BASIC listing the way `SAVE` would, as a raw image at $0800.
+ *
+ * `--bios 2` picks bastok's 2.x token table. bastok's default is still 1.x,
+ * and under `-q` a listing that crunches differently on 2.0 (a `SCREEN`, an
+ * `NVSAVE`) would come out with the 1.x bytes and no warning at all.
+ */
 function tokenize(source, out) {
-  const result = spawnSync('bastok', ['-t', '-q', '-o', out, source], { encoding: 'utf-8' })
+  const result = spawnSync('bastok', ['-t', '-q', '--bios', BASTOK_BIOS, '-o', out, source], { encoding: 'utf-8' })
   if (result.error) throw new Error('bastok is not installed — run `npm run preflight`')
   if (result.status !== 0) {
     throw new Error(`bastok failed:\n${(result.stderr || result.stdout || '').trim()}`)

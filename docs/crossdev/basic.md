@@ -26,7 +26,7 @@ Start with a listing in a text file, line numbers and all:
 Tokenize it:
 
 ```
-bastok -o TABLE.PRG TABLE.txt
+bastok -b 2 -o TABLE.PRG TABLE.txt
 ```
 
 ```
@@ -36,6 +36,11 @@ bastok: wrote 82 bytes to TABLE.PRG
 That's the same form BASIC's own `SAVE` writes: keywords replaced by one-byte
 tokens, lines chained together. It's smaller than the text, and it's what `LOAD`
 expects.
+
+`-b 2` picks BIOS 2.0's keywords. Without it `bastok` uses the older machine's
+list, and a line with `SCREEN`, `SPRITE` or `NVSAVE` in it comes out as the
+letters rather than the keyword — `bastok` warns you when that happens, and
+BASIC says `?SYNTAX ERROR` when it runs.
 
 Put it on a card image and run it:
 
@@ -66,7 +71,7 @@ THE SEVEN TIMES TABLE
 drifting apart:
 
 ```
-bastok -o - TABLE.PRG
+bastok -b 2 -o - TABLE.PRG
 ```
 
 Point it at a program file and you get the listing back on standard output. So
@@ -107,7 +112,7 @@ and a rule in your `Makefile`:
 ```make
 build/%.PRG: listings/%.txt
 	@mkdir -p build
-	bastok -o $@ $<
+	bastok -b 2 -o $@ $<
 ```
 
 Now `make build/TABLE.PRG` rebuilds only what changed, and `git diff` on a
