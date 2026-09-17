@@ -5,4 +5,7 @@ console video
 cycles 3000000
 
 screen ^COUNTING PICTURES FOR ONE SECOND\s*$
-screen ^60 PICTURES\s*$
+# 60 or 61: the second starts wherever the card happens to be in a picture
+# when RUN lands, and the machine runs free between the harness's commands,
+# so which of the two a run sees depends on the host (CI has seen 61).
+screen ^6[01] PICTURES\s*$

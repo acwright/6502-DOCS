@@ -154,6 +154,8 @@ COUNTING PICTURES FOR ONE SECOND
 OK
 ```
 
+Or 61, now and then: the second starts part way through a picture.
+
 <Emulator
   sample="assembly/frames"
   caption="A second of the video card's interrupts, counted by a handler that never touches the Kernal's side of the card."
