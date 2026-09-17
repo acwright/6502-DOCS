@@ -20,7 +20,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { emulatorCommand } from './preflight.mjs'
+import { MACHINE_FLAGS, assertBooted, assertMachine, emulatorCommand } from './preflight.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SAMPLES = join(ROOT, 'samples')
@@ -264,10 +264,16 @@ class Machine {
       String(this.port),
       '--rtc',
       RTC,
+      ...MACHINE_FLAGS,
       // A ceiling on the whole session, so a wedged machine fails the run
       // instead of holding CI open.
       '--timeout',
-      '600s'
+      '600s',
+      // Held at the first instruction until the harness asks it to run. BIOS
+      // 2.0 reaches its prompt in a third of a second of turbo, which is less
+      // time than it takes to connect, so a machine that started on its own
+      // would print its header before anything was watching.
+      '--pause'
     ]
     if (this.consoleMode === 'video') args.push('--console', 'video')
     if (this.consoleMode === 'storage') args.push('--cf', STORAGE_FIXTURE)
@@ -278,10 +284,11 @@ class Machine {
     })
 
     await this.waitForServer()
+    assertMachine(JSON.parse(this.dbg(['info', '--json'], { required: true }).out), this.consoleMode)
 
     // Boot to the BASIC prompt once, then snapshot: a restore is about a
-    // millisecond against 5.36 million cycles to boot, and it is exact, so one
-    // case cannot leak into the next.
+    // millisecond against the 330,000 cycles it takes to boot, and it is exact,
+    // so one case cannot leak into the next.
     this.waitForPrompt()
     this.dbg(['state', 'save', this.state], { required: true })
   }
@@ -299,17 +306,19 @@ class Machine {
     // A storage machine is still a serial console — the only difference is
     // the --cf attached at boot — so it waits the same way.
     if (this.consoleMode !== 'video') {
-      this.dbg(['wait', '--serial', 'OK', '--run', 'turbo', '--timeout', '60s'], { required: true })
+      const boot = this.dbg(['wait', '--serial', 'OK', '--run', 'turbo', '--timeout', '60s', '--json'], { required: true })
+      assertBooted(this.consoleMode, JSON.parse(boot.out).output ?? '')
       return
     }
 
-    // Booting to the prompt costs about 5.4M cycles, most of it the splash's
-    // five-second countdown. Twenty steps of 500k is ample headroom.
+    // Booting to the prompt costs about 330,000 cycles: BIOS 2.0 has no splash
+    // to wait out. Twenty steps of 100k is ample headroom.
     for (let i = 0; i < 20; i++) {
-      this.dbg(['wait', '--cycles', '500000', '--run', 'turbo', '--timeout', '60s'], { required: true })
+      this.dbg(['wait', '--cycles', '100000', '--run', 'turbo', '--timeout', '60s'], { required: true })
       // Screen rows are padded to the full 40 columns, so the prompt is `OK`
       // followed by 38 spaces.
-      if (/^OK\s*$/m.test(this.screen())) return
+      const screen = this.screen()
+      if (/^OK\s*$/m.test(screen)) return assertBooted(this.consoleMode, screen)
     }
     throw new Error('video machine never reached the OK prompt')
   }
@@ -555,8 +564,10 @@ async function main() {
   try {
     for (const [i, mode] of modes.entries()) {
       const machine = new Machine(mode, BASE_PORT + i)
-      await machine.start()
+      // Registered before it starts, so a machine the harness refuses is still
+      // stopped on the way out rather than left running on its port.
       machines.set(mode, machine)
+      await machine.start()
     }
 
     for (const caseFile of cases) {

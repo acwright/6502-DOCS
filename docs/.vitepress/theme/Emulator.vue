@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { data as facts } from '../data/facts.data.mts'
 
 /**
@@ -18,6 +18,12 @@ import { data as facts } from '../data/facts.data.mts'
  * to the point, the program that runs cannot be a different program from the one
  * printed above it.
  *
+ * **The card is always named.** Every frame asks for `vdp=picovdp`, the
+ * card this edition documents, which boots BIOS 2.0. The frame's default is
+ * the TMS9918A with BIOS 1.6, it is due to change, and the frame never reads
+ * the card a reader chose in the full app, so a frame that left it out would
+ * boot whatever the emulator's default is that year.
+ *
  * **Nothing loads until the reader asks.** The frame enters the DOM on the
  * click and not before, so it is absent from the built HTML, costs no request
  * on a page nobody scrolls to the bottom of, and does not put four emulating
@@ -32,8 +38,8 @@ const props = withDefaults(
   defineProps<{
     /**
      * A program from `data/embeds.json`, e.g. "basic/times-table". Omit for an
-     * empty machine — which is what the chapters about booting, typing and the
-     * Monitor want, since there the machine itself is the subject.
+     * empty machine — which is what the chapters about booting and typing
+     * want, since there the machine itself is the subject.
      */
     sample?: string
     /**
@@ -46,11 +52,6 @@ const props = withDefaults(
     type?: string
     /** Start unmuted, for the chapters where the sound is the point. */
     sound?: boolean
-    /**
-     * Sit through the five-second boot menu instead of pressing Enter at it.
-     * For the one chapter where the countdown is the subject.
-     */
-    countdown?: boolean
     /** The frame's own control bar. */
     controls?: 'full' | 'minimal' | 'none'
     /** CPU clock in MHz. The ACE ships at 1. */
@@ -60,7 +61,7 @@ const props = withDefaults(
     /** Shown under the machine. Describes the machine, never the mechanism. */
     caption?: string
   }>(),
-  { run: true, controls: 'minimal', freq: 1, sound: false, countdown: false }
+  { run: true, controls: 'minimal', freq: 1, sound: false }
 )
 
 const started = ref(false)
@@ -80,6 +81,7 @@ const program = computed(() => {
 const src = computed(() => {
   const params = new URLSearchParams()
 
+  params.set('vdp', facts.emulator.card)
   if (program.value) params.set('prg64', program.value.prg64)
 
   // The frame boots as it mounts, and it only mounts on the click. Holding it
@@ -96,49 +98,18 @@ const src = computed(() => {
   // producing sound and the reader having to find the mute button first.
   if (props.sound) params.set('muted', '0')
 
-  // The frame takes commands from any origin unless told otherwise, and this
-  // one is driven (see `takeTheBootMenu`), so it is told otherwise. Read at
-  // click time rather than baked in, so the dev server drives its frames the
-  // same way the deployed site drives its own.
+  // The frame takes commands from any origin unless told otherwise. Nothing on
+  // this site sends it any, so only this page's own origin may. Read at click
+  // time rather than baked in, so the dev server's frames answer to the dev
+  // server the way the deployed site's answer to the deployed site.
   if (typeof window !== 'undefined') params.set('origins', window.location.origin)
 
   return `${facts.emulator.web.frame}?${params}`
 })
 
-const frame = ref<HTMLIFrameElement | null>(null)
-
-/**
- * Press Enter at the boot menu, so the reader does not wait out the countdown.
- *
- * Switching on a real ACE gives you five seconds to choose BASIC or the
- * Monitor, and doing nothing chooses BASIC. That pause is the machine being
- * polite on a desk; in a frame the reader has already chosen — they clicked a
- * button that said what it would do — and five seconds of a splash screen
- * before anything happens is just five seconds.
- *
- * So one keystroke goes in as the machine starts, which is what a person
- * reaching for the keyboard would do. It survives `KernalInit` and the boot
- * menu takes it, and BASIC is up in about a second instead of five and a half.
- * The chapter that is *about* those five seconds asks for them back with
- * `:countdown="true"`.
- *
- * This is the site's only use of the frame's message API. It sends one command
- * and listens for one event; a **Run again** button, which is what that API is
- * really for, is a bigger idea and not this phase's.
- */
-function takeTheBootMenu(event: MessageEvent) {
-  const target = frame.value?.contentWindow
-  if (!target || event.source !== target) return
-  if (event.data?.type !== '6502:ready') return
-  target.postMessage({ type: '6502:type', text: '\r' }, new URL(src.value).origin)
-}
-
 function start() {
   started.value = true
-  if (!props.countdown) window.addEventListener('message', takeTheBootMenu)
 }
-
-onBeforeUnmount(() => window.removeEventListener('message', takeTheBootMenu))
 
 const label = computed(
   () => props.label ?? (program.value ? 'Run this program' : 'Start the machine')
@@ -153,7 +124,6 @@ const label = computed(
     <div class="doc-emulator-frame">
       <iframe
         v-if="started"
-        ref="frame"
         :src="src"
         :title="caption ?? label"
         :allow="facts.emulator.frame.allow"

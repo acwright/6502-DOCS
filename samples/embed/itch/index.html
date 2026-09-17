@@ -38,10 +38,13 @@
       // this page has been uploaded. So ask the browser at the last moment.
       const program = new URL('game.prg', location.href).href
 
+      // `vdp=picovdp` is the video card this program was written for, which
+      // boots BIOS 2.0. Name it: the emulator's default card is a different one.
       // `autostart=1` boots the machine as the page opens, and `autotype=RUN\r`
       // types RUN once BASIC is up, so a visitor gets a game rather than an OK
       // prompt and a puzzle. Drop `autotype` if your program starts itself.
       const machine = new URL('https://acwright.github.io/6502-EMULATOR/embed.html')
+      machine.searchParams.set('vdp', 'picovdp')
       machine.searchParams.set('prg', program)
       machine.searchParams.set('autostart', '1')
       machine.searchParams.set('autotype', 'RUN\r')

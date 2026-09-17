@@ -35,7 +35,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { emulatorCommand } from './preflight.mjs'
+import { MACHINE_FLAGS, assertBooted, assertMachine, emulatorCommand } from './preflight.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SAMPLES = join(ROOT, 'samples')
@@ -136,6 +136,7 @@ class Machine {
       String(this.port),
       '--rtc',
       RTC,
+      ...MACHINE_FLAGS,
       '--timeout',
       '300s'
     ]
@@ -150,6 +151,7 @@ class Machine {
     })
 
     await this.waitForServer()
+    assertMachine(JSON.parse(this.dbg(['info', '--json'], { required: true }).out), 'video')
   }
 
   async waitForServer() {
@@ -179,7 +181,8 @@ class Machine {
   waitForPrompt() {
     for (let i = 0; i < 20; i++) {
       this.advance(500_000)
-      if (/^OK\s*$/m.test(this.screen())) return
+      const screen = this.screen()
+      if (/^OK\s*$/m.test(screen)) return assertBooted('video', screen)
     }
     throw new Error('the machine never reached the OK prompt')
   }

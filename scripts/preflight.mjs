@@ -41,9 +41,66 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
  * lives in the fact base, and a machine running something else fails here
  * instead of quietly producing a different answer three scripts later.
  */
-export const EMULATOR_VERSION = JSON.parse(
-  readFileSync(join(ROOT, 'data/emulator.json'), 'utf-8')
-).version
+const EMULATOR = JSON.parse(readFileSync(join(ROOT, 'data/emulator.json'), 'utf-8'))
+
+export const EMULATOR_VERSION = EMULATOR.version
+
+/**
+ * The video card, and with it the BIOS, that every machine the site drives
+ * runs. The emulator picks the bundled BIOS by card, so this is also what makes
+ * a headless run boot 2.0 rather than 1.6 — even on a serial console, where no
+ * video card is fitted at all.
+ */
+export const EMULATOR_CARD = EMULATOR.card
+
+/**
+ * The flags every harness machine starts with: the site's card, and serial
+ * flow control. BIOS 2.0 crunches a line more slowly than 1.x did, and a pasted
+ * listing loses lines without RTS/CTS — intermittently, which is the worst way
+ * for a check to fail.
+ */
+export const MACHINE_FLAGS = ['--vdp', EMULATOR_CARD, '--flow-control']
+
+/**
+ * Refuse a machine that is not the one the site is written against.
+ *
+ * `info` is `dbg info --json`. The flags above ask for the card and for flow
+ * control, and this is what checks that they were honored: a wrapper that drops
+ * an argument, or an emulator that spells one differently, would otherwise boot
+ * the default card and BIOS 1.6 and fail forty cases later for a reason nobody
+ * would guess. With a serial console the video slot is empty whichever card was
+ * named, so `vdp` is null there and the card is known only by the flag.
+ */
+/**
+ * The first line the site's BIOS prints, read from the fact base.
+ *
+ * With a serial console `dbg info` cannot say which card was asked for, and the
+ * card is what picks the BIOS. What BASIC printed on the way up can: a machine
+ * that booted 1.6 prints a splash, not this.
+ */
+export const BIOS_HEADER = JSON.parse(readFileSync(join(ROOT, 'data/boot.json'), 'utf-8')).header[0]
+
+export function assertBooted(consoleMode, text) {
+  if (!text.split(/\r?\n/).some((line) => line.trim() === BIOS_HEADER)) {
+    throw new Error(
+      `refusing a ${consoleMode} machine: it did not print "${BIOS_HEADER}" on the way to the prompt, ` +
+        'so it is not running the BIOS this site is written against.'
+    )
+  }
+}
+
+export function assertMachine(info, consoleMode) {
+  const problems = []
+  if (info.flowControl !== true) problems.push(`flow control is ${info.flowControl ? 'on' : 'off'}`)
+  const wanted = consoleMode === 'video' ? [EMULATOR_CARD] : [EMULATOR_CARD, null]
+  if (!wanted.includes(info.vdp)) problems.push(`the video card is ${info.vdp ?? 'none'}`)
+  if (problems.length) {
+    throw new Error(
+      `refusing a ${consoleMode} machine: ${problems.join(' and ')}. This site runs --vdp ${EMULATOR_CARD} ` +
+        'with --flow-control on, and a machine without them is not the check it looks like.'
+    )
+  }
+}
 
 const checks = [
   { name: 'node', required: true, run: checkNode },
