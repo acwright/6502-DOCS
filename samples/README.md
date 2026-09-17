@@ -119,8 +119,10 @@ console sends CRLF, as a real serial terminal does.
 against the screen rather than the console. A `screen` directive puts the case on
 its own machine booted with `--console video`.
 
-Screen rows are padded to the full 40 columns, so anchor with `\s*$` rather than
-`$`.
+Screen rows are padded to the width of the screen — 40 columns of text, or 32
+or 40 when a program has changed layout — so anchor with `\s*$` rather than
+`$`. An example in `data/basic-examples.json` can carry a `picture` too, for
+the keywords whose effect is a picture rather than text.
 
 A program that draws tiles, sprites or colors rather than text asserts with
 `picture`: the digest of the whole frame, taken once the last `send` has
@@ -159,6 +161,12 @@ real directory line.
 The method is the one in
 [`6502-EMULATOR/docs/AGENTS.md`](https://github.com/acwright/6502-EMULATOR/blob/main/docs/AGENTS.md):
 
+- **The site's machine, or none.** Every emulator starts with
+  `--vdp picovdp --flow-control`, and the harness refuses one whose
+  `dbg info` doesn't show flow control on and the PICOVDP fitted (or, on a
+  serial console, no card at all), or that didn't print `AC6502 BIOS v2.0` on
+  the way to the prompt. Without flow control a pasted listing loses lines,
+  intermittently.
 - **Boot once.** One emulator per console mode, clock pinned with
   `--rtc 2026-01-01T00:00:00`, snapshotted at the `OK` prompt.
 - **Restore per case.** About a millisecond, against the 330,000 cycles it takes to

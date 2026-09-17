@@ -263,6 +263,33 @@ function buildAssembly(source) {
 }
 
 /**
+ * ImageMagick 7 is one `magick` command; the 6.x a Linux distribution ships is
+ * `convert` and `compare`, taking the same arguments. CI runs on the second.
+ */
+function imagemagick(tool, args) {
+  const seven = spawnSync('magick', tool === 'convert' ? args : [tool, ...args], { encoding: 'utf-8' })
+  if (!seven.error) return seven
+  return spawnSync(tool, args, { encoding: 'utf-8' })
+}
+
+/**
+ * Whether two PNGs hold the same picture, pixel for pixel.
+ *
+ * The bytes are compared first, and agree whenever the ImageMagick that wrote
+ * both is the same build. A different build — the committed shots come off a
+ * Mac, CI's off Linux — can encode identical pixels into different bytes, so
+ * when the bytes differ the pixels decide: `compare -metric AE` counts the
+ * pixels that differ, and exits 0 only when none do.
+ */
+function samePicture(a, b) {
+  if (readFileSync(a).equals(readFileSync(b))) return true
+  const result = imagemagick('compare', ['-metric', 'AE', a, b, 'null:'])
+  if (result.error) throw new Error('ImageMagick is not installed — `brew install imagemagick`')
+  if (result.status === 2) throw new Error(`compare failed:\n${(result.stderr || '').trim()}`)
+  return result.status === 0
+}
+
+/**
  * Scale up without smoothing: a character cell is eight hard pixels.
  *
  * The two `-define`s and the `-strip` are what make a shot reproducible. The
@@ -273,8 +300,8 @@ function buildAssembly(source) {
  * lets `--check` below mean anything.
  */
 function scale(file) {
-  const result = spawnSync(
-    'magick',
+  const result = imagemagick(
+    'convert',
     [
       file,
       '-filter', 'point',
@@ -282,8 +309,7 @@ function scale(file) {
       '-strip',
       '-define', 'png:exclude-chunk=date,time',
       file
-    ],
-    { encoding: 'utf-8' }
+    ]
   )
   if (result.error) throw new Error('ImageMagick is not installed — `brew install imagemagick`')
   if (result.status !== 0) throw new Error(`magick failed:\n${(result.stderr || '').trim()}`)
@@ -373,7 +399,7 @@ async function main() {
         if (!existsSync(committed)) {
           drifted++
           console.log(`DRIFT ${shot.name} — no committed screenshot`)
-        } else if (!readFileSync(committed).equals(readFileSync(file))) {
+        } else if (!samePicture(committed, file)) {
           drifted++
           console.log(`DRIFT ${shot.name} — the machine draws something else now`)
         } else {

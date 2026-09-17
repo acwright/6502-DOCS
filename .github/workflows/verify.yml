@@ -43,7 +43,7 @@ jobs:
       - name: Check the reference cards
         run: npm run cards:check
 
-      # Six of the cards are generated from `data/` — a stale checked-in copy
+      # Five of the cards are generated from `data/` — a stale checked-in copy
       # would print a machine that no longer exists, which is exactly how the
       # originals ended up documenting a v1.0 ROM. Neither script needs deps.
       - name: Check the generated cards are current
@@ -199,6 +199,16 @@ jobs:
 
       - name: Run the sample harness
         run: npm run verify
+
+      # Every screenshot re-taken off the same machine the samples ran on, and
+      # compared pixel for pixel with the committed one. The shots are scaled
+      # with ImageMagick, and this runner's encodes the same pixels into
+      # different bytes than a Mac's, which is why the comparison is by pixel.
+      - name: Install ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends imagemagick
+
+      - name: Check the screenshots are current
+        run: npm run screens:verify
 
       - name: Build docs
         run: npm run docs:build

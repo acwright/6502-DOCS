@@ -239,9 +239,11 @@ npm run photos:check  # fail if one a page references is missing (in verify + CI
 `scripts/capture-screens.mjs` boots the emulator with a video console, types
 what a reader would type, and reads the screen with `dbg screen png`. Where a
 shot shows a program it names the file under `samples/` that the chapter
-displays, so the picture cannot drift from the listing beside it. Re-take them
-after a ROM change — they are not drift-checked, because that would mean
-asserting on a PNG encoder.
+displays, so the picture cannot drift from the listing beside it.
+`npm run screens:verify` re-takes every one into a scratch directory and
+compares it with the committed file pixel for pixel, and CI runs it after the
+samples. Pixels rather than bytes, because the ImageMagick on a Linux runner
+encodes the same picture into different bytes than a Mac's.
 
 **Diagrams** (`docs/.vitepress/diagrams/`) are drawn by
 `scripts/build-diagrams.mjs`, nine of the fifteen straight out of `data/`. They
@@ -307,9 +309,9 @@ differ, so it stays the 16×16 original and the PNGs carry the sizes it lacks.
 
 ## Running machines on a page
 
-Thirty machines sit on twenty pages, each beside the listing it belongs
-to, in a frame around an emulator's second web entry point. Twenty-nine are
-ACEs; the thirtieth is the KIM, below. Both pages are served from the same
+Thirty-two machines sit on twenty-two pages, each beside the listing it belongs
+to, in a frame around an emulator's second web entry point. Thirty-one are
+ACEs; the thirty-second is the KIM, below. Both pages are served from the same
 origin as this site, so a frame costs no third-party request and no CSP
 allowance.
 
@@ -318,7 +320,6 @@ allowance.
 <Emulator sample="basic/times-table" caption="…" />  loaded and RUN
 <Emulator sample="basic/goto-loop" :run="false" />   loaded, not run
 <Emulator sample="basic/tune" sound caption="…" />   starts unmuted
-<Emulator countdown caption="…" />                   sits through the boot menu
 ```
 
 To add one:
@@ -436,7 +437,7 @@ all of it appears there first.
 
 If `npm run screens:verify` reports drift, **look at the picture before
 accepting it**: run `npm run screens` and open what changed. A screenshot that
-changed because the splash gained a line is a fix; one that changed because a
+changed because the header gained a line is a fix; one that changed because a
 demo now crashes is a bug the harness may not have caught.
 
 ### Bumping the documented version
@@ -445,20 +446,22 @@ demo now crashes is a bug the harness may not have caught.
 site footer reads it at build time — so for the footer, `npm run facts` is the
 whole bump.
 
-Pages are not all so lucky. A handful state the version in prose, and three
-show the splash screen as a transcript inside a code fence, where nothing can
+Pages are not all so lucky. A handful state the version in prose, and a few
+show the boot header as a transcript inside a code fence, where nothing can
 interpolate. Those are typed by hand and have to be edited by hand — which is
 exactly how the sheets this site replaced ended up describing a v1.0 ROM. So
 `npm run check:voice` fails on any version stated next to the word *BIOS* that
 disagrees with the fact base:
 
 ```
-docs/reference/glossary.md:24  stale BIOS version — "BIOS v1.4"
-       the firmware reports v1.6; re-run `npm run facts` and fix the page
+docs/reference/glossary.md:24  stale BIOS version — "BIOS v1.6"
+       the firmware reports v2.0; re-run `npm run facts` and fix the page
 ```
 
 Links into `cards/archive/` are exempt, since naming an old version is what
-that directory is for.
+that directory is for, and so is a line that links the BIOS 1.6 edition at
+`/6502-DOCS/v1/`, which is how a page points an owner of an older machine at
+the reference for it. Only the line carrying the link is exempt.
 
 The emulator version is pinned in `data/emulator.json`, hand-authored like
 `basic-examples.json`, and it is a gate: `npm run preflight`
@@ -492,6 +495,13 @@ npm run links         # frame parameters are checked against the contract here
 Bump `EMULATOR_REF` in `.github/workflows/verify.yml` to the matching tag in the
 same commit, or CI will build a different emulator from the one preflight
 demands.
+
+bastok is pinned the same way, by `BASTOK_REF` (`v1.1.0`, the first release
+with BIOS 2.x's token table). `scripts/build-embeds.mjs` runs it with
+`--bios 2` and `-q`, so a missing flag would tokenize a new keyword as letters
+without a word of warning; `npm run preflight` refuses a bastok older than the
+pin. A later bastok that changes the 2.x table shows up as `npm run
+embeds:verify` naming the listings whose bytes moved.
 
 ### Superseded documentation
 
