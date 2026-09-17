@@ -32,7 +32,9 @@ Five facts, in order:
   `.segment "CODE"` in the source, `CODE:` here. `type=rw` means "this is
   writable memory", which is true: it's RAM.
 
-That's the whole thing. One region, one segment, nothing clever.
+That's the whole thing. One region, one segment, nothing clever — and the same
+file for both builds, since program memory didn't move when the video card
+changed.
 
 ## A cartridge
 

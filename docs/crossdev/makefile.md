@@ -1,41 +1,79 @@
 # The Makefile
 
-The template's build is thirty lines and there is no magic in it. Worth reading
-once, because you will want to change it.
+The template's build is forty-odd lines and there is no magic in it. Worth
+reading once, because you will want to change it.
 
 ```make
 TARGET = Program
 EIGHTTHREE = PROGRAM
 CONFIG = 6502
 
+VDP ?= 0
+ifeq ($(VDP),1)
+  OUT      = $(TARGET)-VDP
+  ASFLAGS  = --asm-define VDP
+  RUNFLAGS = --vdp picovdp
+else
+  OUT      = $(TARGET)
+  ASFLAGS  =
+  RUNFLAGS =
+endif
+RUNFLAGS += $(if $(ROM),--rom $(ROM))
+
+.PHONY: all build view run woz cf clean
+
 all: build woz cf
 
 build: $(TARGET).asm
-	cl65 -t none -C $(CONFIG).cfg -l $(TARGET).lst -o $(TARGET).prg $(TARGET).asm
+	cl65 -t none $(ASFLAGS) -C $(CONFIG).cfg -l $(OUT).lst -o $(OUT).prg $(TARGET).asm
 
 view:
-	hexdump -C $(TARGET).prg
+	hexdump -C $(OUT).prg
 
 run:
-	6502 run $(TARGET).prg
+	6502 run $(RUNFLAGS) $(OUT).prg
 
 woz:
-	bin2woz -a 0x0800 $(TARGET).prg > $(TARGET).woz
+	bin2woz -a 0x0800 $(OUT).prg > $(OUT).woz
 
 cf:
-	cffs create $(TARGET).img --size 1M
-	cp -f $(TARGET).prg $(EIGHTTHREE).PRG || true
-	cffs add $(TARGET).img $(EIGHTTHREE).PRG
+	cffs create $(OUT).img --size 1M
+	mkdir -p .cf
+	cp -f $(OUT).prg .cf/$(EIGHTTHREE).PRG
+	cffs add $(OUT).img .cf/$(EIGHTTHREE).PRG
+	rm -rf .cf
 
 clean:
-	rm $(TARGET).prg $(TARGET).woz $(TARGET).lst $(TARGET).img
+	rm -rf .cf
+	rm -f $(TARGET).prg $(TARGET).woz $(TARGET).lst $(TARGET).img
+	rm -f $(TARGET)-VDP.prg $(TARGET)-VDP.woz $(TARGET)-VDP.lst $(TARGET)-VDP.img
 ```
+
+## `VDP=1`
+
+The block at the top is what makes one source two programs. With `VDP=1` on the
+command line, every output gets `-VDP` in its name, the assembler is told
+`--asm-define VDP` — which is what makes `Program.asm` include `6502-VDP.inc` —
+and `make run` starts the emulator with the 6502-PICOVDP card, `--vdp picovdp`.
+Without it you get the build for the older machine with a TMS9918A.
+
+This guide's machine is the `VDP=1` one, so that is the build to type:
+
+```sh
+make VDP=1
+make VDP=1 run
+```
+
+Tired of typing it? Change `VDP ?= 0` to `VDP ?= 1` and plain `make` does the
+same. `ROM=path/to/BIOS.bin` on the `run` line boots a ROM image of your own
+instead of the one the emulator carries.
 
 ## Target by target
 
 | `make …` | What happens |
 |---|---|
 | *(nothing)* | `build`, `woz` and `cf` — every shippable form of the program |
+| `VDP=1` | Added to any of these: the build for the 6502-PICOVDP, named `-VDP` |
 | `build` | Assemble and link. This is the one you run all day. |
 | `view` | Hexdump of the image, for when you want to see the actual bytes |
 | `run` | Open the emulator with the program loaded |
@@ -46,15 +84,16 @@ clean:
 ## The build line
 
 ```
-cl65 -t none -C 6502.cfg -l Program.lst -o Program.prg Program.asm
+cl65 -t none --asm-define VDP -C 6502.cfg -l Program-VDP.lst -o Program-VDP.prg Program.asm
 ```
 
 | Flag | Meaning |
 |---|---|
+| `--asm-define VDP` | Defines the symbol `VDP`, so `.ifdef VDP` in the source is true. |
 | `-t none` | No target machine. cc65 knows about the C64 and the Apple II; it does not know about this one, and we don't want its startup code or its memory assumptions. |
 | `-C 6502.cfg` | Use [this memory layout](/crossdev/linker) instead. |
-| `-l Program.lst` | Write a listing: your source, interleaved with the bytes each line produced. |
-| `-o Program.prg` | The output image. |
+| `-l Program-VDP.lst` | Write a listing: your source, interleaved with the bytes each line produced. |
+| `-o Program-VDP.prg` | The output image. |
 
 The listing file is more useful than it looks. When you want to know how big a
 routine got, or what an addressing mode actually assembled to, it's there in
@@ -67,8 +106,8 @@ symbol file that lets the debugger talk about your code by name:
 
 ```make
 debug:
-	cl65 -t none -C $(CONFIG).cfg -g -Ln $(TARGET).lbl \
-	     -l $(TARGET).lst -o $(TARGET).prg $(TARGET).asm
+	cl65 -t none $(ASFLAGS) -C $(CONFIG).cfg -g -Ln $(OUT).lbl \
+	     -l $(OUT).lst -o $(OUT).prg $(TARGET).asm
 ```
 
 `-Ln` writes a label file and **`-g` is not optional** — without it the label
@@ -89,10 +128,10 @@ and lets each file have its own private labels:
 OBJS = main.o sprites.o sound.o
 
 build: $(OBJS)
-	ld65 -C $(CONFIG).cfg -o $(TARGET).prg $(OBJS)
+	ld65 -C $(CONFIG).cfg -o $(OUT).prg $(OBJS)
 
 %.o: %.asm
-	ca65 -o $@ $<
+	ca65 $(ASFLAGS) -o $@ $<
 ```
 
 With separate objects, a label one file wants from another has to be `.export`ed
@@ -106,27 +145,18 @@ is why the rule above doesn't mention one.
 
 ## Housekeeping
 
-Two small things the template leaves to you:
-
-**`make cf` leaves an uppercase copy behind.** The card wants `PROGRAM.PRG`, so
-the recipe copies the file to that name before adding it, and `clean` doesn't
-remove the copy. Add it:
-
-```make
-clean:
-	rm -f $(TARGET).prg $(TARGET).woz $(TARGET).lst $(TARGET).img $(EIGHTTHREE).PRG
-```
-
-**`rm` without `-f` fails on a clean tree.** `make clean` twice in a row stops
-with an error the second time. The `-f` above fixes that too.
-
-**Declare your phony targets.** `view`, `run`, `woz`, `cf` and `debug` are
-actions, not files. If a file called `run` ever appears in the directory, `make
-run` will quietly decide there is nothing to do:
+**Declare the targets you add.** `view`, `run`, `woz`, `cf` and `clean` are
+actions, not files, and the template's `.PHONY` line says so: if a file called
+`run` ever appeared in the directory, `make run` would otherwise quietly decide
+there was nothing to do. A `debug` target belongs on the same line:
 
 ```make
 .PHONY: all build view run woz cf debug clean
 ```
+
+**`make cf` names the file for the card.** The card wants eight characters and
+an extension, so the recipe copies the program into a scratch `.cf` directory
+under `EIGHTTHREE`'s name, adds it, and removes the directory again.
 
 ## A build directory
 
@@ -140,8 +170,8 @@ $(BUILD):
 	mkdir -p $(BUILD)
 
 build: $(BUILD)
-	cl65 -t none -C $(CONFIG).cfg -l $(BUILD)/$(TARGET).lst \
-	     -o $(BUILD)/$(TARGET).prg $(TARGET).asm
+	cl65 -t none $(ASFLAGS) -C $(CONFIG).cfg -l $(BUILD)/$(OUT).lst \
+	     -o $(BUILD)/$(OUT).prg $(TARGET).asm
 ```
 
 Then `build/` goes in `.gitignore` and your repository only ever holds source.

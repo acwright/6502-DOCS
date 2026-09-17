@@ -50,7 +50,7 @@ body:
     id: needs
     attributes:
       label: What does it need?
-      description: Video card, joystick, clock card, memory card, the keypad, F18A mode — anything that isn't on a bare board. Say so if it needs nothing.
+      description: Which BIOS it was written for (2.0 with the 6502-PICOVDP, or 1.6 with the TMS9918A), then the video card, joystick, clock card, memory card, the keypad — anything that isn't on a bare board. Say so if it needs nothing.
     validations:
       required: true
 

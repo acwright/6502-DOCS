@@ -74,8 +74,8 @@ on this site's repository and say:
 - **What it is** — a sentence or two, the way you'd describe it to somebody
   deciding whether to try it
 - **How to run it** — a cartridge, a program file, a BASIC listing to type in
-- **What it needs** — video card, joystick, clock card, the keypad, anything
-  that isn't on a bare board
+- **What it needs** — which BIOS it was written for, then the video card,
+  joystick, clock card, the keypad, anything that isn't on a bare board
 
 It doesn't have to be finished, and it doesn't have to be a game. A tool, a
 demo, a language, half a game with the controls working — all of it is worth
