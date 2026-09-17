@@ -106,6 +106,15 @@ const SHOTS = [
     lines: ['SYS 65280', 'FF00.FF07']
   },
   {
+    name: 'sailing',
+    subject: 'A Graphics-mode sea and sky of two tiles, with a doubled sprite boat on the horizon.',
+    where: 'docs/basic/graphics.md',
+    program: 'samples/basic/sailing.bas',
+    // Nearly five hundred VPOKEs from BASIC; the picture then holds still
+    // until a key.
+    settle: 6_000_000
+  },
+  {
     name: 'rainbow',
     subject: 'Fourteen lines in fourteen pens, with color 13 turned orange by one palette write.',
     where: 'docs/assembly/video.md',

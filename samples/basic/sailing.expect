@@ -1,0 +1,6 @@
+# "Graphics" — SCREEN 2, two tiles and a sprite drawn with VPOKE, the text
+# colors changed with PALETTE and the sprite doubled with VREG. It holds still
+# until a key, and the still picture is what is asserted.
+console video
+cycles 6000000
+picture 020127ee

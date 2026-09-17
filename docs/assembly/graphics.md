@@ -178,7 +178,7 @@ table — which is why a full screen is built with the display off.
 
 `VdpLoadFile` reads a file from the memory card straight into the card's
 memory, at any address: a pattern table drawn on your computer, a screen, a
-palette. From BASIC the same job is one statement.
+palette. From BASIC the same job is [one statement](/basic/graphics#loading-from-the-memory-card-vload).
 
 `VdpLoadFont` has the card copy its own character set into layer 0's pattern
 table, wherever that is. The font is one bit per pixel and six pixels wide, so

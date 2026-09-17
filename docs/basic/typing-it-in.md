@@ -149,6 +149,26 @@ A colon joins statements together on a single line:
 Both run, left to right. It saves memory and typing, and it costs you
 readability, so use it where the two halves belong together.
 
+## Listings from an older ACE
+
+A listing printed for an older ACE — in a magazine, on a web page, in the
+[BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/basic/) of this
+guide — types in and runs here, with two exceptions.
+
+- **`BRK` is gone.** An old line with `BRK` on it stops with `?SYNTAX ERROR`.
+  To stop a program where it stands, use `STOP`.
+- **Names that start with a new keyword.** This BASIC has keywords the old one
+  didn't — `SCREEN`, `SCROLL`, `LAYER`, `SPRITE`, `PALETTE`, `VPOKE` and the rest
+  of [the graphics](/basic/graphics), and `NVSAVE`, `NVLOAD`, `NVERASE`,
+  `NVSTAT` and `NVFIND` for [save slots](/basic/clock#save-slots). A variable
+  whose name begins with one of those, like `LAYERS` or `NVSAVED`, now reads as
+  the keyword and gives `?SYNTAX ERROR`. Shorten the name: only the first two
+  letters count anyway.
+
+A program that was saved on an older ACE, rather than typed in, is kept with
+its names already sorted out, so only the first of those applies: it loads and
+runs, and stops with `?SYNTAX ERROR` at a `BRK` if it has one.
+
 ## Try this
 
 Type this in, `RUN` it, then change line 20 to your own name and `RUN` it again:

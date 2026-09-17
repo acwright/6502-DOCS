@@ -70,7 +70,9 @@ OK
 ```
 
 BASIC spotted `OR` in the middle of your name and gave up. The usual keywords to
-watch for are `OR`, `AND`, `TO`, `IF`, `ON` and `FN`. Call it `SC` and move on.
+watch for are `OR`, `AND`, `TO`, `IF`, `ON` and `FN`, and at the start of a name
+the [graphics](/basic/graphics) and save-slot keywords: `LAYERS`, `SCREENX` and
+`NVSAVED` all fail the same way. Call it `SC` and move on.
 
 ::: details Why it does that
 BASIC squashes every keyword down to a single byte the moment you press Enter,

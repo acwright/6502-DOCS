@@ -250,6 +250,7 @@ export default defineConfig({
           { text: 'Lists in the program', link: '/basic/data' },
           { text: 'Your own functions', link: '/basic/functions' },
           { text: 'Sound and video', link: '/basic/sound-and-video' },
+          { text: 'Graphics', link: '/basic/graphics' },
           { text: 'Sticks and keys', link: '/basic/controls' },
           { text: 'Saving your work', link: '/basic/files' },
           { text: 'Time and memory that lasts', link: '/basic/clock' },

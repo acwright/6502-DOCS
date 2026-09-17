@@ -56,6 +56,7 @@ is the first thing the next chapter is about.
 | [Lists in the program](/basic/data) | `DATA`, `READ`, `RESTORE` |
 | [Your own functions](/basic/functions) | `DEF FN` |
 | [Sound and video](/basic/sound-and-video) | `CLS`, `LOCATE`, `COLOR`, `SOUND`, `VOL` |
+| [Graphics](/basic/graphics) | `SCREEN`, `VPOKE`, `PALETTE`, `SPRITE`, `SCROLL`: tiles and sprites |
 | [Sticks and keys](/basic/controls) | `INKEY`, `JOY`, `PAUSE`, `WAIT` |
 | [Saving your work](/basic/files) | `SAVE`, `LOAD`, `BSAVE`, and the memory card |
 | [Time and memory that lasts](/basic/clock) | `TIME`, `DATE`, `NVRAM`, save slots |

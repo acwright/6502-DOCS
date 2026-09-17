@@ -96,7 +96,9 @@ position first and erase the old one second and it steadies up considerably.
 digits, punctuation. Character codes above 126 don't appear, so the box-drawing
 and block characters in the machine's character set aren't reachable this way.
 Build pictures out of `*`, `#`, `.` and `O`, the way the arcade did for years
-before anyone had a sprite.
+before anyone had a sprite — or put the character on the screen yourself, with
+`VPOKE`. After a `CLS`, the screen's top row is addresses 0 to 39 of the video
+card's memory, so `VPOKE 0, 201` puts the corner of a double-lined box in the
+top left. [Graphics](/basic/graphics) is the chapter about that memory.
 
-Next: [reading the joysticks and the keyboard while a program
-runs](/basic/controls).
+Next: [the graphics screens, with tiles and sprites](/basic/graphics).
