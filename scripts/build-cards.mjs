@@ -197,7 +197,8 @@ function basicReference() {
       kind: k?.kind ?? 'statement',
       token: k?.token,
       syntax: e?.syntax ?? k?.forms?.[0]?.syntax ?? name,
-      summary: e?.summary ?? k?.forms?.[0]?.description ?? ''
+      // The README's own cross-references mean nothing on paper.
+      summary: e?.summary ?? (k?.forms?.[0]?.description ?? '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
     }
   }
 
@@ -225,7 +226,8 @@ function basicReference() {
     screen: ['CLS', 'LOCATE', 'COLOR', 'SOUND', 'VOL', 'INKEY', 'JOY', 'WAIT', 'PAUSE'],
     video: ['SCREEN', 'VPOKE', 'VPEEK', 'VREG', 'VSTAT', 'PALETTE', 'VSYNC', 'VLOAD', 'SPRITE', 'SCROLL', 'LAYER'],
     files: ['LOAD', 'SAVE', 'DIR', 'DEL', 'DISK', 'FORMAT', 'BLOAD', 'BSAVE'],
-    clock: ['TIME', 'DATE', 'SETTIME', 'SETDATE', 'NVRAM', 'NVSAVE', 'NVLOAD', 'NVERASE', 'NVSTAT', 'NVFIND'],
+    clock: ['TIME', 'DATE', 'SETTIME', 'SETDATE', 'NVRAM'],
+    slots: ['NVSAVE', 'NVLOAD', 'NVERASE', 'NVSTAT', 'NVFIND'],
     machine: ['PEEK', 'POKE', 'SYS', 'BANK', 'MEM', 'FRE']
   }
 
@@ -242,6 +244,7 @@ function basicReference() {
   const program = group('program')
   const screen = group('screen')
   const video = group('video')
+  const slots = group('slots')
   const files = group('files')
   const clock = group('clock')
   const machine = group('machine')
@@ -269,7 +272,7 @@ function basicReference() {
     title: '6502 BASIC V2.0 — Reference',
     side: SIDE(`BASIC V2.0 &middot; BIOS v${version}`),
     subtitle: `6502 BASIC — QUICK REFERENCE`,
-    // Two pages, not three. The keyword tables carry the card, so this is the
+    // Tight rows. The keyword tables carry the card, so this is the
     // one sheet that sets its rows tighter than the house default — 1.15 line
     // and half a point of cell padding, which is about 13% off every row and
     // the difference between 1.98 pages of content and 1.82. Nothing is cut.
@@ -300,7 +303,6 @@ function basicReference() {
       {
         heading: 'BASIC Reference',
         sections: [
-          kwSection('The video card', video),
           kwSection('Reaching the machine', machine),
           kwSection('Functions', rest),
           section('Operator precedence', precedence,
@@ -328,6 +330,15 @@ function basicReference() {
               [cmd('CONT'), desc('Carries on from where <code>STOP</code> or Esc left off')],
               [cmd('Reset button'), desc('Warm start — your program and variables survive')]
             ]))
+        ]
+      },
+      // BIOS 2.0's sixteen keywords take a third sheet. Added to the first two
+      // they ran off the bottom of both.
+      {
+        heading: 'BASIC Reference',
+        sections: [
+          kwSection('The video card', video),
+          kwSection('Save slots', slots)
         ]
       }
     ]
@@ -431,7 +442,10 @@ function kernalJumpTable() {
           ...half(0, 4)
         ]
       },
-      { heading: 'Kernal Jump Table', sections: half(4, GROUPS.length) }
+      { heading: 'Kernal Jump Table', sections: half(4, 9) },
+      // The PICOVDP's thirteen entries, new in BIOS 2.0, take a sheet of their
+      // own: on the back of the second they ran off its edge.
+      { heading: 'Kernal Jump Table', sections: half(9, GROUPS.length) }
     ]
   })
 }
