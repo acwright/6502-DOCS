@@ -107,6 +107,11 @@ const src = computed(() => {
   return `${facts.emulator.web.frame}?${params}`
 })
 
+// The full app remembers the card its reader last chose, and a `vdp=` in its
+// address overrides that for the visit — so the way out of a frame opens the
+// same machine the frame was showing.
+const appHref = `${facts.emulator.web.app}?vdp=${facts.emulator.card}`
+
 function start() {
   started.value = true
 }
@@ -137,7 +142,7 @@ const label = computed(
 
     <figcaption>
       <span v-if="caption">{{ caption }}</span>
-      <a class="doc-emulator-out" :href="facts.emulator.web.app" target="_blank" rel="noreferrer">
+      <a class="doc-emulator-out" :href="appHref" target="_blank" rel="noreferrer">
         Open the full emulator
       </a>
     </figcaption>
