@@ -295,7 +295,7 @@
 <rect class="dg-open" x="410" y="436" width="26" height="26"/>
 <rect class="dg-open" x="436" y="436" width="26" height="26"/>
 <rect class="dg-solid" x="46" y="492" width="18" height="18"/>
-<text class="dg-n" x="72" y="505" text-anchor="start">$00–$39 — the Kernal, BASIC, the Monitor and XModem</text>
+<text class="dg-n" x="72" y="505" text-anchor="start">$00–$39 — the Kernal, BASIC and XModem</text>
 <rect class="dg-open" x="46" y="518" width="18" height="18"/>
 <text class="dg-n" x="72" y="531" text-anchor="start">$3A–$FF — 198 bytes, yours</text>
 </svg>

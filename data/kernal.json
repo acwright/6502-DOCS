@@ -3,31 +3,31 @@
     "title": "Kernal jump table",
     "description": "Every published entry point, in slot order, plus the reserved range.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.6",
+    "biosVersion": "2.0",
     "sources": [
       {
         "file": "Kernal.asm",
-        "sha256": "e38b994242088af2183da64ff8ee23032c57c38fbbeab426ecea0714d9eae7eb"
+        "sha256": "67c3ec2c56095725ccd2782ec419ad8e974fe80ae7a0fcff839f3e0c43fc28f1"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
   },
   "base": "$A000",
   "slotSize": 3,
-  "publishedSlots": 59,
+  "publishedSlots": 72,
   "reserved": {
-    "count": 26,
-    "start": "$A0B1",
+    "count": 13,
+    "start": "$A0D8",
     "end": "$A0FE",
     "behavior": "Each reserved slot jumps to UnimplementedStub, which is a bare RTS.",
-    "source": "Kernal.asm:103",
+    "source": "Kernal.asm:121",
     "check": "GREP"
   },
   "totalSlots": 85,
   "groups": [
     "Character I/O",
     "IO Mode",
-    "Video (TMS9918)",
+    "Video console (PICOVDP)",
     "Sound (SID)",
     "Filesystem",
     "Keyboard / GPIO",
@@ -38,7 +38,8 @@
     "Disk banking / addressed storage",
     "General output utilities (console = IO_MODE-routed via Chrout)",
     "Keyboard encoder control (raw port access)",
-    "NVRAM save slots (DS1511Y)"
+    "NVRAM save slots (DS1511Y)",
+    "PICOVDP (2.0)"
   ],
   "slots": [
     {
@@ -56,7 +57,7 @@
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:30",
+      "source": "Kernal.asm:33",
       "check": "GREP"
     },
     {
@@ -75,7 +76,7 @@
         "On return, carry flag indicates whether a character was available",
         "If character available the character will be in the A register"
       ],
-      "source": "Kernal.asm:31",
+      "source": "Kernal.asm:34",
       "check": "GREP"
     },
     {
@@ -90,7 +91,7 @@
       "modifies": [
         "Flags, X"
       ],
-      "source": "Kernal.asm:32",
+      "source": "Kernal.asm:35",
       "check": "GREP"
     },
     {
@@ -105,7 +106,15 @@
       "modifies": [
         "Flags, X, A"
       ],
-      "source": "Kernal.asm:33",
+      "notes": [
+        "Irq raises RTS once the buffer holds $F0 bytes. Every reader comes through here",
+        "— Chrin, BASIC's line input, INKEY, the break check, a cartridge — so this is",
+        "where RTS is lowered again: high while $B0 or more are still unread, low below",
+        "that. A reader that skipped it would leave a terminal with RTS/CTS flow control",
+        "waiting for good. XModem turns the receiver interrupt off and sets the command",
+        "register itself, so while that bit is set the register is left alone."
+      ],
+      "source": "Kernal.asm:36",
       "check": "GREP"
     },
     {
@@ -120,7 +129,7 @@
       "modifies": [
         "Flags, A"
       ],
-      "source": "Kernal.asm:34",
+      "source": "Kernal.asm:37",
       "check": "GREP"
     },
     {
@@ -135,7 +144,7 @@
       "input": [
         "A = mode (bit 0: 0=video, 1=serial)"
       ],
-      "source": "Kernal.asm:36",
+      "source": "Kernal.asm:39",
       "check": "GREP"
     },
     {
@@ -150,7 +159,7 @@
       "output": [
         "A = current IO_MODE"
       ],
-      "source": "Kernal.asm:37",
+      "source": "Kernal.asm:40",
       "check": "GREP"
     },
     {
@@ -158,19 +167,24 @@
       "address": "$A015",
       "addressDecimal": 40981,
       "slot": 7,
-      "group": "Video (TMS9918)",
-      "summary": "Initialize TMS9918 (mode registers + character set)",
+      "group": "Video console (PICOVDP)",
+      "summary": "Text-mode console: registers, the card's font, palette row 0",
       "target": "InitVideoImpl",
-      "description": "Initialize the Video Card (TMS9918)",
+      "description": "Put the PICOVDP in the Kernal's Text-mode console",
       "modifies": [
         "Flags, A, X, Y"
       ],
       "notes": [
-        "Writes the eight mode registers (text mode, 40x24) and reloads the character",
-        "set into the pattern table at $0800, so a program that overwrote the glyphs",
-        "can fully restore text mode with a single call."
+        "Writes the register table below with the display off, has the card reload its",
+        "font into the pattern table at $0800 (VdpLoadFont, a frame at most), restores",
+        "palette row 0, sets the border",
+        "from VID_PEN and turns the display on.  It does not clear the screen: the",
+        "name and attribute tables are left as they were and shown unscrolled.  A",
+        "program that switched modes, moved tables or overwrote the glyphs gets the",
+        "console back with this one call.",
+        "Skips silently if no video card is fitted"
       ],
-      "source": "Kernal.asm:39",
+      "source": "Kernal.asm:42",
       "check": "GREP"
     },
     {
@@ -178,17 +192,20 @@
       "address": "$A018",
       "addressDecimal": 40984,
       "slot": 8,
-      "group": "Video (TMS9918)",
+      "group": "Video console (PICOVDP)",
       "summary": "Clear video screen",
       "target": "VideoClearImpl",
-      "description": "Fill name table (960 bytes at VRAM $0000) with spaces, reset cursor to (0,0)",
+      "description": "Fill the screen with spaces in the current pen, cursor home",
       "modifies": [
         "Flags, A, X, Y"
       ],
       "notes": [
+        "Fills the 960-byte name table at VRAM $0000 with $20 and the 960 attributes at",
+        "$0400 with VID_PEN, so COLOR fg,bg : CLS gives a screen of that color, and",
+        "takes the scroll origin back to row 0.",
         "Skips silently if no video card is fitted"
       ],
-      "source": "Kernal.asm:40",
+      "source": "Kernal.asm:43",
       "check": "GREP"
     },
     {
@@ -196,17 +213,17 @@
       "address": "$A01B",
       "addressDecimal": 40987,
       "slot": 9,
-      "group": "Video (TMS9918)",
+      "group": "Video console (PICOVDP)",
       "summary": "Write char at cursor",
       "target": "VideoPutCharImpl",
-      "description": "Write a single character to VRAM at VID_CURSOR_ADDR",
+      "description": "Write a character at VID_CURSOR_ADDR, colored with VID_PEN",
       "input": [
         "A = character to write"
       ],
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:41",
+      "source": "Kernal.asm:44",
       "check": "GREP"
     },
     {
@@ -214,21 +231,22 @@
       "address": "$A01E",
       "addressDecimal": 40990,
       "slot": 10,
-      "group": "Video (TMS9918)",
+      "group": "Video console (PICOVDP)",
       "summary": "Set cursor (X=col, Y=row)",
       "target": "VideoSetCursorImpl",
       "description": "Set cursor position",
       "input": [
-        "X = column (0-39), Y = row (0-23)"
+        "X = column (0-39), Y = row (0-23), on the screen as shown"
       ],
       "modifies": [
         "Flags, A"
       ],
       "notes": [
-        "Calculates VRAM address = Y * 40 + X and stores in VID_CURSOR_ADDR",
+        "VID_CURSOR_ADDR = ((Y + VID_TOP) mod 24) * 40 + X, the cell's place in the",
+        "name table once the scroll origin is folded in",
         "Skips silently if no video card is fitted"
       ],
-      "source": "Kernal.asm:42",
+      "source": "Kernal.asm:45",
       "check": "GREP"
     },
     {
@@ -236,7 +254,7 @@
       "address": "$A021",
       "addressDecimal": 40993,
       "slot": 11,
-      "group": "Video (TMS9918)",
+      "group": "Video console (PICOVDP)",
       "summary": "Get cursor position",
       "target": "VideoGetCursorImpl",
       "description": "Get cursor position",
@@ -246,7 +264,7 @@
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:43",
+      "source": "Kernal.asm:46",
       "check": "GREP"
     },
     {
@@ -254,18 +272,21 @@
       "address": "$A024",
       "addressDecimal": 40996,
       "slot": 12,
-      "group": "Video (TMS9918)",
+      "group": "Video console (PICOVDP)",
       "summary": "Scroll screen up one line",
       "target": "VideoScrollImpl",
-      "description": "Scroll screen up one line",
+      "description": "Scroll the screen up one line, in hardware",
       "modifies": [
         "Flags, A, X, Y"
       ],
       "notes": [
-        "Copies VRAM rows 1-23 to rows 0-22 (920 bytes), clears row 23 with spaces",
-        "Uses SCROLL_BUF ($0320, 40 bytes) as temporary storage"
+        "Moves the display origin down a row (VID_TOP, and L0SCRY = VID_TOP * 8) and",
+        "blanks the row that was at the top, which is now the bottom line, in the",
+        "current pen.  The name table does not move.  The cursor keeps its screen",
+        "position, so its VRAM address is worked out again.",
+        "Skips silently if no video card is fitted"
       ],
-      "source": "Kernal.asm:44",
+      "source": "Kernal.asm:47",
       "check": "GREP"
     },
     {
@@ -273,20 +294,21 @@
       "address": "$A027",
       "addressDecimal": 40999,
       "slot": 13,
-      "group": "Video (TMS9918)",
-      "summary": "Set TMS9918 text color (A=reg7 byte: hi=fg, lo=bg)",
+      "group": "Video console (PICOVDP)",
+      "summary": "Set the pen and the border (A = fg<<4 | bg)",
       "target": "VideoSetColorImpl",
-      "description": "Set TMS9918 text color register",
+      "description": "Set the pen for later output, and the border",
       "input": [
-        "A = color byte (high nibble = fg color, low nibble = bg color)"
+        "A = fg<<4 | bg.  VID_PEN = A, and register 7 = A, so the border follows"
       ],
       "modifies": [
         "Flags, A"
       ],
       "notes": [
+        "the background.  Characters already on screen keep their colors.",
         "Skips silently if no video card is fitted"
       ],
-      "source": "Kernal.asm:45",
+      "source": "Kernal.asm:48",
       "check": "GREP"
     },
     {
@@ -294,7 +316,7 @@
       "address": "$A02A",
       "addressDecimal": 41002,
       "slot": 14,
-      "group": "Video (TMS9918)",
+      "group": "Video console (PICOVDP)",
       "summary": "Output char to video (raw, no control-code handling)",
       "target": "VideoChroutRawImpl",
       "description": "Output character to video (raw, no control-code handling)",
@@ -308,7 +330,7 @@
         "Always writes the character glyph at the cursor position and advances.",
         "Preserves: A, X, Y"
       ],
-      "source": "Kernal.asm:46",
+      "source": "Kernal.asm:49",
       "check": "GREP"
     },
     {
@@ -323,7 +345,7 @@
       "modifies": [
         "Flags, A, X"
       ],
-      "source": "Kernal.asm:48",
+      "source": "Kernal.asm:51",
       "check": "GREP"
     },
     {
@@ -342,7 +364,7 @@
         "Uses SidPlayNote on voice 0 with ~475 Hz tone, then silences",
         "Skips silently if SID is absent"
       ],
-      "source": "Kernal.asm:49",
+      "source": "Kernal.asm:52",
       "check": "GREP"
     },
     {
@@ -364,7 +386,7 @@
         "Uses triangle waveform with standard ADSR (Attack=0, Decay=9, Sustain=A, Release=2)",
         "Skips silently if no SID is fitted"
       ],
-      "source": "Kernal.asm:50",
+      "source": "Kernal.asm:53",
       "check": "GREP"
     },
     {
@@ -388,7 +410,7 @@
         "takes the voice to zero on its own.",
         "Skips silently if no SID is fitted"
       ],
-      "source": "Kernal.asm:51",
+      "source": "Kernal.asm:54",
       "check": "GREP"
     },
     {
@@ -409,7 +431,7 @@
       "notes": [
         "Skips silently if no SID is fitted"
       ],
-      "source": "Kernal.asm:52",
+      "source": "Kernal.asm:55",
       "check": "GREP"
     },
     {
@@ -431,7 +453,7 @@
       "modifies": [
         "Flags, A, X, Y, CF_LBA, CF_BUF_PTR"
       ],
-      "source": "Kernal.asm:54",
+      "source": "Kernal.asm:57",
       "check": "GREP"
     },
     {
@@ -453,7 +475,7 @@
       "modifies": [
         "Flags, A, X, Y, CF_LBA, CF_BUF_PTR"
       ],
-      "source": "Kernal.asm:55",
+      "source": "Kernal.asm:58",
       "check": "GREP"
     },
     {
@@ -474,7 +496,7 @@
       "modifies": [
         "Flags, A, X, Y, CF_LBA, CF_BUF_PTR"
       ],
-      "source": "Kernal.asm:56",
+      "source": "Kernal.asm:59",
       "check": "GREP"
     },
     {
@@ -494,7 +516,7 @@
         "CB2 low (enable matrix encoder), CA2 low (enable PS/2 encoder)",
         "CB1 and CA1 falling-edge IRQs enabled"
       ],
-      "source": "Kernal.asm:58",
+      "source": "Kernal.asm:61",
       "check": "GREP"
     },
     {
@@ -517,7 +539,7 @@
         "the same way a C64 reads a CIA port. No sei/PCR save-restore is needed: the port",
         "is static while the encoders are off and no interrupt handler touches these ports."
       ],
-      "source": "Kernal.asm:59",
+      "source": "Kernal.asm:62",
       "check": "GREP"
     },
     {
@@ -535,7 +557,7 @@
       "modifies": [
         "Flags, A"
       ],
-      "source": "Kernal.asm:60",
+      "source": "Kernal.asm:63",
       "check": "GREP"
     },
     {
@@ -550,7 +572,7 @@
       "modifies": [
         "Flags, A"
       ],
-      "source": "Kernal.asm:62",
+      "source": "Kernal.asm:65",
       "check": "GREP"
     },
     {
@@ -565,7 +587,7 @@
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:63",
+      "source": "Kernal.asm:66",
       "check": "GREP"
     },
     {
@@ -588,7 +610,7 @@
       "modifies": [
         "Flags, A, X, Y"
       ],
-      "source": "Kernal.asm:64",
+      "source": "Kernal.asm:67",
       "check": "GREP"
     },
     {
@@ -609,7 +631,7 @@
       "modifies": [
         "Flags, A, X, Y"
       ],
-      "source": "Kernal.asm:65",
+      "source": "Kernal.asm:68",
       "check": "GREP"
     },
     {
@@ -627,7 +649,7 @@
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:67",
+      "source": "Kernal.asm:70",
       "check": "GREP"
     },
     {
@@ -646,7 +668,7 @@
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:68",
+      "source": "Kernal.asm:71",
       "check": "GREP"
     },
     {
@@ -664,7 +686,7 @@
       "modifies": [
         "Flags, A, X"
       ],
-      "source": "Kernal.asm:69",
+      "source": "Kernal.asm:72",
       "check": "GREP"
     },
     {
@@ -683,7 +705,7 @@
       "modifies": [
         "Flags, A, X"
       ],
-      "source": "Kernal.asm:70",
+      "source": "Kernal.asm:73",
       "check": "GREP"
     },
     {
@@ -704,7 +726,7 @@
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:71",
+      "source": "Kernal.asm:74",
       "check": "GREP"
     },
     {
@@ -722,7 +744,7 @@
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:72",
+      "source": "Kernal.asm:75",
       "check": "GREP"
     },
     {
@@ -744,7 +766,7 @@
       "modifies": [
         "Flags, A, X, Y"
       ],
-      "source": "Kernal.asm:74",
+      "source": "Kernal.asm:77",
       "check": "GREP"
     },
     {
@@ -766,7 +788,7 @@
       "modifies": [
         "Flags, A, X, Y"
       ],
-      "source": "Kernal.asm:75",
+      "source": "Kernal.asm:78",
       "check": "GREP"
     },
     {
@@ -787,7 +809,7 @@
       "notes": [
         "Polls ST_STATUS until BSY=0 and RDY=1, with X/Y timeout (~65536 iterations)"
       ],
-      "source": "Kernal.asm:76",
+      "source": "Kernal.asm:79",
       "check": "GREP"
     },
     {
@@ -808,7 +830,7 @@
       "notes": [
         "Uses VIA T1 in one-shot mode. 9999 cycles @ 1MHz = ~10ms per tick."
       ],
-      "source": "Kernal.asm:78",
+      "source": "Kernal.asm:81",
       "check": "GREP"
     },
     {
@@ -817,7 +839,7 @@
       "addressDecimal": 41080,
       "slot": 40,
       "group": "System",
-      "summary": "Initialize all hardware (caller must reset SP; no cli, no splash); rts when done",
+      "summary": "Initialize all hardware (caller must reset SP; no cli); rts when done",
       "target": "KernalInitImpl",
       "description": "Initialize RAM variables, probe & init all hardware",
       "modifies": [
@@ -827,9 +849,9 @@
         "Sets HW_PRESENT, IO_MODE, IRQ/BRK/NMI pointers, BOOT_VECTOR=0",
         "Does NOT enable interrupts (caller must cli)",
         "Does NOT reset the stack pointer (caller should do this before JSR)",
-        "Does NOT display splash or enter boot menu"
+        "Does NOT print anything or start BASIC"
       ],
-      "source": "Kernal.asm:79",
+      "source": "Kernal.asm:82",
       "check": "GREP"
     },
     {
@@ -847,7 +869,7 @@
       "modifies": [
         "A, X"
       ],
-      "source": "Kernal.asm:80",
+      "source": "Kernal.asm:83",
       "check": "GREP"
     },
     {
@@ -862,7 +884,7 @@
       "input": [
         "STR_PTR = filename, FS_IO_ADDR = destination address"
       ],
-      "source": "Kernal.asm:82",
+      "source": "Kernal.asm:85",
       "check": "GREP"
     },
     {
@@ -877,7 +899,7 @@
       "input": [
         "STR_PTR = filename, FS_IO_ADDR = source address, FS_FILE_SIZE = byte count"
       ],
-      "source": "Kernal.asm:83",
+      "source": "Kernal.asm:86",
       "check": "GREP"
     },
     {
@@ -895,7 +917,7 @@
       "modifies": [
         "Flags, A, X, Y, CF_LBA, CF_BUF_PTR"
       ],
-      "source": "Kernal.asm:84",
+      "source": "Kernal.asm:87",
       "check": "GREP"
     },
     {
@@ -913,7 +935,7 @@
       "modifies": [
         "Flags"
       ],
-      "source": "Kernal.asm:85",
+      "source": "Kernal.asm:88",
       "check": "GREP"
     },
     {
@@ -931,7 +953,7 @@
       "modifies": [
         "Flags, A"
       ],
-      "source": "Kernal.asm:86",
+      "source": "Kernal.asm:89",
       "check": "GREP"
     },
     {
@@ -946,7 +968,7 @@
       "modifies": [
         "Flags, A, X, Y, FS_FILE_SIZE, FS_DIR_IDX"
       ],
-      "source": "Kernal.asm:87",
+      "source": "Kernal.asm:90",
       "check": "GREP"
     },
     {
@@ -968,7 +990,7 @@
         "through Chrout, so it works for video OR serial).  General-purpose; used by",
         "BASIC (via the BasPrintStr alias) and available to cartridges."
       ],
-      "source": "Kernal.asm:89",
+      "source": "Kernal.asm:92",
       "check": "GREP"
     },
     {
@@ -980,7 +1002,7 @@
       "summary": "Print CR+LF",
       "target": "PrintCRLFImpl",
       "description": "Emit CR ($0D) then LF ($0A) via Chrout.",
-      "source": "Kernal.asm:90",
+      "source": "Kernal.asm:93",
       "check": "GREP"
     },
     {
@@ -1002,7 +1024,7 @@
         "General-purpose console output; used by BASIC (line numbers) and available",
         "to cartridges.  Shares the FsPrintSize core below."
       ],
-      "source": "Kernal.asm:91",
+      "source": "Kernal.asm:94",
       "check": "GREP"
     },
     {
@@ -1022,7 +1044,7 @@
         "both ports before the caller reads them. Self-contained cycle loop — deliberately",
         "not SysDelay or the VIA T1 path, so it is safe to call while the caller owns the timers."
       ],
-      "source": "Kernal.asm:93",
+      "source": "Kernal.asm:96",
       "check": "GREP"
     },
     {
@@ -1040,7 +1062,7 @@
       "notes": [
         "Sets CB2 low (enable matrix encoder) and CA2 low (enable PS/2 encoder)"
       ],
-      "source": "Kernal.asm:94",
+      "source": "Kernal.asm:97",
       "check": "GREP"
     },
     {
@@ -1062,7 +1084,7 @@
       "modifies": [
         "Flags (D and I preserved), A, Y"
       ],
-      "source": "Kernal.asm:96",
+      "source": "Kernal.asm:99",
       "check": "GREP"
     },
     {
@@ -1084,7 +1106,7 @@
       "modifies": [
         "Flags (D and I preserved), A, Y, NV_PTR"
       ],
-      "source": "Kernal.asm:97",
+      "source": "Kernal.asm:100",
       "check": "GREP"
     },
     {
@@ -1105,7 +1127,7 @@
       "modifies": [
         "Flags (D and I preserved), A, Y, NV_PTR"
       ],
-      "source": "Kernal.asm:98",
+      "source": "Kernal.asm:101",
       "check": "GREP"
     },
     {
@@ -1126,7 +1148,7 @@
       "modifies": [
         "Flags (I preserved), A, Y"
       ],
-      "source": "Kernal.asm:99",
+      "source": "Kernal.asm:102",
       "check": "GREP"
     },
     {
@@ -1150,7 +1172,7 @@
       "notes": [
         "Matches any non-free slot, valid or damaged; A = $00 finds the lowest free slot."
       ],
-      "source": "Kernal.asm:100",
+      "source": "Kernal.asm:103",
       "check": "GREP"
     },
     {
@@ -1168,7 +1190,330 @@
       "modifies": [
         "Flags, A, X, Y"
       ],
-      "source": "Kernal.asm:101",
+      "source": "Kernal.asm:104",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpInfo",
+      "address": "$A0B1",
+      "addressDecimal": 41137,
+      "slot": 59,
+      "group": "PICOVDP (2.0)",
+      "summary": "Card found at boot → A=VDP_FW, X=VDP_CAPS, Y=$AC; carry set if none",
+      "target": "VdpInfoImpl",
+      "description": "What the probe found",
+      "output": [
+        "A = VDP_FW (STAT5), X = VDP_CAPS (STAT6), Y = VDP_ID ($AC); with no card A = X = Y = 0 and carry set"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "source": "Kernal.asm:107",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpWriteReg",
+      "address": "$A0B4",
+      "addressDecimal": 41140,
+      "slot": 60,
+      "group": "PICOVDP (2.0)",
+      "summary": "Write register (A=value, X=0-127), keeping VID_MODE and the LxCTRL shadows",
+      "target": "VdpWriteRegImpl",
+      "description": "Write a VDP register, keeping the Kernal's records of it",
+      "input": [
+        "A = value, X = register (0-127)"
+      ],
+      "output": [
+        "carry set, and nothing written, if no card or X > 127"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "A VMODE write sets VID_MODE: the mode, with b7 (disturbed) set when it takes",
+        "the card to Text or the legacy submode from anything else, so that only",
+        "InitVideo can say the Text console is intact.  L0CTRL and L1CTRL, which read",
+        "back as nothing, are kept in VDP_L0CTRL_SHADOW and VDP_L1CTRL_SHADOW.",
+        "Preserves: X, Y"
+      ],
+      "source": "Kernal.asm:108",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpSetMode",
+      "address": "$A0B7",
+      "addressDecimal": 41143,
+      "slot": 61,
+      "group": "PICOVDP (2.0)",
+      "summary": "Write VMODE (A=1-4); carry set if out of range",
+      "target": "VdpSetModeImpl",
+      "description": "Set VMODE: 1 Text, 2 Compact, 3 Graphics, 4 Full",
+      "input": [
+        "A = mode (1-4)"
+      ],
+      "output": [
+        "carry set, and nothing written, if no card or A is out of range"
+      ],
+      "modifies": [
+        "Flags, A, X"
+      ],
+      "notes": [
+        "Only the register (and VID_MODE, as VdpWriteReg keeps it): the tables, layers",
+        "and sprites are the caller's to lay out.  The Text console proper is",
+        "InitVideo."
+      ],
+      "source": "Kernal.asm:109",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpPoke",
+      "address": "$A0BA",
+      "addressDecimal": 41146,
+      "slot": 62,
+      "group": "PICOVDP (2.0)",
+      "summary": "Write VRAM byte A at X/Y = address lo/hi (all 64 KB)",
+      "target": "VdpPokeImpl",
+      "description": "Write one byte anywhere in VRAM",
+      "input": [
+        "A = value, X = address low, Y = address high ($0000-$FFFF)"
+      ],
+      "output": [
+        "carry set, and nothing written, if no card"
+      ],
+      "modifies": [
+        "Flags, A, X"
+      ],
+      "source": "Kernal.asm:110",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpPeek",
+      "address": "$A0BD",
+      "addressDecimal": 41149,
+      "slot": 63,
+      "group": "PICOVDP (2.0)",
+      "summary": "Read VRAM byte at X/Y = address lo/hi → A",
+      "target": "VdpPeekImpl",
+      "description": "Read one byte anywhere in VRAM",
+      "input": [
+        "X = address low, Y = address high ($0000-$FFFF)"
+      ],
+      "output": [
+        "A = the byte; carry set, and nothing read, if no card"
+      ],
+      "modifies": [
+        "Flags, A, X"
+      ],
+      "source": "Kernal.asm:111",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpSetPalette",
+      "address": "$A0C0",
+      "addressDecimal": 41152,
+      "slot": 64,
+      "group": "PICOVDP (2.0)",
+      "summary": "Palette entry X = 0-255 ← A = $0R, Y = $GB (at $FC00 + 2X)",
+      "target": "VdpSetPaletteImpl",
+      "description": "Set one palette entry in VRAM, at $FC00 + 2 * entry",
+      "input": [
+        "X = entry (0-255), A = $0R, Y = $GB"
+      ],
+      "output": [
+        "carry set, and nothing written, if no card"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "notes": [
+        "The card takes the write into its palette at once (SPEC §11).  $FC00 is where",
+        "InitVideo puts PALBASE; a program that moves PALBASE writes its own."
+      ],
+      "source": "Kernal.asm:112",
+      "check": "GREP"
+    },
+    {
+      "name": "WaitVBlank",
+      "address": "$A0C3",
+      "addressDecimal": 41155,
+      "slot": 65,
+      "group": "PICOVDP (2.0)",
+      "summary": "Return at the start of the next vertical blank (STAT0 untouched)",
+      "target": "WaitVBlankImpl",
+      "description": "Return at the start of the next vertical blank",
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "notes": [
+        "Polls STAT3 b0 on port A: waits while the display is in blanking, then until",
+        "it is, and puts STATSEL_A back to 0.  Not STAT0's F: reading STAT0 clears",
+        "F, OVF and COL and the STAT1 latches a program or its interrupt handler may",
+        "be relying on, and this leaves them all as they were.",
+        "No card: waits 2 cs through SysDelay instead, so a loop paced by it still",
+        "runs at about the speed it would, and returns carry set."
+      ],
+      "source": "Kernal.asm:113",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpLoadFile",
+      "address": "$A0C6",
+      "addressDecimal": 41158,
+      "slot": 66,
+      "group": "PICOVDP (2.0)",
+      "summary": "Load named file (STR_PTR) into VRAM at FS_IO_ADDR, exactly FS_FILE_SIZE bytes",
+      "target": "VdpLoadFileImpl",
+      "description": "Load a named file from the current disk into VRAM",
+      "input": [
+        "STR_PTR = filename, FS_IO_ADDR = VRAM address"
+      ],
+      "output": [
+        "Carry clear = loaded, FS_FILE_SIZE = bytes written",
+        "Carry set = no video card (nothing read), or not found or read error"
+      ],
+      "modifies": [
+        "Flags, A, X, Y, CF_LBA, CF_BUF_PTR, XFER_REMAIN, FS_SECTOR_BUF"
+      ],
+      "notes": [
+        "Streams the file through port A to FS_IO_ADDR, anywhere in the 64 KB, and",
+        "writes exactly its FS_FILE_SIZE bytes: the rest of the last sector is read",
+        "and dropped, so a table loaded here cannot spill into the one after it."
+      ],
+      "source": "Kernal.asm:114",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpLoadFont",
+      "address": "$A0C9",
+      "addressDecimal": 41161,
+      "slot": 67,
+      "group": "PICOVDP (2.0)",
+      "summary": "Copy built-in font A into L0PAT and wait for it",
+      "target": "VdpLoadFontImpl",
+      "description": "Load one of the card's built-in fonts into layer 0's pattern table",
+      "input": [
+        "A = font ID"
+      ],
+      "output": [
+        "carry set, and nothing written, if no card or A is not $00"
+      ],
+      "modifies": [
+        "Flags, A, X, Y"
+      ],
+      "notes": [
+        "Writes the font ID to FONT (SPEC §7), which copies it to L0PAT x $800 as that",
+        "register stands at the write, and waits for the copy: a pending load lands at",
+        "the line start where vertical blank begins, before STAT3 b0 sets, so",
+        "WaitVBlank returning is the completion.  STAT0 is not read.  The only font",
+        "STAT6 b7 promises is $00 (VDP_FONT_CP437), so any other ID is refused rather",
+        "than written as a command that would do nothing."
+      ],
+      "source": "Kernal.asm:115",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpSprite",
+      "address": "$A0CC",
+      "addressDecimal": 41164,
+      "slot": 68,
+      "group": "PICOVDP (2.0)",
+      "summary": "Sprite X = 0-63 ← VDP_P0-P3 = Y, X lo, pattern, attributes (table at $2000)",
+      "target": "VdpSpriteImpl",
+      "description": "Write one sprite's four attribute bytes",
+      "input": [
+        "X = sprite (0-63), VDP_P0 = Y, VDP_P1 = X bits 7:0, VDP_P2 = pattern,",
+        "VDP_P3 = attributes (b7 = X bit 8, b6 priority, b5:4 flips, b3:0 sub-palette; SPEC §10)"
+      ],
+      "output": [
+        "carry set, and nothing written, if no card or X > 63"
+      ],
+      "modifies": [
+        "Flags, A, Y"
+      ],
+      "notes": [
+        "The attribute table is taken to be at VRAM $2000 (SPRATTR = $40), where",
+        "BASIC's SCREEN 1-3 puts it; a program that moves SPRATTR writes its sprites",
+        "with VdpPoke.  Sets VID_MODE b7 (disturbed).",
+        "Preserves: X"
+      ],
+      "source": "Kernal.asm:116",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpSetScroll",
+      "address": "$A0CF",
+      "addressDecimal": 41167,
+      "slot": 69,
+      "group": "PICOVDP (2.0)",
+      "summary": "Layer X = 0-1 scroll: A = x lo, Y = y, VDP_P0 = x bit 8",
+      "target": "VdpSetScrollImpl",
+      "description": "Scroll a layer",
+      "input": [
+        "X = layer (0-1), A = x bits 7:0, Y = y, VDP_P0 = x bit 8 (0 or not)"
+      ],
+      "output": [
+        "carry set, and nothing written, if no card or X > 1"
+      ],
+      "modifies": [
+        "Flags, A, X"
+      ],
+      "notes": [
+        "Writes LxSCRX, LxSCRY, and LxCTRL with b6 = X bit 8 and its other bits from",
+        "the shadow.  Sets VID_MODE b7 (disturbed)."
+      ],
+      "source": "Kernal.asm:117",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpLayer",
+      "address": "$A0D2",
+      "addressDecimal": 41170,
+      "slot": 70,
+      "group": "PICOVDP (2.0)",
+      "summary": "Layer X = 0-1 off (A = 0) or on",
+      "target": "VdpLayerImpl",
+      "description": "Show or hide a layer",
+      "input": [
+        "X = layer (0-1), A = 0 to hide, anything else to show"
+      ],
+      "output": [
+        "carry set, and nothing written, if no card or X > 1"
+      ],
+      "modifies": [
+        "Flags, A, X"
+      ],
+      "notes": [
+        "Sets or clears LxCTRL b4, keeping its other bits from the shadow.  Sets",
+        "VID_MODE b7 (disturbed)."
+      ],
+      "source": "Kernal.asm:118",
+      "check": "GREP"
+    },
+    {
+      "name": "VdpStatus",
+      "address": "$A0D5",
+      "addressDecimal": 41173,
+      "slot": 71,
+      "group": "PICOVDP (2.0)",
+      "summary": "Read status register X = 0-15 on port A → A",
+      "target": "VdpStatusImpl",
+      "description": "Read a status register through port A",
+      "input": [
+        "X = status register (0-15)"
+      ],
+      "output": [
+        "A = its value; carry set, and nothing read, if no card or X > 15"
+      ],
+      "modifies": [
+        "Flags, A"
+      ],
+      "notes": [
+        "Selects STATn with STATSEL_A, reads it, and puts STATSEL_A back to 0 without",
+        "reading STAT0.  Reading STAT0 itself clears its flags, and STAT1 its",
+        "latches, as SPEC §6 says.",
+        "Preserves: X, Y"
+      ],
+      "source": "Kernal.asm:119",
       "check": "GREP"
     }
   ]

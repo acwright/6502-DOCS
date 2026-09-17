@@ -114,7 +114,6 @@ const hex = (s) => parseInt(String(s).replace('$', ''), 16)
 function memoryMap() {
   const map = facts('memory-map.json')
 
-  const rom = Object.fromEntries(map.rom.map((seg) => [seg.name, seg]))
   const bands = [
     ...map.ram.map((region) => ({
       name: region.name,
@@ -131,14 +130,20 @@ function memoryMap() {
       group: 'I/O',
       cls: 'dg-r3'
     },
-    ...['KERNAL', 'CHARS', 'BASIC', 'MONITOR', 'WOZMON', 'VECTORS'].map((name) => ({
-      name: { KERNAL: 'Kernal', CHARS: 'Character set', BASIC: 'BASIC', MONITOR: 'Monitor', WOZMON: 'Wozmon', VECTORS: 'Vectors' }[name],
-      start: rom[name].start,
-      end: rom[name].end,
-      size: hex(rom[name].end) - hex(rom[name].start) + 1,
-      group: 'ROM',
-      cls: 'dg-r2'
-    }))
+    // Every ROM segment the linker config declares, in address order, except
+    // the I/O window it declares only to pad the image.
+    ...map.rom.filter((seg) => seg.start !== map.io.start).map((seg) => {
+      const name = { KERNAL: 'Kernal', BASIC: 'BASIC', WOZMON: 'Wozmon', VECTORS: 'Vectors' }[seg.segment]
+      if (!name) throw new Error(`memory-map: no label for the ROM segment ${seg.segment}`)
+      return {
+        name,
+        start: seg.start,
+        end: seg.end,
+        size: seg.size,
+        group: 'ROM',
+        cls: 'dg-r2'
+      }
+    })
   ]
 
   const W = 640
@@ -244,7 +249,7 @@ function zeroPage() {
 
   const key = TOP + CELL * 16 + 30
   body.push(rect(X, key, 18, 18, 'dg-solid'))
-  body.push(text(X + 26, key + 13, `$00–$${(free - 1).toString(16).toUpperCase().padStart(2, '0')} — the Kernal, BASIC, the Monitor and XModem`, 'dg-n'))
+  body.push(text(X + 26, key + 13, `$00–$${(free - 1).toString(16).toUpperCase().padStart(2, '0')} — the Kernal, BASIC and XModem`, 'dg-n'))
   body.push(rect(X, key + 26, 18, 18, 'dg-open'))
   body.push(text(X + 26, key + 39, `$${free.toString(16).toUpperCase().padStart(2, '0')}–$FF — ${256 - free} bytes, yours`, 'dg-n'))
 
@@ -418,9 +423,8 @@ function cartridgeOverlay() {
   const rows = [
     { label: 'RAM', addr: '$0000', h: 90 },
     { label: 'I/O slots', addr: '$8000', h: 46 },
-    { label: 'Kernal', addr: '$A000', h: 56 },
-    { label: 'Character set', addr: '$B800', h: 36 },
-    { label: 'BASIC, Monitor, Wozmon', addr: '$C000', h: 92, swap: true }
+    { label: 'Kernal', addr: '$A000', h: 72 },
+    { label: 'BASIC, Wozmon', addr: '$C000', h: 92, swap: true }
   ]
 
   const stacked = []
@@ -477,7 +481,7 @@ function cartridgeOverlay() {
   body.push(text((LEFT + COL + RIGHT) / 2, keep.y + keep.h / 2 - 8, 'stays', 'dg-n', 'middle'))
 
   body.push(
-    text(LEFT, bottom + 26, 'The Kernal and the character set survive, so a cartridge still has the jump table.', 'dg-n')
+    text(LEFT, bottom + 26, 'The Kernal survives, so a cartridge still has the jump table.', 'dg-n')
   )
 
   return svg({ width: W, height: bottom + 44, title: 'What a cartridge replaces, and what stays underneath it', body })
@@ -645,8 +649,9 @@ function toolchain() {
 // Switching on
 // ---------------------------------------------------------------------------
 
-/** The five seconds between the power switch and the prompt. */
+/** The moment between the power switch and the prompt. */
 function bootFlow() {
+  const boot = facts('boot.json')
   const W = 560
   const X = 150
   const BOX = 260
@@ -654,9 +659,9 @@ function bootFlow() {
 
   const steps = [
     { label: 'Power on', sub: 'or the reset button' },
-    { label: 'The Kernal starts', sub: 'clears the screen, sets up the video card' },
+    { label: 'The Kernal starts', sub: 'sets up the video card and the console' },
     { label: 'It looks for the cards', sub: 'one bit per slot: RAM, clock, disk, serial, sound, video' },
-    { label: 'Splash, and five seconds', sub: 'ENTER=BASIC · ESC=MONITOR', cls: 'dg-r2' }
+    { label: 'A cartridge?', sub: 'if one is fitted, it takes over here', cls: 'dg-r2' }
   ]
 
   const H = 66
@@ -675,19 +680,20 @@ function bootFlow() {
     y += H + GAP
   })
 
-  // The fork at the end of the countdown.
+  // The fork: a cartridge that set the boot vector takes the machine, and
+  // otherwise BASIC starts and prints the header.
   const forkY = y
   body.push(rect(40, forkY, 220, H, 'dg-solid'))
   body.push(text(54, forkY + 26, 'BASIC', 'dg-t dg-inv'))
-  body.push(text(54, forkY + 46, 'OK, and a beep', 'dg-n dg-inv'))
+  body.push(text(54, forkY + 46, boot.header[0], 'dg-n dg-inv'))
   body.push(rect(300, forkY, 220, H, 'dg-r'))
-  body.push(text(314, forkY + 26, 'The Monitor', 'dg-t'))
-  body.push(text(314, forkY + 46, 'a dot, and a cursor', 'dg-n'))
+  body.push(text(314, forkY + 26, 'The cartridge', 'dg-t'))
+  body.push(text(314, forkY + 46, 'whatever it does', 'dg-n'))
 
   body.push(path(`M${r(X + BOX / 2)} ${r(forkY - GAP)} V${r(forkY - 16)} H150 V${r(forkY)}`, 'dg-l', ' marker-end="url(#dg-arrow)"'))
   body.push(path(`M${r(X + BOX / 2)} ${r(forkY - GAP)} V${r(forkY - 16)} H410 V${r(forkY)}`, 'dg-l', ' marker-end="url(#dg-arrow)"'))
-  body.push(text(142, forkY - 22, 'Enter, or wait', 'dg-n', 'end'))
-  body.push(text(418, forkY - 22, 'Esc', 'dg-n'))
+  body.push(text(142, forkY - 22, 'No', 'dg-n', 'end'))
+  body.push(text(418, forkY - 22, 'Yes', 'dg-n'))
 
   return svg({ width: W, height: forkY + H + 20, title: 'What happens between the power switch and the prompt', body })
 }
@@ -752,7 +758,7 @@ function printZones() {
 // The status register
 // ---------------------------------------------------------------------------
 
-/** One byte of flags, in the order the Monitor prints them. */
+/** One byte of flags, most significant bit first. */
 function statusFlags() {
   const flags = [
     { bit: 7, name: 'N', meaning: 'negative' },
@@ -781,7 +787,7 @@ function statusFlags() {
   })
 
   body.push(
-    text(X, TOP + CELL + 34, 'The Monitor prints them in this order, a letter where a flag is set:', 'dg-n')
+    text(X, TOP + CELL + 34, 'Written out in this order, a letter where a flag is set:', 'dg-n')
   )
   body.push(text(X, TOP + CELL + 58, '---B-IZC', 'dg-a'))
   body.push(text(X + 110, TOP + CELL + 58, 'break, interrupts off, zero, carry.', 'dg-n'))

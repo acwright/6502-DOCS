@@ -11,24 +11,24 @@
 <line class="dg-l" x1="280" y1="96" x2="280" y2="126" marker-end="url(#dg-arrow)"/>
 <rect class="dg-r" x="150" y="126" width="260" height="66"/>
 <text class="dg-t" x="164" y="152" text-anchor="start">The Kernal starts</text>
-<text class="dg-n" x="164" y="172" text-anchor="start">clears the screen, sets up the video card</text>
+<text class="dg-n" x="164" y="172" text-anchor="start">sets up the video card and the console</text>
 <line class="dg-l" x1="280" y1="192" x2="280" y2="222" marker-end="url(#dg-arrow)"/>
 <rect class="dg-r" x="150" y="222" width="260" height="66"/>
 <text class="dg-t" x="164" y="248" text-anchor="start">It looks for the cards</text>
 <text class="dg-n" x="164" y="268" text-anchor="start">one bit per slot: RAM, clock, disk, serial, sound, video</text>
 <line class="dg-l" x1="280" y1="288" x2="280" y2="318" marker-end="url(#dg-arrow)"/>
 <rect class="dg-r2" x="150" y="318" width="260" height="66"/>
-<text class="dg-t" x="164" y="344" text-anchor="start">Splash, and five seconds</text>
-<text class="dg-n" x="164" y="364" text-anchor="start">ENTER=BASIC · ESC=MONITOR</text>
+<text class="dg-t" x="164" y="344" text-anchor="start">A cartridge?</text>
+<text class="dg-n" x="164" y="364" text-anchor="start">if one is fitted, it takes over here</text>
 <line class="dg-l" x1="280" y1="384" x2="280" y2="398"/>
 <rect class="dg-solid" x="40" y="414" width="220" height="66"/>
 <text class="dg-t dg-inv" x="54" y="440" text-anchor="start">BASIC</text>
-<text class="dg-n dg-inv" x="54" y="460" text-anchor="start">OK, and a beep</text>
+<text class="dg-n dg-inv" x="54" y="460" text-anchor="start">AC6502 BIOS v2.0</text>
 <rect class="dg-r" x="300" y="414" width="220" height="66"/>
-<text class="dg-t" x="314" y="440" text-anchor="start">The Monitor</text>
-<text class="dg-n" x="314" y="460" text-anchor="start">a dot, and a cursor</text>
+<text class="dg-t" x="314" y="440" text-anchor="start">The cartridge</text>
+<text class="dg-n" x="314" y="460" text-anchor="start">whatever it does</text>
 <path class="dg-l" d="M280 384 V398 H150 V414" marker-end="url(#dg-arrow)"/>
 <path class="dg-l" d="M280 384 V398 H410 V414" marker-end="url(#dg-arrow)"/>
-<text class="dg-n" x="142" y="392" text-anchor="end">Enter, or wait</text>
-<text class="dg-n" x="418" y="392" text-anchor="start">Esc</text>
+<text class="dg-n" x="142" y="392" text-anchor="end">No</text>
+<text class="dg-n" x="418" y="392" text-anchor="start">Yes</text>
 </svg>

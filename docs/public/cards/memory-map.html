@@ -17,7 +17,7 @@
 
   <div class="pg-header">
     <h1>Memory Map</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>Memory map &middot; BIOS v1.6</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Memory map &middot; BIOS v2.0</div>
   </div>
 
   <div class="pg-body">
@@ -26,15 +26,13 @@
       <table>
         <thead><tr><th style="width:26%">Range</th><th>What it is</th></tr></thead>
         <tbody>
-          <tr><td class="td-addr">$0000&ndash;$00FF</td><td class="td-desc">Zero page &mdash; Kernal, BASIC and Monitor workspace</td></tr>
+          <tr><td class="td-addr">$0000&ndash;$00FF</td><td class="td-desc">Zero page &mdash; Kernal and BASIC workspace</td></tr>
           <tr><td class="td-addr">$0100&ndash;$01FF</td><td class="td-desc">The 6502 stack</td></tr>
           <tr><td class="td-addr">$0200&ndash;$07FF</td><td class="td-desc">Kernal and BASIC buffers &mdash; <strong>not</strong> yours</td></tr>
           <tr><td class="td-addr">$0800&ndash;$7FFF</td><td class="td-desc">Your program, your variables, your strings</td></tr>
           <tr><td class="td-addr">$8000&ndash;$9FFF</td><td class="td-desc">The I/O window &mdash; eight cards, 1 KB each</td></tr>
-          <tr><td class="td-addr">$A000&ndash;$B7FF</td><td class="td-desc">Kernal</td></tr>
-          <tr><td class="td-addr">$B800&ndash;$BFFF</td><td class="td-desc">Character set</td></tr>
-          <tr><td class="td-addr">$C000&ndash;$EDFF</td><td class="td-desc">BASIC</td></tr>
-          <tr><td class="td-addr">$EE00&ndash;$FEFF</td><td class="td-desc">Monitor</td></tr>
+          <tr><td class="td-addr">$A000&ndash;$BFFF</td><td class="td-desc">Kernal</td></tr>
+          <tr><td class="td-addr">$C000&ndash;$FEFF</td><td class="td-desc">BASIC</td></tr>
           <tr><td class="td-addr">$FF00&ndash;$FFF9</td><td class="td-desc">Wozmon</td></tr>
           <tr><td class="td-addr">$FFFA&ndash;$FFFF</td><td class="td-desc">NMI, RESET and IRQ vectors</td></tr>
         </tbody>
@@ -47,10 +45,10 @@
       <table>
         <thead><tr><th style="width:26%">Range</th><th style="width:14%">Size</th><th>What lives there</th></tr></thead>
         <tbody>
-          <tr><td class="td-addr">$0000&ndash;$00FF</td><td class="td-desc">256 B</td><td class="td-desc">Kernal, BASIC, Monitor and XModem workspace; $003A-$00FF is unclaimed by the Kernal</td></tr>
+          <tr><td class="td-addr">$0000&ndash;$00FF</td><td class="td-desc">256 B</td><td class="td-desc">Kernal, BASIC and XModem workspace; $003A-$00FF is unclaimed by the Kernal</td></tr>
           <tr><td class="td-addr">$0100&ndash;$01FF</td><td class="td-desc">256 B</td><td class="td-desc">Hardware stack; BASIC keeps its FOR and GOSUB frames here</td></tr>
           <tr><td class="td-addr">$0200&ndash;$02FF</td><td class="td-desc">256 B</td><td class="td-desc">256-byte input buffer filled by the encoders, drained by Chrin</td></tr>
-          <tr><td class="td-addr">$0300&ndash;$03FF</td><td class="td-desc">256 B</td><td class="td-desc">Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID</td></tr>
+          <tr><td class="td-addr">$0300&ndash;$03FF</td><td class="td-desc">256 B</td><td class="td-desc">Interrupt vectors, the registers saved at BRK, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID, video console and PICOVDP state</td></tr>
           <tr><td class="td-addr">$0400&ndash;$05FF</td><td class="td-desc">512 B</td><td class="td-desc">BAS_LINBUF raw input line ($0400) and BAS_TOKBUF tokenized scratch ($0500)</td></tr>
           <tr><td class="td-addr">$0600&ndash;$07FF</td><td class="td-desc">512 B</td><td class="td-desc">512-byte sector buffer; any filesystem call clobbers it</td></tr>
           <tr><td class="td-addr">$0800&ndash;$7FFF</td><td class="td-desc">30 KB</td><td class="td-desc">BASIC program text grows up from $0800; variables, then arrays, then the string heap growing down from $8000</td></tr>
@@ -62,15 +60,13 @@
       <table>
         <thead><tr><th style="width:26%">Range</th><th style="width:14%">Size</th><th>Segment</th></tr></thead>
         <tbody>
-          <tr><td class="td-addr">$A000&ndash;$B7FF</td><td class="td-desc">6 KB</td><td class="td-desc">KERNAL</td></tr>
-          <tr><td class="td-addr">$B800&ndash;$BFFF</td><td class="td-desc">2 KB</td><td class="td-desc">CHARS</td></tr>
-          <tr><td class="td-addr">$C000&ndash;$EDFF</td><td class="td-desc">11.5 KB</td><td class="td-desc">BASIC</td></tr>
-          <tr><td class="td-addr">$EE00&ndash;$FEFF</td><td class="td-desc">4.3 KB</td><td class="td-desc">MONITOR</td></tr>
+          <tr><td class="td-addr">$A000&ndash;$BFFF</td><td class="td-desc">8 KB</td><td class="td-desc">KERNAL</td></tr>
+          <tr><td class="td-addr">$C000&ndash;$FEFF</td><td class="td-desc">15.8 KB</td><td class="td-desc">BASIC</td></tr>
           <tr><td class="td-addr">$FF00&ndash;$FFF9</td><td class="td-desc">250 B</td><td class="td-desc">WOZMON</td></tr>
           <tr><td class="td-addr">$FFFA&ndash;$FFFF</td><td class="td-desc">6 B</td><td class="td-desc">VECTORS</td></tr>
         </tbody>
       </table>
-      <div class="note-box"><strong>One EEPROM, three version numbers.</strong> BIOS v1.6, BASIC V2.0 and Monitor v1.1 all ship in the same 32 KB chip.</div>
+      <div class="note-box"><strong>One EEPROM.</strong> The Kernal, BASIC and Wozmon of BIOS v2.0 all ship in the same 32 KB chip.</div>
     </div>
     <div class="section">
       <span class="sec-title">The I/O window</span>
@@ -84,7 +80,7 @@
           <tr><td class="td-cmd">5</td><td class="td-addr">$9000&ndash;$93FF</td><td class="td-addr">$10</td><td class="td-desc">Serial Card &mdash; R65C51 / W65C51 ACIA</td></tr>
           <tr><td class="td-cmd">6</td><td class="td-addr">$9400&ndash;$97FF</td><td class="td-addr">$20</td><td class="td-desc">GPIO Card / Input Board &mdash; W65C22 VIA</td></tr>
           <tr><td class="td-cmd">7</td><td class="td-addr">$9800&ndash;$9BFF</td><td class="td-addr">$40</td><td class="td-desc">Sound Card &mdash; MOS 6581 SID / ARMSID</td></tr>
-          <tr><td class="td-cmd">8</td><td class="td-addr">$9C00&ndash;$9FFF</td><td class="td-addr">$80</td><td class="td-desc">Video Card / VGA Card &mdash; TMS9918A / Pico9918</td></tr>
+          <tr><td class="td-cmd">8</td><td class="td-addr">$9C00&ndash;$9FFF</td><td class="td-addr">$80</td><td class="td-desc">Video Card / VGA Card &mdash; 6502-PICOVDP</td></tr>
         </tbody>
       </table>
       <div class="note-box"><strong>What the machine found.</strong> <code>$030D</code> holds one bit per slot, written by the probe at reset. <code>MEM</code> prints it as <code>HW=$xx</code>; <code>PEEK(781)</code> reads it from BASIC.</div>
@@ -104,7 +100,7 @@
 
   <div class="pg-header">
     <h1>Memory Map</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>Memory map &middot; BIOS v1.6</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Memory map &middot; BIOS v2.0</div>
   </div>
 
   <div class="pg-body">
@@ -231,9 +227,12 @@
       <table>
         <thead><tr><th style="width:24%">Address</th><th>Register</th></tr></thead>
         <tbody>
-          <tr><td class="td-addr">$9C00</td><td class="td-desc"><code>VC_DATA</code> &mdash; R/W</td></tr>
-          <tr><td class="td-addr">$9C01</td><td class="td-desc"><code>VC_REG</code> &mdash; Write</td></tr>
-          <tr><td class="td-addr">$9C01</td><td class="td-desc"><code>VC_STATUS</code> &mdash; Read</td></tr>
+          <tr><td class="td-addr">$9C00</td><td class="td-desc"><code>VC_DATA</code> &mdash; R/W  VRAM data, port A</td></tr>
+          <tr><td class="td-addr">$9C01</td><td class="td-desc"><code>VC_REG</code> &mdash; Write  command, port A</td></tr>
+          <tr><td class="td-addr">$9C01</td><td class="td-desc"><code>VC_STATUS</code> &mdash; Read  status (STATSEL_A selects which), port A</td></tr>
+          <tr><td class="td-addr">$9C02</td><td class="td-desc"><code>VC_DATA2</code> &mdash; R/W  VRAM data, port B</td></tr>
+          <tr><td class="td-addr">$9C03</td><td class="td-desc"><code>VC_REG2</code> &mdash; Write  command, port B</td></tr>
+          <tr><td class="td-addr">$9C03</td><td class="td-desc"><code>VC_STATUS2</code> &mdash; Read  status (STATSEL_B selects which), port B</td></tr>
         </tbody>
       </table>
     </div>

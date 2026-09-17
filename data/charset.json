@@ -1,25 +1,24 @@
 {
   "$meta": {
     "title": "Character set",
-    "description": "All 256 CP437 glyphs, eight pixel rows each, as the video card is seeded with them.",
+    "description": "All 256 CP437 glyphs of PICOVDP font $00, eight pixel rows each, as the card loads them.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.6",
+    "biosVersion": "2.0",
     "sources": [
       {
-        "file": "Chars.asm",
-        "sha256": "a2e96467dc560e227d266c0201b924b6c52aad1a8a208ec61a3c916c73ef43d6"
-      },
-      {
-        "file": "BIOS.cfg",
-        "sha256": "bc32f853198e0a036bf85a291054e73efb2eac703775d910068c73dda1bff1c0"
+        "file": "tests/fixtures/cp437-font.hex",
+        "sha256": "11f8e509f16419676a57c57d2c8b86d229f211d91b7b7e6f778a81ba15c5ca35"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
   },
-  "address": "$B800",
-  "end": "$BFFF",
+  "font": "$00",
+  "sha256": "b2adc19efd10870196bad05d84eae51500599935c80f13d608a4f62278260577",
+  "address": "$0800",
+  "end": "$0FFF",
+  "where": "VRAM, on the video card: reset loads font $00 there, and InitVideo points the text layer at it",
   "bytesPerChar": 8,
-  "cell": "8 × 8 pixels, glyphs drawn 5 wide and left-aligned in the byte",
+  "cell": "6 × 8 pixels, glyphs drawn 5 wide and left-aligned in the cell",
   "printable": {
     "viaChrout": "$20–$7E",
     "note": "Chrout puts $20 to $7E on the screen and honours four control codes (CR, LF, backspace, bell). Everything else, including every glyph above $7E, it discards. VideoChroutRaw draws any of the 256.",

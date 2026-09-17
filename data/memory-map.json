@@ -3,15 +3,15 @@
     "title": "Memory map",
     "description": "RAM regions, ROM segments and the I/O window, with every named symbol in each.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.6",
+    "biosVersion": "2.0",
     "sources": [
       {
         "file": "BIOS.cfg",
-        "sha256": "bc32f853198e0a036bf85a291054e73efb2eac703775d910068c73dda1bff1c0"
+        "sha256": "5775012d1e5c58e0ce567223c3fa09e21b0bc51fe3644300997d63ed7e30226b"
       },
       {
         "file": "BIOS.inc",
-        "sha256": "5720c2f055913d48ef0e63abdff466ab77145acbe90aaea43445387a6abe162d"
+        "sha256": "e714ade2bf339e882cf787764e0d3731fb551fd9bdacf4d06a8dbe0f8f9ee185"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -22,7 +22,7 @@
       "start": "$0000",
       "end": "$00FF",
       "size": 256,
-      "purpose": "Kernal, BASIC, Monitor and XModem workspace; $003A-$00FF is unclaimed by the Kernal",
+      "purpose": "Kernal, BASIC and XModem workspace; $003A-$00FF is unclaimed by the Kernal",
       "symbols": [
         {
           "symbol": "ZP",
@@ -75,61 +75,28 @@
           "source": "BIOS.inc:25"
         },
         {
-          "symbol": "MON_ADDR",
-          "address": "$2E",
-          "end": "$2F",
-          "description": "Monitor current address (2 bytes)",
-          "source": "BIOS.inc:27"
-        },
-        {
           "symbol": "XMODEM_BLK",
           "address": "$36",
           "description": "XModem expected/current block number",
-          "source": "BIOS.inc:30"
+          "source": "BIOS.inc:29"
         },
         {
           "symbol": "XMODEM_CHK",
           "address": "$37",
           "description": "XModem running checksum",
-          "source": "BIOS.inc:31"
+          "source": "BIOS.inc:30"
         },
         {
           "symbol": "XMODEM_RETRY",
           "address": "$38",
           "description": "XModem retry counter",
-          "source": "BIOS.inc:32"
+          "source": "BIOS.inc:31"
         },
         {
           "symbol": "XMODEM_RCVBLK",
           "address": "$39",
           "description": "XModem received block number",
-          "source": "BIOS.inc:33"
-        },
-        {
-          "symbol": "MON_END",
-          "address": "$30",
-          "end": "$31",
-          "description": "Monitor end address (2 bytes)",
-          "source": "BIOS.inc:34"
-        },
-        {
-          "symbol": "MON_TMP",
-          "address": "$32",
-          "end": "$33",
-          "description": "Monitor temp pointer (2 bytes)",
-          "source": "BIOS.inc:35"
-        },
-        {
-          "symbol": "MON_BYTE",
-          "address": "$34",
-          "description": "Monitor parsed byte scratch",
-          "source": "BIOS.inc:36"
-        },
-        {
-          "symbol": "MON_IDX",
-          "address": "$35",
-          "description": "Monitor input line index",
-          "source": "BIOS.inc:37"
+          "source": "BIOS.inc:32"
         }
       ],
       "source": "BIOS.inc",
@@ -146,7 +113,7 @@
           "symbol": "STACK",
           "address": "$0100",
           "end": "$01FF",
-          "source": "BIOS.inc:50"
+          "source": "BIOS.inc:45"
         }
       ],
       "source": "BIOS.inc",
@@ -163,7 +130,7 @@
           "symbol": "INPUT_BUFFER",
           "address": "$0200",
           "end": "$02FF",
-          "source": "BIOS.inc:53"
+          "source": "BIOS.inc:48"
         }
       ],
       "source": "BIOS.inc",
@@ -174,337 +141,393 @@
       "start": "$0300",
       "end": "$03FF",
       "size": 256,
-      "purpose": "Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID",
+      "purpose": "Interrupt vectors, the registers saved at BRK, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID, video console and PICOVDP state",
       "symbols": [
         {
           "symbol": "KERNAL_VARS",
           "address": "$0300",
           "end": "$03FF",
-          "source": "BIOS.inc:56"
+          "source": "BIOS.inc:51"
         },
         {
           "symbol": "IRQ_PTR",
           "address": "$0300",
           "end": "$0301",
-          "source": "BIOS.inc:57"
+          "source": "BIOS.inc:52"
         },
         {
           "symbol": "BRK_PTR",
           "address": "$0302",
           "end": "$0303",
-          "source": "BIOS.inc:58"
+          "source": "BIOS.inc:53"
         },
         {
           "symbol": "NMI_PTR",
           "address": "$0304",
           "end": "$0305",
-          "source": "BIOS.inc:59"
+          "source": "BIOS.inc:54"
         },
         {
           "symbol": "IO_MODE",
           "address": "$0306",
           "description": "Bit 0: 0=video, 1=serial output",
-          "source": "BIOS.inc:60"
+          "source": "BIOS.inc:55"
         },
         {
           "symbol": "VID_CURSOR_X",
           "address": "$0307",
           "description": "Video cursor column (0-39)",
-          "source": "BIOS.inc:61"
+          "source": "BIOS.inc:56"
         },
         {
           "symbol": "VID_CURSOR_Y",
           "address": "$0308",
           "description": "Video cursor row (0-23)",
-          "source": "BIOS.inc:62"
+          "source": "BIOS.inc:57"
         },
         {
           "symbol": "VID_CURSOR_ADDR",
           "address": "$0309",
           "description": "Video cursor VRAM address ($0309-$030A)",
-          "source": "BIOS.inc:63"
+          "source": "BIOS.inc:58"
         },
         {
           "symbol": "RTC_BUF_CENT",
           "address": "$030B",
           "description": "Century value from last RtcReadDate / for RtcWriteDate",
-          "source": "BIOS.inc:64"
+          "source": "BIOS.inc:59"
         },
         {
           "symbol": "RTC_TMP",
           "address": "$030C",
           "description": "Scratch byte for BCD conversion",
-          "source": "BIOS.inc:65"
+          "source": "BIOS.inc:60"
         },
         {
           "symbol": "HW_PRESENT",
           "address": "$030D",
           "description": "Hardware present bitmask (set during Reset probe)",
-          "source": "BIOS.inc:66"
+          "source": "BIOS.inc:61"
         },
         {
           "symbol": "BAS_PENDKEY",
           "address": "$030E",
           "description": "Pending key from BasCheckBreak (1 byte)",
-          "source": "BIOS.inc:76"
+          "source": "BIOS.inc:71"
         },
         {
           "symbol": "CF_DISK",
           "address": "$030F",
           "description": "Current CF \"disk\" bank (0-255); base LBA = CF_DISK * FS_DISK_SECTORS",
-          "source": "BIOS.inc:77"
+          "source": "BIOS.inc:72"
         },
         {
           "symbol": "BRK_P",
           "address": "$0310",
           "description": "Saved P at time of BRK",
-          "source": "BIOS.inc:78"
+          "source": "BIOS.inc:73"
         },
         {
           "symbol": "BRK_PCL",
           "address": "$0311",
           "description": "Saved PCL at time of BRK (points to BRK+2)",
-          "source": "BIOS.inc:79"
+          "source": "BIOS.inc:74"
         },
         {
           "symbol": "BRK_PCH",
           "address": "$0312",
           "description": "Saved PCH at time of BRK",
-          "source": "BIOS.inc:80"
+          "source": "BIOS.inc:75"
         },
         {
           "symbol": "BRK_A",
           "address": "$0313",
           "description": "Saved A at time of BRK",
-          "source": "BIOS.inc:81"
+          "source": "BIOS.inc:76"
         },
         {
           "symbol": "BRK_X",
           "address": "$0314",
           "description": "Saved X at time of BRK",
-          "source": "BIOS.inc:82"
+          "source": "BIOS.inc:77"
         },
         {
           "symbol": "BRK_Y",
           "address": "$0315",
           "description": "Saved Y at time of BRK",
-          "source": "BIOS.inc:83"
+          "source": "BIOS.inc:78"
         },
         {
           "symbol": "BRK_SP",
           "address": "$0316",
           "description": "Saved SP at time of BRK",
-          "source": "BIOS.inc:84"
+          "source": "BIOS.inc:79"
         },
         {
           "symbol": "XFER_REMAIN",
           "address": "$0317",
           "end": "$0318",
           "description": "Remaining bytes to transfer (2 bytes)",
-          "source": "BIOS.inc:85"
+          "source": "BIOS.inc:80"
         },
         {
           "symbol": "XFER_IO_SAVE",
           "address": "$0319",
           "description": "Saved IO_MODE before switching to serial",
-          "source": "BIOS.inc:86"
+          "source": "BIOS.inc:81"
         },
         {
           "symbol": "BAS_DATAPTR",
           "address": "$031A",
           "end": "$031B",
           "description": "DATA read position (2 bytes)",
-          "source": "BIOS.inc:87"
+          "source": "BIOS.inc:82"
         },
         {
           "symbol": "BAS_STOPLINE",
           "address": "$031C",
           "end": "$031D",
           "description": "Saved BAS_CURLINE for CONT (2 bytes)",
-          "source": "BIOS.inc:88"
+          "source": "BIOS.inc:83"
         },
         {
           "symbol": "BAS_STOPTXT",
           "address": "$031E",
           "end": "$031F",
           "description": "Saved BAS_TXTPTR for CONT (2 bytes)",
-          "source": "BIOS.inc:89"
-        },
-        {
-          "symbol": "SCROLL_BUF",
-          "address": "$0320",
-          "end": "$0347",
-          "description": "40-byte scroll temp buffer",
-          "source": "BIOS.inc:90"
+          "source": "BIOS.inc:84"
         },
         {
           "symbol": "FS_START_SEC",
           "address": "$0348",
           "end": "$0349",
           "description": "File start sector (2 bytes)",
-          "source": "BIOS.inc:92"
+          "source": "BIOS.inc:87"
         },
         {
           "symbol": "FS_FILE_SIZE",
           "address": "$034A",
           "end": "$034B",
           "description": "File size in bytes (2 bytes)",
-          "source": "BIOS.inc:93"
+          "source": "BIOS.inc:88"
         },
         {
           "symbol": "FS_SEC_COUNT",
           "address": "$034C",
           "description": "Number of sectors to read/write",
-          "source": "BIOS.inc:94"
+          "source": "BIOS.inc:89"
         },
         {
           "symbol": "FS_DIR_IDX",
           "address": "$034D",
           "description": "Directory entry index (0-15)",
-          "source": "BIOS.inc:95"
+          "source": "BIOS.inc:90"
         },
         {
           "symbol": "FS_NEXT_SEC",
           "address": "$034E",
           "end": "$034F",
           "description": "Next free sector for allocation (2 bytes)",
-          "source": "BIOS.inc:96"
+          "source": "BIOS.inc:91"
         },
         {
           "symbol": "FS_FNAME_BUF",
           "address": "$0350",
           "end": "$035A",
           "description": "11-byte filename buffer (8 name + 3 ext)",
-          "source": "BIOS.inc:97"
+          "source": "BIOS.inc:92"
         },
         {
           "symbol": "BOOT_VECTOR",
           "address": "$035B",
           "end": "$035C",
           "description": "Cart/boot redirect vector (2 bytes, 0=normal boot)",
-          "source": "BIOS.inc:98"
+          "source": "BIOS.inc:93"
         },
         {
           "symbol": "BAS_TXTTAB",
           "address": "$035D",
           "end": "$035E",
           "description": "Start of program text (= $0800)",
-          "source": "BIOS.inc:101"
+          "source": "BIOS.inc:96"
         },
         {
           "symbol": "BAS_VARTAB",
           "address": "$035F",
           "end": "$0360",
           "description": "End-of-program / start-of-vars pointer",
-          "source": "BIOS.inc:102"
+          "source": "BIOS.inc:97"
         },
         {
           "symbol": "BAS_ARYTAB",
           "address": "$0361",
           "end": "$0362",
           "description": "Start of arrays",
-          "source": "BIOS.inc:103"
+          "source": "BIOS.inc:98"
         },
         {
           "symbol": "BAS_STREND",
           "address": "$0363",
           "end": "$0364",
           "description": "End of arrays",
-          "source": "BIOS.inc:104"
+          "source": "BIOS.inc:99"
         },
         {
           "symbol": "BAS_FRETOP",
           "address": "$0365",
           "end": "$0366",
           "description": "Top-of-string-heap pointer",
-          "source": "BIOS.inc:105"
+          "source": "BIOS.inc:100"
         },
         {
           "symbol": "BAS_MEMSIZ",
           "address": "$0367",
           "end": "$0368",
           "description": "End of usable memory (= $8000)",
-          "source": "BIOS.inc:106"
+          "source": "BIOS.inc:101"
         },
         {
           "symbol": "BAS_CURLIN",
           "address": "$0369",
           "end": "$036A",
           "description": "Currently executing line ($FFFF=direct mode)",
-          "source": "BIOS.inc:107"
+          "source": "BIOS.inc:102"
         },
         {
           "symbol": "BAS_OLDLIN",
           "address": "$036B",
           "end": "$036C",
           "description": "Saved line for CONT",
-          "source": "BIOS.inc:108"
+          "source": "BIOS.inc:103"
         },
         {
           "symbol": "BAS_OLDTEXT",
           "address": "$036D",
           "end": "$036E",
           "description": "Saved text ptr for CONT",
-          "source": "BIOS.inc:109"
+          "source": "BIOS.inc:104"
         },
         {
           "symbol": "BAS_WARM",
           "address": "$036F",
           "description": "Warm-start magic ($A5 = previously initialized)",
-          "source": "BIOS.inc:110"
+          "source": "BIOS.inc:105"
         },
         {
           "symbol": "BAS_POSX",
           "address": "$0370",
           "description": "PRINT column counter (0-39 video / 0-79 serial)",
-          "source": "BIOS.inc:111"
+          "source": "BIOS.inc:106"
         },
         {
           "symbol": "BAS_INPSAV",
           "address": "$0371",
           "end": "$0372",
           "description": "Saved TXTPTR across INPUT REDO retry",
-          "source": "BIOS.inc:112"
+          "source": "BIOS.inc:107"
         },
         {
           "symbol": "BAS_FNPTR",
           "address": "$0373",
           "end": "$0374",
           "description": "FN variable slot addr held across FnCall's expression evaluations (out of ZP so FrmEvl/Garbag cannot touch it)",
-          "source": "BIOS.inc:113"
+          "source": "BIOS.inc:108"
         },
         {
           "symbol": "BAS_STKBASE",
           "address": "$0375",
-          "description": "Stack pointer the READY loop restores before each direct-mode line: $FF with no",
-          "source": "BIOS.inc:114"
+          "description": "Stack pointer the READY loop restores before each direct-mode line: $FF with no program suspended, or the running program's statement-boundary SP after a STOP/END/Ctrl+C break, which is what keeps its FOR and GOSUB frames alive for CONT.  Reset to $FF wherever the stack is reset (RUN, CLR, NEW, an error)",
+          "source": "BIOS.inc:109"
         },
         {
           "symbol": "FS_IO_ADDR",
           "address": "$037F",
           "end": "$0380",
           "description": "Load/save target address for FsLoadFileAddr/FsSaveFileAddr",
-          "source": "BIOS.inc:118"
+          "source": "BIOS.inc:113"
         },
         {
           "symbol": "BAS_FNAME",
           "address": "$0381",
           "end": "$038D",
           "description": "13-byte scratch for null-terminated 8.3 filename (12-char \"NAME.EXT\" + null)",
-          "source": "BIOS.inc:119"
+          "source": "BIOS.inc:114"
         },
         {
           "symbol": "PRG_IMAGE_END",
           "address": "$038E",
           "end": "$038F",
-          "description": "End address of a program image placed at PROGRAM_START by a loader",
-          "source": "BIOS.inc:120"
+          "description": "End address of a program image placed at PROGRAM_START by a loader outside BASIC; 0 = none.  Cleared by KernalInit and consumed by ProgramEnd, so a stale value can never be mistaken for a fresh load.",
+          "source": "BIOS.inc:115"
         },
         {
           "symbol": "NV_ID",
           "address": "$0390",
           "description": "Owner ID input for NvWrite ($00 is refused — that is NvErase)",
+          "source": "BIOS.inc:120"
+        },
+        {
+          "symbol": "VID_PEN",
+          "address": "$0391",
+          "description": "Attribute byte for new output, fg<<4 | bg ($1F from KernalInit)",
+          "source": "BIOS.inc:123"
+        },
+        {
+          "symbol": "VID_TOP",
+          "address": "$0392",
+          "description": "Name-table row shown at the top of the screen (0-23); L0SCRY = VID_TOP * 8",
+          "source": "BIOS.inc:124"
+        },
+        {
+          "symbol": "VID_MODE",
+          "address": "$0393",
+          "description": "$00 = console not set up since KernalInit (card in the legacy submode); $01 = text console intact.  Otherwise low nibble = the VMODE the Kernal last set, b7 = disturbed (sprites, scroll, layers)",
           "source": "BIOS.inc:125"
+        },
+        {
+          "symbol": "VDP_FW",
+          "address": "$0394",
+          "description": "STAT5 (firmware version, BCD) at boot; $00 if no PICOVDP",
+          "source": "BIOS.inc:128"
+        },
+        {
+          "symbol": "VDP_CAPS",
+          "address": "$0395",
+          "description": "STAT6 (capability bits) at boot; $00 if no PICOVDP",
+          "source": "BIOS.inc:129"
+        },
+        {
+          "symbol": "VDP_L0CTRL_SHADOW",
+          "address": "$0396",
+          "description": "Shadow of the write-only L0CTRL register",
+          "source": "BIOS.inc:130"
+        },
+        {
+          "symbol": "VDP_L1CTRL_SHADOW",
+          "address": "$0397",
+          "description": "Shadow of the write-only L1CTRL register",
+          "source": "BIOS.inc:131"
+        },
+        {
+          "symbol": "VDP_P0",
+          "address": "$0398",
+          "description": "Parameter block for VDP entries that take more than A/X/Y",
+          "source": "BIOS.inc:132"
+        },
+        {
+          "symbol": "VDP_P1",
+          "address": "$0399",
+          "source": "BIOS.inc:133"
+        },
+        {
+          "symbol": "VDP_P2",
+          "address": "$039A",
+          "source": "BIOS.inc:134"
+        },
+        {
+          "symbol": "VDP_P3",
+          "address": "$039B",
+          "source": "BIOS.inc:135"
         }
       ],
       "source": "BIOS.inc",
@@ -522,7 +545,7 @@
           "address": "$0400",
           "end": "$07FF",
           "description": "see above; Wozmon's input buffer",
-          "source": "BIOS.inc:150"
+          "source": "BIOS.inc:160"
         }
       ],
       "source": "BIOS.inc",
@@ -540,7 +563,7 @@
           "address": "$0600",
           "end": "$07FF",
           "description": "512-byte sector buffer (overlaps BAS_TOKBUF/BAS_STRBUF)",
-          "source": "BIOS.inc:127"
+          "source": "BIOS.inc:137"
         }
       ],
       "source": "BIOS.inc",
@@ -557,7 +580,7 @@
           "symbol": "PROGRAM_START",
           "address": "$0800",
           "end": "$7FFF",
-          "source": "BIOS.inc:153"
+          "source": "BIOS.inc:163"
         }
       ],
       "source": "BIOS.inc",
@@ -578,8 +601,8 @@
       "segment": "KERNAL",
       "name": "KERNAL",
       "start": "$A000",
-      "end": "$B7FF",
-      "size": 6144,
+      "end": "$BFFF",
+      "size": 8192,
       "source": "BIOS.cfg:3",
       "check": "GREP",
       "subregions": [
@@ -593,37 +616,19 @@
         {
           "name": "Kernal routines",
           "start": "$A100",
-          "end": "$B7FF",
-          "size": 5888,
+          "end": "$BFFF",
+          "size": 7936,
           "note": "Implementations; addresses are not stable across BIOS releases"
         }
       ]
     },
     {
-      "segment": "CHARS",
-      "name": "CHARS",
-      "start": "$B800",
-      "end": "$BFFF",
-      "size": 2048,
-      "source": "BIOS.cfg:4",
-      "check": "GREP"
-    },
-    {
       "segment": "BASIC",
       "name": "BASIC",
       "start": "$C000",
-      "end": "$EDFF",
-      "size": 11776,
-      "source": "BIOS.cfg:5",
-      "check": "GREP"
-    },
-    {
-      "segment": "MONITOR",
-      "name": "MONITOR",
-      "start": "$EE00",
       "end": "$FEFF",
-      "size": 4352,
-      "source": "BIOS.cfg:6",
+      "size": 16128,
+      "source": "BIOS.cfg:4",
       "check": "GREP"
     },
     {
@@ -632,7 +637,7 @@
       "start": "$FF00",
       "end": "$FFF9",
       "size": 250,
-      "source": "BIOS.cfg:7",
+      "source": "BIOS.cfg:5",
       "check": "GREP"
     },
     {
@@ -641,7 +646,7 @@
       "start": "$FFFA",
       "end": "$FFFF",
       "size": 6,
-      "source": "BIOS.cfg:8",
+      "source": "BIOS.cfg:6",
       "check": "GREP"
     }
   ],
@@ -656,7 +661,7 @@
     "programStart": "$0800",
     "memoryTop": "$8000",
     "stringHeapTop": "$8000",
-    "source": "BIOS.inc:141-142",
+    "source": "BIOS.inc:163",
     "check": "GREP"
   }
 }

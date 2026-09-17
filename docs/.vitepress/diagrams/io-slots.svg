@@ -54,7 +54,7 @@
 <rect class="dg-solid" x="128" y="353" width="24" height="24" rx="3"/>
 <text class="dg-a dg-inv" x="140" y="370" text-anchor="middle">8</text>
 <text class="dg-t" x="162" y="370" text-anchor="start">Video Card / VGA Card</text>
-<text class="dg-n" x="434" y="370" text-anchor="start">TMS9918A / Pico9918</text>
+<text class="dg-n" x="434" y="370" text-anchor="start">6502-PICOVDP</text>
 <text class="dg-n" x="120" y="404" text-anchor="start">The Reset probe writes one bit per slot to $030D, in slot order.</text>
 <text class="dg-n" x="120" y="422" text-anchor="start">MEM prints it as HW=$xx; from BASIC it is PEEK(781).</text>
 </svg>

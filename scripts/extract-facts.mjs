@@ -19,6 +19,7 @@
 // PLAN.md "Verification Method"). Anything read from a README is rank 4 and is
 // marked `verified: false` until a RUN-backed sample proves it.
 
+import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -33,9 +34,9 @@ import {
   readSource,
   stringConstants
 } from './lib/asm.mjs'
+import { CP437_NAMES } from './lib/cp437-names.mjs'
 import {
   cellText,
-  firstSpan,
   identifiers,
   section,
   spans,
@@ -226,10 +227,10 @@ function readReservedRange(lines) {
 // so the image is padded to 32 KB, but the address decoder maps that window to
 // the eight I/O slots and no segment ever loads there.
 const RAM_REGIONS = [
-  { start: 0x0000, end: 0x00ff, name: 'Zero page', purpose: 'Kernal, BASIC, Monitor and XModem workspace; $003A-$00FF is unclaimed by the Kernal' },
+  { start: 0x0000, end: 0x00ff, name: 'Zero page', purpose: 'Kernal, BASIC and XModem workspace; $003A-$00FF is unclaimed by the Kernal' },
   { start: 0x0100, end: 0x01ff, name: 'CPU stack', purpose: 'Hardware stack; BASIC keeps its FOR and GOSUB frames here' },
   { start: 0x0200, end: 0x02ff, name: 'Keyboard ring buffer', purpose: '256-byte input buffer filled by the encoders, drained by Chrin' },
-  { start: 0x0300, end: 0x03ff, name: 'Kernal variables', purpose: 'Interrupt vectors, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID' },
+  { start: 0x0300, end: 0x03ff, name: 'Kernal variables', purpose: 'Interrupt vectors, the registers saved at BRK, cursor, HW_PRESENT, CF_DISK, BOOT_VECTOR, RTC and filesystem state, BASIC runtime pointers, save-slot owner ID, video console and PICOVDP state' },
   { start: 0x0400, end: 0x05ff, name: 'BASIC line buffers', purpose: 'BAS_LINBUF raw input line ($0400) and BAS_TOKBUF tokenized scratch ($0500)' },
   { start: 0x0600, end: 0x07ff, name: 'CompactFlash sector buffer', purpose: '512-byte sector buffer; any filesystem call clobbers it' },
   { start: 0x0800, end: 0x7fff, name: 'Program RAM', purpose: 'BASIC program text grows up from $0800; variables, then arrays, then the string heap growing down from $8000' }
@@ -270,7 +271,8 @@ function extractMemoryMap(src) {
       programStart: hex(0x0800),
       memoryTop: hex(0x8000),
       stringHeapTop: hex(0x8000),
-      source: 'BIOS.inc:141-142',
+      // PROGRAM_START's own line, whose comment gives the span up to $7FFF.
+      source: `BIOS.inc:${symbols.find((s) => s.symbol === 'PROGRAM_START')?.line}`,
       check: 'GREP'
     }
   }
@@ -301,12 +303,15 @@ function parseLinkerMemory(cfg) {
   })
 
   // The KERNAL region's first 256 bytes are the public jump table; the docs
-  // need that split, and it is not something the linker config records.
+  // need that split, and it is not something the linker config records. The
+  // routines run to the region's own end, read from the config rather than
+  // typed: 1.x kept the character set at $B800 and ended them at $B7FF, and a
+  // hard-coded end outlived the character set's move onto the video card.
   const kernal = regions.find((r) => r.segment === 'KERNAL')
   if (kernal) {
     kernal.subregions = [
       { ...formatRegion({ start: 0xa000, end: 0xa0ff, name: 'Kernal jump table' }), note: 'Public API — call the slot, not the implementation' },
-      { ...formatRegion({ start: 0xa100, end: 0xb7ff, name: 'Kernal routines' }), note: 'Implementations; addresses are not stable across BIOS releases' }
+      { ...formatRegion({ start: 0xa100, end: parseInt(kernal.end.slice(1), 16), name: 'Kernal routines' }), note: 'Implementations; addresses are not stable across BIOS releases' }
     ]
   }
 
@@ -340,6 +345,16 @@ function parseIncSymbols(inc) {
     const value = parseNumber(match[3])
     if (value == null) return
 
+    // A comment too long for one line carries on in comment-only lines
+    // indented under it (`VID_MODE` in BIOS 2.0). Read only the first and the
+    // description stops mid-sentence.
+    let comment = (match[4] ?? '').trim()
+    for (let j = i + 1; j < inc.lines.length; j++) {
+      const more = inc.lines[j].match(/^\s+;\s*(.*)$/)
+      if (!more) break
+      comment = `${comment} ${more[1].trim()}`.trim()
+    }
+
     symbols.push({
       symbol: match[1],
       assigned: match[2],
@@ -348,7 +363,7 @@ function parseIncSymbols(inc) {
       isIoRegister: i > ioBanner,
       value,
       literal: match[3],
-      comment: (match[4] ?? '').trim(),
+      comment,
       line: i + 1
     })
   })
@@ -360,7 +375,10 @@ function publicSymbol(s) {
   const digits = s.value <= 0xff ? 2 : 4
   // Comments are written `$02-$03 - String pointer (2 bytes)` or just
   // `$0300-$0301`; the leading span is redundant with the parsed address.
-  const span = s.comment.match(/^\$([0-9A-Fa-f]{2,4})(?:-\$([0-9A-Fa-f]{2,4}))?\s*(?:-\s*)?/)
+  // Only a span that starts at the symbol's own address is that: `VID_MODE`'s
+  // comment opens with `$00 = console not set up`, which is a value.
+  const lead = s.comment.match(/^\$([0-9A-Fa-f]{2,4})(?:-\$([0-9A-Fa-f]{2,4}))?\s*(?:-\s*)?/)
+  const span = lead && parseInt(lead[1], 16) === s.value ? lead : null
   const end = span?.[2]
 
   return {
@@ -394,32 +412,33 @@ const SLOT_CHIPS = {
   HW_SC: { slot: 5, chip: 'R65C51 / W65C51 ACIA', card: 'Serial Card' },
   HW_GPIO: { slot: 6, chip: 'W65C22 VIA', card: 'GPIO Card / Input Board' },
   HW_SID: { slot: 7, chip: 'MOS 6581 SID / ARMSID', card: 'Sound Card' },
-  HW_VID: { slot: 8, chip: 'TMS9918A / Pico9918', card: 'Video Card / VGA Card' }
+  HW_VID: { slot: 8, chip: '6502-PICOVDP', card: 'Video Card / VGA Card' }
 }
 
-// The TMS9918's sixteen text-mode colors: index, the `TMS_*` symbol every
-// assembly sample uses (`6502-PRG/6502.inc`, and `renderInclude` below), a
-// name a reader can say out loud, and the RGB the emulator renders it as
-// (`6502-EMULATOR/src/core/IO/Video.ts`, `TMS_PALETTE` — the chip's own output
-// varies with the display it's wired to, so this is "what an ACE shows on a
-// VGA monitor", not a hardware constant). Indices 0, 1, 4 and 15 are
-// screenshot-verified against a running machine (`ACCURACY.md` A45); the rest
-// share its rendering path.
-const TMS9918_COLORS = [
+// The sixteen colors a program names with the `TMS_*` symbols: index, the
+// symbol (`6502-ASM/6502-VDP.inc` keeps the TMS9918A's names, and so does
+// `renderInclude` below), a name a reader can say out loud, and the RGB the
+// PICOVDP shows for it. That is row 0 of the card's default palette (SPEC §11),
+// which is 12-bit, so each is the TMS9918A's color to the nearest four bits a
+// channel. Read from `6502-EMULATOR/src/core/IO/Video.ts`, `DEFAULT_PALETTE`,
+// at the release `data/emulator.json` pins, and the same on the hardware since
+// the firmware's palette is that table. The TMS9918A's own 24-bit values are
+// the v1 edition's.
+const PALETTE_ROW_0 = [
   ['TRANSPARENT', 'Transparent', '#000000'],
   ['BLACK', 'Black', '#000000'],
-  ['MED_GREEN', 'Medium green', '#21C942'],
-  ['LT_GREEN', 'Light green', '#5EDC78'],
-  ['DK_BLUE', 'Dark blue', '#5455ED'],
-  ['LT_BLUE', 'Light blue', '#7D75FC'],
-  ['DK_RED', 'Dark red', '#D3524D'],
-  ['CYAN', 'Cyan', '#43EBF6'],
-  ['MED_RED', 'Medium red', '#FD5554'],
-  ['LT_RED', 'Light red', '#FF7978'],
-  ['DK_YELLOW', 'Dark yellow', '#D3C153'],
-  ['LT_YELLOW', 'Light yellow', '#E5CE80'],
-  ['DK_GREEN', 'Dark green', '#21B03C'],
-  ['MAGENTA', 'Magenta', '#C95BBA'],
+  ['MED_GREEN', 'Medium green', '#22CC44'],
+  ['LT_GREEN', 'Light green', '#66DD77'],
+  ['DK_BLUE', 'Dark blue', '#5555EE'],
+  ['LT_BLUE', 'Light blue', '#7777FF'],
+  ['DK_RED', 'Dark red', '#CC5555'],
+  ['CYAN', 'Cyan', '#44EEEE'],
+  ['MED_RED', 'Medium red', '#FF5555'],
+  ['LT_RED', 'Light red', '#FF7777'],
+  ['DK_YELLOW', 'Dark yellow', '#CCBB55'],
+  ['LT_YELLOW', 'Light yellow', '#DDCC88'],
+  ['DK_GREEN', 'Dark green', '#22AA44'],
+  ['MAGENTA', 'Magenta', '#CC55BB'],
   ['GRAY', 'Gray', '#CCCCCC'],
   ['WHITE', 'White', '#FFFFFF']
 ]
@@ -479,16 +498,18 @@ function extractHardware(src) {
     },
     colors: {
       description:
-        'Text mode has one foreground/background pair for the whole screen, set with ' +
-        '(foreground << 4) | background — there is no per-character color until a ' +
-        'graphics mode’s color table comes into play.',
-      entries: TMS9918_COLORS.map(([symbol, name, hex], index) => ({
+        'The text console colors each cell on its own. VID_PEN holds ' +
+        '(foreground << 4) | background, and every character printed after it is set ' +
+        'takes that pair; what is already on the screen keeps its own.',
+      entries: PALETTE_ROW_0.map(([symbol, name, hex], index) => ({
         index,
         symbol: `TMS_${symbol}`,
         name,
         hex
       })),
-      source: '6502-PRG/6502.inc (names); 6502-EMULATOR/src/core/IO/Video.ts (RGB)',
+      source:
+        '6502-ASM/6502-VDP.inc (names); 6502-EMULATOR/src/core/IO/Video.ts DEFAULT_PALETTE ' +
+        'row 0 and 6502-PICOVDP SPEC.md §11 (RGB)',
       check: 'INSPECT'
     }
   }
@@ -521,13 +542,26 @@ function extractBasicKeywords(src) {
 
   const keywords = parseKeywordTable(lines)
   const dispatch = parseDispatchTable(lines)
-  // DISK/BLOAD/BSAVE/FORMAT sit above the main dispatch table's range and are
-  // routed through BasExtAddrTbl, whose bodies live in the Kernal. They are
-  // statements despite their tokens falling in the function range.
-  const extended = parseExtendedDispatchTable(src.kernal.lines)
-  const memToken = parseNumber(
-    lines.find((l) => /^TOK_MEM\s/.test(l))?.match(/=\s*(\$[0-9A-Fa-f]+)/)?.[1]
-  )
+  // DISK through NVERASE sit above the main dispatch table's range and are
+  // routed through BasExtAddrTbl. They are statements despite their tokens
+  // falling in the function range. 1.x kept that table in Kernal.asm; 2.0
+  // moved it into BASIC.asm and grew it from four entries to fifteen.
+  const extended = parseExtendedDispatchTable([src.basic, src.kernal])
+  const token = (name) =>
+    parseNumber(lines.find((l) => new RegExp(`^${name}\\s`).test(l))?.match(/=\s*(\$[0-9A-Fa-f]+)/)?.[1])
+  const memToken = token('TOK_MEM')
+
+  // Every token from TOK_DISK up to the last extended statement must have a
+  // handler. A table read from the wrong file comes back empty, and without
+  // this the statements quietly become "functions" (which is what happened
+  // when BIOS 2.0 moved the table).
+  const firstExtended = token('TOK_DISK')
+  const lastExtended = token('TOK_NVERASE') ?? token('TOK_FORMAT')
+  for (let t = firstExtended; t <= lastExtended; t++) {
+    if (!extended.has(t)) {
+      throw new Error(`BASIC.asm: extended statement token ${hex(t, 2)} has no handler in BasExtAddrTbl`)
+    }
+  }
 
   const readme = readmeBasicForms(src.biosReadme)
 
@@ -563,6 +597,23 @@ function extractBasicKeywords(src) {
     }
   })
 
+  const counts = {
+    total: entries.length,
+    statements: entries.filter((e) => e.kind === 'statement').length,
+    keywords: entries.filter((e) => e.kind === 'keyword').length,
+    functions: entries.filter((e) => e.kind === 'function').length
+  }
+
+  // The counts a release is known to have. A new release has no entry and is
+  // not checked; a known one that comes out different means the classification
+  // above has drifted, not the ROM.
+  const expected = EXPECTED_KEYWORD_COUNTS[BIOS_VERSION]
+  if (expected && JSON.stringify(expected) !== JSON.stringify(counts)) {
+    throw new Error(
+      `basic-keywords: BIOS v${BIOS_VERSION} has ${JSON.stringify(expected)} but this run read ${JSON.stringify(counts)}`
+    )
+  }
+
   return {
     $meta: meta(
       'BASIC keywords',
@@ -574,12 +625,7 @@ function extractBasicKeywords(src) {
     ),
     tokenBase: hex(0x80, 2),
     lastStatementToken: hex(memToken, 2),
-    counts: {
-      total: entries.length,
-      statements: entries.filter((e) => e.kind === 'statement').length,
-      keywords: entries.filter((e) => e.kind === 'keyword').length,
-      functions: entries.filter((e) => e.kind === 'function').length
-    },
+    counts,
     limits: readmeLimits(src.biosReadme),
     operatorPrecedence: readmePrecedence(src.biosReadme),
     keywords: entries
@@ -638,14 +684,24 @@ function parseDispatchTable(lines) {
   return map
 }
 
-/** `BasExtAddrTbl` in Kernal.asm — the four extended statement tokens. */
-function parseExtendedDispatchTable(kernalLines) {
-  const start = kernalLines.findIndex((l) => /^BasExtAddrTbl:/.test(l))
-  const map = new Map()
-  if (start === -1) return map
+/** Known keyword counts per BIOS release, for the self-check above. */
+const EXPECTED_KEYWORD_COUNTS = {
+  '2.0': { total: 100, statements: 60, keywords: 9, functions: 31 }
+}
 
-  for (let i = start + 1; i < kernalLines.length; i++) {
-    const match = kernalLines[i].match(
+/**
+ * `BasExtAddrTbl` — the extended statement tokens. Read from the first of
+ * `sources` that defines it: `BASIC.asm` in 2.0, `Kernal.asm` in 1.x.
+ */
+function parseExtendedDispatchTable(sources) {
+  const map = new Map()
+  const source = sources.find((s) => s.lines.some((l) => /^BasExtAddrTbl:/.test(l)))
+  if (!source) return map
+  const lines = source.lines
+  const start = lines.findIndex((l) => /^BasExtAddrTbl:/.test(l))
+
+  for (let i = start + 1; i < lines.length; i++) {
+    const match = lines[i].match(
       /^\s*\.word\s+(\w+)\s*-\s*1\s*;\s*\$([0-9A-Fa-f]{2})/
     )
     if (!match) break
@@ -725,6 +781,10 @@ function readmeLimits(readme) {
     gosubLevelsGuaranteed: 20,
     variableNames:
       'Any length of letters and digits, first two characters significant; a $ suffix makes it a string. Each name may also be DIMed as a 1-D array.',
+    // BIOS 2.0's sixteen new keywords are reserved words like the rest, so a
+    // name that begins with one crunches into that token.
+    keywordsInNames:
+      'A name may not contain a keyword, and 2.0’s keywords count too: a 1.x listing whose names begin VREG, LAYER, SCROLL, SCREEN, SPRITE, PALETTE, VSYNC, VLOAD, VPOKE, VPEEK, VSTAT, NVSAVE, NVLOAD, NVERASE, NVSTAT or NVFIND crunches differently on 2.0.',
     floatBytes: 5,
     significantDigits: 9,
     printZoneWidth: 14,
@@ -749,154 +809,18 @@ function readmePrecedence(readme) {
 }
 
 // ---------------------------------------------------------------------------
-// Monitor commands
-// ---------------------------------------------------------------------------
-
-function extractMonitorCommands(src) {
-  const { lines } = src.monitor
-
-  const start = lines.findIndex((l) => /^MonCmdTable:/.test(l))
-  const commands = []
-
-  for (let i = start + 1; i < lines.length; i++) {
-    const charLine = lines[i].match(/^\s*\.byte\s+'(.)'/)
-    if (!charLine) break
-
-    const handler = lines[i + 1].match(/^\s*\.word\s+(\w+)\s*-\s*1/)?.[1]
-    commands.push({
-      command: charLine[1],
-      handler,
-      ...describeMonitorCommand(lines, handler),
-      source: `Monitor.asm:${i + 1}`,
-      check: 'GREP'
-    })
-    i++
-  }
-
-  const readme = readmeMonitorRows(src.biosReadme)
-  for (const cmd of commands) {
-    const row = readme.get(cmd.command)
-    if (row) {
-      cmd.readmeSyntax = row.syntax
-      cmd.readmeDescription = row.description
-      cmd.readmeGroup = row.group
-    }
-  }
-
-  return {
-    $meta: meta(
-      'Monitor commands',
-      'The Supermon-style command set, in dispatch-table order.',
-      [src.monitor, src.biosReadme]
-    ),
-    prompt: '.',
-    entryPoints: [
-      { name: 'MonitorEntry', address: hex(0xee00), description: 'Cold entry from the boot menu, or X back from BASIC' },
-      { name: 'MonitorBrkEntry', address: hex(0xee03), description: 'BRK entry with the register display' }
-    ],
-    entryRoutes: [
-      'ESC at the boot splash',
-      'The BRK statement in BASIC',
-      'Any BRK opcode in user code'
-    ],
-    wozmon: {
-      address: hex(0xff00),
-      // `J`, not `G`. MonCmdGo does `sei` before its `rti`, so Wozmon comes up
-      // with interrupts off and never receives a character — see ACCURACY.md
-      // A18. MonCmdJsr leaves interrupts alone and returns on RTS.
-      fromMonitor: 'J FF00',
-      fromBasic: 'SYS 65280',
-      note: 'The original Apple I monitor, kept as an easter egg.',
-      source: 'BIOS.cfg:7',
-      check: 'GREP + RUN'
-    },
-    commands
-  }
-}
-
-/**
- * Read a command's `; MonCmdXxx — what it does` / `; Syntax: ...` banner.
- *
- * The Monitor documents each handler with that banner, but not always directly
- * above the label — Hunt has its pattern-buffer equates in between — so the
- * banner is located by name rather than by position.
- */
-function describeMonitorCommand(lines, handler) {
-  const banner = new RegExp(`^;\\s*${handler}\\s+[—-]\\s*(.+)$`)
-  const at = lines.findIndex((line) => banner.test(line))
-  if (at === -1) return {}
-
-  const summary = lines[at].match(banner)[1].trim()
-  const notes = []
-  let syntax
-
-  for (let i = at + 1; i < lines.length && /^\s*;/.test(lines[i]); i++) {
-    const text = lines[i].replace(/^\s*;\s?/, '').trim()
-    if (/^[=-]{4,}$/.test(text)) break
-    if (/^Syntax:/.test(text)) syntax = text.replace(/^Syntax:\s*/, '')
-    else if (text) notes.push(text)
-  }
-
-  return { summary, syntax, notes: notes.length ? notes : undefined }
-}
-
-function readmeMonitorRows(readme) {
-  const monitor = section(readme.lines, '### Machine Code Monitor')
-  const rows = new Map()
-  let group = null
-
-  for (const line of monitor) {
-    const bold = line.match(/^\*\*(.+)\*\*$/)
-    if (bold) group = bold[1]
-  }
-
-  // Re-walk with group tracking, since tables() flattens the section.
-  let currentGroup = null
-  let inTable = false
-  for (const line of monitor) {
-    const bold = line.trim().match(/^\*\*(.+)\*\*$/)
-    if (bold) {
-      currentGroup = bold[1]
-      inTable = false
-      continue
-    }
-    const trimmed = line.trim()
-    if (!trimmed.startsWith('|')) {
-      inTable = false
-      continue
-    }
-    const cells = trimmed.slice(1, -1).split('|').map((c) => c.trim())
-    if (cells[0] === 'Command') {
-      inTable = true
-      continue
-    }
-    if (!inTable || cells.every((c) => /^:?-{2,}:?$/.test(c))) continue
-
-    const command = firstSpan(cells[0])
-    rows.set(command, {
-      syntax: firstSpan(cells[1]),
-      description: cells[2],
-      group: currentGroup ?? group
-    })
-  }
-
-  return rows
-}
-
-// ---------------------------------------------------------------------------
-// Errors  (BASIC error table + Monitor messages)
+// Errors  (the BASIC error table and messages)
 // ---------------------------------------------------------------------------
 
 function extractErrors(src) {
   const basicErrors = parseBasicErrors(src.basic)
-  const monitorMessages = parseMonitorMessages(src.monitor)
   const basicMessages = parseBasicMessages(src.basic)
 
   return {
     $meta: meta(
       'Error and status messages',
       'Verbatim strings from the ROM. Text is byte-for-byte what the machine prints.',
-      [src.basic, src.monitor]
+      [src.basic]
     ),
     basic: {
       format: '?<MESSAGE> ERROR[ IN nnnn]',
@@ -905,14 +829,7 @@ function extractErrors(src) {
         'and the line number.',
       errors: basicErrors
     },
-    basicMessages,
-    monitorMessages,
-    monitorRegisterHeader: {
-      text: 'NV-BDIZC',
-      description: 'The flag legend printed above the P byte by R and the BRK entry.',
-      source: 'Monitor.asm:2084',
-      check: 'GREP'
-    }
+    basicMessages
   }
 }
 
@@ -961,77 +878,62 @@ function parseBasicMessages(basic) {
   return stringConstants(basic.lines, /^Msg\w+$/, 'BASIC.asm')
 }
 
-function parseMonitorMessages(monitor) {
-  return stringConstants(monitor.lines, /^MonStr\w+$/, 'Monitor.asm')
-}
+// ---------------------------------------------------------------------------
+// Character set  (PICOVDP font $00)
+// ---------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
-// Character set  (the CP437 glyphs the video card is seeded with)
-// ---------------------------------------------------------------------------
+// The font's SHA-256 as 6502-PICOVDP SPEC.md §7 states it. "The hash is
+// normative": a fixture that hashes differently is not the card's font.
+const FONT_00_SHA256 = 'b2adc19efd10870196bad05d84eae51500599935c80f13d608a4f62278260577'
 
 /**
- * Read all 256 glyphs out of `Chars.asm`.
+ * All 256 glyphs of the font the video card holds.
  *
- * Every character is a `; Character $xx - G (name)` comment followed by eight
- * `.byte` rows, one pixel row each, five pixels left-aligned in the byte. The
- * comment is as much a source of truth as the bytes: it is where the glyph's
- * name comes from, and a card that prints "▓ medium shade" instead of "char
- * 177" is the difference between a reference and a hex dump.
+ * BIOS 1.x kept the character set in ROM at `$B800` (`Chars.asm`) and copied it
+ * into the TMS9918A. In 2.0 the font lives on the PICOVDP as font `$00`, which
+ * reset loads into VRAM `$0800`–`$0FFF`, and the BIOS keeps only the bytes it
+ * tests against: `tests/fixtures/cp437-font.hex`, sixteen bytes a line. They are
+ * the same bytes 1.6 held (SPEC §7), so the rows here do not change.
  *
- * The eight bytes are what `InitVideo` copies into the TMS9918 pattern table,
- * so rendering them is rendering exactly what the screen shows.
+ * The names came from `Chars.asm`'s comments, which 2.0 no longer has, so they
+ * are read from `lib/cp437-names.mjs`, generated once from v1.6.
  */
 function extractCharset(src) {
-  const { lines } = src.chars
-  const chars = []
+  const bytes = Buffer.from(src.font.text.replace(/\s+/g, ''), 'hex')
 
-  for (let i = 0; i < lines.length; i++) {
-    const header = lines[i].match(/^\s*;\s*Character \$([0-9A-F]{2})\s*-\s*(.*)$/)
-    if (!header) continue
-
-    const code = parseInt(header[1], 16)
-    // `☺ (white smiling face)` → glyph `☺`, name `white smiling face`. A few
-    // entries carry only a name, and the blank ones carry only a note.
-    const rest = header[2].trim()
-    const named = rest.match(/^(\S+)\s+\((.+)\)$/)
-
-    const rows = []
-    for (let j = i + 1; rows.length < 8 && j < lines.length; j++) {
-      const bytes = lines[j].match(/^\s*\.byte\s+(.+)$/)
-      if (!bytes) break
-      for (const b of bytes[1].split(',')) {
-        const value = b.trim().match(/^\$([0-9A-Fa-f]{2})$/)
-        if (value) rows.push(parseInt(value[1], 16))
-      }
-    }
-
-    if (rows.length !== 8) {
-      throw new Error(`Chars.asm: character $${header[1]} has ${rows.length} rows, expected 8`)
-    }
-
-    chars.push({
-      code,
-      hex: '$' + header[1],
-      glyph: named ? named[1] : rest,
-      name: named ? named[2] : rest,
-      rows
-    })
+  if (bytes.length !== 2048) {
+    throw new Error(`cp437-font.hex: ${bytes.length} bytes, expected 2048 (256 glyphs of 8 rows)`)
+  }
+  const sha = createHash('sha256').update(bytes).digest('hex')
+  if (sha !== FONT_00_SHA256) {
+    throw new Error(`cp437-font.hex: SHA-256 ${sha} is not font $00's (${FONT_00_SHA256})`)
+  }
+  if (CP437_NAMES.length !== 256) {
+    throw new Error(`lib/cp437-names.mjs: ${CP437_NAMES.length} names, expected 256`)
   }
 
-  if (chars.length !== 256) {
-    throw new Error(`Chars.asm: found ${chars.length} characters, expected 256`)
-  }
+  const chars = CP437_NAMES.map(([glyph, name], code) => {
+    const rows = [...bytes.subarray(code * 8, code * 8 + 8)]
+    // SPEC §7: bits 7:2 are the six-pixel cell, and bits 1:0 are always 0.
+    if (rows.some((row) => row & 0b11)) {
+      throw new Error(`cp437-font.hex: glyph $${hex(code, 2).slice(1)} sets a pixel outside the 6-pixel cell`)
+    }
+    return { code, hex: hex(code, 2), glyph, name, rows }
+  })
 
   return {
     $meta: meta(
       'Character set',
-      'All 256 CP437 glyphs, eight pixel rows each, as the video card is seeded with them.',
-      [src.chars, src.cfg]
+      'All 256 CP437 glyphs of PICOVDP font $00, eight pixel rows each, as the card loads them.',
+      [src.font]
     ),
-    address: hex(0xb800),
-    end: hex(0xbfff),
+    font: '$00',
+    sha256: FONT_00_SHA256,
+    address: hex(0x0800),
+    end: hex(0x0fff),
+    where: 'VRAM, on the video card: reset loads font $00 there, and InitVideo points the text layer at it',
     bytesPerChar: 8,
-    cell: '8 × 8 pixels, glyphs drawn 5 wide and left-aligned in the byte',
+    cell: '6 × 8 pixels, glyphs drawn 5 wide and left-aligned in the cell',
     // The boundary that decides what a reader can and cannot PRINT — see
     // ACCURACY.md A17 and A37. It belongs with the glyphs, not with the screen.
     printable: {
@@ -1049,92 +951,121 @@ function extractCharset(src) {
 }
 
 // ---------------------------------------------------------------------------
-// Boot sequence  (splash strings, straight from the ROM)
+// Boot sequence  (the header, straight from the ROM)
 // ---------------------------------------------------------------------------
 
+/**
+ * The two lines the machine prints when it starts, and the path it takes there.
+ *
+ * BIOS 2.0 has no splash and no menu: Reset probes the cards and jumps into
+ * BASIC, whose banner prints `AC6502 BIOS v2.0` and `BASIC v2.0 nnnnn BYTES
+ * FREE`. The first line is built with `.sprintf` from the version equates,
+ * so the header and KernalVersion cannot disagree, and its text is interpolated
+ * here the way ca65 interpolates it.
+ */
 function extractBoot(src) {
-  const { lines } = src.kernal
-
   const major = versionEquate(src.inc, 'BIOS_VERSION_MAJOR')
   const minor = versionEquate(src.inc, 'BIOS_VERSION_MINOR')
+  const { lines } = src.basic
 
-  // The splash strings are `.asciiz` under local (`@`-prefixed) labels inside
-  // the Splash routine. The title is assembled with `.sprintf` from the version
-  // equates rather than typed — a Phase 9 fix upstream, so the splash and
-  // KernalVersion cannot drift apart — so its text has to be interpolated here
-  // the way ca65 interpolates it. Everything else is a plain literal.
-  const strings = []
-  let titleIsDerived = false
-  lines.forEach((line, i) => {
-    const literal = line.match(/^(@?\w+):\s*\.asciiz\s+"([^"]*)"/)
-    const sprintf = line.match(
-      /^(@?\w+):\s*\.asciiz\s+\.sprintf\("([^"]*)",\s*BIOS_VERSION_MAJOR,\s*BIOS_VERSION_MINOR\)/
-    )
-    if (sprintf) {
-      titleIsDerived = true
-      strings.push({
-        symbol: sprintf[1],
-        text: sprintf[2].replace('%d.%d', `${major}.${minor}`),
-        derivedFrom: 'BIOS_VERSION_MAJOR/MINOR',
-        source: `Kernal.asm:${i + 1}`,
-        check: 'GREP'
-      })
-    } else if (literal) {
-      strings.push({
-        symbol: literal[1],
-        text: literal[2],
-        source: `Kernal.asm:${i + 1}`,
-        check: 'GREP'
-      })
-    }
-  })
+  const labelled = (label) => {
+    const at = findLabel(lines, label)
+    if (at === -1) throw new Error(`BASIC.asm: no ${label} — the header has moved`)
+    // The label sits on its own line with the `.byte` directive under it.
+    const i = /\.byte/.test(lines[at]) ? at : at + 1
+    return { line: lines[i], source: `BASIC.asm:${i + 1}` }
+  }
 
-  const splash = strings.find((s) => s.symbol === '@SplashTitle')
-  const versionInSplash = splash?.text.match(/v(\d+)\.(\d+)/)
+  const header = labelled('MsgHeader')
+  const sprintf = header.line.match(
+    /\.sprintf\("([^"]*)",\s*BIOS_VERSION_MAJOR,\s*BIOS_VERSION_MINOR\)/
+  )
+  const title = sprintf
+    ? sprintf[1].replace('%d.%d', `${major}.${minor}`)
+    : header.line.match(/"([^"]*)"/)?.[1]
+  if (title == null) throw new Error(`${header.source}: cannot read the header text`)
+
+  const basicLine = labelled('MsgBasicV2')
+  const freeLine = labelled('MsgBytesFreeNL')
+  const text = (l) => l.line.match(/"([^"]*)"/)?.[1]
+
+  const strings = [
+    {
+      symbol: 'MsgHeader',
+      text: title,
+      ...(sprintf ? { derivedFrom: 'BIOS_VERSION_MAJOR/MINOR' } : {}),
+      source: header.source,
+      check: 'GREP'
+    },
+    { symbol: 'MsgBasicV2', text: text(basicLine), source: basicLine.source, check: 'GREP' },
+    { symbol: 'MsgBytesFreeNL', text: text(freeLine), source: freeLine.source, check: 'GREP' }
+  ]
+
+  const versionInHeader = title.match(/v(\d+)\.(\d+)/)
+  const versionLines = ['BIOS_VERSION_MAJOR', 'BIOS_VERSION_MINOR'].map(
+    (symbol) => src.inc.lines.findIndex((l) => new RegExp(`^${symbol}\\s*=`).test(l)) + 1
+  )
 
   return {
-    $meta: meta('Boot sequence', 'Version, the boot menu, and the strings the machine prints on the way up.', [
+    $meta: meta('Boot sequence', 'Version, the header, and the path from reset to the BASIC prompt.', [
       src.inc,
-      src.kernal
+      src.kernal,
+      src.basic
     ]),
     version: {
       major,
       minor,
       string: `v${major}.${minor}`,
-      source: 'BIOS.inc:134-135',
+      source: `BIOS.inc:${versionLines.join('-')}`,
       check: 'GREP'
     },
-    // The splash is now assembled from the version equates upstream, so it
-    // cannot drift — but the check stays, because it is what would notice if
-    // that ever got typed back into a literal.
-    splashMatchesVersion:
-      versionInSplash != null &&
-      Number(versionInSplash[1]) === major &&
-      Number(versionInSplash[2]) === minor,
-    splashDerivedFromVersion: titleIsDerived,
+    // The header is assembled from the version equates upstream, so it cannot
+    // drift — but the check stays, because it is what would notice if that
+    // ever got typed back into a literal.
+    headerMatchesVersion:
+      versionInHeader != null &&
+      Number(versionInHeader[1]) === major &&
+      Number(versionInHeader[2]) === minor,
+    headerDerivedFromVersion: Boolean(sprintf),
+    // What a reader sees, with the byte count left as a placeholder: it is
+    // whatever memory is free, and that is not a fact about the ROM.
+    header: [title, `${text(basicLine)}nnnnn${text(freeLine)}`],
     strings,
-    menu: {
-      timeoutSeconds: 5,
-      tick: '100 ms per iteration, 50 iterations',
-      enter: 'ENTER ($0D) boots BASIC',
-      escape: 'ESC ($1B) boots the Monitor through BRK',
-      timeout: 'Auto-boots BASIC',
-      note:
-        'Any other key is consumed and costs one tick. Input arriving before the ' +
-        'probe finishes sits unread in the ACIA and blocks the bytes behind it.',
-      source: 'Kernal.asm:738-765',
-      check: 'GREP'
-    },
-    sequence: [
-      { step: 'Reset the stack pointer to $FF', source: 'Kernal.asm:704' },
-      { step: 'KernalInit — probe and initialize every card, interrupts still disabled', source: 'Kernal.asm:706' },
-      { step: 'Beep — guarded, skipped when no SID is fitted', source: 'Kernal.asm:708' },
-      { step: 'If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)', source: 'Kernal.asm:711-714' },
-      { step: 'Halt if neither video nor serial is present — there is no console to boot into', source: 'Kernal.asm:718-722' },
-      { step: 'cli, then draw the splash on whichever console this machine has', source: 'Kernal.asm:725-738' },
-      { step: 'Wait ~5 s for ENTER or ESC; time out into BASIC', source: 'Kernal.asm:740-765' }
-    ]
+    sequence: resetSequence(src)
   }
+}
+
+/**
+ * Reset's steps, each with the line it happens on, read from `Kernal.asm`.
+ *
+ * Each step is found by the instruction that does it rather than by position,
+ * and a step that cannot be found fails the run: the list is prose, but every
+ * line of it is anchored to code that has to still be there.
+ */
+function resetSequence(src) {
+  const { lines } = src.kernal
+  const start = findLabel(lines, 'Reset')
+  if (start === -1) throw new Error('Kernal.asm: no Reset label')
+
+  const find = (pattern, what) => {
+    for (let i = start + 1; i < lines.length; i++) {
+      if (/^\w+:/.test(lines[i])) break // the next routine: Reset has ended
+      if (pattern.test(lines[i])) return `Kernal.asm:${i + 1}`
+    }
+    throw new Error(`Kernal.asm Reset: cannot find the step "${what}"`)
+  }
+
+  const steps = [
+    ['Reset the stack pointer to $FF', /^\s*txs\b/],
+    ['KernalInit — probe and initialize every card, interrupts still disabled', /jsr\s+KernalInitImpl/],
+    ['Beep — guarded, skipped when no SID is fitted', /jsr\s+Beep\b/],
+    ['If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)', /jmp\s+\(BOOT_VECTOR\)/],
+    ['Halt if neither video nor serial is present — there is no console to boot into', /and\s+#\(HW_VID\s*\|\s*HW_SC\)/],
+    ['Mark BASIC cold, so the header prints and the variables clear; the program at $0800 is kept', /stz\s+BAS_WARM/],
+    ['cli, then into BASIC, which prints the header on whichever console this machine has', /jmp\s+BasEntry/]
+  ]
+
+  return steps.map(([step, pattern]) => ({ step, source: find(pattern, step) }))
 }
 
 function versionEquate(inc, symbol) {
@@ -1213,9 +1144,7 @@ function renderInclude(facts) {
     if (['Zero page', 'Kernal variables'].includes(region.name)) continue
     for (const s of region.symbols) equate(s.symbol, s.address, region.name)
   }
-  equate('MONITOR_ENTRY', '$EE00', 'Monitor cold entry')
-  equate('MONITOR_BRK_ENTRY', '$EE03', 'Monitor BRK entry (displays saved registers)')
-  equate('WOZMON', '$FF00', 'Apple I monitor')
+  equate('WOZMON', '$FF00', 'Apple I monitor (SYS 65280 from BASIC)')
 
   rule('HARDWARE DETECTION')
   out.push(
@@ -1269,12 +1198,12 @@ function renderInclude(facts) {
     ['VID_COLS', '40', 'Screen width in columns'],
     ['VID_ROWS', '24', 'Screen height in rows'],
     ['VID_NAME_TABLE', '$0000', 'VRAM name table (40x24 = 960 bytes)'],
-    ['VID_PATTERN_TABLE', '$0800', 'VRAM pattern table (2048 bytes)']
+    ['VID_PATTERN_TABLE', '$0800', 'VRAM pattern table: font $00, loaded by the card at reset (2048 bytes)']
   ]) {
     equate(name, value, comment, ' =')
   }
 
-  block('TMS9918 colors (for VideoSetColor: (foreground << 4) | background)')
+  block('Colors, palette row 0 (for VideoSetColor: (foreground << 4) | background)')
   for (const c of facts.hardware.colors.entries) {
     equate(c.symbol, `$${c.index.toString(16).toUpperCase()}`, c.name, ' =')
   }
@@ -1325,8 +1254,7 @@ function main() {
     cfg: readSource(biosDir, 'BIOS.cfg'),
     kernal: readSource(biosDir, 'Kernal.asm'),
     basic: readSource(biosDir, 'BASIC.asm'),
-    monitor: readSource(biosDir, 'Monitor.asm'),
-    chars: readSource(biosDir, 'Chars.asm'),
+    font: readSource(biosDir, 'tests/fixtures/cp437-font.hex'),
     biosReadme: readSource(biosDir, 'README.md')
   }
 
@@ -1338,7 +1266,6 @@ function main() {
     'memory-map.json': extractMemoryMap(src),
     'hardware.json': extractHardware(src),
     'basic-keywords.json': extractBasicKeywords(src),
-    'monitor-commands.json': extractMonitorCommands(src),
     'errors.json': extractErrors(src),
     'charset.json': extractCharset(src)
   })
@@ -1394,7 +1321,6 @@ function main() {
 function summarize(name, value) {
   if (name === 'kernal.json') return `${value.publishedSlots} published + ${value.reserved.count} reserved slots`
   if (name === 'basic-keywords.json') return `${value.counts.total} keywords`
-  if (name === 'monitor-commands.json') return `${value.commands.length} commands`
   if (name === 'errors.json') return `${value.basic.errors.length} BASIC errors`
   if (name === 'memory-map.json') return `${value.ram.length} RAM regions, ${value.rom.length} ROM segments`
   if (name === 'hardware.json') return `${value.slots.length} I/O slots`

@@ -105,17 +105,17 @@ npm run facts:check   # fail if either is stale (run before committing)
 
 | File | Extracted from |
 |---|---|
-| `boot.json` | Version, splash strings, and the boot menu — `BIOS.inc`, `Kernal.asm` |
-| `kernal.json` | All 59 published jump-table slots plus the reserved range — `Kernal.asm` |
+| `boot.json` | Version, the header, and the path from reset to BASIC — `BIOS.inc`, `BASIC.asm`, `Kernal.asm` |
+| `kernal.json` | All 72 published jump-table slots plus the reserved range — `Kernal.asm` |
 | `memory-map.json` | RAM regions, ROM segments, I/O window, every named symbol — `BIOS.inc`, `BIOS.cfg` |
 | `hardware.json` | `HW_PRESENT` bits, the eight I/O slots and their registers — `BIOS.inc` |
 | `basic-keywords.json` | Every keyword, token and dispatch target — `BASIC.asm` |
-| `monitor-commands.json` | The command set, in dispatch-table order — `Monitor.asm` |
-| `errors.json` | BASIC and Monitor message strings, verbatim — `BASIC.asm`, `Monitor.asm` |
+| `errors.json` | BASIC's message strings, verbatim — `BASIC.asm` |
+| `charset.json` | The 256 glyphs of PICOVDP font `$00` — `tests/fixtures/cp437-font.hex`, checked against the SHA-256 in 6502-PICOVDP's SPEC; names from `scripts/lib/cp437-names.mjs` (v1.6's `Chars.asm`) |
 | `systems.json` | The five machines. **Hand-maintained** from the KiCad READMEs, confirmed against the schematics. The ACE record describes the machine as shipped — banked RAM and storage included — with build-time caveats in `builderNotes`. |
 | `basic-examples.json` | Syntax, summary and a worked example for all 85 BASIC keywords. **Hand-authored, machine-checked** — see below. |
 
-The extractor needs a `6502-BIOS` checkout (`--bios <path>`, `$BIOS_SRC`, or
+The extractor needs a `6502-BIOS` source tree (`--bios <path>`, `$BIOS_SRC`, or
 `~/Developer/Assembly/6502-BIOS`). The generated files are committed, so
 building the site and running CI need only this repo.
 
@@ -411,11 +411,13 @@ so before a reader does.
 
 ### After a BIOS release
 
-Run these in order from a checkout with the new firmware built. Each one either
-prints `ok` or tells you what moved.
+Run these in order against the release's tag, not a branch that moves on. Unpack
+it somewhere out of the way, which leaves the BIOS repository alone. Each one
+either prints `ok` or tells you what moved.
 
 ```sh
-npm run facts         # re-extract data/ from the BIOS source
+mkdir -p /tmp/bios-v2.0 && git -C ../6502-BIOS archive v2.0 | tar -x -C /tmp/bios-v2.0
+npm run facts -- --bios /tmp/bios-v2.0   # re-extract data/ from the BIOS source
 git diff data/        # read this — it is the release notes, mechanically derived
 npm run cards         # the five generated cards follow the fact base
 npm run diagrams      # so do nine of the fifteen diagrams

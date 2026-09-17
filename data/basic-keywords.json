@@ -3,15 +3,15 @@
     "title": "BASIC keywords",
     "description": "Every keyword the tokenizer recognizes, with its token and dispatch. Token, name and dispatch are GREP-verified against BASIC.asm; syntax and description are lifted from the BIOS README (rank 4) and stay verified:false until a RUN-backed sample proves them in Phase 4.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.6",
+    "biosVersion": "2.0",
     "sources": [
       {
         "file": "BASIC.asm",
-        "sha256": "4bee14f3785d426c896af508f190eb3abb04fd3d43e9b2eca387241d3f19f139"
+        "sha256": "e41bc5a75fed37329e0796b2634bdbe8530d4169369ec5faa9c802dc8eeae4a7"
       },
       {
         "file": "README.md",
-        "sha256": "15138011e18a9418ff20ba54e150c056207008469ae4ff0e9b5c6b5ba7c75696"
+        "sha256": "493fc097eaf9853326568c0fadc2300e94e2eca56e2c7add1c31ea07ce086121"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -19,14 +19,14 @@
   "tokenBase": "$80",
   "lastStatementToken": "$B5",
   "counts": {
-    "total": 85,
-    "statements": 49,
+    "total": 100,
+    "statements": 60,
     "keywords": 9,
-    "functions": 27
+    "functions": 31
   },
   "limits": {
     "notes": [
-      "**Variable names:** any length, letters and digits, but **only the first two characters are significant** — the usual Microsoft BASIC rule. `COUNT` and `COURSE` are the same variable (`CO`), and `PRINT COUNT` after `COUNT = 7 : COURSE = 9` prints `9`. A name may not contain a keyword: `SCORE` will not parse, because it contains `OR`.",
+      "**Variable names:** any length, letters and digits, but **only the first two characters are significant** — the usual Microsoft BASIC rule. `COUNT` and `COURSE` are the same variable (`CO`), and `PRINT COUNT` after `COUNT = 7 : COURSE = 9` prints `9`. A name may not contain a keyword: `SCORE` will not parse, because it contains `OR`. 2.0's keywords count too, so a 1.x listing whose names begin `VREG`, `LAYER`, `SCROLL`, `SCREEN`, `SPRITE`, `PALETTE`, `VSYNC`, `VLOAD`, `VPOKE`, `VPEEK`, `VSTAT` or `NV` followed by `SAVE`, `LOAD`, `ERASE`, `STAT` or `FIND` crunches differently on 2.0. A tokenized 1.x program loads unchanged, except that a 1.x `BRK` statement (token `$B4`) is now `SCREEN` with no argument, a `?SYNTAX ERROR`.",
       "**Numeric range:** ~±1.7 × 10³⁸, **nine significant digits** (`PRINT 1 / 3` gives ` .333333333`, `PRINT SQR(2)` gives ` 1.41421356`). Numbers print with a leading-space sign convention (positive numbers prefixed by a space, negative by `-`). Boolean expressions evaluate to `-1` (true) or `0` (false).",
       "**Stack limits:** GOSUB and FOR/NEXT frames both live on the 6502 stack, which they share with the interpreter's own working space. At least 20 GOSUB levels are available whatever the subroutine does, and about 27 for a simple one; exceeding that raises `OUT OF MEMORY`, because `BasCmdGosub` checks the stack pointer against `GOSUB_STACK_MIN` before it pushes.",
       "**`FOR` has no such guard, and fails differently.** A `FOR` frame is 18 bytes (`TXTPTR`, `CURLIN`, the 5-byte limit, the step sign, the 5-byte step, the variable address, and the `$81` tag), so 14 of them fill page 1. `BasCmdFor` pushes without testing the stack pointer, so the 15th frame overwrites the bottom of the stack instead of raising an error — and the failure surfaces later, at the matching `NEXT`, as **`?NEXT WITHOUT FOR ERROR`**. Fourteen levels of nesting is the working ceiling at the top level of a program, and less inside a `GOSUB`, which shares the same 256 bytes.",
@@ -35,6 +35,7 @@
     "forNestingLevels": 14,
     "gosubLevelsGuaranteed": 20,
     "variableNames": "Any length of letters and digits, first two characters significant; a $ suffix makes it a string. Each name may also be DIMed as a 1-D array.",
+    "keywordsInNames": "A name may not contain a keyword, and 2.0’s keywords count too: a 1.x listing whose names begin VREG, LAYER, SCROLL, SCREEN, SPRITE, PALETTE, VSYNC, VLOAD, VPOKE, VPEEK, VSTAT, NVSAVE, NVLOAD, NVERASE, NVSTAT or NVFIND crunches differently on 2.0.",
     "floatBytes": 5,
     "significantDigits": 9,
     "printZoneWidth": 14,
@@ -143,7 +144,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8711",
+      "source": "BASIC.asm:9413",
       "check": "GREP"
     },
     {
@@ -164,7 +165,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8712",
+      "source": "BASIC.asm:9414",
       "check": "GREP"
     },
     {
@@ -185,7 +186,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8713",
+      "source": "BASIC.asm:9415",
       "check": "GREP"
     },
     {
@@ -206,7 +207,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8714",
+      "source": "BASIC.asm:9416",
       "check": "GREP"
     },
     {
@@ -227,7 +228,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8715",
+      "source": "BASIC.asm:9417",
       "check": "GREP"
     },
     {
@@ -248,7 +249,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8716",
+      "source": "BASIC.asm:9418",
       "check": "GREP"
     },
     {
@@ -269,7 +270,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8717",
+      "source": "BASIC.asm:9419",
       "check": "GREP"
     },
     {
@@ -290,7 +291,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8718",
+      "source": "BASIC.asm:9420",
       "check": "GREP"
     },
     {
@@ -311,7 +312,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8719",
+      "source": "BASIC.asm:9421",
       "check": "GREP"
     },
     {
@@ -332,7 +333,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8720",
+      "source": "BASIC.asm:9422",
       "check": "GREP"
     },
     {
@@ -353,7 +354,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8721",
+      "source": "BASIC.asm:9423",
       "check": "GREP"
     },
     {
@@ -374,7 +375,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8722",
+      "source": "BASIC.asm:9424",
       "check": "GREP"
     },
     {
@@ -395,7 +396,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8723",
+      "source": "BASIC.asm:9425",
       "check": "GREP"
     },
     {
@@ -416,7 +417,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8724",
+      "source": "BASIC.asm:9426",
       "check": "GREP"
     },
     {
@@ -437,7 +438,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8725",
+      "source": "BASIC.asm:9427",
       "check": "GREP"
     },
     {
@@ -458,7 +459,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8726",
+      "source": "BASIC.asm:9428",
       "check": "GREP"
     },
     {
@@ -479,7 +480,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8727",
+      "source": "BASIC.asm:9429",
       "check": "GREP"
     },
     {
@@ -500,7 +501,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8728",
+      "source": "BASIC.asm:9430",
       "check": "GREP"
     },
     {
@@ -535,7 +536,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8729",
+      "source": "BASIC.asm:9431",
       "check": "GREP"
     },
     {
@@ -570,7 +571,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8730",
+      "source": "BASIC.asm:9432",
       "check": "GREP"
     },
     {
@@ -591,7 +592,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8731",
+      "source": "BASIC.asm:9433",
       "check": "GREP"
     },
     {
@@ -612,7 +613,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8732",
+      "source": "BASIC.asm:9434",
       "check": "GREP"
     },
     {
@@ -633,7 +634,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8733",
+      "source": "BASIC.asm:9435",
       "check": "GREP"
     },
     {
@@ -654,7 +655,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8734",
+      "source": "BASIC.asm:9436",
       "check": "GREP"
     },
     {
@@ -675,7 +676,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8735",
+      "source": "BASIC.asm:9437",
       "check": "GREP"
     },
     {
@@ -696,7 +697,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8736",
+      "source": "BASIC.asm:9438",
       "check": "GREP"
     },
     {
@@ -717,7 +718,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8737",
+      "source": "BASIC.asm:9439",
       "check": "GREP"
     },
     {
@@ -738,7 +739,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8738",
+      "source": "BASIC.asm:9440",
       "check": "GREP"
     },
     {
@@ -751,7 +752,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:8739",
+      "source": "BASIC.asm:9441",
       "check": "GREP"
     },
     {
@@ -764,7 +765,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:8740",
+      "source": "BASIC.asm:9442",
       "check": "GREP"
     },
     {
@@ -785,7 +786,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8741",
+      "source": "BASIC.asm:9443",
       "check": "GREP"
     },
     {
@@ -798,7 +799,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:8742",
+      "source": "BASIC.asm:9444",
       "check": "GREP"
     },
     {
@@ -811,7 +812,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:8743",
+      "source": "BASIC.asm:9445",
       "check": "GREP"
     },
     {
@@ -824,7 +825,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:8744",
+      "source": "BASIC.asm:9446",
       "check": "GREP"
     },
     {
@@ -837,7 +838,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:8745",
+      "source": "BASIC.asm:9447",
       "check": "GREP"
     },
     {
@@ -850,7 +851,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:8746",
+      "source": "BASIC.asm:9448",
       "check": "GREP"
     },
     {
@@ -863,7 +864,7 @@
       "statementUsable": true,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:8747",
+      "source": "BASIC.asm:9449",
       "check": "GREP"
     },
     {
@@ -876,15 +877,15 @@
       "statementUsable": true,
       "forms": [
         {
-          "syntax": "SYS <addr>",
-          "description": "Call a machine-code routine; `RTS` returns to BASIC",
+          "syntax": "SYS <addr>[,a[,x[,y]]]",
+          "description": "Call a machine-code routine with `A`, `X` and `Y` set (0 if omitted), decimal mode and the interrupt mask clear; `RTS` returns to BASIC. Afterwards `PEEK(787)`, `PEEK(788)`, `PEEK(789)` and `PEEK(784)` are the `A`, `X`, `Y` and `P` it returned",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8748",
+      "source": "BASIC.asm:9450",
       "check": "GREP"
     },
     {
@@ -905,7 +906,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8749",
+      "source": "BASIC.asm:9451",
       "check": "GREP"
     },
     {
@@ -926,7 +927,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8750",
+      "source": "BASIC.asm:9452",
       "check": "GREP"
     },
     {
@@ -947,7 +948,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8751",
+      "source": "BASIC.asm:9453",
       "check": "GREP"
     },
     {
@@ -968,7 +969,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8752",
+      "source": "BASIC.asm:9454",
       "check": "GREP"
     },
     {
@@ -981,15 +982,15 @@
       "statementUsable": true,
       "forms": [
         {
-          "syntax": "COLOR <fg>, <bg>",
-          "description": "Set TMS9918 text foreground/background colors (0–15 each)",
+          "syntax": "COLOR <fg>[, <bg>[, <border>]]",
+          "description": "Set the pen for text printed next (0–15 each); `bg` defaults to the current background. The border follows `bg` unless `border` is given",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8753",
+      "source": "BASIC.asm:9455",
       "check": "GREP"
     },
     {
@@ -1010,7 +1011,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8754",
+      "source": "BASIC.asm:9456",
       "check": "GREP"
     },
     {
@@ -1031,7 +1032,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8755",
+      "source": "BASIC.asm:9457",
       "check": "GREP"
     },
     {
@@ -1052,7 +1053,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8756",
+      "source": "BASIC.asm:9458",
       "check": "GREP"
     },
     {
@@ -1073,7 +1074,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8757",
+      "source": "BASIC.asm:9459",
       "check": "GREP"
     },
     {
@@ -1094,7 +1095,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8758",
+      "source": "BASIC.asm:9460",
       "check": "GREP"
     },
     {
@@ -1115,7 +1116,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8759",
+      "source": "BASIC.asm:9461",
       "check": "GREP"
     },
     {
@@ -1143,7 +1144,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8760",
+      "source": "BASIC.asm:9462",
       "check": "GREP"
     },
     {
@@ -1164,7 +1165,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8761",
+      "source": "BASIC.asm:9463",
       "check": "GREP"
     },
     {
@@ -1185,28 +1186,28 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8762",
+      "source": "BASIC.asm:9464",
       "check": "GREP"
     },
     {
-      "name": "BRK",
+      "name": "SCREEN",
       "token": "$B4",
       "tokenDecimal": 180,
       "kind": "statement",
-      "handler": "BasCmdBrk",
+      "handler": "BasCmdScreen",
       "dispatch": "BasTokenAddrTbl",
       "statementUsable": true,
       "forms": [
         {
-          "syntax": "BRK",
-          "description": "Drop into the machine-code monitor. Return to BASIC with `X`",
+          "syntax": "SCREEN <n>",
+          "description": "`0` the Text console (`InitVideo` + `CLS`); `1` Compact, `2` Graphics, `3` Full. `1`–`3` share one layout: layer 0 names `$0000`, attributes `$0800`, patterns `$4000` (4bpp, per-cell attributes, on); layer 1 names `$1000`, attributes `$1800`, patterns `$8000` (4bpp, off); sprite attributes `$2000`, patterns `$C000` (64 sprites, 4bpp, all at Y = 240). The tables at `$0000–$1FFF` are cleared",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8763",
+      "source": "BASIC.asm:9465",
       "check": "GREP"
     },
     {
@@ -1227,7 +1228,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8764",
+      "source": "BASIC.asm:9466",
       "check": "GREP"
     },
     {
@@ -1246,7 +1247,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8766",
+      "source": "BASIC.asm:9468",
       "check": "GREP"
     },
     {
@@ -1265,7 +1266,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8767",
+      "source": "BASIC.asm:9469",
       "check": "GREP"
     },
     {
@@ -1284,7 +1285,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8768",
+      "source": "BASIC.asm:9470",
       "check": "GREP"
     },
     {
@@ -1303,7 +1304,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8769",
+      "source": "BASIC.asm:9471",
       "check": "GREP"
     },
     {
@@ -1322,7 +1323,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8770",
+      "source": "BASIC.asm:9472",
       "check": "GREP"
     },
     {
@@ -1341,7 +1342,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8771",
+      "source": "BASIC.asm:9473",
       "check": "GREP"
     },
     {
@@ -1360,7 +1361,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8772",
+      "source": "BASIC.asm:9474",
       "check": "GREP"
     },
     {
@@ -1379,7 +1380,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8773",
+      "source": "BASIC.asm:9475",
       "check": "GREP"
     },
     {
@@ -1398,7 +1399,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8774",
+      "source": "BASIC.asm:9476",
       "check": "GREP"
     },
     {
@@ -1417,7 +1418,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8775",
+      "source": "BASIC.asm:9477",
       "check": "GREP"
     },
     {
@@ -1436,7 +1437,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8776",
+      "source": "BASIC.asm:9478",
       "check": "GREP"
     },
     {
@@ -1455,7 +1456,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8777",
+      "source": "BASIC.asm:9479",
       "check": "GREP"
     },
     {
@@ -1474,7 +1475,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8778",
+      "source": "BASIC.asm:9480",
       "check": "GREP"
     },
     {
@@ -1493,7 +1494,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8779",
+      "source": "BASIC.asm:9481",
       "check": "GREP"
     },
     {
@@ -1512,7 +1513,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8780",
+      "source": "BASIC.asm:9482",
       "check": "GREP"
     },
     {
@@ -1531,7 +1532,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8781",
+      "source": "BASIC.asm:9483",
       "check": "GREP"
     },
     {
@@ -1550,7 +1551,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8782",
+      "source": "BASIC.asm:9484",
       "check": "GREP"
     },
     {
@@ -1569,7 +1570,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8783",
+      "source": "BASIC.asm:9485",
       "check": "GREP"
     },
     {
@@ -1588,7 +1589,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8784",
+      "source": "BASIC.asm:9486",
       "check": "GREP"
     },
     {
@@ -1607,7 +1608,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8785",
+      "source": "BASIC.asm:9487",
       "check": "GREP"
     },
     {
@@ -1626,7 +1627,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8786",
+      "source": "BASIC.asm:9488",
       "check": "GREP"
     },
     {
@@ -1645,7 +1646,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8787",
+      "source": "BASIC.asm:9489",
       "check": "GREP"
     },
     {
@@ -1664,7 +1665,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8788",
+      "source": "BASIC.asm:9490",
       "check": "GREP"
     },
     {
@@ -1683,7 +1684,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8789",
+      "source": "BASIC.asm:9491",
       "check": "GREP"
     },
     {
@@ -1702,7 +1703,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8790",
+      "source": "BASIC.asm:9492",
       "check": "GREP"
     },
     {
@@ -1721,7 +1722,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8791",
+      "source": "BASIC.asm:9493",
       "check": "GREP"
     },
     {
@@ -1740,7 +1741,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8792",
+      "source": "BASIC.asm:9494",
       "check": "GREP"
     },
     {
@@ -1748,7 +1749,7 @@
       "token": "$D1",
       "tokenDecimal": 209,
       "kind": "statement",
-      "handler": "KBasCmdDisk",
+      "handler": "BasCmdDisk",
       "dispatch": "BasExtAddrTbl",
       "statementUsable": true,
       "forms": [
@@ -1761,7 +1762,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8793",
+      "source": "BASIC.asm:9495",
       "check": "GREP"
     },
     {
@@ -1769,13 +1770,13 @@
       "token": "$D2",
       "tokenDecimal": 210,
       "kind": "statement",
-      "handler": "KBasCmdBload",
+      "handler": "BasCmdBload",
       "dispatch": "BasExtAddrTbl",
       "statementUsable": true,
       "forms": [
         {
-          "syntax": "BLOAD <addr>,\"name\"",
-          "description": "Load a file's raw bytes from the current disk to address `addr`",
+          "syntax": "BLOAD <addr>[,\"name\"]",
+          "description": "Load a file's raw bytes from the current disk to address `addr`; with no name, receive them via XModem",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"
@@ -1789,7 +1790,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8794",
+      "source": "BASIC.asm:9496",
       "check": "GREP"
     },
     {
@@ -1797,13 +1798,13 @@
       "token": "$D3",
       "tokenDecimal": 211,
       "kind": "statement",
-      "handler": "KBasCmdBsave",
+      "handler": "BasCmdBsave",
       "dispatch": "BasExtAddrTbl",
       "statementUsable": true,
       "forms": [
         {
-          "syntax": "BSAVE <addr>,<len>,\"name\"",
-          "description": "Save `len` bytes from address `addr` to a named file on the current disk",
+          "syntax": "BSAVE <addr>,<len>[,\"name\"]",
+          "description": "Save `len` bytes from address `addr` to a named file on the current disk; with no name, send them via XModem",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"
@@ -1817,7 +1818,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8795",
+      "source": "BASIC.asm:9497",
       "check": "GREP"
     },
     {
@@ -1825,7 +1826,7 @@
       "token": "$D4",
       "tokenDecimal": 212,
       "kind": "statement",
-      "handler": "KBasCmdFormat",
+      "handler": "BasCmdFormat",
       "dispatch": "BasExtAddrTbl",
       "statementUsable": true,
       "forms": [
@@ -1838,7 +1839,314 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:8796",
+      "source": "BASIC.asm:9498",
+      "check": "GREP"
+    },
+    {
+      "name": "VPOKE",
+      "token": "$D5",
+      "tokenDecimal": 213,
+      "kind": "statement",
+      "handler": "BasCmdVpoke",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "VPOKE <addr>, <value>",
+          "description": "Write a byte to VRAM, `addr` 0–65535",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9500",
+      "check": "GREP"
+    },
+    {
+      "name": "VREG",
+      "token": "$D6",
+      "tokenDecimal": 214,
+      "kind": "statement",
+      "handler": "BasCmdVreg",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "VREG <reg>, <value>",
+          "description": "Write VDP register `reg` 0–127 (through `VdpWriteReg`)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9501",
+      "check": "GREP"
+    },
+    {
+      "name": "PALETTE",
+      "token": "$D7",
+      "tokenDecimal": 215,
+      "kind": "statement",
+      "handler": "BasCmdPalette",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "PALETTE <index>, <r>, <g>, <b>",
+          "description": "Set palette entry 0–255 (at `$FC00 + 2*index`) to `r`, `g`, `b`, 0–15 each",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9502",
+      "check": "GREP"
+    },
+    {
+      "name": "VSYNC",
+      "token": "$D8",
+      "tokenDecimal": 216,
+      "kind": "statement",
+      "handler": "BasCmdVsync",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "VSYNC",
+          "description": "Wait for the start of the next vertical blank",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9503",
+      "check": "GREP"
+    },
+    {
+      "name": "VLOAD",
+      "token": "$D9",
+      "tokenDecimal": 217,
+      "kind": "statement",
+      "handler": "BasCmdVload",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "VLOAD \"name\", <addr>",
+          "description": "Copy a file from the current disk into VRAM at `addr`, exactly its length. `?LOAD ERROR` if it is not there",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9504",
+      "check": "GREP"
+    },
+    {
+      "name": "SPRITE",
+      "token": "$DA",
+      "tokenDecimal": 218,
+      "kind": "statement",
+      "handler": "BasCmdSprite",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "SPRITE <n>, <x>, <y>, <pattern>[, <attr>]",
+          "description": "Place sprite 0–63 at `x` 0–511 (384–511 are −128…−1) and `y` 0–255, with `pattern` 0–255 and attributes 0–127 (default 0: b6 priority, b5–b4 flips, b3–b0 sub-palette). Writes the table at `$2000`, where `SCREEN 1`–`3` put it; a program that moves `SPRATTR` uses `VPOKE`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9505",
+      "check": "GREP"
+    },
+    {
+      "name": "SCROLL",
+      "token": "$DB",
+      "tokenDecimal": 219,
+      "kind": "statement",
+      "handler": "BasCmdScroll",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "SCROLL <layer>, <x>, <y>",
+          "description": "Scroll layer 0–1 to `x` 0–319, `y` 0–255",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9506",
+      "check": "GREP"
+    },
+    {
+      "name": "LAYER",
+      "token": "$DC",
+      "tokenDecimal": 220,
+      "kind": "statement",
+      "handler": "BasCmdLayer",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "LAYER <layer>, <on>",
+          "description": "Hide layer 0–1 (`on` = 0) or show it",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9507",
+      "check": "GREP"
+    },
+    {
+      "name": "NVSAVE",
+      "token": "$DD",
+      "tokenDecimal": 221,
+      "kind": "statement",
+      "handler": "BasCmdNvsave",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "NVSAVE <slot>, <id>, <addr>",
+          "description": "Save the 14 bytes at `addr` in save slot 0–15 as owner `id` 1–255 (see [NVRAM Save Slots](#nvram-save-slots))",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9508",
+      "check": "GREP"
+    },
+    {
+      "name": "NVLOAD",
+      "token": "$DE",
+      "tokenDecimal": 222,
+      "kind": "statement",
+      "handler": "BasCmdNvload",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "NVLOAD <slot>, <addr>",
+          "description": "Copy a valid slot's 14 bytes to `addr`; `?LOAD ERROR`, copying nothing, if the slot is free or damaged",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9509",
+      "check": "GREP"
+    },
+    {
+      "name": "NVERASE",
+      "token": "$DF",
+      "tokenDecimal": 223,
+      "kind": "statement",
+      "handler": "BasCmdNverase",
+      "dispatch": "BasExtAddrTbl",
+      "statementUsable": true,
+      "forms": [
+        {
+          "syntax": "NVERASE <slot>",
+          "description": "Zero all 16 bytes of a save slot",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9510",
+      "check": "GREP"
+    },
+    {
+      "name": "VPEEK",
+      "token": "$E0",
+      "tokenDecimal": 224,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "VPEEK(addr)",
+          "description": "Byte at VRAM address `addr`, 0–65535 (0 if no video card)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9512",
+      "check": "GREP"
+    },
+    {
+      "name": "VSTAT",
+      "token": "$E1",
+      "tokenDecimal": 225,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "VSTAT(n)",
+          "description": "Status register `n`, 0–15 (0 if no video card). `VSTAT(4)` is 172 on a PICOVDP. Reading `VSTAT(0)` clears its flags, as reading `STAT0` does",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9513",
+      "check": "GREP"
+    },
+    {
+      "name": "NVSTAT",
+      "token": "$E2",
+      "tokenDecimal": 226,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "NVSTAT(slot)",
+          "description": "Save slot 0–15's state: `0` free, `1` valid, `2` damaged (0 if RTC absent). Its owner ID is `NVRAM(slot*16)`",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9514",
+      "check": "GREP"
+    },
+    {
+      "name": "NVFIND",
+      "token": "$E3",
+      "tokenDecimal": 227,
+      "kind": "function",
+      "statementUsable": false,
+      "forms": [
+        {
+          "syntax": "NVFIND(id)",
+          "description": "The lowest save slot owned by `id` (`0` finds the lowest free slot), or `-1` if there is none (or no RTC)",
+          "verified": false,
+          "source": "6502-BIOS/README.md",
+          "check": "pending RUN (Phase 4)"
+        }
+      ],
+      "verified": false,
+      "source": "BASIC.asm:9515",
       "check": "GREP"
     }
   ]

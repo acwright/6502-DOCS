@@ -223,9 +223,10 @@ function basicReference() {
       'FOR', 'TO', 'STEP', 'NEXT', 'DEF', 'FN', 'END', 'STOP', 'CONT', 'REM'],
     program: ['RUN', 'LIST', 'NEW', 'CLR', 'DIM', 'DATA', 'READ', 'RESTORE'],
     screen: ['CLS', 'LOCATE', 'COLOR', 'SOUND', 'VOL', 'INKEY', 'JOY', 'WAIT', 'PAUSE'],
+    video: ['SCREEN', 'VPOKE', 'VPEEK', 'VREG', 'VSTAT', 'PALETTE', 'VSYNC', 'VLOAD', 'SPRITE', 'SCROLL', 'LAYER'],
     files: ['LOAD', 'SAVE', 'DIR', 'DEL', 'DISK', 'FORMAT', 'BLOAD', 'BSAVE'],
-    clock: ['TIME', 'DATE', 'SETTIME', 'SETDATE', 'NVRAM'],
-    machine: ['PEEK', 'POKE', 'SYS', 'BANK', 'MEM', 'FRE', 'BRK']
+    clock: ['TIME', 'DATE', 'SETTIME', 'SETDATE', 'NVRAM', 'NVSAVE', 'NVLOAD', 'NVERASE', 'NVSTAT', 'NVFIND'],
+    machine: ['PEEK', 'POKE', 'SYS', 'BANK', 'MEM', 'FRE']
   }
 
   const known = new Set(Object.values(GROUPS).flat())
@@ -240,6 +241,7 @@ function basicReference() {
   const control = group('control')
   const program = group('program')
   const screen = group('screen')
+  const video = group('video')
   const files = group('files')
   const clock = group('clock')
   const machine = group('machine')
@@ -298,6 +300,7 @@ function basicReference() {
       {
         heading: 'BASIC Reference',
         sections: [
+          kwSection('The video card', video),
           kwSection('Reaching the machine', machine),
           kwSection('Functions', rest),
           section('Operator precedence', precedence,
@@ -377,7 +380,8 @@ function kernalJumpTable() {
     ['The card itself', ['StReadSector', 'StWriteSector', 'StWaitReady']],
     ['Serial', ['InitSC', 'SerialChrout', 'XModemLoad', 'XModemSave']],
     ['Clock and lasting memory', ['RtcReadTime', 'RtcReadDate', 'RtcWriteTime', 'RtcWriteDate', 'RtcReadNVRAM', 'RtcWriteNVRAM', 'NvStat', 'NvRead', 'NvWrite', 'NvErase', 'NvFind', 'NvFormat']],
-    ['The machine', ['SysDelay', 'KernalInit', 'KernalVersion']]
+    ['The machine', ['SysDelay', 'KernalInit', 'KernalVersion']],
+    ['The PICOVDP', ['VdpInfo', 'VdpWriteReg', 'VdpSetMode', 'VdpPoke', 'VdpPeek', 'VdpSetPalette', 'WaitVBlank', 'VdpLoadFile', 'VdpLoadFont', 'VdpSprite', 'VdpSetScroll', 'VdpLayer', 'VdpStatus']]
   ]
 
   const listed = new Set(GROUPS.flatMap(([, names]) => names))
@@ -427,7 +431,7 @@ function kernalJumpTable() {
           ...half(0, 4)
         ]
       },
-      { heading: 'Kernal Jump Table', sections: half(4, 9) }
+      { heading: 'Kernal Jump Table', sections: half(4, GROUPS.length) }
     ]
   })
 }
@@ -497,17 +501,17 @@ function memoryMap() {
         sections: [
           section('The whole 64 KB',
             table([{ label: 'Range', width: '26%' }, { label: 'What it is' }], [
-              [addr('$0000&ndash;$00FF'), desc('Zero page &mdash; Kernal, BASIC and Monitor workspace')],
+              [addr('$0000&ndash;$00FF'), desc('Zero page &mdash; Kernal and BASIC workspace')],
               [addr('$0100&ndash;$01FF'), desc('The 6502 stack')],
               [addr('$0200&ndash;$07FF'), desc('Kernal and BASIC buffers &mdash; <strong>not</strong> yours')],
               [addr(`${esc(map.constants.programStart)}&ndash;$7FFF`), desc('Your program, your variables, your strings')],
               [addr(`${esc(map.io.start)}&ndash;${esc(map.io.end)}`), desc('The I/O window &mdash; eight cards, 1 KB each')],
-              [addr('$A000&ndash;$B7FF'), desc('Kernal')],
-              [addr('$B800&ndash;$BFFF'), desc('Character set')],
-              [addr('$C000&ndash;$EDFF'), desc('BASIC')],
-              [addr('$EE00&ndash;$FEFF'), desc('Monitor')],
-              [addr('$FF00&ndash;$FFF9'), desc('Wozmon')],
-              [addr('$FFFA&ndash;$FFFF'), desc('NMI, RESET and IRQ vectors')]
+              // The ROM rows come from the linker config, so a segment that moves
+              // or goes (1.x's character set and Monitor) moves or goes here too.
+              ...map.rom.filter((r) => r.start !== map.io.start).map((r) => [
+                addr(`${esc(r.start)}&ndash;${esc(r.end)}`),
+                desc(ROM_SEGMENT[r.segment] ?? esc(r.name))
+              ])
             ]),
             note('Where your bytes go.',
               `A BASIC program starts at <code>${esc(map.constants.programStart)}</code> and grows up; ` +
@@ -519,8 +523,8 @@ function memoryMap() {
               'a <code>POKE</code> there will not stick.')),
           section('RAM, in detail', ram),
           section('ROM segments', rom,
-            note('One EEPROM, three version numbers.',
-              `BIOS v${version}, BASIC V2.0 and Monitor v1.1 all ship in the same 32 KB chip.`)),
+            note('One EEPROM.',
+              `The Kernal, BASIC and Wozmon of BIOS v${version} all ship in the same 32 KB chip.`)),
           section('The I/O window', slots,
             note('What the machine found.',
               `<code>${esc(hardware.hwPresent.address)}</code> holds one bit per slot, written by the ` +
@@ -554,6 +558,14 @@ function memoryMap() {
       }
     ]
   })
+}
+
+/** How the memory-map card names each ROM segment of BIOS.cfg. */
+const ROM_SEGMENT = {
+  KERNAL: 'Kernal',
+  BASIC: 'BASIC',
+  WOZMON: 'Wozmon',
+  VECTORS: 'NMI, RESET and IRQ vectors'
 }
 
 // ---------------------------------------------------------------------------
@@ -619,7 +631,7 @@ function characterMap() {
   return card({
     file: 'character-map.html',
     title: '6502 Character Set',
-    side: SIDE(`CP437 at ${charset.address} &middot; BIOS v${version}`),
+    side: SIDE(`PICOVDP font ${charset.font} &middot; BIOS v${version}`),
     subtitle: '6502 CHARACTER SET',
     pages: [
       {
@@ -628,9 +640,9 @@ function characterMap() {
         sections: [
           section('All 256 characters',
             note(null,
-              `The machine's character set is IBM Code Page 437, ${charset.cell}, living in ROM at ` +
-              `<code>${esc(charset.address)}</code>. <code>InitVideo</code> copies it into the video ` +
-              'card at power-on. Row is the high hex digit, column the low one &mdash; ' +
+              `The machine's character set is IBM Code Page 437, ${charset.cell}. It is font ` +
+              `<code>${esc(charset.font)}</code> on the video card, which loads it into its own memory at ` +
+              `<code>${esc(charset.address)}</code>. Row is the high hex digit, column the low one &mdash; ` +
               `so <code>A</code> is row <code>4</code>, column <code>1</code>: <code>$41</code>.`),
             grid(0, 16)),
           section('What you can PRINT',

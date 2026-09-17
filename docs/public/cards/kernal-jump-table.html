@@ -17,15 +17,15 @@
 
   <div class="pg-header">
     <h1>Kernal Jump Table</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>Kernal &middot; BIOS v1.6</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Kernal &middot; BIOS v2.0</div>
   </div>
 
   <div class="pg-body">
     <div class="section">
       <span class="sec-title">The contract</span>
-      <div class="note-box"><strong>Call the slot, never the implementation.</strong> 59 entry points, three bytes each, starting at <code>$A000</code> and in an order that does not change. <code>jsr $A000</code> prints a character on this ROM and on the next one. <code>6502.inc</code> gives every slot its name, so you will write <code>jsr Chrout</code>.</div>
+      <div class="note-box"><strong>Call the slot, never the implementation.</strong> 72 entry points, three bytes each, starting at <code>$A000</code> and in an order that does not change. <code>jsr $A000</code> prints a character on this ROM and on the next one. <code>6502.inc</code> gives every slot its name, so you will write <code>jsr Chrout</code>.</div>
       <div class="note-box"><strong>Arguments go in registers.</strong> A, X and Y in, A, X, Y or the carry flag out. Nothing is passed on the stack.</div>
-      <div class="note-box"><strong>The tail of the table.</strong> 26 slots from <code>$A0B1</code> to <code>$A0FE</code> are reserved. Each is a real jump to a bare <code>RTS</code>, so calling one is harmless now and may do something later. Do not put your own code there.</div>
+      <div class="note-box"><strong>The tail of the table.</strong> 13 slots from <code>$A0D8</code> to <code>$A0FE</code> are reserved. Each is a real jump to a bare <code>RTS</code>, so calling one is harmless now and may do something later. Do not put your own code there.</div>
     </div>
     <div class="section">
       <span class="sec-title">Console</span>
@@ -50,14 +50,14 @@
       <table>
         <thead><tr><th style="width:13%">Addr</th><th style="width:28%">Name</th><th>In / out</th></tr></thead>
         <tbody>
-          <tr><td class="td-addr">$A015</td><td class="td-label">InitVideo</td><td class="td-desc">Initialize TMS9918 (mode registers + character set)</td></tr>
+          <tr><td class="td-addr">$A015</td><td class="td-label">InitVideo</td><td class="td-desc">Text-mode console: registers, the card's font, palette row 0</td></tr>
           <tr><td class="td-addr">$A018</td><td class="td-label">VideoClear</td><td class="td-desc">Clear video screen</td></tr>
           <tr><td class="td-addr">$A01B</td><td class="td-label">VideoPutChar</td><td class="td-desc">Write char at cursor<br><strong>in</strong> A = character to write</td></tr>
           <tr><td class="td-addr">$A02A</td><td class="td-label">VideoChroutRaw</td><td class="td-desc">Output char to video (raw, no control-code handling)<br><strong>in</strong> A = character code (0-255)</td></tr>
-          <tr><td class="td-addr">$A01E</td><td class="td-label">VideoSetCursor</td><td class="td-desc">Set cursor (X=col, Y=row)<br><strong>in</strong> X = column (0-39), Y = row (0-23)</td></tr>
+          <tr><td class="td-addr">$A01E</td><td class="td-label">VideoSetCursor</td><td class="td-desc">Set cursor (X=col, Y=row)<br><strong>in</strong> X = column (0-39), Y = row (0-23), on the screen as shown</td></tr>
           <tr><td class="td-addr">$A021</td><td class="td-label">VideoGetCursor</td><td class="td-desc">Get cursor position<br><strong>out</strong> X = column (0-39), Y = row (0-23)</td></tr>
           <tr><td class="td-addr">$A024</td><td class="td-label">VideoScroll</td><td class="td-desc">Scroll screen up one line</td></tr>
-          <tr><td class="td-addr">$A027</td><td class="td-label">VideoSetColor</td><td class="td-desc">Set TMS9918 text color (A=reg7 byte: hi=fg, lo=bg)<br><strong>in</strong> A = color byte (high nibble = fg color, low nibble = bg color)</td></tr>
+          <tr><td class="td-addr">$A027</td><td class="td-label">VideoSetColor</td><td class="td-desc">Set the pen and the border (A = fg&lt;&lt;4 | bg)<br><strong>in</strong> A = fg&lt;&lt;4 | bg.  VID_PEN = A, and register 7 = A, so the border follows</td></tr>
         </tbody>
       </table>
     </div>
@@ -102,7 +102,7 @@
 
   <div class="pg-header">
     <h1>Kernal Jump Table</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>Kernal &middot; BIOS v1.6</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>Kernal &middot; BIOS v2.0</div>
   </div>
 
   <div class="pg-body">
@@ -172,8 +172,29 @@
         <thead><tr><th style="width:13%">Addr</th><th style="width:28%">Name</th><th>In / out</th></tr></thead>
         <tbody>
           <tr><td class="td-addr">$A075</td><td class="td-label">SysDelay</td><td class="td-desc">Delay A=cnt_lo, X=cnt_hi centiseconds<br><strong>in</strong> A = count low byte, X = count high byte</td></tr>
-          <tr><td class="td-addr">$A078</td><td class="td-label">KernalInit</td><td class="td-desc">Initialize all hardware (caller must reset SP; no cli, no splash); rts when done</td></tr>
+          <tr><td class="td-addr">$A078</td><td class="td-label">KernalInit</td><td class="td-desc">Initialize all hardware (caller must reset SP; no cli); rts when done</td></tr>
           <tr><td class="td-addr">$A07B</td><td class="td-label">KernalVersion</td><td class="td-desc">Get BIOS version (A=major, X=minor)<br><strong>out</strong> A = major version, X = minor version</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="section">
+      <span class="sec-title">The PICOVDP</span>
+      <table>
+        <thead><tr><th style="width:13%">Addr</th><th style="width:28%">Name</th><th>In / out</th></tr></thead>
+        <tbody>
+          <tr><td class="td-addr">$A0B1</td><td class="td-label">VdpInfo</td><td class="td-desc">Card found at boot → A=VDP_FW, X=VDP_CAPS, Y=$AC; carry set if none<br><strong>out</strong> A = VDP_FW (STAT5), X = VDP_CAPS (STAT6), Y = VDP_ID ($AC); with no card A = X = Y = 0 and carry set</td></tr>
+          <tr><td class="td-addr">$A0B4</td><td class="td-label">VdpWriteReg</td><td class="td-desc">Write register (A=value, X=0-127), keeping VID_MODE and the LxCTRL shadows<br><strong>in</strong> A = value, X = register (0-127) &middot; <strong>out</strong> carry set, and nothing written, if no card or X &gt; 127</td></tr>
+          <tr><td class="td-addr">$A0B7</td><td class="td-label">VdpSetMode</td><td class="td-desc">Write VMODE (A=1-4); carry set if out of range<br><strong>in</strong> A = mode (1-4) &middot; <strong>out</strong> carry set, and nothing written, if no card or A is out of range</td></tr>
+          <tr><td class="td-addr">$A0BA</td><td class="td-label">VdpPoke</td><td class="td-desc">Write VRAM byte A at X/Y = address lo/hi (all 64 KB)<br><strong>in</strong> A = value, X = address low, Y = address high ($0000-$FFFF) &middot; <strong>out</strong> carry set, and nothing written, if no card</td></tr>
+          <tr><td class="td-addr">$A0BD</td><td class="td-label">VdpPeek</td><td class="td-desc">Read VRAM byte at X/Y = address lo/hi → A<br><strong>in</strong> X = address low, Y = address high ($0000-$FFFF) &middot; <strong>out</strong> A = the byte; carry set, and nothing read, if no card</td></tr>
+          <tr><td class="td-addr">$A0C0</td><td class="td-label">VdpSetPalette</td><td class="td-desc">Palette entry X = 0-255 ← A = $0R, Y = $GB (at $FC00 + 2X)<br><strong>in</strong> X = entry (0-255), A = $0R, Y = $GB &middot; <strong>out</strong> carry set, and nothing written, if no card</td></tr>
+          <tr><td class="td-addr">$A0C3</td><td class="td-label">WaitVBlank</td><td class="td-desc">Return at the start of the next vertical blank (STAT0 untouched)</td></tr>
+          <tr><td class="td-addr">$A0C6</td><td class="td-label">VdpLoadFile</td><td class="td-desc">Load named file (STR_PTR) into VRAM at FS_IO_ADDR, exactly FS_FILE_SIZE bytes<br><strong>in</strong> STR_PTR = filename, FS_IO_ADDR = VRAM address &middot; <strong>out</strong> Carry clear = loaded, FS_FILE_SIZE = bytes written; Carry set = no video card (nothing read), or not found or read error</td></tr>
+          <tr><td class="td-addr">$A0C9</td><td class="td-label">VdpLoadFont</td><td class="td-desc">Copy built-in font A into L0PAT and wait for it<br><strong>in</strong> A = font ID &middot; <strong>out</strong> carry set, and nothing written, if no card or A is not $00</td></tr>
+          <tr><td class="td-addr">$A0CC</td><td class="td-label">VdpSprite</td><td class="td-desc">Sprite X = 0-63 ← VDP_P0-P3 = Y, X lo, pattern, attributes (table at $2000)<br><strong>in</strong> X = sprite (0-63), VDP_P0 = Y, VDP_P1 = X bits 7:0, VDP_P2 = pattern,; VDP_P3 = attributes (b7 = X bit 8, b6 priority, b5:4 flips, b3:0 sub-palette; SPEC §10) &middot; <strong>out</strong> carry set, and nothing written, if no card or X &gt; 63</td></tr>
+          <tr><td class="td-addr">$A0CF</td><td class="td-label">VdpSetScroll</td><td class="td-desc">Layer X = 0-1 scroll: A = x lo, Y = y, VDP_P0 = x bit 8<br><strong>in</strong> X = layer (0-1), A = x bits 7:0, Y = y, VDP_P0 = x bit 8 (0 or not) &middot; <strong>out</strong> carry set, and nothing written, if no card or X &gt; 1</td></tr>
+          <tr><td class="td-addr">$A0D2</td><td class="td-label">VdpLayer</td><td class="td-desc">Layer X = 0-1 off (A = 0) or on<br><strong>in</strong> X = layer (0-1), A = 0 to hide, anything else to show &middot; <strong>out</strong> carry set, and nothing written, if no card or X &gt; 1</td></tr>
+          <tr><td class="td-addr">$A0D5</td><td class="td-label">VdpStatus</td><td class="td-desc">Read status register X = 0-15 on port A → A<br><strong>in</strong> X = status register (0-15) &middot; <strong>out</strong> A = its value; carry set, and nothing read, if no card or X &gt; 15</td></tr>
         </tbody>
       </table>
     </div>

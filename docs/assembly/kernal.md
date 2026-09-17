@@ -16,7 +16,8 @@ const groups = [
   ['The card itself', ['StReadSector', 'StWriteSector', 'StWaitReady'], '/assembly/storage'],
   ['Serial', ['InitSC', 'SerialChrout', 'XModemLoad', 'XModemSave'], '/assembly/serial'],
   ['Clock and lasting memory', ['RtcReadTime', 'RtcReadDate', 'RtcWriteTime', 'RtcWriteDate', 'RtcReadNVRAM', 'RtcWriteNVRAM', 'NvStat', 'NvRead', 'NvWrite', 'NvErase', 'NvFind', 'NvFormat'], '/assembly/clock'],
-  ['The machine', ['SysDelay', 'KernalInit', 'KernalVersion'], '/assembly/detection']
+  ['The machine', ['SysDelay', 'KernalInit', 'KernalVersion'], '/assembly/detection'],
+  ['The PICOVDP', ['VdpInfo', 'VdpWriteReg', 'VdpSetMode', 'VdpPoke', 'VdpPeek', 'VdpSetPalette', 'WaitVBlank', 'VdpLoadFile', 'VdpLoadFont', 'VdpSprite', 'VdpSetScroll', 'VdpLayer', 'VdpStatus'], '/assembly/graphics']
 ].map(([title, names, link]) => ({ title, link, slots: names.map((n) => bySlot[n]) }))
 
 // Fail the build on a slot no group names, rather than leaving it off the page

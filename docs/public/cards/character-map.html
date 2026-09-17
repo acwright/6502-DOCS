@@ -17,13 +17,13 @@
 
   <div class="pg-header">
     <h1>Character Set</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>CP437 at $B800 &middot; BIOS v1.6</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>PICOVDP font $00 &middot; BIOS v2.0</div>
   </div>
 
   <div class="pg-body one-col">
     <div class="section">
       <span class="sec-title">All 256 characters</span>
-      <div class="note-box">The machine's character set is IBM Code Page 437, 8 × 8 pixels, glyphs drawn 5 wide and left-aligned in the byte, living in ROM at <code>$B800</code>. <code>InitVideo</code> copies it into the video card at power-on. Row is the high hex digit, column the low one &mdash; so <code>A</code> is row <code>4</code>, column <code>1</code>: <code>$41</code>.</div>
+      <div class="note-box">The machine's character set is IBM Code Page 437, 6 × 8 pixels, glyphs drawn 5 wide and left-aligned in the cell. It is font <code>$00</code> on the video card, which loads it into its own memory at <code>$0800</code>. Row is the high hex digit, column the low one &mdash; so <code>A</code> is row <code>4</code>, column <code>1</code>: <code>$41</code>.</div>
       <table class="charset-grid">
         <thead><tr><th class="th-hex"></th><th class="th-hex">0</th><th class="th-hex">1</th><th class="th-hex">2</th><th class="th-hex">3</th><th class="th-hex">4</th><th class="th-hex">5</th><th class="th-hex">6</th><th class="th-hex">7</th><th class="th-hex">8</th><th class="th-hex">9</th><th class="th-hex">A</th><th class="th-hex">B</th><th class="th-hex">C</th><th class="th-hex">D</th><th class="th-hex">E</th><th class="th-hex">F</th></tr></thead>
         <tbody>
@@ -65,7 +65,7 @@
 
   <div class="pg-header">
     <h1>Character Set</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>CP437 at $B800 &middot; BIOS v1.6</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>PICOVDP font $00 &middot; BIOS v2.0</div>
   </div>
 
   <div class="pg-body three-col">
@@ -228,7 +228,7 @@
 
   <div class="pg-header">
     <h1>Character Set</h1>
-    <div class="side-info">A.C. Wright 6502 BIOS<br>CP437 at $B800 &middot; BIOS v1.6</div>
+    <div class="side-info">A.C. Wright 6502 BIOS<br>PICOVDP font $00 &middot; BIOS v2.0</div>
   </div>
 
   <div class="pg-body three-col">

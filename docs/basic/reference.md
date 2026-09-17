@@ -12,6 +12,8 @@ const examples = facts.basicExamples.keywords
 const all = facts.basicKeywords.keywords.map((kw) => ({
   name: kw.name,
   kind: kw.kind,
+  syntax: kw.forms?.[0]?.syntax ?? kw.name,
+  summary: kw.forms?.[0]?.description ?? '',
   ...examples[kw.name]
 }))
 
@@ -33,9 +35,10 @@ const groups = [
   ['Arithmetic', ['SGN', 'INT', 'ABS', 'SQR', 'RND', 'LOG', 'EXP', 'SIN', 'COS', 'TAN', 'ATN', 'MIN', 'MAX']],
   ['Text', ['LEN', 'LEFT$', 'RIGHT$', 'MID$', 'CHR$', 'ASC', 'STR$', 'VAL']],
   ['Screen and sound', ['CLS', 'LOCATE', 'COLOR', 'SOUND', 'VOL']],
+  ['The video card', ['SCREEN', 'VPOKE', 'VPEEK', 'VREG', 'VSTAT', 'PALETTE', 'VSYNC', 'VLOAD', 'SPRITE', 'SCROLL', 'LAYER']],
   ['The memory card', ['DIR', 'LOAD', 'SAVE', 'DEL', 'DISK', 'FORMAT', 'BLOAD', 'BSAVE']],
-  ['Clock and lasting memory', ['TIME', 'DATE', 'SETTIME', 'SETDATE', 'NVRAM']],
-  ['The machine underneath', ['PEEK', 'POKE', 'SYS', 'BANK', 'MEM', 'FRE', 'WAIT', 'PAUSE', 'BRK']]
+  ['Clock and lasting memory', ['TIME', 'DATE', 'SETTIME', 'SETDATE', 'NVRAM', 'NVSAVE', 'NVLOAD', 'NVERASE', 'NVSTAT', 'NVFIND']],
+  ['The machine underneath', ['PEEK', 'POKE', 'SYS', 'BANK', 'MEM', 'FRE', 'WAIT', 'PAUSE']]
 ]
 
 const precedence = facts.basicKeywords.operatorPrecedence
@@ -87,7 +90,7 @@ all of it.
   <p class="kw-syntax"><code>{{ kw.syntax }}</code></p>
   <p class="kw-summary">{{ kw.summary }}</p>
 
-  <div class="language-basic kw-code"><pre><code>{{ kw.example.join('\n') }}</code></pre></div>
+  <div v-if="kw.example" class="language-basic kw-code"><pre><code>{{ kw.example.join('\n') }}</code></pre></div>
 
   <div v-if="kw.output" class="language- kw-code"><pre><code>{{ kw.output.join('\n') }}</code></pre></div>
   <p v-if="kw.result" class="kw-result">{{ kw.result }}</p>

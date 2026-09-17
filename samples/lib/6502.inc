@@ -2,7 +2,7 @@
 ;   6502.inc — Kernal API and hardware constants for the AC6502 family
 ; ===========================================================================
 ;
-;   BIOS       : v1.6
+;   BIOS       : v2.0
 ;   CPU        : WDC 65C02S
 ;   Assembler  : ca65 (cc65 toolchain)
 ;
@@ -29,14 +29,14 @@ BufferSize          := $A00C    ; Get buffer count
 SetIOMode           := $A00F    ; Set IO_MODE
 GetIOMode           := $A012    ; Get IO_MODE
 
-; --- Video (TMS9918) ---
-InitVideo           := $A015    ; Initialize TMS9918 (mode registers + character set)
+; --- Video console (PICOVDP) ---
+InitVideo           := $A015    ; Text-mode console: registers, the card's font, palette row 0
 VideoClear          := $A018    ; Clear video screen
 VideoPutChar        := $A01B    ; Write char at cursor
 VideoSetCursor      := $A01E    ; Set cursor (X=col, Y=row)
 VideoGetCursor      := $A021    ; Get cursor position
 VideoScroll         := $A024    ; Scroll screen up one line
-VideoSetColor       := $A027    ; Set TMS9918 text color (A=reg7 byte: hi=fg, lo=bg)
+VideoSetColor       := $A027    ; Set the pen and the border (A = fg<<4 | bg)
 VideoChroutRaw      := $A02A    ; Output char to video (raw, no control-code handling)
 
 ; --- Sound (SID) ---
@@ -77,7 +77,7 @@ StWaitReady         := $A072    ; Wait CF ready
 
 ; --- System ---
 SysDelay            := $A075    ; Delay A=cnt_lo, X=cnt_hi centiseconds
-KernalInit          := $A078    ; Initialize all hardware (caller must reset SP; no cli, no splash); rts when done
+KernalInit          := $A078    ; Initialize all hardware (caller must reset SP; no cli); rts when done
 KernalVersion       := $A07B    ; Get BIOS version (A=major, X=minor)
 
 ; --- Disk banking / addressed storage ---
@@ -105,7 +105,22 @@ NvErase             := $A0A8    ; Zero all 16 bytes of a slot (X=slot)
 NvFind              := $A0AB    ; Lowest slot owned by A ($00 = first free) → X
 NvFormat            := $A0AE    ; Erase all 16 slots
 
-; 26 reserved slots at $A0B1-$A0FE — each is a bare RTS.
+; --- PICOVDP (2.0) ---
+VdpInfo             := $A0B1    ; Card found at boot → A=VDP_FW, X=VDP_CAPS, Y=$AC; carry set if none
+VdpWriteReg         := $A0B4    ; Write register (A=value, X=0-127), keeping VID_MODE and the LxCTRL shadows
+VdpSetMode          := $A0B7    ; Write VMODE (A=1-4); carry set if out of range
+VdpPoke             := $A0BA    ; Write VRAM byte A at X/Y = address lo/hi (all 64 KB)
+VdpPeek             := $A0BD    ; Read VRAM byte at X/Y = address lo/hi → A
+VdpSetPalette       := $A0C0    ; Palette entry X = 0-255 ← A = $0R, Y = $GB (at $FC00 + 2X)
+WaitVBlank          := $A0C3    ; Return at the start of the next vertical blank (STAT0 untouched)
+VdpLoadFile         := $A0C6    ; Load named file (STR_PTR) into VRAM at FS_IO_ADDR, exactly FS_FILE_SIZE bytes
+VdpLoadFont         := $A0C9    ; Copy built-in font A into L0PAT and wait for it
+VdpSprite           := $A0CC    ; Sprite X = 0-63 ← VDP_P0-P3 = Y, X lo, pattern, attributes (table at $2000)
+VdpSetScroll        := $A0CF    ; Layer X = 0-1 scroll: A = x lo, Y = y, VDP_P0 = x bit 8
+VdpLayer            := $A0D2    ; Layer X = 0-1 off (A = 0) or on
+VdpStatus           := $A0D5    ; Read status register X = 0-15 on port A → A
+
+; 13 reserved slots at $A0D8-$A0FE — each is a bare RTS.
 
 ; ===========================================================================
 ;   ZERO PAGE
@@ -121,15 +136,10 @@ CF_BUF_PTR          := $24      ; through $25 — CF sector data buffer pointer 
 CF_LBA              := $26      ; through $29 — CF 28-bit LBA address (4 bytes, little-endian)
 XFER_PTR            := $2A      ; through $2B — Serial transfer data pointer (2 bytes)
 DELAY_CNT           := $2C      ; through $2D — SysDelay 16-bit centisecond counter
-MON_ADDR            := $2E      ; through $2F — Monitor current address (2 bytes)
 XMODEM_BLK          := $36      ; XModem expected/current block number
 XMODEM_CHK          := $37      ; XModem running checksum
 XMODEM_RETRY        := $38      ; XModem retry counter
 XMODEM_RCVBLK       := $39      ; XModem received block number
-MON_END             := $30      ; through $31 — Monitor end address (2 bytes)
-MON_TMP             := $32      ; through $33 — Monitor temp pointer (2 bytes)
-MON_BYTE            := $34      ; Monitor parsed byte scratch
-MON_IDX             := $35      ; Monitor input line index
 
 ; ===========================================================================
 ;   KERNAL VARIABLES ($0300-$03FF)
@@ -159,7 +169,6 @@ XFER_IO_SAVE        := $0319    ; Saved IO_MODE before switching to serial
 BAS_DATAPTR         := $031A    ; through $031B — DATA read position (2 bytes)
 BAS_STOPLINE        := $031C    ; through $031D — Saved BAS_CURLINE for CONT (2 bytes)
 BAS_STOPTXT         := $031E    ; through $031F — Saved BAS_TXTPTR for CONT (2 bytes)
-SCROLL_BUF          := $0320    ; through $0347 — 40-byte scroll temp buffer
 FS_START_SEC        := $0348    ; through $0349 — File start sector (2 bytes)
 FS_FILE_SIZE        := $034A    ; through $034B — File size in bytes (2 bytes)
 FS_SEC_COUNT        := $034C    ; Number of sectors to read/write
@@ -180,11 +189,22 @@ BAS_WARM            := $036F    ; Warm-start magic ($A5 = previously initialized
 BAS_POSX            := $0370    ; PRINT column counter (0-39 video / 0-79 serial)
 BAS_INPSAV          := $0371    ; through $0372 — Saved TXTPTR across INPUT REDO retry
 BAS_FNPTR           := $0373    ; through $0374 — FN variable slot addr held across FnCall's expression evaluations (out of ZP so FrmEvl/Garbag cannot touch it)
-BAS_STKBASE         := $0375    ; Stack pointer the READY loop restores before each direct-mode line: $FF with no
+BAS_STKBASE         := $0375    ; Stack pointer the READY loop restores before each direct-mode line: $FF with no program suspended, or the running program's statement-boundary SP after a STOP/END/Ctrl+C break, which is what keeps its FOR and GOSUB frames alive for CONT.  Reset to $FF wherever the stack is reset (RUN, CLR, NEW, an error)
 FS_IO_ADDR          := $037F    ; through $0380 — Load/save target address for FsLoadFileAddr/FsSaveFileAddr
 BAS_FNAME           := $0381    ; through $038D — 13-byte scratch for null-terminated 8.3 filename (12-char "NAME.EXT" + null)
-PRG_IMAGE_END       := $038E    ; through $038F — End address of a program image placed at PROGRAM_START by a loader
+PRG_IMAGE_END       := $038E    ; through $038F — End address of a program image placed at PROGRAM_START by a loader outside BASIC; 0 = none.  Cleared by KernalInit and consumed by ProgramEnd, so a stale value can never be mistaken for a fresh load.
 NV_ID               := $0390    ; Owner ID input for NvWrite ($00 is refused — that is NvErase)
+VID_PEN             := $0391    ; Attribute byte for new output, fg<<4 | bg ($1F from KernalInit)
+VID_TOP             := $0392    ; Name-table row shown at the top of the screen (0-23); L0SCRY = VID_TOP * 8
+VID_MODE            := $0393    ; $00 = console not set up since KernalInit (card in the legacy submode); $01 = text console intact.  Otherwise low nibble = the VMODE the Kernal last set, b7 = disturbed (sprites, scroll, layers)
+VDP_FW              := $0394    ; STAT5 (firmware version, BCD) at boot; $00 if no PICOVDP
+VDP_CAPS            := $0395    ; STAT6 (capability bits) at boot; $00 if no PICOVDP
+VDP_L0CTRL_SHADOW   := $0396    ; Shadow of the write-only L0CTRL register
+VDP_L1CTRL_SHADOW   := $0397    ; Shadow of the write-only L1CTRL register
+VDP_P0              := $0398    ; Parameter block for VDP entries that take more than A/X/Y
+VDP_P1              := $0399
+VDP_P2              := $039A
+VDP_P3              := $039B
 
 ; ===========================================================================
 ;   KEY MEMORY LOCATIONS
@@ -194,9 +214,7 @@ INPUT_BUFFER        := $0200    ; Keyboard ring buffer
 USER_VARS           := $0400    ; BASIC line buffers
 FS_SECTOR_BUF       := $0600    ; CompactFlash sector buffer
 PROGRAM_START       := $0800    ; Program RAM
-MONITOR_ENTRY       := $EE00    ; Monitor cold entry
-MONITOR_BRK_ENTRY   := $EE03    ; Monitor BRK entry (displays saved registers)
-WOZMON              := $FF00    ; Apple I monitor
+WOZMON              := $FF00    ; Apple I monitor (SYS 65280 from BASIC)
 
 ; ===========================================================================
 ;   HARDWARE DETECTION
@@ -313,17 +331,20 @@ SID_OSC3            := $981B    ; Oscillator 3 (Read-only)
 SID_ENV3            := $981C    ; Envelope 3 (Read-only)
 
 ; --- IO 8 | Video Card / VGA Card | $9C00-$9FFF ---
-VC_DATA             := $9C00    ; R/W
-VC_REG              := $9C01    ; Write
-VC_STATUS           := $9C01    ; Read
+VC_DATA             := $9C00    ; R/W  VRAM data, port A
+VC_REG              := $9C01    ; Write  command, port A
+VC_STATUS           := $9C01    ; Read  status (STATSEL_A selects which), port A
+VC_DATA2            := $9C02    ; R/W  VRAM data, port B
+VC_REG2             := $9C03    ; Write  command, port B
+VC_STATUS2          := $9C03    ; Read  status (STATSEL_B selects which), port B
 
 ; ===========================================================================
 ;   USEFUL CONSTANTS
 ; ===========================================================================
 
 ; --- BIOS version ---
-BIOS_VERSION_MAJOR   = 1
-BIOS_VERSION_MINOR   = 6
+BIOS_VERSION_MAJOR   = 2
+BIOS_VERSION_MINOR   = 0
 
 ; --- NVRAM save slots ---
 NV_SLOTS             = 16       ; Save slots in RTC NVRAM
@@ -347,9 +368,9 @@ CHAR_SPACE           = $20      ; Space
 VID_COLS             = 40       ; Screen width in columns
 VID_ROWS             = 24       ; Screen height in rows
 VID_NAME_TABLE       = $0000    ; VRAM name table (40x24 = 960 bytes)
-VID_PATTERN_TABLE    = $0800    ; VRAM pattern table (2048 bytes)
+VID_PATTERN_TABLE    = $0800    ; VRAM pattern table: font $00, loaded by the card at reset (2048 bytes)
 
-; --- TMS9918 colors (for VideoSetColor: (foreground << 4) | background) ---
+; --- Colors, palette row 0 (for VideoSetColor: (foreground << 4) | background) ---
 TMS_TRANSPARENT      = $0       ; Transparent
 TMS_BLACK            = $1       ; Black
 TMS_MED_GREEN        = $2       ; Medium green

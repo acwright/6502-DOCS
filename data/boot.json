@@ -1,83 +1,87 @@
 {
   "$meta": {
     "title": "Boot sequence",
-    "description": "Version, the boot menu, and the strings the machine prints on the way up.",
+    "description": "Version, the header, and the path from reset to the BASIC prompt.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "1.6",
+    "biosVersion": "2.0",
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "5720c2f055913d48ef0e63abdff466ab77145acbe90aaea43445387a6abe162d"
+        "sha256": "e714ade2bf339e882cf787764e0d3731fb551fd9bdacf4d06a8dbe0f8f9ee185"
       },
       {
         "file": "Kernal.asm",
-        "sha256": "e38b994242088af2183da64ff8ee23032c57c38fbbeab426ecea0714d9eae7eb"
+        "sha256": "67c3ec2c56095725ccd2782ec419ad8e974fe80ae7a0fcff839f3e0c43fc28f1"
+      },
+      {
+        "file": "BASIC.asm",
+        "sha256": "e41bc5a75fed37329e0796b2634bdbe8530d4169369ec5faa9c802dc8eeae4a7"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
   },
   "version": {
-    "major": 1,
-    "minor": 6,
-    "string": "v1.6",
-    "source": "BIOS.inc:134-135",
+    "major": 2,
+    "minor": 0,
+    "string": "v2.0",
+    "source": "BIOS.inc:151-152",
     "check": "GREP"
   },
-  "splashMatchesVersion": true,
-  "splashDerivedFromVersion": true,
+  "headerMatchesVersion": true,
+  "headerDerivedFromVersion": true,
+  "header": [
+    "AC6502 BIOS v2.0",
+    "BASIC v2.0 nnnnn BYTES FREE"
+  ],
   "strings": [
     {
-      "symbol": "@SplashTitle",
-      "text": "-- 6502 BIOS v1.6 --",
+      "symbol": "MsgHeader",
+      "text": "AC6502 BIOS v2.0",
       "derivedFrom": "BIOS_VERSION_MAJOR/MINOR",
-      "source": "Kernal.asm:3408",
+      "source": "BASIC.asm:9548",
       "check": "GREP"
     },
     {
-      "symbol": "@SplashMenu",
-      "text": "ENTER=BASIC  ESC=MONITOR",
-      "source": "Kernal.asm:3409",
+      "symbol": "MsgBasicV2",
+      "text": "BASIC v2.0 ",
+      "source": "BASIC.asm:9553",
+      "check": "GREP"
+    },
+    {
+      "symbol": "MsgBytesFreeNL",
+      "text": " BYTES FREE",
+      "source": "BASIC.asm:9556",
       "check": "GREP"
     }
   ],
-  "menu": {
-    "timeoutSeconds": 5,
-    "tick": "100 ms per iteration, 50 iterations",
-    "enter": "ENTER ($0D) boots BASIC",
-    "escape": "ESC ($1B) boots the Monitor through BRK",
-    "timeout": "Auto-boots BASIC",
-    "note": "Any other key is consumed and costs one tick. Input arriving before the probe finishes sits unread in the ACIA and blocks the bytes behind it.",
-    "source": "Kernal.asm:738-765",
-    "check": "GREP"
-  },
   "sequence": [
     {
       "step": "Reset the stack pointer to $FF",
-      "source": "Kernal.asm:704"
+      "source": "Kernal.asm:1114"
     },
     {
       "step": "KernalInit — probe and initialize every card, interrupts still disabled",
-      "source": "Kernal.asm:706"
+      "source": "Kernal.asm:1115"
     },
     {
       "step": "Beep — guarded, skipped when no SID is fitted",
-      "source": "Kernal.asm:708"
+      "source": "Kernal.asm:1117"
     },
     {
       "step": "If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)",
-      "source": "Kernal.asm:711-714"
+      "source": "Kernal.asm:1123"
     },
     {
       "step": "Halt if neither video nor serial is present — there is no console to boot into",
-      "source": "Kernal.asm:718-722"
+      "source": "Kernal.asm:1128"
     },
     {
-      "step": "cli, then draw the splash on whichever console this machine has",
-      "source": "Kernal.asm:725-738"
+      "step": "Mark BASIC cold, so the header prints and the variables clear; the program at $0800 is kept",
+      "source": "Kernal.asm:1135"
     },
     {
-      "step": "Wait ~5 s for ENTER or ESC; time out into BASIC",
-      "source": "Kernal.asm:740-765"
+      "step": "cli, then into BASIC, which prints the header on whichever console this machine has",
+      "source": "Kernal.asm:1148"
     }
   ]
 }
