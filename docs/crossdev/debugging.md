@@ -38,7 +38,7 @@ Both work; the debugger takes either.
 ## Start a machine you can talk to
 
 ```
-6502 run --headless --quiet --debug --debug-port 6510 build/countdown.prg &
+6502 run --headless --quiet --vdp picovdp --debug --debug-port 6510 build/countdown.prg &
 ```
 
 `--debug` serves a debug protocol; every `6502 dbg` command connects to it, does
@@ -53,7 +53,7 @@ with `6502 dbg sym load`.
 ```
 
 ```
-headless 2.7.0 — serial console, 1 MHz, turbo, 1721720 cycles
+headless 3.1.0 — serial console, 1 MHz, turbo, 1619280 cycles
 ```
 
 ::: tip Ports

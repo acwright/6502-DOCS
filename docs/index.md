@@ -1,8 +1,8 @@
 # Welcome
 
 This is your guide to the **ACE** — a whole 65C02 computer on one board, with
-its own keyboard built in, plus sound, joysticks and a disk. It boots in about
-five seconds, straight into BASIC, and it will still be doing exactly what you
+its own keyboard built in, plus sound, joysticks and a disk. It boots in under
+a second, straight into BASIC, and it will still be doing exactly what you
 tell it in thirty years.
 
 <Figure
@@ -15,11 +15,9 @@ There is no operating system to log into and nothing to install. You switch it
 on, you get this:
 
 ```
--- 6502 BIOS v1.6 --
-ENTER=BASIC  ESC=MONITOR
-
-6502 BASIC V2.0
-30718 BYTES FREE
+AC6502 BIOS v2.0
+BASIC v2.0 30718 BYTES FREE
+RAM RTC CF SER VIA SID VDP
 
 OK
 ```

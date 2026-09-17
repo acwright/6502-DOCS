@@ -9,8 +9,8 @@ Published at **<https://acwright.github.io/6502-DOCS/>**.
 
 Built with [VitePress](https://vitepress.dev/), deployed to GitHub Pages.
 
-**The site describes BIOS v1.6, and every sample, screenshot and embedded
-program in it was produced by emulator 2.7.0.** Those are the two versions that
+**The site describes BIOS v2.0 on the 6502-PICOVDP, and every sample, screenshot
+and embedded program in it was produced by emulator 3.1.0 with that card.** Those are the two versions that
 move, and both are now gates rather than notes: `npm run check:voice` fails on a
 page stating a BIOS version the firmware disagrees with, and `npm run preflight`
 fails on an emulator that is not the one in `data/emulator.json`. See

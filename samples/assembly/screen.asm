@@ -36,9 +36,9 @@ Start:
   and #HW_VID                   ; no screen, nothing to draw on
   beq NoScreen
 
-  jsr VideoClear
   lda #(TMS_LT_YELLOW * 16) | TMS_DK_BLUE
   jsr VideoSetColor             ; letters, then background
+  jsr VideoClear                ; fills the screen with those colors
 
   lda #TOP_LEFT
   sta Left

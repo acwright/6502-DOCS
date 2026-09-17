@@ -58,16 +58,16 @@ colors**. Three statements:
 
 - **`CLS`** clears it.
 - **`LOCATE row, column`** moves the cursor.
-- **`COLOR foreground, background`** sets the colors for the whole screen —
-  every character on it, not just what you type next — each number from 0 to
-  15:
+- **`COLOR foreground, background`** sets the colors for what is printed next,
+  each number from 0 to 15. What is already on the screen keeps its own, and
+  `CLS` fills the whole screen with the new pair:
 
 <ColorChart />
 
 <<< @/../samples/basic/screen-text.bas{basic}
 
 `RUN` that and you get a line of text in the middle of an empty screen, dark on
-light instead of the usual light on dark.
+light.
 
 <Figure
   src="/images/screens/screen-text.png"

@@ -16,11 +16,13 @@ cases=${1:-tests}
 port=6510
 state=$(mktemp)
 
-# One machine for the whole run, with the clock pinned so a run here and a run
-# on a build server land in the same place.
+# One machine for the whole run, on the PICOVDP (which boots BIOS 2.0), with
+# the clock pinned so a run here and a run on a build server land in the same
+# place. It starts paused: the boot is over in a third of a second, and a
+# machine left to run would print its prompt before anything was waiting for it.
 # Its console goes to the bit bucket: the assertions below read the console
 # through the debug server, so anything it echoes here is just noise.
-6502 run --headless --quiet --debug --debug-port "$port" \
+6502 run --headless --quiet --vdp picovdp --pause --debug --debug-port "$port" \
   --rtc 2026-01-01T00:00:00 --timeout 300s >/dev/null &
 emulator=$!
 trap 'kill $emulator 2>/dev/null || true; rm -f "$state"' EXIT
@@ -28,7 +30,7 @@ trap 'kill $emulator 2>/dev/null || true; rm -f "$state"' EXIT
 until 6502 dbg info --port "$port" >/dev/null 2>&1; do sleep 0.1; done
 
 # Boot to the prompt once and photograph the machine there. Restoring that is
-# about a millisecond against the five million cycles a boot costs — and it is
+# about a millisecond against the 330,000 cycles a boot costs — and it is
 # exact, so one case cannot leak into the next.
 6502 dbg wait --serial 'OK' --run turbo --timeout 30s --port "$port" >/dev/null
 6502 dbg state save "$state" --port "$port" >/dev/null

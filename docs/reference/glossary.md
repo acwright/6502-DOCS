@@ -20,8 +20,8 @@ See [Banked RAM](/assembly/banking).
 **BASIC** — the language the machine boots into, and the program in ROM that
 runs it. Version 2.0 here. See [Programming in BASIC](/basic/).
 
-**BIOS** — the whole 32 KB of ROM: Kernal, Monitor, BASIC and the character
-set together. This guide describes BIOS v1.6. Not the same sense as a PC's
+**BIOS** — the whole 32 KB of ROM: Kernal, BASIC and Wozmon together. This
+guide describes BIOS v2.0. Not the same sense as a PC's
 BIOS, which is only a boot loader.
 
 **CompactFlash** — the storage card. Behaves as an 8-bit IDE drive; the BIOS

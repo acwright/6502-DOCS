@@ -506,15 +506,6 @@
       "expect": ["BYTES FREE", "^DISK \\d+\\s*$"],
       "see": ["FRE"]
     },
-    "BRK": {
-      "syntax": "BRK",
-      "summary": "Drop into the machine-code Monitor. `X` at the Monitor's `.` prompt comes back to BASIC.",
-      "example": ["BRK"],
-      "wait": "6502 MONITOR",
-      "result": "The Monitor starts and shows the registers.",
-      "expect": ["6502 MONITOR"],
-      "see": ["SYS"]
-    },
     "PAUSE": {
       "syntax": "PAUSE n",
       "summary": "Do nothing for `n` hundredths of a second.",
@@ -529,6 +520,14 @@
       "console": "video",
       "screen": ["^A FRESH SCREEN\\s*$"],
       "see": ["LOCATE", "COLOR"]
+    },
+    "SCREEN": {
+      "syntax": "SCREEN n",
+      "summary": "Choose what the video card shows: 0 is the text console, 1 to 3 are its graphics modes. A program that leaves the text console gets it back when it stops.",
+      "example": ["10 PRINT \"THIS GOES\"", "20 SCREEN 0", "30 PRINT \"A FRESH TEXT SCREEN\""],
+      "console": "video",
+      "screen": ["(?<![\\s\\S])A FRESH TEXT SCREEN\\s*$"],
+      "see": ["CLS", "COLOR"]
     },
     "LOCATE": {
       "syntax": "LOCATE row, col",

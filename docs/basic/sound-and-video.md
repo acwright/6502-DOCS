@@ -20,18 +20,17 @@ least a quick way to find out.
 
 ## Color
 
-`COLOR foreground, background` sets the colors for everything on the screen,
-each from 0 to 15:
+`COLOR foreground, background` sets the colors for what you print next, each
+from 0 to 15:
 
 <ColorChart />
 
 <<< @/../samples/basic/screen-text.bas{basic}
 
-There's only **one** foreground and one background for the whole screen, not
-one per character. Change `COLOR` and everything already there changes with
-it, the `OK` prompt included — it isn't a paint color, it's more like a pair
-of colored lights the whole screen sits under. `CLS` fills the screen with
-the current background.
+Every character keeps the colors it was printed in, so changing `COLOR`
+leaves what is already on the screen alone — it's a paint color, not a light
+the whole screen sits under. `CLS` fills the whole screen with the current
+pair, which is how you change the color of everything at once.
 
 ## Sound
 

@@ -60,7 +60,7 @@
       "source": "samples/assembly/screen.asm",
       "built": "cl65",
       "bytes": 178,
-      "prg64": "CggKAKUyMDYwAAAArQ0DKYDwXSAYoKm0ICegqcmFQKnNhUGpu4VCqQaFQyB4CKm6hUCFQqkghUGiA9rmQyB4CPrK0PapyIVAqc2FQam8hULmQyB4CKIQoAggHqCgALmTCPAGICqgyID1ogCgFEweoKmboAggkKBgogikQyAeoKVAICqgohalQSAqoMrQ-KVCTCqgVEhFIEFDRQBOTyBTQ1JFRU4gVE8gRFJBVyBPTg0KAA"
+      "prg64": "CggKAKUyMDYwAAAArQ0DKYDwXam0ICegIBigqcmFQKnNhUGpu4VCqQaFQyB4CKm6hUCFQqkghUGiA9rmQyB4CPrK0PapyIVAqc2FQam8hULmQyB4CKIQoAggHqCgALmTCPAGICqgyID1ogCgFEweoKmboAggkKBgogikQyAeoKVAICqgohalQSAqoMrQ-KVCTCqgVEhFIEFDRQBOTyBTQ1JFRU4gVE8gRFJBVyBPTg0KAA"
     },
     "assembly/stick": {
       "source": "samples/assembly/stick.asm",
@@ -83,8 +83,8 @@
     "basic/color-loop": {
       "source": "samples/basic/color-loop.bas",
       "built": "bastok",
-      "bytes": 106,
-      "prg64": "BggKAKgAFwgUAIEgQyA9IDEgnCAxNQAiCB4AqiBDLCAwAC8IKACpIDEyLCAxMABGCDIAliAiQ09MT1IiOyBDOyAiICAiAGAIPACrIDEsIDIwMCArIEMgKiA0MCwgMTAAaAhGAIIgQwAAAA"
+      "bytes": 116,
+      "prg64": "EAgKAKogMTUsIDAgOiCoACEIFACBIEMgPSAxIJwgMTUALAgeAKogQywgMAA5CCgAqSAxMiwgMTAAUAgyAJYgIkNPTE9SIjsgQzsgIiAgIgBqCDwAqyAxLCAyMDAgKyBDICogNDAsIDEwAHIIRgCCIEMAAAA"
     },
     "basic/goto-loop": {
       "source": "samples/basic/goto-loop.bas",

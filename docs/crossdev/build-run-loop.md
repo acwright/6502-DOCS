@@ -67,15 +67,13 @@ That's the whole loop. Edit, `cl65`, `6502 run`, repeat.
 The same build, no window, wired to your terminal:
 
 ```
-printf '\rRUN\r' | 6502 run --headless --exit-on 'LIFT OFF' --timeout 20s build/countdown.prg
+printf 'RUN\r' | 6502 run --headless --vdp picovdp --exit-on 'LIFT OFF' --timeout 20s build/countdown.prg
 ```
 
 ```
--- 6502 BIOS v1.6 --
-ENTER=BASIC  ESC=MONITOR
-
-6502 BASIC V2.0
-30671 BYTES FREE
+AC6502 BIOS v2.0
+BASIC v2.0 30671 BYTES FREE
+RAM RTC CF SER VIA SID
 
 OK
 RUN
@@ -94,14 +92,13 @@ LIFT OFF
 
 Three things in that command earn their place:
 
-**The leading `\r`.** The boot splash offers you BASIC or the Monitor and waits
-about five seconds. A carriage return takes the default immediately. Without it
-you sit through the countdown — and worse, anything you send *during* it gets
-swallowed by the menu.
+**`--vdp picovdp`.** The video card, and with it the ROM: the PICOVDP boots the
+BIOS this guide describes. Name it rather than relying on the emulator's
+default, which is a different card.
 
 **`--exit-on`.** Stop when the console prints something you named, rather than
-after a duration you guessed. This is what makes the run take 54 milliseconds
-instead of five seconds.
+after a duration you guessed. This is what makes the run take 53 milliseconds
+instead of however long you would have waited.
 
 **`--timeout`.** Always. A program that hangs should fail your build, not wedge
 it. You get exit code `2` and can act on it.
@@ -121,7 +118,7 @@ And for a machine-readable summary, add `--json`, which prints one line to
 stderr on exit:
 
 ```json
-{"reason":"exit-on","cycles":439400,"wallMs":54,"output":"-- 6502 BIOS v1.6 --\r\nENTER=BASIC  ESC=MONITOR\r\n\r\n6502 BASIC V2.0\r\n30671 BYTES FREE\r\n\r\nOK\r\nRUN\r\n10\r\n9\r\n8\r\n7\r\n6\r\n5\r\n4\r\n3\r\n2\r\n1\r\nLIFT OFF\r\n"}
+{"reason":"exit-on","cycles":338000,"wallMs":53,"output":"\r\nAC6502 BIOS v2.0\r\nBASIC v2.0 30671 BYTES FREE\r\nRAM RTC CF SER VIA SID\r\n\r\nOK\r\nRUN\r\n10\r\n9\r\n8\r\n7\r\n6\r\n5\r\n4\r\n3\r\n2\r\n1\r\nLIFT OFF\r"}
 ```
 
 `reason` tells you *why* it stopped — `exit-on`, `timeout`, `max-cycles` — which
@@ -161,7 +158,7 @@ everything queued behind it, so the console looks dead. The fix is to wait for a
 prompt rather than firing and hoping:
 
 ```
-6502 run --headless --input-after 'OK' --timeout 20s build/countdown.prg < commands.txt
+6502 run --headless --vdp picovdp --input-after 'OK' --timeout 20s build/countdown.prg < commands.txt
 ```
 
 Next: [when the program doesn't do what you meant](/crossdev/debugging).

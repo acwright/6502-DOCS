@@ -7,10 +7,12 @@
 #   861/862  BAS_TXTTAB ($035D) must hold $0800  — where programs start
 #   871/872  BAS_MEMSIZ ($0367) must hold $8000  — top of usable RAM
 #   40960    $A000  first byte of the Kernal jump table: JMP abs ($4C)
-#   41137    $A0B1  first reserved slot: also a JMP, to the RTS stub
+#   41176    $A0D8  first reserved slot: also a JMP, to the RTS stub
 #   41120/1  $A09F  NvStat's JMP target must differ from the reserved slot's,
-#   41138/9  $A0B1  or the ROM under test is older than v1.6
-#   60928    $EE00  Monitor cold entry: JMP abs
+#   41177/8  $A0D9  or the ROM under test is older than v1.6
+#   41137    $A0B1  VdpInfo, the first PICOVDP entry: JMP abs
+#   41138/9  $A0B2  its target must differ from the reserved slot's, or the
+#                   ROM under test is older than v2.0
 #   65280    $FF00  Wozmon: LDA #$1B ($A9)
 
 expect ^PASS$

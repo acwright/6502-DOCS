@@ -23,12 +23,13 @@ What's below is the shape of it, so you know what you're handing over.
 The smallest useful thing needs no server and no session:
 
 ```sh
-printf '\rPRINT 6*7\r' | 6502 run --headless --exit-on 'OK[\s\S]*OK' --timeout 20s
+printf 'PRINT 6*7\r' | 6502 run --headless --vdp picovdp --exit-on 'OK[\s\S]*OK' --timeout 20s
 ```
 
 ```
-6502 BASIC V2.0
-30718 BYTES FREE
+AC6502 BIOS v2.0
+BASIC v2.0 30718 BYTES FREE
+RAM RTC CF SER VIA SID
 
 OK
 PRINT 6*7
@@ -52,7 +53,7 @@ provided the clock is pinned with `--rtc`. That's what makes a failure
 reproducible rather than a story about something that happened once.
 
 **It's fast, and it can skip its own boot.** Around 11 MHz unpaced, and a
-snapshot turns a five-second boot into a millisecond restore. An agent can
+snapshot turns a boot into a millisecond restore. An agent can
 afford to run the program after every edit, which is the behavior you want.
 
 **There's no session to lose.** Each `6502 dbg` command connects, does one
@@ -91,10 +92,6 @@ quirk, and each has cost somebody an hour:
 finished probing sits unread in the serial port's receive register and blocks
 everything behind it — the console appears to die. Wait for output first, or use
 `--input-after`.
-
-**The splash swallows keystrokes.** It takes <kbd>Enter</kbd> or <kbd>Esc</kbd>
-and acts at once; anything else sent before that choice is discarded. Lead with
-a carriage return.
 
 **BASIC says `OK` to a statement, not to a stored program line.** Waiting for
 `OK` after typing `10 PRINT "HI"` waits until the timeout. Wait for the line's

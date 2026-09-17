@@ -22,9 +22,12 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for every entry below:** BIOS v1.6, emulator 2.7.0, cc65 built from
-HEAD (`cl65 V2.19 - Git 547d92358`). Entries recorded before Phase 11 name the
-release they were found on; where that matters — A31 and A32 — the entry says so.
+**Baseline for entries from here on:** BIOS v2.0, emulator 3.1.0 on its PICOVDP
+card (`--vdp picovdp --flow-control`), cc65 built from HEAD (`cl65 V2.19 - Git
+547d92358`). Every entry already below was recorded on BIOS v1.6 and emulator
+2.7.0 or earlier, and stands as a record of that machine: entries recorded before
+Phase 11 name the release they were found on, and where that matters — A31 and
+A32 — the entry says so.
 
 ---
 

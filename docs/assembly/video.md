@@ -53,7 +53,8 @@ there. [What's fitted](/assembly/detection) is the whole chapter on this.
 **The color byte.** `VideoSetColor` takes the letter color in the high nibble
 and the background in the low one, so light yellow on dark blue is
 `(TMS_LT_YELLOW * 16) | TMS_DK_BLUE`. Sixteen colors, and the names are all in
-`6502.inc`.
+`6502.inc`. The colors apply to what is drawn after the call, so set them first
+and `VideoClear` fills the whole screen with them.
 
 **Leaving the cursor somewhere sensible.** Whatever prints next carries on from
 wherever you left the cursor, including BASIC's own `OK`. Setting it to a
@@ -64,8 +65,8 @@ prompt in the middle of your artwork.
 
 <ColorChart constants />
 
-In text mode there is one pair for the whole screen. The graphics modes are
-where color gets interesting — [that chapter](/assembly/graphics) is next.
+In text mode every character keeps the pair it was drawn with. The graphics
+modes are where color gets more interesting — [that chapter](/assembly/graphics) is next.
 
 ## The character set
 

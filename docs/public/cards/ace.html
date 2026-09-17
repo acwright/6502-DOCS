@@ -111,8 +111,7 @@
         the 1979 TMS9918A from the ColecoVision and the MSX.
       </div>
       <div class="note-box">
-        Three version numbers ship in that one chip: <strong>BIOS v1.6</strong>,
-        <strong>BASIC V2.0</strong> and <strong>Monitor v1.1</strong>.
+        The version the header prints is the whole ROM's: <strong>BIOS v2.0</strong>.
       </div>
     </div>
 
@@ -140,20 +139,17 @@
     <div class="section">
       <span class="sec-title">Switching on</span>
       <div class="note-box">
-        The splash appears, counts down five seconds and boots <strong>BASIC</strong>. You get a
-        banner, a byte count, and the prompt &mdash; which is <code>OK</code>. Everything is
-        typed there.
+        The machine boots straight into <strong>BASIC</strong>. You get the logo, a header, a
+        byte count, the cards it found, and the prompt &mdash; which is <code>OK</code>.
+        Everything is typed there.
       </div>
-      <div class="code-block">-- 6502 BIOS v1.6 --
-
-6502 BASIC V2.0
- 30718 BYTES FREE
+      <div class="code-block">AC6502 BIOS v2.0
+BASIC v2.0 30718 BYTES FREE
+RAM RTC CF SER VIA SID VDP
 
 OK</div>
       <div class="note-box">
-        Press <code>ENTER</code> during the countdown to skip it, or <code>ESC</code> to boot the
-        machine-code <strong>Monitor</strong> instead. Type <code>X</code> there to come back.
-        BASIC and the Monitor have sheets of their own, and the whole guide is at
+        BASIC has a sheet of its own, and the whole guide is at
         <code>acwright.github.io/6502-DOCS</code>.
       </div>
     </div>
