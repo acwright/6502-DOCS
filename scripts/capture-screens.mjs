@@ -19,9 +19,8 @@
  *
  * The method is the one in 6502-EMULATOR/docs/AGENTS.md, with one difference
  * from the sample harness: a shot gets its own machine rather than a restore
- * from a shared snapshot. Some of these want the screen *mid-run* — the splash
- * before it clears — and that is cleaner to hit from a cold, paused start than
- * from a snapshot taken at the prompt.
+ * from a shared snapshot. A shot can want the screen *mid-run*, which is cleaner
+ * to hit from a cold, paused start than from a snapshot taken at the prompt.
  *
  * The video card puts out 320×240. That is scaled up by an exact factor with
  * nearest-neighbor sampling, because a character cell is eight hard pixels and
@@ -53,8 +52,8 @@ const SCALE = 2
 /**
  * Every picture the site takes off a real machine.
  *
- *   boot      'prompt' (default) waits for BASIC; 'splash' stops the machine
- *             mid-countdown, `cycles` from a cold start
+ *   boot      'prompt' (default) waits for BASIC; 'cold' stops the machine
+ *             `cycles` from a cold start, for a screen caught mid-boot
  *   program   a file under samples/ — .bas is typed in, .asm is built and loaded
  *   lines     typed at the prompt instead of, or as well as, a program
  *   run       type RUN afterwards (default: yes, if there is a program)
@@ -63,13 +62,9 @@ const SCALE = 2
  */
 const SHOTS = [
   {
-    name: 'boot-splash',
-    subject: 'The splash and the five-second choice, caught before BASIC starts.',
-    where: 'docs/getting-started/first-boot.md',
-    boot: 'splash',
-    // Two and a half million cycles in: the probe is done, the countdown is
-    // running, and BASIC has not cleared the screen yet.
-    cycles: 2_650_000
+    name: 'boot-header',
+    subject: 'The logo, the header and the prompt: the first thing a machine shows.',
+    where: 'docs/getting-started/first-boot.md'
   },
   {
     name: 'first-program',
@@ -117,9 +112,8 @@ const SHOTS = [
 // ---------------------------------------------------------------------------
 
 class Machine {
-  constructor(port, { paused = false } = {}) {
+  constructor(port) {
     this.port = port
-    this.paused = paused
     this.emulator = emulatorCommand()
   }
 
@@ -140,10 +134,11 @@ class Machine {
       '--timeout',
       '300s'
     ]
-    // A cold start that runs the moment it is spawned has already passed the
-    // splash by the time the debug server answers. `--pause` is what makes the
-    // first two million cycles observable at all.
-    if (this.paused) args.push('--pause')
+    // Every machine starts paused, and only ever runs by an emulated-cycle
+    // budget. One that ran the moment it was spawned would reach its prompt
+    // before the debug server answered and then idle for however long the host
+    // took, so the same shot could catch the cursor in a different blink.
+    args.push('--pause')
 
     this.process = spawn(this.emulator.command, args, { stdio: 'ignore' })
     this.process.on('error', (error) => {
@@ -263,13 +258,13 @@ function scale(file) {
 // ---------------------------------------------------------------------------
 
 async function takeShot(shot, port, dest = OUT) {
-  const machine = new Machine(port, { paused: shot.boot === 'splash' })
+  const machine = new Machine(port)
   const file = join(dest, `${shot.name}.png`)
 
   try {
     await machine.start()
 
-    if (shot.boot === 'splash') {
+    if (shot.boot === 'cold') {
       machine.advance(shot.cycles)
       machine.capture(file)
       return file

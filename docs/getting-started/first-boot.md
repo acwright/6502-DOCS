@@ -1,50 +1,38 @@
 # First power-on
 
-Switch it on. You'll hear a short beep, and the screen says:
+Switch it on. You'll hear a short beep, the AC6502 logo appears at the top of
+the screen, and under it:
 
 ```
--- 6502 BIOS v1.6 --
-ENTER=BASIC  ESC=MONITOR
-```
-
-You have about five seconds to choose.
-
-- Press <kbd>Enter</kbd> — or just wait — and you get **BASIC**. This is what
-  you want, nearly always.
-- Press <kbd>Esc</kbd> and you get the **Monitor** instead: a much lower-level
-  tool for looking at memory directly. Nothing is lost by ignoring it for now.
-
-Take the default, and a moment later:
-
-```
-6502 BASIC V2.0
-30718 BYTES FREE
+AC6502 BIOS v2.0
+BASIC v2.0 30718 BYTES FREE
+RAM RTC CF SER VIA SID VDP
 
 OK
 ```
 
+That's BASIC, ready for you. The third line names the cards the machine found.
+
 <Figure
-  src="/images/screens/boot-splash.png"
-  alt="A screen showing two centered lines: dash dash 6502 BIOS v1.6 dash dash, and below it ENTER=BASIC  ESC=MONITOR."
-  caption="The five seconds you get to choose. Do nothing and BASIC starts."
+  src="/images/screens/boot-header.png"
+  alt="A screen showing the AC6502 logo, then AC6502 BIOS v2.0, BASIC v2.0 30718 BYTES FREE, the list of cards, and OK."
+  caption="The first thing the machine shows you: the logo, the header, and the prompt."
   screen
 />
 
 The machine below starts cold, exactly as if you'd reached for the switch.
-Watch for the splash and take the five seconds if you want them — click it
-first, or your keys go to this page instead.
+Click it before you type, or your keys go to this page instead.
 
 <Emulator
   label="Switch it on"
-  countdown
-  caption="Cold from the switch: the splash, the five-second choice, and then the prompt."
+  caption="Cold from the switch: the logo, the header, and then the prompt."
 />
 
-## What it does in those five seconds
+## What it does before the prompt
 
 <Diagram
   name="boot-flow"
-  caption="Switch on, and the machine sets the screen up, looks around to see which cards are fitted, and then waits for you."
+  caption="Switch on, and the machine sets the screen up, looks around to see which cards are fitted, and hands over to BASIC — or to a cartridge, if one is in the slot."
 />
 
 ## The `OK` prompt
@@ -56,19 +44,19 @@ this prompt is the computer.
 **30718 bytes free** is how much room your programs have. It's about thirty
 kilobytes, which in BASIC is a lot: a substantial game fits in half of it.
 
-::: details Three version numbers, all different
-The ROM contains three pieces of software and they don't share a version
-number. The **BIOS** is v1.6 — that's the top line. **BASIC** is V2.0 — the
-banner underneath. The **Monitor** is v1.1, and doesn't announce itself until
-you go there. Don't be alarmed when they disagree; they're meant to.
+::: details Two lines, one version
+The top line is the ROM's version: the **BIOS** is v2.0. The `BASIC v2.0` at the
+start of the second line is a nod to the BASIC V2 of the classic 8-bit
+machines rather than a second release number, so it will stay put when the
+BIOS moves on.
 :::
 
 ## What just happened
 
-In the second or so before the splash appeared, the ACE checked itself over:
-what video hardware is there, is a sound chip fitted, is there a memory card in
-the slot, is the clock running. Then it set up whatever it found, drew the
-splash on the screen it had just configured, and handed over to you.
+In the moment before the header appeared, the ACE checked itself over: what
+video hardware is there, is a sound chip fitted, is there a memory card in the
+slot, is the clock running. Then it set up whatever it found, drew the logo and
+the header on the screen it had just configured, and handed over to you.
 
 That check is why the machine doesn't sulk when something's missing. No sound
 chip and the beep is simply skipped. No memory card and the disk commands say
