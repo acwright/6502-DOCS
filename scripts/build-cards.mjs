@@ -97,7 +97,7 @@ function card({ file, title, side, subtitle, bodyClass = '', style = '', pages }
       '',
       '  <div class="pg-footer">',
       `    <span>${esc(subtitle)}</span>`,
-      '    <span>A.C. WRIGHT 6502</span>',
+      '    <span>AC6502</span>',
       `    <span class="pg-num">${label}</span>`,
       '  </div>',
       '',
@@ -166,7 +166,7 @@ const addr = (html) => ({ cls: 'td-addr', html })
 const label = (html) => ({ cls: 'td-label', html })
 const desc = (html) => ({ cls: 'td-desc', html })
 
-const SIDE = (line) => `A.C. Wright 6502 BIOS<br>${line}`
+const SIDE = (line) => `AC6502 BIOS<br>${line}`
 
 // ---------------------------------------------------------------------------
 // BASIC reference
@@ -689,7 +689,7 @@ function keyboardLayout() {
   return card({
     file: 'keyboard-layout.html',
     title: '6502 Keyboard Layout',
-    side: `A.C. Wright 6502<br>ACE &middot; ${count} keys`,
+    side: `AC6502<br>ACE &middot; ${count} keys`,
     subtitle: '6502 KEYBOARD LAYOUT',
     pages: [
       {
