@@ -13,9 +13,8 @@ The ROM in the cartridge overlays `$C000–$FFFF`:
 
 | | |
 |---|---|
-| `$A000–$B7FF` | The Kernal — **still there**, still callable |
-| `$B800–$BFFF` | The character set — still there |
-| `$C000–$FFF9` | **Yours**, in place of BASIC, the Monitor and Wozmon |
+| `$A000–$BFFF` | The Kernal — **still there**, still callable |
+| `$C000–$FFF9` | **Yours**, in place of BASIC and Wozmon |
 | `$FFFA–$FFFF` | The processor's NMI, reset and interrupt vectors — now yours to supply |
 
 So you lose BASIC and gain 16 KB of ROM, and you keep every Kernal routine in
@@ -45,8 +44,15 @@ CartReset:
 
 `KernalInit` does everything the normal power-on does **except** three things,
 which it deliberately leaves to you: it does not reset the stack pointer, it
-does not enable interrupts, and it does not draw a splash screen. The first two
-are the two lines above. The third is the point of writing a cartridge.
+does not enable interrupts, and it puts nothing on the screen — no logo, no
+header. The first two are the two lines above. The third is the point of
+writing a cartridge.
+
+It does not even bring the text screen up. The video card is left exactly as it
+comes out of its own reset, and the console appears the first time anything is
+printed — `Chrout`, `PrintStr`, `VideoClear` or `VideoSetCursor` all do it, and
+clear the screen as they go. A cartridge that draws its own title screen can
+program the card before that ever happens.
 
 A friendlier variant adds the noise the machine normally makes, so a player
 knows it is alive:
@@ -79,10 +85,16 @@ NmiTrampoline:
 .word IrqTrampoline
 ```
 
-Four instructions, and your cartridge has a working keyboard, working serial
-input and a working `BRK` without writing a single interrupt handler. Replace
-either trampoline when you want the interrupt yourself —
-[Interrupts](/assembly/interrupts) has the rules.
+Four instructions, and your cartridge has a working keyboard and working serial
+input without writing a single interrupt handler. Replace either trampoline
+when you want the interrupt yourself — [Interrupts](/assembly/interrupts) has
+the rules.
+
+::: warning Catch your own `BRK`
+`KernalInit` points `BRK_PTR` at the break report, and the report finishes by
+starting BASIC — which a cartridge has replaced. If your cartridge can ever reach
+a `BRK`, point `BRK_PTR` at a handler of your own after `KernalInit`.
+:::
 
 ::: warning There is no going back
 There is no BASIC underneath a cartridge and no `rts` that means anything: the
@@ -94,7 +106,7 @@ cartridge's main loop runs for ever, and "quit" means resetting the machine.
 
 Not every cartridge wants to replace the machine. `BOOT_VECTOR` at `$035B` is a
 two-byte hook the normal power-on checks: if it is non-zero, the machine jumps
-through it instead of going on to the boot menu.
+through it instead of going on to start BASIC.
 
 That is the polite version of taking over — the machine has already probed
 every card, and you are stepping in just before BASIC would have started.
@@ -108,6 +120,21 @@ it. Set it **after** the init call, or from a program that runs later — which
 is what makes it useful for a loader on the memory card, rather than for a
 cartridge that owns the reset vector anyway.
 :::
+
+## A cartridge written for the older video card
+
+The machine keeps a promise to cartridges built before this video card existed.
+A cartridge that only calls the Kernal runs as it always did. So does one that
+programs the video chip itself, register by register, in its text mode or its
+first graphics mode: that is exactly how `KernalInit` leaves the card, and the
+card still answers to those registers — text mode and Graphics I. The chip's
+other two modes, Graphics II and Multicolor, are gone, and a cartridge that uses
+either will draw the wrong picture.
+
+The one thing an old cartridge must not do is copy the character set out of
+ROM. It used to sit at `$B800`; that space is Kernal now, and the letters live
+in the video card. `InitVideo` puts the card's own set back in place, which is
+the way to get text on the screen again after drawing over it.
 
 ## Building one
 

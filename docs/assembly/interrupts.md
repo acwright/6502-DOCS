@@ -11,7 +11,7 @@ pointer in RAM that you are allowed to change.
 
 At power-on the Kernal points all three at its own handlers. `IRQ_PTR` goes to
 the routine that empties the serial port and the keyboards into the ring
-buffer; `BRK_PTR` goes to the Monitor; `NMI_PTR` goes to an `rti`.
+buffer; `BRK_PTR` goes to the break report; `NMI_PTR` goes to an `rti`.
 
 ## What the machine's own handler does
 
@@ -20,7 +20,7 @@ Every time a key is pressed, a serial byte arrives, or the timer that
 Kernal's interrupt handler. It:
 
 1. Checks whether this was a `BRK` rather than a hardware interrupt, and if so
-   hands over to the Monitor.
+   hands over to whatever `BRK_PTR` points at.
 2. Asks the serial port whether it has a byte; if it has, puts it in the ring
    buffer, and raises RTS if the buffer is filling up.
 3. Asks the keyboard card the same about each of its two ports.
@@ -72,7 +72,8 @@ The Kernal's handler works out whether it was called by `BRK` by reading the
 saved status register off the stack **at a fixed depth** — past the three
 registers it has just pushed itself. If your handler pushes anything before
 jumping to it, that arithmetic lands on the wrong byte and every hardware
-interrupt looks like a `BRK`, which sends the machine into the Monitor.
+interrupt looks like a `BRK`, which stops your program with a break report it
+never asked for.
 
 So a chained handler either uses only instructions that touch no register —
 `inc`, `dec`, `stz` on absolute addresses are the useful ones — or it saves and
@@ -102,6 +103,10 @@ port. The serial chip raises one per received byte. The same VIA's timer 1 is
 what `SysDelay` counts on, and the clock card can be set to interrupt at a
 chosen time.
 
+The video card can interrupt too — at the end of every picture, at a chosen
+line of the screen, or when sprites overflow or collide — though it never does
+until a program asks it to.
+
 All of them arrive on the same line and land in the same handler, which is why
 a handler's first job is always to ask each chip "was it you?".
 
@@ -124,14 +129,39 @@ and the processor spends the rest of its life in your handler.
 
 ## `BRK`
 
-`BRK` is a software interrupt, and on this machine it lands in the Monitor with
-every register on display. That makes it a breakpoint you can leave in a
-program and a debugging tool that needs no debugger — `X` at the Monitor's dot
-prompt gets you back to BASIC.
+`BRK` is a software interrupt, and on this machine it stops the program and
+reports it:
+
+```
+BREAK $07 AT $0A04
+A=2A X=03 Y=00 P=30 S=FB
+```
+
+The address is the `BRK` itself, `$07` is the byte after it — yours to use as a
+breakpoint number — and the second line is every register as the `BRK` found
+it, with `S` the stack pointer from before the processor pushed anything. Then
+BASIC's prompt comes back, with the program in memory still there. That makes
+`BRK` a breakpoint you can leave in a program and a debugging tool that needs no
+debugger. [Reaching the machine](/basic/machine#when-machine-code-stops) has one
+to run.
+
+The registers stay behind after the report, for a program or for `PEEK`:
+
+| Name | Address | Holds |
+|---|---|---|
+| `BRK_A`, `BRK_X`, `BRK_Y` | `$0313`–`$0315` | A, X and Y |
+| `BRK_P` | `$0310` | The flags |
+| `BRK_SP` | `$0316` | The stack pointer |
+| `BRK_PCL`, `BRK_PCH` | `$0311`–`$0312` | The address the processor pushed: the `BRK` **plus two** |
+
+If a program had taken the video card out of text mode, the report puts the
+console back first, so it is always readable.
 
 Point `BRK_PTR` at your own routine and you have caught it instead. The
 processor has already pushed the status register and the return address, and
-your handler needs to know that the address is the `BRK` **plus two**.
+your handler needs to know that the address is the `BRK` **plus two**. A
+[cartridge](/assembly/cartridges) has to: the report ends by going back to
+BASIC, and a cartridge has no BASIC to go back to.
 
 ## `WAI`, if your assembler will let you
 

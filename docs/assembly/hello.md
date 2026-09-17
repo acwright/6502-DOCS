@@ -68,17 +68,18 @@ same line, which is sometimes exactly what you want.
 ## Where it went
 
 The machine was fully awake before your first instruction ran. The Kernal
-probed and started every card, chose a console, turned interrupts on, and drew
-the splash. You inherit all of it: the keyboard is live, the screen is in text
-mode, the clock is ticking.
+probed and started every card, chose a console and turned interrupts on, and
+BASIC printed its header, which is what brought the screen up in text mode. You
+inherit all of it: the keyboard is live, the console is ready, the clock is
+ticking.
 
 That is why this program is four lines and not four hundred.
 
 ::: tip It runs on both consoles
 `Chrout`, and so `PrintStr`, sends output wherever this machine's console goes
 — the screen if there is a video card, the serial port if there isn't. The same
-file prints on an ACE with a monitor and on a machine running headless down a
-cable, with nothing changed and nothing detected by you.
+file prints on an ACE with a screen and on a machine with no video card driven
+down a cable, with nothing changed and nothing detected by you.
 :::
 
 ## Now change it

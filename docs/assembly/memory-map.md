@@ -6,13 +6,11 @@ const kernalVars = map.ram.find((r) => r.name === 'Kernal variables')
 const zeroPage = map.ram.find((r) => r.name === 'Zero page')
 const slots = facts.hardware.slots
 
-// The linker calls these KERNAL, CHARS, MONITOR and so on. A reader wants to
+// The linker calls these KERNAL, BASIC, WOZMON and so on. A reader wants to
 // know what they are.
 const romNames = {
   KERNAL: 'The Kernal — jump table, then the routines behind it',
-  CHARS: 'The character set',
   BASIC: 'BASIC',
-  MONITOR: 'The Monitor',
   WOZMON: 'Wozmon',
   VECTORS: "The processor's NMI, reset and interrupt vectors"
 }
@@ -58,7 +56,7 @@ The first 256 bytes, where every access is a byte shorter and a cycle faster.
 
 | From | To | Whose |
 |---|---|---|
-| `$00` | `$39` | The Kernal's — pointers, filesystem and transfer state, Monitor scratch |
+| `$00` | `$39` | The Kernal's and BASIC's — pointers, the interpreter's working space, card and transfer state |
 | `$3A` | `$FF` | **Yours.** 198 bytes. |
 
 Which means it is yours *once your program is the thing running*. Underneath a
@@ -146,12 +144,18 @@ Eight slots of one kilobyte each, from `$8000` to `$9FFF`, one per card.
 ## The ROM
 
 The first 256 bytes of the Kernal are the jump table — the only addresses in
-the whole ROM you should ever write down. `$B800` upwards is the character set,
-which is worth knowing about because you can read it, copy it, and change it
+the whole ROM you should ever write down. The Kernal runs on from there to
+`$BFFF`, and BASIC takes everything from `$C000` to just below Wozmon.
+
+What the ROM does *not* hold is a character set. The letters on the screen are
+the video card's own, loaded into the card's memory when the console starts, so
+changing how a character looks is a job for the card rather than for ROM
 ([The screen](/assembly/video)).
 
-`$FF00` is Wozmon, Steve Wozniak's 256-byte monitor from the Apple I, kept
-because it fits and because it is a lovely thing to have.
+`$FF00` is Wozmon, Steve Wozniak's 250-byte monitor from the Apple I, kept
+because it fits and because it is a lovely thing to have. `SYS 65280` from
+BASIC reaches it — [Reaching the machine](/basic/machine#wozmon) shows it
+working.
 
 <Diagram
   name="memory-map"

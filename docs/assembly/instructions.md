@@ -78,7 +78,7 @@ addresses. In practice this only ever bites recursive code.
 | `CLD` `SED` | Decimal mode |
 | `CLI` `SEI` | Interrupts on / off |
 | `CLV` | Clear overflow |
-| `BRK` | Software interrupt — on this machine, a breakpoint into the Monitor |
+| `BRK` | Software interrupt — on this machine, a breakpoint that reports the registers |
 | `RTI` | Return from an interrupt |
 | `NOP` | Nothing, for two cycles |
 | `WAI` `STP` | Wait for an interrupt / stop until reset. W65C02S. |
@@ -87,9 +87,10 @@ addresses. In practice this only ever bites recursive code.
 The processor pushes the address of `BRK` **plus two**, so a one-byte `BRK`
 would return into the middle of whatever followed it. Assemblers know this;
 what it means for you is that a `BRK` used as a breakpoint should have a spare
-byte after it. On this machine `BRK` lands in the Monitor with every register
-on display, which makes it the cheapest debugging tool there is —
-see [Reaching the machine](/basic/machine).
+byte after it — and on this machine that byte is reported as the break
+number. `BRK` stops the program and prints where it stopped and every register,
+which makes it the cheapest debugging tool there is —
+see [Reaching the machine](/basic/machine#when-machine-code-stops).
 :::
 
 ## Decimal mode

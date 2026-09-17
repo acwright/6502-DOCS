@@ -97,6 +97,10 @@ returns to the prompt — harmless, just type the command again.
 This is the fastest loop for hardware work: edit on your computer, `make`, send,
 run, repeat, with the card never leaving the slot.
 
+`BLOAD` with an address and no name takes raw bytes the same way — a block of
+level data, or machine code built for somewhere other than `$0800`. The transfer
+rounds the file up to a 128-byte block, so leave room after it.
+
 ## The Wozmon paste
 
 The crudest path, and the one that needs the least. `bin2woz` turns your binary
@@ -113,10 +117,29 @@ bin2woz -a 0x0800 build/countdown.prg > countdown.woz
 0830: 00
 ```
 
-Get to Wozmon — `J FF00` from the Monitor's dot prompt, not `G`, which lands you
-in a Wozmon that ignores everything you type: `G` turns interrupts off on its
-way out, so the keystrokes never arrive. Paste the text into your terminal and the bytes go into memory a
-line at a time. No protocol, no card, nothing to install on the ACE's side.
+Get to Wozmon with `SYS 65280` at BASIC's prompt; its prompt is a backslash.
+Paste the text into your terminal and the bytes go into memory a line at a
+time. No protocol, no card, nothing to install on the ACE's side.
+
+`C000R` takes you back to BASIC, and `SYS 2060` starts the program at `$080C`,
+just past its BASIC stub:
+
+```
+SYS 2060
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+LIFT OFF
+
+OK
+```
 
 ::: warning Don't paste a program you then want to RUN
 Wozmon deposits bytes one at a time and has no idea how many arrived. BASIC
@@ -125,9 +148,8 @@ without a length it walks the tokenized line chain instead — which ends at
 `$080C`, right on top of your machine code. The first variable your program sets
 overwrites itself.
 
-`LOAD` and the Monitor's `L` both hand BASIC the byte count properly. Use
-Wozmon for code you'll enter from the Monitor, not for programs you intend to
-`RUN`.
+`LOAD` hands BASIC the byte count properly. Use Wozmon for code you'll start
+with `SYS`, not for programs you intend to `RUN`.
 :::
 
 ## Burning a cartridge
@@ -152,7 +174,7 @@ minipro -p AT28C256 -w Cart.crt
 ```
 
 Chip into the cartridge board, cartridge into the ACE, power on. The cartridge
-supplies the reset vector, so it boots straight into your program with no splash
+supplies the reset vector, so it boots straight into your program with no header
 and no BASIC.
 
 <Figure
