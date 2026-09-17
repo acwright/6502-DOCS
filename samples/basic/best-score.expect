@@ -1,0 +1,17 @@
+# "Time and memory that lasts" — the save-slot statements. The first run
+# finds no slot for game 42 and takes the lowest free one; the second finds
+# it and loads the score back; then byte 3 of slot 0, the low half of the
+# score, is changed without the check number and the third run finds the save
+# damaged, erases it, and starts again in the same slot.
+wait (OK|\?)
+send 1500\r
+send RUN\r
+send 900\r
+send NVRAM 3, NVRAM(3) + 1\r
+send RUN\r
+send 100\r
+expect ^BEST SO FAR: 0$
+expect ^A NEW BEST, IN SLOT 0$
+expect ^BEST SO FAR: 1500$
+expect ^NOT THIS TIME$
+expect ^THE LAST SAVE WAS DAMAGED\nBEST SO FAR: 0$

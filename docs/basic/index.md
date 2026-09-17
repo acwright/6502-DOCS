@@ -59,7 +59,7 @@ is the first thing the next chapter is about.
 | [Graphics](/basic/graphics) | `SCREEN`, `VPOKE`, `PALETTE`, `SPRITE`, `SCROLL`: tiles and sprites |
 | [Sticks and keys](/basic/controls) | `INKEY`, `JOY`, `PAUSE`, `WAIT` |
 | [Saving your work](/basic/files) | `SAVE`, `LOAD`, `BSAVE`, and the memory card |
-| [Time and memory that lasts](/basic/clock) | `TIME`, `DATE`, `NVRAM`, save slots |
+| [Time and memory that lasts](/basic/clock) | `TIME`, `DATE`, `NVRAM`, and save slots with `NVSAVE` and `NVLOAD` |
 | [Reaching the machine](/basic/machine) | `PEEK`, `POKE`, `SYS`, `BANK` |
 | [When it goes wrong](/basic/debugging) | `STOP`, `CONT`, and reading an error |
 | [Programs worth typing](/basic/projects) | Eight finished programs, including a game |

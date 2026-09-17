@@ -61,6 +61,7 @@ const EMBEDS = [
   'basic/bouncing-ball.bas',
   'basic/sailing.bas',
   'basic/whats-fitted.bas',
+  'basic/best-score.bas',
   'basic/shopping.bas',
   'basic/treasure.bas',
 

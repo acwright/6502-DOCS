@@ -100,6 +100,58 @@ changed without the check number being worked out again. Cartridges and
 machine-code games use the same slots in the same way, so a BASIC program can
 list a game's saves, and a save made from BASIC loads in the game.
 
+### Saving and loading
+
+Five keywords do the work, and they take care of the check number:
+
+| | |
+|---|---|
+| `NVSAVE slot, id, address` | Save the 14 bytes of memory starting at `address` in `slot` (0 to 15), owned by `id` (1 to 255) |
+| `NVLOAD slot, address` | Copy the slot's 14 bytes back into memory at `address`. A free or damaged slot stops with `?LOAD ERROR` and copies nothing |
+| `NVERASE slot` | Make the slot free again |
+| `NVSTAT(slot)` | 0 if the slot is free, 1 if it holds a good save, 2 if it's damaged |
+| `NVFIND(id)` | The lowest slot `id` owns, or `-1` if it has none. `NVFIND(0)` finds the lowest free slot |
+
+The 14 bytes are yours to arrange. Put them somewhere out of BASIC's way with
+`POKE` — address 20000 is well clear of a program this size — and save from
+there.
+
+<<< @/../samples/basic/best-score.bas{basic}
+
+<Emulator
+  sample="basic/best-score"
+  caption="Type a score and press Enter. Then type RUN and try to beat it."
+/>
+
+```
+RUN
+BEST SO FAR: 0
+YOUR SCORE? 1500
+A NEW BEST, IN SLOT 0
+
+OK
+RUN
+BEST SO FAR: 1500
+YOUR SCORE? 900
+NOT THIS TIME
+
+OK
+```
+
+Game number 42 is this program's `id`, and line 30 asks where its save is. The
+first time there isn't one, so line 40 takes the lowest free slot instead. The
+score goes into two of the 14 bytes, the high half and the low half, the same
+way as [scores over 255](#memory-that-survives) above.
+
+`NVFIND` finds a damaged save as well as a good one, which is what line 50 is
+for: a save that `NVLOAD` would refuse is noticed, erased and started again,
+rather than stopping the program with an error.
+
+### How the format works
+
+The keywords above don't do anything `NVRAM` can't. This program does all of it
+by hand, which is the way to see what's in the 16 bytes:
+
 <<< @/../samples/basic/savemgr.bas{basic}
 
 ```
@@ -115,7 +167,7 @@ ERASED SLOT 3
 OK
 ```
 
-The lines from 1000 on are the part to keep. To save, set `S`, `I` and
+The lines from 1000 on are the working parts. To save, set `S`, `I` and
 `D(0)` to `D(13)`, then `GOSUB 2000`. To load, set `S` and `GOSUB 3000`, then
 look at `T`: 1 means `D()` now holds the save, 0 means the slot is free, and 2
 means it is damaged. `GOSUB 4000` erases slot `S`.
@@ -128,8 +180,9 @@ bit that is set in either number, `AND` gives the bits set in both, and taking
 one from the other leaves the bits set in exactly one.
 
 ::: tip No clock card, no slots
-The slots live on the clock card. Without one, `NVRAM()` reads 0 for every
-byte, so every slot looks free, and saving stops with `?NO DEVICE ERROR`.
+The slots live on the clock card. Without one, `NVSAVE`, `NVLOAD` and
+`NVERASE` stop with `?NO DEVICE ERROR`, `NVSTAT()` says every slot is free, and
+`NVFIND()` says `-1`, nothing found. `NVRAM()` reads 0 for every byte.
 :::
 
 ## Timing something
