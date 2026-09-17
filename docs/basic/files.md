@@ -103,6 +103,22 @@ or off a laptop:
 SAVE
 ```
 
+`BSAVE` and `BLOAD` do the same when you leave the name off, which is the way to
+move raw bytes — machine code built on a laptop, say — onto the machine without
+a card:
+
+```
+BLOAD 24576
+```
+
+```
+XMODEM RX READY
+```
+
+A transfer travels in blocks of 128 bytes, so what arrives is rounded up to the
+next block, and the bytes past the end of the file are filler. Load it somewhere
+that has room for the extra.
+
 [Serial and a terminal](/using/serial) has the settings and the terminal side of
 it.
 

@@ -100,6 +100,12 @@ const SHOTS = [
     sends: ['1\\r', '1\\r', '3\\r', '1\\r']
   },
   {
+    name: 'wozmon',
+    subject: 'Wozmon reached from BASIC with SYS 65280, showing its own first eight bytes.',
+    where: 'docs/basic/machine.md',
+    lines: ['SYS 65280', 'FF00.FF07']
+  },
+  {
     name: 'framed-sign',
     subject: 'A framed sign drawn character by character, in the box-drawing glyphs PRINT cannot reach.',
     where: 'docs/assembly/video.md',

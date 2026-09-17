@@ -116,13 +116,15 @@ When `STOP` isn't enough, add lines that tell you what's happening:
 
 Number them at 5s or 25s so they stand out from your real lines, and delete them
 by typing their numbers when you're done. It is unfashionable, it is what
-everybody actually does, and on a machine that boots in five seconds it's
-faster than anything cleverer.
+everybody actually does, and on a machine that's back at the prompt the moment
+you press reset it's faster than anything cleverer.
 
 ::: details When the whole machine locks up
 `WAIT` on a bit that never arrives, or `SYS` to an address with no code at it,
-will take the machine with it — <kbd>Esc</kbd> won't answer. Press reset. Your
-program is gone, which is the argument for `SAVE`ing before you try either.
+will take the machine with it — <kbd>Esc</kbd> won't answer. Press reset. BASIC
+starts again with your program still there but its variables gone — and if the
+runaway wrote over the program on its way, that's gone too, which is the
+argument for `SAVE`ing before you try either.
 :::
 
 Next: [eight programs worth typing in](/basic/projects).

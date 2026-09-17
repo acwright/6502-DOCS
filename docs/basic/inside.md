@@ -116,7 +116,7 @@ Cross-development tools convert between the two. Two rules travel with them:
 ## Where the rest of it is
 
 That's BASIC's half of the map. The other 32K — the ROM that BASIC itself lives
-in, the character set, the Monitor and the eight slots where the cards appear —
+in, the Kernal and Wozmon beside it, and the eight slots where the cards appear —
 belongs to the machine rather than to BASIC, and you reach it with
 [`PEEK`](/basic/machine).
 

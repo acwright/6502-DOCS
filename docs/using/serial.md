@@ -12,8 +12,8 @@ few things it makes much easier.
   or in version control.
 - **Mixed case.** The ACE's own keyboard types capitals only; text arriving
   over the serial line keeps whatever case it was written in.
-- **No monitor needed.** With no VGA cable connected, the whole console —
-  splash, prompt, everything — comes out here instead.
+- **No video card needed.** With no video card fitted, the whole console —
+  header, prompt, everything — comes out here instead.
 
 ## Setting it up
 
@@ -26,7 +26,11 @@ Any terminal program will do: `screen` or `minicom` on Linux and macOS, PuTTY
 or CoolTerm on Windows. On a Mac, `screen /dev/tty.usbserial-XXXX 19200` and
 you're in.
 
-Press reset on the ACE and you should see the splash appear in your terminal.
+What happens next depends on whether the ACE has a screen. With no video card
+fitted, press reset and the header appears in your terminal, and the whole
+session happens there. With one, the console stays on the screen: what you type
+in the terminal still reaches BASIC, but the answers appear on the ACE's own
+display. Type `PRINT 2+2` in the terminal and watch it land.
 
 ::: tip Esc versus your terminal
 Some terminal programs swallow <kbd>Esc</kbd> for their own menus. If pressing
@@ -78,6 +82,15 @@ a screenful is to write it in a text editor on your computer and paste it in.
 Type it as plain text with the line numbers in place, select all, paste. BASIC
 reads it exactly as if you'd typed it — and it's a good deal faster than
 typing forty lines by hand.
+
+::: warning Turn on hardware flow control
+A paste arrives faster than BASIC can store the lines, so the ACE tells the
+other end to wait: when the characters it hasn't read yet fill most of its
+buffer, it raises the serial port's RTS line, and lowers it again once it has
+caught up. A terminal set to **RTS/CTS** (hardware) flow control pauses on that
+signal, and a long paste arrives whole. With flow control off, a long paste
+quietly loses lines.
+:::
 
 The [emulator](/using/emulator) has a paste button that does the same job
 without any cable at all.

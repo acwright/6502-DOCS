@@ -1,0 +1,7 @@
+# The Kernal's BRK report: where it stopped, the break number, the registers,
+# then the prompt with the program kept. Line 60 never runs.
+expect ^BREAK \$07 AT \$0A04$
+expect ^A=2A X=03 Y=00 P=30 S=FB$
+absent ^BACK IN BASIC$
+send LIST\r
+expect ^60 PRINT "BACK IN BASIC"$

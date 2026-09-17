@@ -124,6 +124,10 @@ Line 10 puts 42 in memory. Line 20 writes that one byte to the card. Line 30
 wipes it. Line 40 reads it back, and line 50 shows it survived. That's the
 whole shape of a save-game file.
 
+Leave the name off and `BSAVE` and `BLOAD` don't use the card at all: they send
+and receive the bytes over the [serial port](/using/serial), the way `SAVE` and
+`LOAD` do without a name.
+
 ## When there's no card
 
 Every disk command checks for the card first and says so rather than hanging:

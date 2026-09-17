@@ -92,8 +92,9 @@ line, before you press <kbd>Enter</kbd>.
 It sits just above <kbd>Esc</kbd>, in the top-left corner of the keyboard,
 where you can find it without looking.
 
-Pressing it restarts the machine — but it **doesn't** wipe memory. You get the
-splash screen and the `OK` prompt back, and your program is still there:
+Pressing it starts BASIC again from the top — but it **doesn't** wipe your
+program. You get the header and the `OK` prompt back, and the program is still
+there:
 
 ```
 LIST
@@ -102,9 +103,10 @@ LIST
 OK
 ```
 
-Your variables survive too. This is the button for getting out of anything —
-a program stuck in machine code, a wedged Monitor session, a machine that has
-stopped answering.
+Its variables are cleared, the way `RUN` clears them, so a program picks up
+from the beginning rather than from where it was. This is the button for getting
+out of anything — a program stuck in machine code, a machine that has stopped
+answering.
 
 For a genuinely clean start, **switch the power off and on again**. That clears
 memory properly and BASIC comes up from scratch, banner and all.

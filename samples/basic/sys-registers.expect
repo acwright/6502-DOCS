@@ -1,0 +1,5 @@
+# SYS with A set prints through Chrout ($A000); KernalVersion ($A07B) leaves
+# its answer in A and X, which BASIC keeps for PEEK(787) and PEEK(788).
+expect ^ABCDE$
+expect ^MAJOR VERSION 2$
+expect ^MINOR VERSION 0$
