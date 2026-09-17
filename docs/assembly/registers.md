@@ -41,7 +41,7 @@ One byte, called P. `PHP` and `PLP` push and pull it.
 
 <Diagram
   name="status-flags"
-  caption="Bit 5 is not a flag and always reads 1. The Monitor prints the other seven in this order, left to right."
+  caption="Bit 5 is not a flag and always reads 1. The break report prints all eight as one byte, P, in hexadecimal."
 />
 
 Four of them do the work. **Z** and **N** are set by almost every instruction

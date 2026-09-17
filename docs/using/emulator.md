@@ -55,7 +55,7 @@ It has a launcher and an SD card of its own, so it gets
 ## The KIM has its own
 
 Fit the [KIM keypad](/addons/kim) and you aren't running an ACE any more: the
-Keypad Card's ROM replaces BASIC and the Monitor, and the video and keyboard
+Keypad Card's ROM replaces BASIC, and the video and keyboard
 give way to a two-line display and twenty-four keys. That's a different machine,
 so it gets a different emulator — the **KIMulator**, at
 <https://acwright.github.io/6502-KIMULATOR/>, with desktop builds on
@@ -161,7 +161,7 @@ and play with the keypad without disturbing a line of it.
 
 **Arrows + Space** is for a laptop, where there is no keypad to press. It is not
 free: while it's selected the cursor keys drive the stick, so they stop moving
-around the line you're editing in BASIC or the Monitor. Set it back to
+around the line you're editing in BASIC. Set it back to
 **Numpad** — or to **Off**, which unbinds the keyboard entirely and leaves the
 stick to a gamepad — when you want to go back to typing.
 

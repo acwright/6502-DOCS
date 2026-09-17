@@ -54,8 +54,7 @@ sources builds the same game for the VIC-20 and the Commodore 64 as well.
 
 ## Programs
 
-A program loads into memory and runs there, leaving BASIC and the Monitor where
-they are.
+A program loads into memory and runs there, leaving BASIC where it is.
 
 **[Bit Rally](https://github.com/acwright/6502-ASM/tree/main/BitRally)** by
 A.C. Wright. A two-ended *Kill the Bit* for the keypad. One bit runs back and

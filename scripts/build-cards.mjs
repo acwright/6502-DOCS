@@ -719,12 +719,11 @@ function keyboardLayout() {
           section('Keys that do something out of the ordinary',
             table([{ label: 'Key', width: '22%' }, { label: 'What it does' }], [
               [cmd('Esc'), desc('<strong>Stops a running program.</strong> BASIC checks between statements, so it works even inside a tight loop. At the <code>OK</code> prompt it does nothing')],
-              [cmd('Esc <em>at boot</em>'), desc('Pressed during the five-second splash, takes you into the Monitor instead of BASIC')],
               [cmd('Ctrl + C'), desc('The same break, for people who type it out of habit')],
               [cmd('Ctrl + A&hellip;Z'), desc('Sends codes 1 to 26. <code>Ctrl</code>+<code>[</code> sends the same code as <kbd>Esc</kbd>')],
               [cmd('Backspace'), desc('Rubs out the last character you typed')],
               [cmd('Arrow keys'), desc('Send codes <code>$1C</code> to <code>$1F</code>. Nothing in BASIC listens for them &mdash; they are there for programs you write')],
-              [cmd('Reset'), desc('<strong>Warm start.</strong> The machine comes back to <code>OK</code> with your program and variables intact. The cold start is the power switch')]
+              [cmd('Reset'), desc('<strong>Warm start.</strong> BASIC starts again with your program intact; its variables start over. The cold start is the power switch')]
             ])),
           section('Keys that send nothing',
             note('Caps Lock, Menu, Alt and Fn send no character.',
