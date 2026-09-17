@@ -28,12 +28,17 @@ BIOS, which is only a boot loader.
 divides it into 256 **disks** of 1 MB each. See [Storage](/using/storage).
 
 **cartridge** — a ROM on a small board that drops into the slot behind the
-keyboard and takes over `$C000`–`$FFFF`, replacing BASIC and the Monitor. See
+keyboard and takes over `$C000`–`$FFFF`, replacing BASIC and Wozmon. See
 [Writing a cartridge](/assembly/cartridges).
 
-**CP437** — the character set in ROM, from the original IBM PC. Box drawing,
-card suits, Greek letters, three densities of shading.
+**CP437** — the character set, from the original IBM PC, carried by the video
+card rather than the ROM. Box drawing, card suits, Greek letters, three
+densities of shading.
 See [The character set](/reference/character-set).
+
+**break report** — what the machine prints when a program reaches a `BRK`: the
+address, the break number and every register, then the `OK` prompt.
+See [Reaching the machine](/basic/machine#when-machine-code-stops).
 
 **cold start** — power off and on again. Memory is cleared, BASIC starts from
 nothing. Compare *warm start*.
@@ -41,11 +46,6 @@ nothing. Compare *warm start*.
 **disk** — one of the 256 1 MB partitions on the CompactFlash card, each
 holding up to sixteen files. `DISK n` selects one. Nothing to do with a
 spinning disk.
-
-**F18A** — a second, hidden feature set inside the *Pico9918*: two tile layers,
-hardware scrolling, 64 programmable colors, flipping sprites, a bitmap layer and
-a small processor of its own. Locked at power-on, and available on hardware
-only. See [the BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/) of this guide.
 
 **GPIO** — general-purpose input and output, the sixteen pins of the 65C22
 VIA. The joysticks and the keyboard use them; so can you.
@@ -63,14 +63,14 @@ See [The Kernal](/assembly/kernal).
 files, sound, the clock. Spelled with an `a`, following Commodore's original
 typo. See [The Kernal](/assembly/kernal).
 
+**layer** — one of the video card's two grids of tiles, drawn one over the other
+and scrolled separately. Text is layer 0.
+See [The graphics modes](/assembly/graphics).
+
 **KIM** — a 1976 single-board computer, and here the three-board
 [add-on](/addons/kim) built in its likeness: a hex keypad, a two-line display,
 and a monitor ROM of its own. It works the way the original worked; it does not
 run the original's software.
-
-**Monitor** — the machine-code monitor in ROM, reached with `BRK` or by
-pressing <kbd>Esc</kbd> at boot. Lets you look at memory, disassemble it,
-change it and run it. Its prompt is a period.
 
 **null modem** — a serial cable or adapter that crosses transmit and receive.
 The ACE and a PC are both wired as terminals, so reaching one from the other
@@ -79,9 +79,26 @@ needs one. See [Connectors](/reference/connectors).
 **NVRAM** — 256 bytes inside the clock chip, kept alive by its battery. The
 one place a program can leave something behind with the power off.
 
-**Pico9918** — the video chip. A Raspberry Pi Pico behaving as a TMS9918A, the
-1979 part from the ColecoVision and the MSX, with a VGA socket on it. It also
-carries the *F18A* feature set, switched off until a program unlocks it.
+**palette** — the 256 colors the video card can show at once, each picked from
+4,096. The first sixteen are the colors `COLOR` numbers.
+See [The graphics modes](/assembly/graphics).
+
+**pen** — the pair of colors, letters and background, that the next character
+printed is drawn in. `COLOR` sets it; what is already on the screen keeps its
+own. See [The screen](/assembly/video).
+
+**PICO9918 PRO** — the board the video card is built on: a Raspberry Pi RP2354
+with a VGA socket, running the *PICOVDP* firmware. The earlier Pico9918 boards,
+built on the RP2040, behave as a TMS9918A and belong to the
+[BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/) of this guide.
+
+**PICOVDP** — the video chip: firmware written for this family, giving text with
+a color per character, four screen layouts up to 320 × 240, two layers, 256
+colors and 64 sprites. See [The screen](/assembly/video).
+
+**port B** — the video card's second pair of addresses, `$9C02`–`$9C03`. The
+Kernal and BASIC use the first pair, so an interrupt handler that uses port B
+never trips over them. See [Interrupts](/assembly/interrupts).
 
 **program mode** — typing a line *with* a number in front, so it is stored
 rather than run. `RUN` runs what is stored. Compare *immediate mode*.
@@ -97,6 +114,10 @@ checksum and 14 bytes of save. Programs that keep to the slots can share the
 clock card. Not the same as a *slot*. See [The clock](/assembly/clock#save-slots) and
 [Time and memory that lasts](/basic/clock#save-slots).
 
+**sprite** — a small picture the video card draws over the layers at any
+position, without disturbing what is underneath. There are 64.
+See [The graphics modes](/assembly/graphics).
+
 **slot** — one of the eight 1 KB windows between `$8000` and `$9FFF`, one per
 piece of hardware. The machine works out at power-on which ones answer.
 See [What's fitted](/assembly/detection).
@@ -108,12 +129,14 @@ translate. See [What BASIC does with your memory](/basic/inside).
 **VIA** — Versatile Interface Adapter, the 65C22. Two 8-bit ports and two
 timers. Runs the keyboard and the joysticks here.
 
-**warm start** — pressing the reset button. The processor restarts but memory
-is untouched, so your program and variables survive. This is the safe way out
-of a program that has run away. Compare *cold start*.
+**warm start** — pressing the reset button. BASIC starts again from the top, but
+memory isn't cleared, so your program survives and only its variables start
+over. This is the safe way out of a program that has run away. Compare
+*cold start*.
 
 **Wozmon** — Steve Wozniak's monitor from the Apple I, 250 bytes long, kept at
-`$FF00` as an easter egg. `SYS 65280` from BASIC, `J FF00` from the Monitor.
+`$FF00` as an easter egg. `SYS 65280` from BASIC gets you there and `C000R`
+brings you back.
 
 **XModem** — the file-transfer protocol the serial port speaks. `LOAD` and
 `SAVE` with no filename use it. See [Serial and a terminal](/using/serial).

@@ -7,12 +7,13 @@ import { data as facts } from '../.vitepress/data/facts.data.mts'
 
 const charset = facts.charset
 
-// Each glyph is drawn from its eight ROM bytes rather than from a font that
-// looks like them, so what you see here is the pattern table itself.
+// Each glyph is drawn from the eight bytes the video card holds rather than from
+// a font that looks like them, so what you see here is the pattern table itself.
+// A text cell is six pixels wide: the top six bits of each byte.
 const path = (rows) => {
   const rects = []
   rows.forEach((byte, y) => {
-    for (let x = 0; x < 8; x++) {
+    for (let x = 0; x < 6; x++) {
       if (byte & (0x80 >> x)) rects.push(`M${x} ${y}h1v1h-1z`)
     }
   })
@@ -28,14 +29,15 @@ const hex = (n) => n.toString(16).toUpperCase()
 
 # The character set
 
-Two hundred and fifty-six characters, in ROM, eight bytes each. They are IBM
+Two hundred and fifty-six characters, eight bytes each. They are IBM
 **Code Page 437** — the set the original PC shipped with, which is why it has
 box-drawing lines, card suits, Greek letters and three densities of shading
 alongside the alphabet.
 
-Each glyph is an 8 × 8 cell with the drawing five pixels wide and pushed to the
-left of the byte. The Kernal copies the whole lot into the video card at
-power-on, so this table *is* what the screen has to work with.
+Each glyph is a 6 × 8 cell with the drawing five pixels wide, leaving a column
+of space to its right so that letters don't touch. The set belongs to the video
+card, which carries it in its own firmware, so this table *is* what the screen
+has to work with.
 
 Row is the high hex digit, column the low one. `A` is row `4`, column `1` —
 `$41`, which is also 65, which is also what `ASC("A")` tells you.
@@ -52,7 +54,7 @@ Row is the high hex digit, column the low one. `A` is row `4`, column `1` —
       <tr v-for="(row, hi) in grid" :key="hi">
         <th>{{ hex(hi) }}x</th>
         <td v-for="ch in row" :key="ch.code" :title="ch.hex + '  ' + ch.name">
-          <svg viewBox="0 0 8 8" role="img" :aria-label="ch.name">
+          <svg viewBox="0 0 6 8" role="img" :aria-label="ch.name">
             <path :d="path(ch.rows)" />
           </svg>
         </td>
@@ -77,7 +79,7 @@ So this does nothing at all:
 PRINT CHR$(219)
 ```
 
-The character is there in ROM. It is `Chrout` that will not pass it on.
+The character is there on the card. It is `Chrout` that will not pass it on.
 
 ::: tip Getting at the rest
 From assembly there is a second routine, `VideoChroutRaw`, which puts any of
@@ -105,12 +107,16 @@ shape you like and then print `A`.
 
 ## Where it lives
 
-The set sits at `$B800`–`$BFFF`, immediately above the Kernal and below BASIC.
-It is 2 KB of the 32 KB ROM: 256 characters × 8 bytes each, exactly.
+Not in the ROM. The video card keeps the set in its firmware and copies it into
+its own memory, at `$0800`–`$0FFF` of the card's 64 KB: 2 KB, 256 characters ×
+8 bytes each, exactly. That copy is the pattern table text mode draws from, and
+nothing in the computer's own address space holds another.
 
-[The memory map](/assembly/memory-map) has the rest of the ROM;
-[The screen](/assembly/video) covers writing to the pattern table and the
-character-set tricks that make text-mode games work.
+Because it is a copy, it can be changed and put back. Rewrite a character's
+eight bytes and every place it appears on the screen changes shape; the Kernal's
+`InitVideo` has the card copy its set in again, and `VdpLoadFont` copies it
+into any pattern table a program has set up. [The screen](/assembly/video)
+covers both, and the character-set tricks that make text-mode games work.
 
 <div class="card-link">
 

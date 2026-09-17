@@ -17,7 +17,11 @@
   where the two disagree (A42).
 
   The card condenses docs/the-ace.md, docs/getting-started/*, and the BASIC
-  and Monitor chapters. Nothing here is only here.
+  chapters, including machine code from BASIC. Nothing here is only here.
+  BIOS 2.0: no Monitor and no character set in ROM, the video card is a
+  PICO9918 PRO v2.0 running 6502-PICOVDP (6502-BIOS v2.0 README; 6502-PICOVDP
+  SPEC.md draft 0.5), and every transcript was typed into emulator 3.1.0's
+  PICOVDP machine.
 -->
 <body class="card placard">
 
@@ -52,8 +56,8 @@
         <tbody>
           <tr><td class="td-label">CPU</td><td class="td-desc">WDC W65C02S at 1 MHz, jumper-selectable to 2 MHz</td></tr>
           <tr><td class="td-label">RAM</td><td class="td-desc">32 KB SRAM (62256) + 512 KB banked SRAM (AS6C4008)</td></tr>
-          <tr><td class="td-label">ROM</td><td class="td-desc">32 KB EEPROM (28C256) &mdash; the whole 6502 BIOS</td></tr>
-          <tr><td class="td-label">Video</td><td class="td-desc">Pico9918 &mdash; TMS9918A-compatible, VGA out, 40&times;24 text, 16 colors</td></tr>
+          <tr><td class="td-label">ROM</td><td class="td-desc">32 KB EEPROM (28C256) &mdash; the whole BIOS</td></tr>
+          <tr><td class="td-label">Video</td><td class="td-desc">PICO9918 PRO v2.0 running 6502-PICOVDP &mdash; VGA out, 40&times;24 text, 256 colors</td></tr>
           <tr><td class="td-label">Sound</td><td class="td-desc">ARMSID &mdash; MOS 6581 replacement, 3 voices, RCA out</td></tr>
           <tr><td class="td-label">Storage</td><td class="td-desc">CompactFlash on the ACE CF Adapter (8-bit True IDE)</td></tr>
           <tr><td class="td-label">Serial</td><td class="td-desc">65C51 ACIA + MAX238, DB-9, 19200 8-N-1</td></tr>
@@ -70,9 +74,9 @@
       <span class="sec-title">Two switches and a jumper</span>
       <div class="note-box">
         The <strong>power switch</strong> is the cold start. The small white <strong>reset
-        button</strong>, just above <code>ESC</code>, is the warm one: it restarts the machine
-        but leaves memory alone, so your program and variables are still there afterwards. That
-        makes it the safe way out of anything that has run away.
+        button</strong>, just above <code>ESC</code>, is the warm one: BASIC starts again but
+        memory is not cleared, so your program is still there afterwards and only its variables
+        start over. That makes it the safe way out of anything that has run away.
       </div>
       <div class="note-box">
         <strong>PHI2 SELECT</strong> picks 1 or 2 MHz. The eight-way <strong>IO ENABLE</strong>
@@ -89,10 +93,8 @@
           <tr><td class="td-addr">$0000&ndash;$07FF</td><td class="td-desc">Zero page, stack, Kernal and BASIC buffers</td></tr>
           <tr><td class="td-addr">$0800&ndash;$7FFF</td><td class="td-desc">Your program, variables and strings (30 KB)</td></tr>
           <tr><td class="td-addr">$8000&ndash;$9FFF</td><td class="td-desc">I/O &mdash; eight 1 KB device slots</td></tr>
-          <tr><td class="td-addr">$A000&ndash;$B7FF</td><td class="td-desc">Kernal + jump table</td></tr>
-          <tr><td class="td-addr">$B800&ndash;$BFFF</td><td class="td-desc">Character set</td></tr>
-          <tr><td class="td-addr">$C000&ndash;$EDFF</td><td class="td-desc">BASIC interpreter</td></tr>
-          <tr><td class="td-addr">$EE00&ndash;$FEFF</td><td class="td-desc">Machine-code Monitor</td></tr>
+          <tr><td class="td-addr">$A000&ndash;$BFFF</td><td class="td-desc">Kernal + jump table</td></tr>
+          <tr><td class="td-addr">$C000&ndash;$FEFF</td><td class="td-desc">BASIC interpreter</td></tr>
           <tr><td class="td-addr">$FF00&ndash;$FFF9</td><td class="td-desc">Wozmon</td></tr>
           <tr><td class="td-addr">$FFFA&ndash;$FFFF</td><td class="td-desc">NMI, RESET and IRQ vectors</td></tr>
         </tbody>
@@ -102,13 +104,14 @@
     <div class="section">
       <span class="sec-title">Did you know?</span>
       <div class="note-box">
-        The entire operating system &mdash; Kernal, machine-code Monitor <em>and</em> a full
-        BASIC &mdash; fits in one <strong>32 KB EEPROM</strong>, with room to spare for the
-        character set.
+        The entire operating system &mdash; Kernal, a full BASIC <em>and</em> the Apple I's
+        Wozmon &mdash; fits in one <strong>32 KB EEPROM</strong>. There is no character set in
+        it: the letters on the screen are the video card's own.
       </div>
       <div class="note-box">
-        The <strong>Pico9918</strong> is a Raspberry Pi Pico pretending, cycle for cycle, to be
-        the 1979 TMS9918A from the ColecoVision and the MSX.
+        The <strong>6502-PICOVDP</strong> draws 256 colors out of 4,096, two layers that scroll
+        on their own and 64 sprites &mdash; and still runs the text and Graphics I programs of the
+        1979 TMS9918A from the ColecoVision and the MSX.
       </div>
       <div class="note-box">
         The version the header prints is the whole ROM's: <strong>BIOS v2.0</strong>.
@@ -209,7 +212,7 @@ OK</div>
       <div class="note-box">
         <strong>Wozmon easter egg &mdash;</strong> <code>SYS 65280</code> lands you in a copy of
         the original Apple I monitor. Its prompt is a backslash; <code>FF00.FF07</code> reads
-        eight bytes. Press the reset button to come back.
+        eight bytes. <code>C000R</code> takes you back to BASIC.
       </div>
     </div>
 
@@ -224,9 +227,9 @@ OK</div>
           <tr><td class="td-cmd">IF&hellip;THEN</td><td class="td-desc">Make a decision</td></tr>
           <tr><td class="td-cmd">FOR&hellip;NEXT</td><td class="td-desc">Counting loop &mdash; one <code>NEXT</code> per loop</td></tr>
           <tr><td class="td-cmd">GOTO / GOSUB</td><td class="td-desc">Jump to, or call, a line number</td></tr>
-          <tr><td class="td-cmd">CLS / LOCATE / COLOR</td><td class="td-desc">Clear the screen, move the cursor, set the colors</td></tr>
+          <tr><td class="td-cmd">CLS / LOCATE / COLOR</td><td class="td-desc">Clear the screen, move the cursor, color what prints next</td></tr>
           <tr><td class="td-cmd">PEEK / POKE</td><td class="td-desc">Read or write one byte of memory</td></tr>
-          <tr><td class="td-cmd">SYS addr</td><td class="td-desc">Call machine code and come back</td></tr>
+          <tr><td class="td-cmd">SYS addr,a,x,y</td><td class="td-desc">Call machine code with A, X and Y set, and come back</td></tr>
         </tbody>
       </table>
     </div>
@@ -239,7 +242,7 @@ OK</div>
           <tr><td class="td-cmd">ESC</td><td class="td-desc"><strong>Stops a running program.</strong> The one to remember</td></tr>
           <tr><td class="td-cmd">Ctrl + C</td><td class="td-desc">The same thing, if that is the habit you have</td></tr>
           <tr><td class="td-cmd">Backspace</td><td class="td-desc">Rub out the last character</td></tr>
-          <tr><td class="td-cmd">Reset button</td><td class="td-desc">Warm restart &mdash; your program survives</td></tr>
+          <tr><td class="td-cmd">Reset button</td><td class="td-desc">Warm restart &mdash; your program survives, its variables start over</td></tr>
         </tbody>
       </table>
     </div>

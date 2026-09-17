@@ -1,3 +1,7 @@
+<script setup>
+import { data as facts } from '../.vitepress/data/facts.data.mts'
+</script>
+
 # Reference cards
 
 Thirteen sheets, sized for letter paper, meant to be printed and kept next to
@@ -24,7 +28,7 @@ laptop with no internet looks the same as one printed online.
 
 | Card | What it covers | The chapter it condenses |
 |---|---|---|
-| 📄 **[6502-ACE](/cards/ace.html)** | The whole machine on two pages: what is on the board, the memory map, the first things to type, and enough BASIC and Monitor to get going. The one to print first | [The ACE](/the-ace) |
+| 📄 **[6502-ACE](/cards/ace.html)** | The whole machine on two pages: what is on the board, the memory map, the first things to type, and enough BASIC to get going. The one to print first | [The ACE](/the-ace) |
 | 📄 **[Memory Map](/cards/memory-map.html)** | All 64 KB, then RAM and ROM in detail, then every I/O register on the board | [The memory map](/assembly/memory-map) |
 | 📄 **[Connectors](/cards/connectors.html)** | Every socket and header, pin by pin, off the schematic | [Connectors](/reference/connectors) |
 | 📄 **[Keyboard Layout](/cards/keyboard-layout.html)** | The 67 keys as they sit, and the ones that do something out of the ordinary | [The keyboard](/using/keyboard) |
@@ -35,8 +39,8 @@ laptop with no internet looks the same as one printed online.
 | Card | What it covers | The chapter it condenses |
 |---|---|---|
 | 📄 **[BASIC Reference](/cards/basic-reference.html)** | Every keyword with its syntax, the operator table, every error message, and the three traps that catch everyone | [Every keyword](/basic/reference) |
-| 📄 **[Kernal Jump Table](/cards/kernal-jump-table.html)** | All 53 published entry points with their registers, grouped by job | [The Kernal](/assembly/kernal) |
-| 📄 **[Character Set](/cards/character-map.html)** | All 256 glyphs drawn from the ROM's own bytes, with names, and what `PRINT` can actually reach | [The character set](/reference/character-set) |
+| 📄 **[Kernal Jump Table](/cards/kernal-jump-table.html)** | All {{ facts.kernal.publishedSlots }} published entry points with their registers, grouped by job | [The Kernal](/assembly/kernal) |
+| 📄 **[Character Set](/cards/character-map.html)** | All 256 glyphs drawn from the video card's own bytes, with names, and what `PRINT` can actually reach | [The character set](/reference/character-set) |
 
 ## The KIM add-on
 
@@ -64,7 +68,8 @@ Written for someone building one, not using one.
 The BASIC and Monitor cards for **v1.0 through v1.4** are kept under
 [`/cards/archive/`](/cards/archive/bios-v1.4-basic-reference.html). They
 describe machines whose ROMs are no longer current and are there for anyone
-running one, not as a second opinion about this one.
+running one, not as a second opinion about this one. The cards for BIOS 1.6,
+Monitor included, are in the [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/reference/) of this guide.
 
 ## Other reference pages
 
