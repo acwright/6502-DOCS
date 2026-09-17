@@ -35,9 +35,9 @@ A32 — the entry says so.
 
 | Status | Count |
 |---|---|
-| fixed | 57 |
+| fixed | 58 |
 | confirmed | 5 |
-| open | 5 |
+| open | 6 |
 | wontfix | 4 |
 
 **Phase 9 closed the ledger's upstream backlog.** Every confirmed item that
@@ -255,6 +255,7 @@ serial are false at the machine itself.
 | **Observation** | This repo generates its own `samples/lib/6502.inc` from the BIOS source (rank 1). The `6502-PRG` and `6502-CRT` templates ship a hand-maintained `6502.inc` (rank 3) that readers actually use. Both describe the same machine and should agree. |
 | **Status** | `fixed` — compared in Phase 9, and **they agree**. 204 symbols appear in both files and **not one disagrees on its value**. The template additionally carries 142 symbols the extractor does not emit (hardware constants and bit masks), and the generated file carries 53 the template does not (BASIC's own internals — `BAS_TXTTAB`, `BAS_WARM` and the like, which are not part of the published API). `6502-PRG/6502.inc` and `6502-CRT/6502.inc` are byte-identical to each other. |
 | **Note** | No template bug to fix, which is the outcome worth recording: the hand-maintained include has kept up with the ROM. What the templates *did* need was a wording fix, in A8. |
+| **Update, 2026-09-17** | Superseded. `samples/lib/` no longer holds a generated include: `samples/lib/6502-VDP.inc` is 6502-ASM's own file, copied verbatim, and the extractor holds it to the fact base in both modes (every Kernal slot, `HW_*` flag, I/O register and palette row 0 color, and every RAM variable it names) instead of writing it. On the first comparison against BIOS v2.0 all 226 names it shares with the fact base agree. It names no joystick bits (`JOY_*`), which the generated file did, so `samples/assembly/stick.asm` names them itself. |
 | **Check** | GREP — symbol/value pairs parsed out of all three files and compared, rather than a text diff, since the files are laid out differently. |
 
 ### O4 — The migrated cards still carry their original v1.0-era content — **resolved**
@@ -658,6 +659,7 @@ serial are false at the machine itself.
 | **Check** | GREP + RUN |
 | **Consequence** | A reader who trusted this would print status text in one color expecting it to stay put, then watch every line on the screen change color together the next time `COLOR` runs — the opposite of what the chapter promised. |
 | **Fix** | Phase 8's color-chart pass rewrote the paragraph: one pair for the whole screen, described as "a pair of colored lights the whole screen sits under" rather than paint. `docs/using/sound-and-video.md`'s shorter `COLOR` bullet had the same gap (it didn't say retrospective either way) and was tightened at the same time. |
+| **Update, 2026-09-17** | Re-scoped to BIOS 1.6 and the TMS9918A, where it stands. On BIOS 2.0 the 6502-PICOVDP keeps a color pair per cell, `COLOR` and `VideoSetColor` set a pen for what prints next, and the chapter's original sentence — text already on the screen keeps its colors — is true again. `docs/basic/sound-and-video.md`, `docs/using/sound-and-video.md` and `docs/assembly/video.md` now say so; `samples/assembly/rainbow.asm` prints a line per pen and asserts the picture. The 1.6 wording is kept in the v1 edition. |
 
 ### A46 — The F18A forum documentation describes registers that never shipped
 
@@ -669,6 +671,7 @@ serial are false at the machine itself.
 | **Check** | Read all three sources against each other. Nothing here can be run: F18A mode is hardware-only and the emulator masks register writes to 0–7 (`6502-EMULATOR/src/core/IO/Video.ts:279`). |
 | **Consequence** | Severe for anyone writing F18A code from the forum posts, which are the most discoverable F18A document on the web and read as a specification. Following them puts a scroll window into general control and the GPU trigger bits, which is not a subtle failure. |
 | **Fix** | `data/f18a.json` is built from the v1.9 sheet, and every register the posts disagree about carries a `conflict` field that the reference page prints under the register as *"The sources disagree."* The posts are still the best explanation of *why* the parts work as they do — the unlock rationale, the bitplane scheme, the paging model, `PIX` — and that material is what the chapters draw on. |
+| **Update, 2026-09-17** | Out of scope on `main`: the F18A pages, `data/f18a.json` and the F18A card left the current edition with BIOS 1.6 and live only in the frozen v1 edition, where this entry's fix stands. The 6502-PICOVDP does not implement the F18A register set. |
 
 ### A47 — The Pico9918 reference tabulates the enhanced color modes one step too high
 
@@ -691,6 +694,7 @@ serial are false at the machine itself.
 | **Check** | None available. F18A mode does not exist in the emulator. |
 | **Consequence** | (a) is self-announcing: get it backwards and the colors are visibly wrong on the first entry you write. (b) is quieter — code that relies on either reading may work on one card and not the other. |
 | **Fix** | Both are printed on the page as open questions rather than resolved: `docs/f18a/color.md` tells the reader to write four entries and swap the order if the colors come out wrong, and `docs/f18a/sprites.md` says to assume nothing about bit 4 in code meant to run on both cards. Also carried in `data/f18a.json` as `palette.writeOrderConflict` and `attributes.spriteUnlocked.conflict`. Close them by testing on hardware. |
+| **Update, 2026-09-17** | Still open, and now only a question about the v1 edition: the F18A pages that print both readings are frozen there, and nothing on `main` depends on either. |
 
 ### A49 — The bitmap layer's priority bit is described two ways by its own author
 
@@ -901,6 +905,27 @@ serial are false at the machine itself.
 | **Check** | RUN — voice 3 driven from the debugger on 2.6.9. Running a pulse with no test bit, `SID_OSC3` reads `$00` and then `$FF` as it oscillates; with the test bit set it reads `$FF` and stays there, and `$00` for a triangle and again for a sawtooth. |
 | **Status** | `fixed` — `6502-EMULATOR` v2.6.9, one line moved out of an early return. Three tests pin it, each landing the oscillator on a wrong output first, because on the high half of a pulse the assertion would pass by luck. `6502-KIMULATOR` is not implicated: it has no SID, and `Sound.ts` is not among the files kept byte-identical between the two. |
 | **Consequence** | Nothing here plays it. No listing on this site sets the test bit, the BIOS never does, and the sound samples let a note go through the gate rather than parking it, so all 131 cases pass and all 11 screenshots are byte-identical. The cost was to a reader who went from the control-register table to the bit itself: they would have heard exactly the thump this chapter blames on the other way of stopping a voice, and reasonably concluded the test bit was that same mistake under a different name. Ported music is where it would have been loud, and there is none here. The chapter now says what the bit actually gives — a defined value, and a voice 3 that reads back through `SID_OSC3` — so the two ways of stopping a voice can be told apart at the machine and not only on the page. |
+
+### A68 — This repo's own pages carried BIOS 1.6's reset onto BIOS 2.0
+
+| | |
+|---|---|
+| **Claim** | `docs/the-ace.md`, `docs/using/keyboard.md`, `docs/reference/glossary.md` (*warm start*), the ACE card and the keyboard card: the reset button "leaves memory alone", so "your program and your variables are still there". `docs/basic/debugging.md`: after a lock-up and a reset "your program is gone". |
+| **Truth** | On BIOS 2.0 every reset is a cold BASIC start that keeps the program: the header prints again, `LIST` shows the program, and every variable is cleared. `A=5`, reset, `PRINT A` prints ` 0`, and the header's byte count is `30718` less the program's size. The two claims were each half right. |
+| **Source** | `6502-BIOS` v2.0 `README.md`, *Boot Sequence* step 8. |
+| **Check** | RUN — emulator 3.1.0 on the PICOVDP card: a one-line program and `A=5`, then `dbg reset --warm`, `LIST` and `PRINT A`. |
+| **Status** | `fixed` — all six places, in the Phase 3 commits on `bios-2.0` (D1b). |
+| **Consequence** | A reader who trusted the variables to survive would restart a long computation from wrong values; one who trusted the program to be gone would retype it. |
+
+### O6 — A picture of a moving program cannot be pinned from the harness
+
+| | |
+|---|---|
+| **Observation** | `6502 dbg runcycles n` stops on its budget exactly, but serial input queued with `dbg send` is not delivered while it runs: `PRINT 12` sent to a paused machine and followed by `runcycles 2000000` never reaches BASIC, and the same send followed by `wait --cycles 100000 --run turbo` does. `wait --run turbo` in turn returns at its budget and leaves the machine running. So a case that types `RUN` and then settles cannot stop at a fixed emulated cycle after the input arrived, and a program that animates is hashed at a different frame each run (four runs of the first `sprites.asm` gave four digests). |
+| **Status** | `open` — an emulator question, not a documentation error. `DEBUG-PROTOCOL.md` says of `input.type` that it "needs a running machine"; it does not say the same of the serial console. |
+| **Mitigation here** | The harness's `picture` directive is documented as for still pictures, and `samples/assembly/sprites.asm` holds still until a key. `scripts/capture-screens.mjs` is unaffected, since its shots are taken of still pictures too. |
+| **Suggested upstream fix** | Let `runcycles` (or `wait` with a stop-on-budget option) deliver queued console input, so a test can type and then stop exactly. |
+| **Check** | RUN — emulator 3.1.0, `--console video --vdp picovdp --flow-control`. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
