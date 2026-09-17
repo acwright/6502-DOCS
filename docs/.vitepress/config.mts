@@ -373,7 +373,7 @@ export default defineConfig({
       // page and their screen disagree. Read from the fact base rather than
       // typed, so it cannot be the last place on the site still saying v1.4.
       message: `Written for BIOS ${BIOS_VERSION}. Released under the MIT License.`,
-      copyright: 'Copyright © AC6502'
+      copyright: 'Copyright © A.C. Wright'
     }
   }
 })
