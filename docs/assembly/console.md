@@ -79,7 +79,9 @@ end that makes it a string.
 Every key — from the board's own keyboard, from a PS/2 keyboard, or down the
 serial cable — arrives as an interrupt and is dropped into a 256-byte ring
 buffer at `$0200`. `Chrin` takes one out. Nothing is lost while your program is
-busy, up to a full buffer's worth.
+busy, up to a full buffer's worth — and once it is full, what arrives next is
+dropped rather than written over the characters still waiting, so the ones you
+do get are the ones that came first.
 
 Three routines let you at the buffer directly:
 

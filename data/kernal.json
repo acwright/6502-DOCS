@@ -7,7 +7,7 @@
     "sources": [
       {
         "file": "Kernal.asm",
-        "sha256": "67c3ec2c56095725ccd2782ec419ad8e974fe80ae7a0fcff839f3e0c43fc28f1"
+        "sha256": "ecc1ae1ebe0846d28939c7550b8bd7142e838863924c9703784064072117ed19"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -107,12 +107,10 @@
         "Flags, X, A"
       ],
       "notes": [
-        "Irq raises RTS once the buffer holds $F0 bytes. Every reader comes through here",
-        "— Chrin, BASIC's line input, INKEY, the break check, a cartridge — so this is",
-        "where RTS is lowered again: high while $B0 or more are still unread, low below",
-        "that. A reader that skipped it would leave a terminal with RTS/CTS flow control",
-        "waiting for good. XModem turns the receiver interrupt off and sets the command",
-        "register itself, so while that bit is set the register is left alone."
+        "Every reader comes through here — Chrin, BASIC's line input, INKEY, the break",
+        "check, a cartridge — so this is where RTS is lowered again once the buffer has",
+        "drained. A reader that skipped it would leave a terminal with RTS/CTS flow",
+        "control waiting for good."
       ],
       "source": "Kernal.asm:36",
       "check": "GREP"
@@ -586,6 +584,13 @@
       "description": "Output a character from the A register to the Serial Card",
       "modifies": [
         "Flags"
+      ],
+      "notes": [
+        "TIC 00 turns the transmitter off as well as raising RTS, so a character",
+        "written while the BIOS is holding RTS up would never leave: the loop below",
+        "would spin on a TDRE that cannot come. RTS is therefore dropped for the byte",
+        "and put back afterwards if the buffer is still full, and interrupts are held",
+        "off meanwhile so that Irq cannot raise it again mid-character."
       ],
       "source": "Kernal.asm:66",
       "check": "GREP"

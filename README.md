@@ -119,6 +119,12 @@ The extractor needs a `6502-BIOS` source tree (`--bios <path>`, `$BIOS_SRC`, or
 `~/Developer/Assembly/6502-BIOS`). The generated files are committed, so
 building the site and running CI need only this repo.
 
+The committed files were extracted from **tag `v2.0.1`** (`62254c1`), a serial
+fix that carries no version bump — the firmware still reports `v2.0`, which is
+what the footer and `check:voice` hold every page to. Each file's `$meta.sources`
+records the SHA-256 of every BIOS file it was read from, so a fact base built
+from a different tree is visible in the diff rather than only in the numbers.
+
 Each record carries its provenance: `source` names the file and line it came
 from, and `check` records which verification method backs it. Anything read
 from a README is rank 4 and stays `verified: false` until a running sample
@@ -420,8 +426,8 @@ it somewhere out of the way, which leaves the BIOS repository alone. Each one
 either prints `ok` or tells you what moved.
 
 ```sh
-mkdir -p /tmp/bios-v2.0 && git -C ../6502-BIOS archive v2.0 | tar -x -C /tmp/bios-v2.0
-npm run facts -- --bios /tmp/bios-v2.0   # re-extract data/ from the BIOS source
+mkdir -p /tmp/bios-v2.0.1 && git -C ../6502-BIOS archive v2.0.1 | tar -x -C /tmp/bios-v2.0.1
+npm run facts -- --bios /tmp/bios-v2.0.1 # re-extract data/ from the BIOS source
 git diff data/        # read this — it is the release notes, mechanically derived
 npm run cards         # the five generated cards follow the fact base
 npm run diagrams      # so do nine of the fifteen diagrams

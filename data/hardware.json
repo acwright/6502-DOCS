@@ -7,7 +7,7 @@
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "e714ade2bf339e882cf787764e0d3731fb551fd9bdacf4d06a8dbe0f8f9ee185"
+        "sha256": "6004f998b6fed1231fed2af4bdea10585b7c3d729d09a85aaab240e7d7a91cbb"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -347,97 +347,97 @@
           "symbol": "GPIO_PORTB",
           "address": "$9400",
           "description": "",
-          "source": "BIOS.inc:270"
+          "source": "BIOS.inc:278"
         },
         {
           "symbol": "GPIO_PORTA",
           "address": "$9401",
           "description": "",
-          "source": "BIOS.inc:271"
+          "source": "BIOS.inc:279"
         },
         {
           "symbol": "GPIO_DDRB",
           "address": "$9402",
           "description": "",
-          "source": "BIOS.inc:272"
+          "source": "BIOS.inc:280"
         },
         {
           "symbol": "GPIO_DDRA",
           "address": "$9403",
           "description": "",
-          "source": "BIOS.inc:273"
+          "source": "BIOS.inc:281"
         },
         {
           "symbol": "GPIO_T1CL",
           "address": "$9404",
           "description": "",
-          "source": "BIOS.inc:274"
+          "source": "BIOS.inc:282"
         },
         {
           "symbol": "GPIO_T1CH",
           "address": "$9405",
           "description": "",
-          "source": "BIOS.inc:275"
+          "source": "BIOS.inc:283"
         },
         {
           "symbol": "GPIO_T1LL",
           "address": "$9406",
           "description": "",
-          "source": "BIOS.inc:276"
+          "source": "BIOS.inc:284"
         },
         {
           "symbol": "GPIO_T1LH",
           "address": "$9407",
           "description": "",
-          "source": "BIOS.inc:277"
+          "source": "BIOS.inc:285"
         },
         {
           "symbol": "GPIO_T2CL",
           "address": "$9408",
           "description": "",
-          "source": "BIOS.inc:278"
+          "source": "BIOS.inc:286"
         },
         {
           "symbol": "GPIO_T2CH",
           "address": "$9409",
           "description": "",
-          "source": "BIOS.inc:279"
+          "source": "BIOS.inc:287"
         },
         {
           "symbol": "GPIO_SR",
           "address": "$940A",
           "description": "",
-          "source": "BIOS.inc:280"
+          "source": "BIOS.inc:288"
         },
         {
           "symbol": "GPIO_ACR",
           "address": "$940B",
           "description": "",
-          "source": "BIOS.inc:281"
+          "source": "BIOS.inc:289"
         },
         {
           "symbol": "GPIO_PCR",
           "address": "$940C",
           "description": "",
-          "source": "BIOS.inc:282"
+          "source": "BIOS.inc:290"
         },
         {
           "symbol": "GPIO_IFR",
           "address": "$940D",
           "description": "",
-          "source": "BIOS.inc:283"
+          "source": "BIOS.inc:291"
         },
         {
           "symbol": "GPIO_IER",
           "address": "$940E",
           "description": "",
-          "source": "BIOS.inc:284"
+          "source": "BIOS.inc:292"
         },
         {
           "symbol": "GPIO_ORA",
           "address": "$940F",
           "description": "",
-          "source": "BIOS.inc:285"
+          "source": "BIOS.inc:293"
         }
       ]
     },
@@ -460,175 +460,175 @@
           "symbol": "SID_V1_FREQ_LO",
           "address": "$9800",
           "description": "Voice 1 Frequency Low",
-          "source": "BIOS.inc:298"
+          "source": "BIOS.inc:306"
         },
         {
           "symbol": "SID_V1_FREQ_HI",
           "address": "$9801",
           "description": "Voice 1 Frequency High",
-          "source": "BIOS.inc:299"
+          "source": "BIOS.inc:307"
         },
         {
           "symbol": "SID_V1_PW_LO",
           "address": "$9802",
           "description": "Voice 1 Pulse Width Low",
-          "source": "BIOS.inc:300"
+          "source": "BIOS.inc:308"
         },
         {
           "symbol": "SID_V1_PW_HI",
           "address": "$9803",
           "description": "Voice 1 Pulse Width High",
-          "source": "BIOS.inc:301"
+          "source": "BIOS.inc:309"
         },
         {
           "symbol": "SID_V1_CTRL",
           "address": "$9804",
           "description": "Voice 1 Control Register",
-          "source": "BIOS.inc:302"
+          "source": "BIOS.inc:310"
         },
         {
           "symbol": "SID_V1_AD",
           "address": "$9805",
           "description": "Voice 1 Attack/Decay",
-          "source": "BIOS.inc:303"
+          "source": "BIOS.inc:311"
         },
         {
           "symbol": "SID_V1_SR",
           "address": "$9806",
           "description": "Voice 1 Sustain/Release",
-          "source": "BIOS.inc:304"
+          "source": "BIOS.inc:312"
         },
         {
           "symbol": "SID_V2_FREQ_LO",
           "address": "$9807",
           "description": "Voice 2 Frequency Low",
-          "source": "BIOS.inc:305"
+          "source": "BIOS.inc:313"
         },
         {
           "symbol": "SID_V2_FREQ_HI",
           "address": "$9808",
           "description": "Voice 2 Frequency High",
-          "source": "BIOS.inc:306"
+          "source": "BIOS.inc:314"
         },
         {
           "symbol": "SID_V2_PW_LO",
           "address": "$9809",
           "description": "Voice 2 Pulse Width Low",
-          "source": "BIOS.inc:307"
+          "source": "BIOS.inc:315"
         },
         {
           "symbol": "SID_V2_PW_HI",
           "address": "$980A",
           "description": "Voice 2 Pulse Width High",
-          "source": "BIOS.inc:308"
+          "source": "BIOS.inc:316"
         },
         {
           "symbol": "SID_V2_CTRL",
           "address": "$980B",
           "description": "Voice 2 Control Register",
-          "source": "BIOS.inc:309"
+          "source": "BIOS.inc:317"
         },
         {
           "symbol": "SID_V2_AD",
           "address": "$980C",
           "description": "Voice 2 Attack/Decay",
-          "source": "BIOS.inc:310"
+          "source": "BIOS.inc:318"
         },
         {
           "symbol": "SID_V2_SR",
           "address": "$980D",
           "description": "Voice 2 Sustain/Release",
-          "source": "BIOS.inc:311"
+          "source": "BIOS.inc:319"
         },
         {
           "symbol": "SID_V3_FREQ_LO",
           "address": "$980E",
           "description": "Voice 3 Frequency Low",
-          "source": "BIOS.inc:312"
+          "source": "BIOS.inc:320"
         },
         {
           "symbol": "SID_V3_FREQ_HI",
           "address": "$980F",
           "description": "Voice 3 Frequency High",
-          "source": "BIOS.inc:313"
+          "source": "BIOS.inc:321"
         },
         {
           "symbol": "SID_V3_PW_LO",
           "address": "$9810",
           "description": "Voice 3 Pulse Width Low",
-          "source": "BIOS.inc:314"
+          "source": "BIOS.inc:322"
         },
         {
           "symbol": "SID_V3_PW_HI",
           "address": "$9811",
           "description": "Voice 3 Pulse Width High",
-          "source": "BIOS.inc:315"
+          "source": "BIOS.inc:323"
         },
         {
           "symbol": "SID_V3_CTRL",
           "address": "$9812",
           "description": "Voice 3 Control Register",
-          "source": "BIOS.inc:316"
+          "source": "BIOS.inc:324"
         },
         {
           "symbol": "SID_V3_AD",
           "address": "$9813",
           "description": "Voice 3 Attack/Decay",
-          "source": "BIOS.inc:317"
+          "source": "BIOS.inc:325"
         },
         {
           "symbol": "SID_V3_SR",
           "address": "$9814",
           "description": "Voice 3 Sustain/Release",
-          "source": "BIOS.inc:318"
+          "source": "BIOS.inc:326"
         },
         {
           "symbol": "SID_FC_LO",
           "address": "$9815",
           "description": "Filter Cutoff Low",
-          "source": "BIOS.inc:319"
+          "source": "BIOS.inc:327"
         },
         {
           "symbol": "SID_FC_HI",
           "address": "$9816",
           "description": "Filter Cutoff High",
-          "source": "BIOS.inc:320"
+          "source": "BIOS.inc:328"
         },
         {
           "symbol": "SID_RES_FILT",
           "address": "$9817",
           "description": "Resonance/Filter",
-          "source": "BIOS.inc:321"
+          "source": "BIOS.inc:329"
         },
         {
           "symbol": "SID_MODE_VOL",
           "address": "$9818",
           "description": "Filter Mode/Volume",
-          "source": "BIOS.inc:322"
+          "source": "BIOS.inc:330"
         },
         {
           "symbol": "SID_PADDLE_X",
           "address": "$9819",
           "description": "Paddle X (Read-only)",
-          "source": "BIOS.inc:323"
+          "source": "BIOS.inc:331"
         },
         {
           "symbol": "SID_PADDLE_Y",
           "address": "$981A",
           "description": "Paddle Y (Read-only)",
-          "source": "BIOS.inc:324"
+          "source": "BIOS.inc:332"
         },
         {
           "symbol": "SID_OSC3",
           "address": "$981B",
           "description": "Oscillator 3 (Read-only)",
-          "source": "BIOS.inc:325"
+          "source": "BIOS.inc:333"
         },
         {
           "symbol": "SID_ENV3",
           "address": "$981C",
           "description": "Envelope 3 (Read-only)",
-          "source": "BIOS.inc:326"
+          "source": "BIOS.inc:334"
         }
       ]
     },
@@ -651,37 +651,37 @@
           "symbol": "VC_DATA",
           "address": "$9C00",
           "description": "R/W  VRAM data, port A",
-          "source": "BIOS.inc:346"
+          "source": "BIOS.inc:354"
         },
         {
           "symbol": "VC_REG",
           "address": "$9C01",
           "description": "Write  command, port A",
-          "source": "BIOS.inc:347"
+          "source": "BIOS.inc:355"
         },
         {
           "symbol": "VC_STATUS",
           "address": "$9C01",
           "description": "Read  status (STATSEL_A selects which), port A",
-          "source": "BIOS.inc:348"
+          "source": "BIOS.inc:356"
         },
         {
           "symbol": "VC_DATA2",
           "address": "$9C02",
           "description": "R/W  VRAM data, port B",
-          "source": "BIOS.inc:349"
+          "source": "BIOS.inc:357"
         },
         {
           "symbol": "VC_REG2",
           "address": "$9C03",
           "description": "Write  command, port B",
-          "source": "BIOS.inc:350"
+          "source": "BIOS.inc:358"
         },
         {
           "symbol": "VC_STATUS2",
           "address": "$9C03",
           "description": "Read  status (STATSEL_B selects which), port B",
-          "source": "BIOS.inc:351"
+          "source": "BIOS.inc:359"
         }
       ]
     }

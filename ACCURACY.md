@@ -24,7 +24,11 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 
 **Baseline for entries from here on:** BIOS v2.0, emulator 3.1.0 on its PICOVDP
 card (`--vdp picovdp --flow-control`), cc65 built from HEAD (`cl65 V2.19 - Git
-547d92358`). Every entry already below was recorded on BIOS v1.6 and emulator
+547d92358`). The fact base is extracted from `6502-BIOS` tag **`v2.0.1`**
+(`62254c1`), a serial fix that reports the same version string — so the ROM
+inside emulator 3.1.0, which every sample and screenshot here still runs, is the
+`v2.0` build, and A69 is the one place the two differ on the page. Every entry
+already below was recorded on BIOS v1.6 and emulator
 2.7.0 or earlier, and stands as a record of that machine: entries recorded before
 Phase 11 name the release they were found on, and where that matters — A31 and
 A32 — the entry says so.
@@ -35,7 +39,7 @@ A32 — the entry says so.
 
 | Status | Count |
 |---|---|
-| fixed | 58 |
+| fixed | 59 |
 | confirmed | 5 |
 | open | 6 |
 | wontfix | 4 |
@@ -916,6 +920,17 @@ serial are false at the machine itself.
 | **Check** | RUN — emulator 3.1.0 on the PICOVDP card: a one-line program and `A=5`, then `dbg reset --warm`, `LIST` and `PRINT A`. |
 | **Status** | `fixed` — all six places, in the Phase 3 commits on `bios-2.0` (D1b). |
 | **Consequence** | A reader who trusted the variables to survive would restart a long computation from wrong values; one who trusted the program to be gone would retype it. |
+
+### A69 — Flow control was the interrupt handler's job, and BIOS v2.0.1 gave it to three routines
+
+| | |
+|---|---|
+| **Claim** | `docs/assembly/serial.md`: "The Kernal's interrupt handler does the flow control for you: when the ring buffer gets close to full it raises RTS to ask the other end to stop, and drops it again once `Chrin` has drained things." `docs/assembly/console.md`: keys and serial bytes land in the 256-byte ring buffer and "nothing is lost while your program is busy, up to a full buffer's worth". |
+| **Truth** | On `v2.0.1` the decision lives in one routine, `ScRts`, and three callers reach it: `Irq` after it stores a byte, `ReadBuffer` after it takes one, and `SerialChrout` at the end of each character. The third is the one the page could not have guessed. The 6551's TIC bits raise RTS *and* switch the transmitter off, so a machine holding RTS up cannot send — and BASIC echoes every character it reads, so the old scheme could wedge a real board: `SerialChrout` spun on a TDRE that could never arrive, the buffer never drained, and the pin never came down. `SerialChrout` now drops RTS for each byte and puts it back afterwards, with interrupts held off so `Irq` cannot raise it mid-character, and the marks moved down to leave room for what each of those windows lets in — `$C0` up, below `$80` down, the same `$40` of hysteresis the old `$F0`/`$B0` pair had. Two more behaviors came with it: `WriteBuffer` refuses to lap the reader, so a byte arriving on a full buffer is dropped rather than written over input nobody has read, and above the high mark `SerialChrout` drops the outgoing byte instead of opening the gate — the console goes quiet under a flood rather than echoing its way into losing the paste. |
+| **Source** | `6502-BIOS` tag `v2.0.1` (`62254c1`), `Kernal.asm` — `ScRts`, `ScRtsLow`, `ScRxPoll`, `ScFlooded`, `WriteBufferImpl` — and the `SC_CMD_*` and `SC_RTS_*_WATER` equates added to `BIOS.inc`. |
+| **Check** | GREP — the tag's `Kernal.asm` read against `v2.0`'s. The hang itself was found on a real R6551, not here; the BIOS carries the case that reproduces it. |
+| **Status** | `fixed` — this repository, in the same commit as the pin. The serial chapter now names all three places the line moves and says the transmitter goes with it, which is what somebody writing `SC_CMD` themselves needs to know; the console chapter says what happens past a full buffer. |
+| **Consequence** | Nothing on the site was measurably wrong and nothing shipped broken, which is the point of recording it. The fact base pins slot *addresses*, and not one of the 72 moved — 42 slot *targets* did, and the extractor never sees a target address — so a re-extraction that ought to have been the loudest signal of the release came back as two changed note blocks and a set of hashes. The prose was the only place the change could show up at all, and prose is the one thing in this repository no check reads for truth. It is A58's shape again: the sentence was true of the machine the docs are checked against (emulator 3.1.0 still carries the `v2.0` ROM) and false of the machine they describe. |
 
 ### O6 — A picture of a moving program cannot be pinned from the harness
 

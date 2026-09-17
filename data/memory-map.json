@@ -11,7 +11,7 @@
       },
       {
         "file": "BIOS.inc",
-        "sha256": "e714ade2bf339e882cf787764e0d3731fb551fd9bdacf4d06a8dbe0f8f9ee185"
+        "sha256": "6004f998b6fed1231fed2af4bdea10585b7c3d729d09a85aaab240e7d7a91cbb"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."

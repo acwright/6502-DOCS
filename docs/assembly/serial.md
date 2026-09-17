@@ -41,13 +41,16 @@ There is no `SerialPrintStr`, which is why the mode gets flipped around
 | `SC_DATA` `$9000` | Read a received byte, write one to send |
 | `SC_STATUS` `$9001` | Read: bit 7 set means this chip caused the interrupt |
 | `SC_RESET` `$9001` | Write anything to reset the chip |
-| `SC_CMD` `$9002` | Receive interrupts, and the RTS line |
+| `SC_CMD` `$9002` | Receive interrupts, and the RTS line — which carries the transmitter with it |
 | `SC_CTRL` `$9003` | Baud rate and framing — `$1F` is 19200 8-N-1 |
 
-The Kernal's interrupt handler does the flow control for you: when the ring
-buffer gets close to full it raises RTS to ask the other end to stop, and drops
-it again once `Chrin` has drained things. Talk to `SC_CMD` yourself and you are
-taking that over.
+The Kernal does the flow control for you: as the ring buffer fills, the
+interrupt handler raises RTS to ask the other end to stop, and reading the
+characters back out with `Chrin` drops it again once the buffer has drained.
+Sending is tangled up in the same register — the bits that raise RTS switch the
+transmitter off along with it — so the Kernal lowers the line again for as long
+as each outgoing byte takes to leave. Talk to `SC_CMD` yourself and you are
+taking all of that over, the transmitter included.
 
 ::: tip Changing the baud rate
 Write a different framing byte to `SC_CTRL`. Both ends have to agree, and the
