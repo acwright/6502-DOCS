@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import { createCssVariablesTheme } from '@shikijs/core'
 import { defineConfig } from 'vitepress'
@@ -24,6 +25,53 @@ const BASE = '/6502-DOCS/'
 const SITE = `https://acwright.github.io${BASE}`
 const OG_CARD = `${SITE}images/og-card.png`
 
+// The legacy edition: BIOS 1.6 and the TMS9918A, frozen at `/v1/`.
+const V1 = `${SITE}v1/`
+
+/**
+ * Pages and cards this edition no longer has, and where each one went.
+ *
+ * The Monitor and F18A mode belong to BIOS 1.6 and the TMS9918A, and their
+ * pages now live only in the v1 edition. Their old addresses are linked from
+ * outside this site — the BIOS 1.x README links the Monitor chapter — so each
+ * one answers with a small page that sends the reader to its v1 copy, rather
+ * than a 404. The stubs are written into the build after it finishes, so they
+ * are in no sidebar and no search index, and the link checker follows each one
+ * to its v1 page.
+ */
+const RETIRED: Record<string, string> = {
+  'using/monitor.html': 'using/monitor',
+  'f18a/index.html': 'f18a/',
+  'f18a/unlocking.html': 'f18a/unlocking',
+  'f18a/color.html': 'f18a/color',
+  'f18a/sprites.html': 'f18a/sprites',
+  'f18a/scrolling.html': 'f18a/scrolling',
+  'f18a/bitmap.html': 'f18a/bitmap',
+  'f18a/gpu.html': 'f18a/gpu',
+  'f18a/registers.html': 'f18a/registers',
+  'cards/monitor-reference.html': 'cards/monitor-reference.html',
+  'cards/f18a-registers.html': 'cards/f18a-registers.html'
+}
+
+function retiredStub(target: string) {
+  return [
+    '<!doctype html>',
+    '<html lang="en-US">',
+    '<head>',
+    '<meta charset="utf-8">',
+    '<meta name="robots" content="noindex">',
+    `<link rel="canonical" href="${target}">`,
+    `<meta http-equiv="refresh" content="0; url=${target}">`,
+    '<title>Moved to the v1 edition</title>',
+    '</head>',
+    '<body>',
+    `<p>This page describes BIOS 1.6 and the TMS9918A, and it now lives in the <a href="${target}">v1 edition</a> of this guide.</p>`,
+    '</body>',
+    '</html>',
+    ''
+  ].join('\n')
+}
+
 export default defineConfig({
   title: 'ACE Documentation',
   description:
@@ -32,6 +80,14 @@ export default defineConfig({
   base: BASE,
   cleanUrls: true,
   lastUpdated: true,
+
+  buildEnd({ outDir }) {
+    for (const [file, path] of Object.entries(RETIRED)) {
+      const out = join(outDir, file)
+      mkdirSync(dirname(out), { recursive: true })
+      writeFileSync(out, retiredStub(V1 + path))
+    }
+  },
 
   // Default to light regardless of the OS preference: the ACE itself is black
   // text on a white screen, and the site's first impression should match the
@@ -173,7 +229,6 @@ export default defineConfig({
           { text: 'Sound and video', link: '/using/sound-and-video' },
           { text: 'Storage', link: '/using/storage' },
           { text: 'Serial and a terminal', link: '/using/serial' },
-          { text: 'The Monitor', link: '/using/monitor' },
           { text: 'The emulator', link: '/using/emulator' },
           { text: 'On a PicoCalc', link: '/using/picocalc' }
         ]
@@ -257,20 +312,6 @@ export default defineConfig({
           { text: 'Banked RAM', link: '/assembly/banking' },
           { text: 'Idioms and speed', link: '/assembly/idioms' },
           { text: 'Worked projects', link: '/assembly/projects' }
-        ]
-      },
-      {
-        text: 'F18A Mode',
-        collapsed: true,
-        items: [
-          { text: 'What F18A mode is', link: '/f18a/' },
-          { text: 'Turning it on', link: '/f18a/unlocking' },
-          { text: 'Colors', link: '/f18a/color' },
-          { text: 'Sprites', link: '/f18a/sprites' },
-          { text: 'Scrolling and layers', link: '/f18a/scrolling' },
-          { text: 'The bitmap layer', link: '/f18a/bitmap' },
-          { text: 'The GPU', link: '/f18a/gpu' },
-          { text: 'Every register', link: '/f18a/registers' }
         ]
       },
       {

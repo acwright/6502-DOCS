@@ -578,41 +578,6 @@ body.card {
   letter-spacing: 0.5px;
 }
 
-/* ── VDP register blocks (F18A card) ────────────────────────────────────── */
-/* A heading line per register, with its own bit table under it. The heading
-   and its table have to stay together or a register's bits end up in the next
-   column from its name, so the pair is wrapped rather than each being kept
-   whole on its own. */
-.card .reg-head {
-  font-size: var(--fs-note);
-  color: var(--c-body);
-  line-height: var(--lh-note);
-  margin: 3px 0 1px;
-  break-after: avoid;
-  break-inside: avoid;
-}
-
-.card .reg-head strong {
-  font-family: var(--f-display);
-  font-size: var(--fs-note-strong);
-  letter-spacing: 0.5px;
-  color: var(--c-ink);
-}
-
-.card .reg-head .reg-hex {
-  font-family: var(--f-mono);
-  font-size: calc(var(--fs-note) - 0.5pt);
-  color: #666;
-}
-
-.card .reg-sum {
-  font-size: var(--fs-note);
-  line-height: var(--lh-note);
-  color: var(--c-body);
-  margin-bottom: 3px;
-  break-inside: var(--break-inner);
-}
-
 /* ── Boxed monospace block (entry points, register lists) ───────────────── */
 .card .entry-box {
   background: var(--c-box);

@@ -105,6 +105,11 @@ const VERSION_NEAR_BIOS = /BIOS[^\n]{0,40}?\b(v\d+\.\d+)/gi
 // `cards/archive/` holds the superseded v1.0–v1.4 sheets, and a link to one is
 // supposed to name an old version — that is the whole point of the archive.
 const ARCHIVE_LINE = /cards\/archive\//
+// The legacy edition, frozen at `/v1/`, is where BIOS 1.6, the Monitor and the
+// TMS9918A are documented. A line that links it is pointing a reader at an
+// older machine, and may name that machine's versions. Only a line carrying the
+// link is exempt: a version stated anywhere else is still held to the pins.
+const V1_LINE = /https:\/\/acwright\.github\.io\/6502-DOCS\/v1\//
 
 // The emulator's own version goes stale the same way, and in the same place: a
 // transcript inside a code fence, where nothing can interpolate. The two pages
@@ -180,6 +185,8 @@ for (const file of markdownFiles(DOCS)) {
       console.log(`${relative(ROOT, file)}:${n + 1}  ${rule.name} — "${hit[0]}"`)
       console.log(`       ${rule.why}`)
     }
+
+    if (V1_LINE.test(line)) continue
 
     for (const hit of line.matchAll(THREE_PART_VERSION)) {
       if (hit[0] === EMULATOR_VERSION) continue

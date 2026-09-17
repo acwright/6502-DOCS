@@ -12,8 +12,7 @@ You have about five seconds to choose.
 - Press <kbd>Enter</kbd> — or just wait — and you get **BASIC**. This is what
   you want, nearly always.
 - Press <kbd>Esc</kbd> and you get the **Monitor** instead: a much lower-level
-  tool for looking at memory directly. It's [a whole chapter](/using/monitor) of
-  its own, and nothing is lost by ignoring it for now.
+  tool for looking at memory directly. Nothing is lost by ignoring it for now.
 
 Take the default, and a moment later:
 

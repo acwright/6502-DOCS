@@ -168,18 +168,6 @@ const desc = (html) => ({ cls: 'td-desc', html })
 
 const SIDE = (line) => `A.C. Wright 6502 BIOS<br>${line}`
 
-/**
- * Lowercase a sentence's first word so it can be joined into a list — unless
- * that word is an acronym, which stays as it was written. "The BRK statement"
- * wants to become "the BRK statement"; "ESC at the boot splash" does not want
- * to become "eSC at the boot splash", which is what the card used to print.
- */
-function lowerFirst(text) {
-  const first = text.split(' ', 1)[0]
-  if (first === first.toUpperCase() && /[A-Z]/.test(first)) return text
-  return text.charAt(0).toLowerCase() + text.slice(1)
-}
-
 // ---------------------------------------------------------------------------
 // BASIC reference
 // ---------------------------------------------------------------------------
@@ -370,108 +358,6 @@ const ERROR_CAUSE = {
 }
 
 // ---------------------------------------------------------------------------
-// Monitor reference
-// ---------------------------------------------------------------------------
-
-function monitorReference() {
-  const monitor = facts('monitor-commands.json')
-  const errors = facts('errors.json')
-  const version = monitor.$meta.biosVersion
-
-  // Two commands document themselves in a shape that reads as a paragraph
-  // rather than as a syntax line. On a card, the line has to fit the column.
-  const SYNTAX_OVERRIDE = {
-    N: 'N $XXXX | +DDDDD | %BBBB',
-    ';': '; PC xxxx A xx X xx Y xx SP xx P xx',
-    '#': '# [NN]'
-  }
-
-  const rows = monitor.commands.map((c) => [
-    cmd(esc(c.command)),
-    syn(esc(SYNTAX_OVERRIDE[c.command] ?? c.syntax ?? c.readmeSyntax ?? c.command)),
-    desc(rich(c.summary) + (c.notes?.length ? ` <em>${rich(c.notes.join(' '))}</em>` : ''))
-  ])
-
-  const messages = table(
-    [{ label: 'Message', width: '40%' }, { label: 'When' }],
-    errors.monitorMessages.map((m) => {
-      const text = m.text.replace(/\\r\\n/g, '').trim()
-      const when = MONITOR_MESSAGE_CAUSE[m.symbol]
-      if (when === undefined) throw new Error(`monitor-reference: no cause written for ${m.symbol}`)
-      return [cmd(esc(text)), desc(rich(when))]
-    })
-  )
-
-  return card({
-    file: 'monitor-reference.html',
-    title: '6502 Monitor — Reference',
-    side: SIDE(`Monitor v1.1 &middot; BIOS v${version}`),
-    subtitle: '6502 MONITOR — QUICK REFERENCE',
-    style: '--w-cmd: 12%; --w-syn: 34%',
-    // One page, two columns. The whole Monitor is seventeen commands and four
-    // short explanations — spread over two sheets it was two-fifths white
-    // space, and a card you have to turn over to find the register line is a
-    // card you stop turning over.
-    pages: [
-      {
-        heading: 'Monitor Reference',
-        sections: [
-          section('Getting in and out',
-            note('Three ways in.',
-              monitor.entryRoutes.map((r) => esc(lowerFirst(r))).join('; ') +
-              `. The prompt is a single <code>${esc(monitor.prompt)}</code>.`),
-            note('One way out.',
-              'Type <code>X</code>. BASIC comes back warm — your program and variables are still there.'),
-            table([{ label: 'Entry', width: '30%' }, { label: 'Address', width: '18%' }, { label: 'Used by' }],
-              monitor.entryPoints.map((e) => [
-                cmd(esc(e.name)), addr(esc(e.address)), desc(esc(e.description))
-              ]))),
-          section('Every command',
-            table([{ label: 'Cmd', width: '12%' }, { label: 'Syntax', width: '34%' }, { label: 'What it does' }], rows)),
-          section('Reading the register line',
-            `<div class="reg-display">PC=E9D3 A=00 X=FF Y=68 SP=FA ${esc(errors.monitorRegisterHeader.text)}</div>`,
-            note(null,
-              esc(errors.monitorRegisterHeader.description) +
-              ' A flag letter shown means the bit is set; a dash means it is clear. ' +
-              '<code>;</code> writes the same fields back.')),
-          section('Numbers',
-            note(null,
-              'Addresses are typed as bare hex — <code>M 0800</code>, not <code>M $0800</code>. ' +
-              'The <code>N</code> command is the exception and wants a prefix: <code>$</code> hex, ' +
-              '<code>+</code> decimal, <code>%</code> binary. It answers in all three.'),
-            '<div class="reg-display">. N $FF00\n$FF00  +65280  %1111111100000000</div>'),
-          section('Go versus Jump',
-            note('Use J.',
-              `<code>J ${monitor.wozmon.address.slice(1)}</code> calls the code at an address and comes ` +
-              'back to the monitor when it hits <code>RTS</code>. <code>G</code> hands the machine over ' +
-              'for good — and it turns interrupts off on the way, so anything that waits for a keypress ' +
-              'will sit there for ever.'),
-            note('The Wozmon easter egg.',
-              `<code>${esc(monitor.wozmon.fromMonitor)}</code> from here, or ` +
-              `<code>${esc(monitor.wozmon.fromBasic)}</code> from BASIC, lands you in a copy of the ` +
-              'original Apple I monitor. Its prompt is a backslash. <code>FF00.FF07</code> reads eight ' +
-              'bytes; <code>0800: A9 41</code> writes two.')),
-          section('The messages it prints', messages)
-        ]
-      }
-    ]
-  })
-}
-
-/** When each Monitor string appears. The ROM holds the words, not the reason. */
-const MONITOR_MESSAGE_CAUSE = {
-  MonStrBanner: 'On the way in, whichever route you came by',
-  MonStrBrk: 'A `BRK` was hit — the address that follows is where',
-  MonStrNotFound: '`L "NAME"` and there is no such file on the current disk',
-  MonStrDirFull: '`S "NAME"` on a disk that already holds sixteen files',
-  MonStrLoadPfx: 'A load finished — the byte count and address follow',
-  MonStrSavePfx: 'A save finished',
-  MonStrBytesAt: 'Tail of the load and save reports',
-  MonStrBytes: 'Tail of a report that has no address to give',
-  MonStrIOErr: 'The CompactFlash card did not answer'
-}
-
-// ---------------------------------------------------------------------------
 // Kernal jump table
 // ---------------------------------------------------------------------------
 
@@ -542,120 +428,6 @@ function kernalJumpTable() {
         ]
       },
       { heading: 'Kernal Jump Table', sections: half(4, 9) }
-    ]
-  })
-}
-
-// ---------------------------------------------------------------------------
-// F18A registers
-// ---------------------------------------------------------------------------
-
-/**
- * The one card in the set whose data does not come from this ecosystem at all.
- *
- * `f18a.json` is transcribed from Matthew Hagerty's F18A register sheet and
- * Troy Schrapel's Pico9918 reference, because the enhanced mode of the ACE's
- * video card is defined by those and by nothing in any repo here. It is also
- * the one card describing something the emulator cannot run, which is exactly
- * why it wants to be on paper: the reader checking it is sitting in front of
- * real hardware with no way to ask the machine.
- *
- * Bit order is flipped on the way in — Hagerty numbers the most significant
- * bit as 0 — and that conversion lives in the JSON, not here, so the card and
- * the chapter cannot disagree about which end a bit is.
- */
-function f18aRegisters() {
-  const f18a = facts('f18a.json')
-
-  const bitRows = (bits) =>
-    bits.map((b) => [
-      addr(esc(b.bits)),
-      label(esc(b.name)),
-      desc(rich(b.description) + (b.pico ? ' <em>(Pico9918)</em>' : b.enhanced ? ' <em>(needs unlocking)</em>' : ''))
-    ])
-
-  /** One register: a heading row, then a row per bit field, or just the summary. */
-  const regBlock = (r) => {
-    const head = `<div class="reg-head"><strong>VR${r.reg}</strong> <span class="reg-hex">${esc(r.hex)} / ctrl ${esc(r.ctrl)}</span> &mdash; ${esc(r.name)}${r.pico ? ' <em>(Pico9918)</em>' : ''}</div>`
-    const body = r.bits
-      ? table([], bitRows(r.bits))
-      : `<div class="reg-sum">${rich(r.summary)}</div>`
-    return head + '\n' + body
-  }
-
-  const standard = f18a.registers.filter((r) => r.standard)
-  const enhanced = f18a.registers.filter((r) => !r.standard)
-
-  const statusRows = f18a.statusRegisters.map((s) => [
-    addr(`SR${s.sr}`),
-    desc(rich(s.summary) + (s.pico ? ' <em>(Pico9918)</em>' : s.f18aOnly ? ' <em>(F18A only)</em>' : ''))
-  ])
-
-  const modeRows = f18a.modes.map((m) => [
-    label(esc(m.name)),
-    desc(`M1 ${m.m1} &middot; M2 ${m.m2} &middot; M3 ${m.m3} &middot; M4 ${m.m4}`)
-  ])
-
-  const ecmRows = f18a.colorModes.map((m) => [
-    label(m.ecm === 0 ? 'Original' : `ECM${m.ecm}`),
-    desc(`${m.colors} colors per tile, ${m.spriteColors} per sprite &middot; ${m.planes} plane${m.planes > 1 ? 's' : ''} &middot; ${m.patternTable} pattern table &middot; ${m.palettes} palettes`)
-  ])
-
-  // The caveat rides on the card as well as in the chapter. Whoever is holding
-  // this sheet is standing at the hardware without the guide open, and D4 of a
-  // sprite's attribute byte is the one bit the two references describe
-  // differently — exactly the thing you want to know before you rely on it.
-  const attrBlock = (a) =>
-    section(a.title,
-      table([], bitRows(a.bits)),
-      a.conflict ? note('The sources disagree.', esc(a.conflict)) : '')
-
-  return card({
-    file: 'f18a-registers.html',
-    title: 'F18A Mode — Register Reference',
-    side: SIDE('F18A mode &middot; Pico9918'),
-    subtitle: 'F18A MODE — REGISTERS',
-    style: '--w-addr: 22%; --w-label: 22%',
-    pages: [
-      {
-        heading: 'F18A Mode — Registers',
-        sections: [
-          section('Unlocking',
-            note('Write $1C to VR57. Twice, consecutively.',
-              `${esc(f18a.unlock.why)} Any other register write between the two cancels it. ` +
-              `<strong>${esc(f18a.unlock.hazard)}</strong>`),
-            note('Writing a register.',
-              'Value to <code>$9C01</code>, then the register number with bit 7 set. ' +
-              'Registers 0&ndash;7 always; 8&ndash;63 only once unlocked.'),
-            note('Which card is this?',
-              `Status register 1 reads <code>$E0</code> on a real F18A and <code>$E8</code> on a ` +
-              `Pico9918. Select it with VR15, read <code>$9C01</code>, then <strong>put VR15 back to 0</strong>.`),
-            note('Bit order.',
-              'D7 is the most significant bit here. Hagerty&rsquo;s own documents number the ' +
-              'most significant bit as 0, so his tables read mirrored against these.')),
-          section('Display modes', table([], modeRows)),
-          flowSection('Registers 0–7 (always available)',
-            standard.map(regBlock).join('\n')),
-          flowSection('Registers 10–34 (unlocked only)',
-            enhanced.filter((r) => r.reg <= 34).map(regBlock).join('\n'))
-        ]
-      },
-      {
-        heading: 'F18A Mode — Registers',
-        sections: [
-          flowSection('Registers 35–63 (unlocked only)',
-            enhanced.filter((r) => r.reg >= 35).map(regBlock).join('\n')),
-          section('Status registers', table([], statusRows)),
-          section('Enhanced color modes', table([], ecmRows)),
-          attrBlock(f18a.attributes.spriteUnlocked),
-          attrBlock(f18a.attributes.tile),
-          section('Before you trust this',
-            note('It cannot be checked here.',
-              'F18A mode exists on hardware only. Everything on this card is transcribed from ' +
-              'Matthew Hagerty&rsquo;s F18A register sheet and the Pico9918 reference; where those ' +
-              'two disagree, the guide says so and this card follows the guide.'))
-        ]
-      }
     ]
   })
 }
@@ -962,12 +734,10 @@ function main() {
   const check = process.argv.includes('--check')
   const built = [
     basicReference(),
-    monitorReference(),
     kernalJumpTable(),
     memoryMap(),
     characterMap(),
-    keyboardLayout(),
-    f18aRegisters()
+    keyboardLayout()
   ]
 
   let stale = 0

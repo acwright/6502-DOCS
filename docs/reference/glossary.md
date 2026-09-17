@@ -42,14 +42,10 @@ nothing. Compare *warm start*.
 holding up to sixteen files. `DISK n` selects one. Nothing to do with a
 spinning disk.
 
-**ECM** — enhanced color mode. The *F18A* setting that turns pattern bits into
-color numbers, so a tile or a sprite can show four or eight colors instead of
-one. See [Colors](/f18a/color).
-
 **F18A** — a second, hidden feature set inside the *Pico9918*: two tile layers,
 hardware scrolling, 64 programmable colors, flipping sprites, a bitmap layer and
 a small processor of its own. Locked at power-on, and available on hardware
-only. See [F18A mode](/f18a/).
+only. See [the BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/) of this guide.
 
 **GPIO** — general-purpose input and output, the sixteen pins of the 65C22
 VIA. The joysticks and the keyboard use them; so can you.
@@ -75,7 +71,6 @@ run the original's software.
 **Monitor** — the machine-code monitor in ROM, reached with `BRK` or by
 pressing <kbd>Esc</kbd> at boot. Lets you look at memory, disassemble it,
 change it and run it. Its prompt is a period.
-See [The Monitor](/using/monitor).
 
 **null modem** — a serial cable or adapter that crosses transmit and receive.
 The ACE and a PC are both wired as terminals, so reaching one from the other

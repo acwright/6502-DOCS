@@ -140,6 +140,7 @@ PC=E9D3 A=00 X=FF Y=68 SP=FA ---B--ZC
 ```
 
 The `.` is the Monitor's prompt. `X` there brings you back to BASIC with your
-program still in memory. [The Monitor](/using/monitor) is the tour.
+program still in memory. The tour of the Monitor is in
+[the BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/) of this guide.
 
 Next: [what to do when none of this works](/basic/debugging).

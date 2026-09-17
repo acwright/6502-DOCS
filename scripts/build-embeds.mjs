@@ -35,16 +35,13 @@ const OUT = join(ROOT, 'data', 'embeds.json')
  * Every program a chapter offers to run, by its path under `samples/`.
  *
  * Adding one is one line here plus an `<Emulator sample="…">` on the page.
- * Two kinds of sample are deliberately absent:
+ * One kind of sample is deliberately absent:
  *
  * - **Anything that reads a card.** `file-browser`, `high-score` and `notes`
  *   are `console storage` cases: the harness boots them behind a prepared
  *   CompactFlash image, and a frame has a blank one. Carrying a real image in
  *   the URL is not an option either — the smallest one `cffs` makes is a
  *   megabyte, and the URL is where the program lives.
- * - **Anything under `/f18a/`.** The emulator is a faithful TMS9918A and masks
- *   the register writes those chapters are about, so a live machine there would
- *   demonstrate the stock branch and read as if the chapter were wrong.
  */
 const EMBEDS = [
   // Getting started, and the chapter that teaches stopping a program: this one
@@ -67,9 +64,6 @@ const EMBEDS = [
   'assembly/hello.asm',
   'assembly/greeting.asm',
   'assembly/screen.asm',
-  'assembly/graphics-1.asm',
-  'assembly/graphics-2.asm',
-  'assembly/multicolor.asm',
   'assembly/fanfare.asm',
   'assembly/stick.asm',
   'assembly/clock.asm',

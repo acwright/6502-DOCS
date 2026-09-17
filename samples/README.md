@@ -64,40 +64,6 @@ listing. What is left is whether the page works, which needs a browser:
 Repeat 1 whenever the frame's contract moves — that is,
 `6502-EMULATOR/docs/EMBEDDING.md`.
 
-## The two cases that assert the branch you are not writing for
-
-`assembly/f18a-detect` and `basic/f18a-detect` are the F18A section's detection
-routines. F18A mode exists on hardware only — the emulator masks video register
-writes to 0-7 exactly as the real TMS9918A does — so the enhanced branches of
-both programs are unreachable here and always will be.
-
-What runs is the other branch, and it is the one worth pinning down. It is what
-executes on every machine that is not an ACE with the enhanced firmware, and its
-job is to notice that, say so, and put back the three registers the attempt
-clobbered on the way past. Both `.expect` files assert the report **and** that
-the prompt is still on the screen afterwards, because the failure mode of a
-careless detector is not a wrong answer — it is a blank screen.
-
-Neither case can be extended to cover the rest of the section. A worked F18A
-graphics program would have to be verified on hardware and recorded here the way
-`crossdev/test.sh` is.
-
-## The three cases that assert less than they look like they do
-
-`assembly/graphics-1`, `assembly/graphics-2` and `assembly/multicolor` are the
-TMS demos, ported from `6502-ASM`. Each takes the screen off the machine, draws
-into a mode where the name table holds pixels rather than characters, waits for
-a key, restores text mode and returns.
-
-`dbg screen text` reads that name table as characters, so in a graphics mode it
-produces deterministic gibberish. Asserting on it would be asserting on the
-random-number generator. What these three cases check instead is the part that
-can genuinely break: the demo runs to the end, `InitVideo` puts text mode back,
-and BASIC's prompt reappears. A crash, a hang, or a mode left broken all fail.
-
-The pictures themselves are a screenshot problem, not a harness problem —
-`npm run screens` re-takes them.
-
 ## Cases that are not files
 
 The BASIC reference carries a worked example for every keyword, and 170 files

@@ -32,8 +32,8 @@ well, reached a slice at a time when a program needs more room than BASIC's
 **The little black module** near the video connector is a **Pico9918**. It
 pretends to be a TMS9918A, the video chip from the ColecoVision and the MSX,
 and drives a plain VGA monitor. That's where your 40×24 text screen and its 16
-colors come from. It has a second personality it keeps to itself until asked —
-see [F18A mode](/f18a/), which is where the other 4080 colors are.
+colors come from. It has a second personality, F18A mode, that it keeps to
+itself until a program asks for it.
 
 **The socketed 28-pin chip** is an **ARMSID** — a drop-in replacement for the
 MOS 6581, the sound chip from the Commodore 64. Three voices, real filters, RCA

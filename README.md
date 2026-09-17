@@ -188,14 +188,14 @@ printed online. A card picks a size regime with a body class — `card` for a
 dense reference sheet, `card placard` for one read at arm's length — and sets
 its column widths with custom properties. It never carries CSS of its own.
 
-**Six of the ten are generated** from the fact base — the BASIC, Monitor,
-Kernal, memory-map, character-set and keyboard-layout sheets. Edit `data/`, or
-the layout in `scripts/build-cards.mjs`, never the HTML. The other four come
+**Five are generated** from the fact base — the BASIC, Kernal, memory-map,
+character-set and keyboard-layout sheets. Edit `data/`, or
+the layout in `scripts/build-cards.mjs`, never the HTML. The rest come
 from schematics and firmware rather than from the ROM, so they are hand-written
 with their source cited in a comment at the top of the file.
 
 ```sh
-npm run cards         # regenerate the six that come from data/
+npm run cards         # regenerate the five that come from data/
 npm run cards:verify  # fail if a checked-in copy has drifted (in verify + CI)
 npm run cards:check   # no external requests, no inline CSS, real letter pages
 ```
@@ -350,8 +350,6 @@ Four rules the component enforces rather than documents:
 
 Samples that read a memory card are not embeddable — the frame's card is blank,
 and the smallest image `cffs` makes is a megabyte, which is not going in a URL.
-There are no embeds under `/f18a/` either: the emulator is a faithful TMS9918A
-and masks the register writes those chapters are about.
 
 ### The KIM
 
@@ -419,7 +417,7 @@ prints `ok` or tells you what moved.
 ```sh
 npm run facts         # re-extract data/ from the BIOS source
 git diff data/        # read this — it is the release notes, mechanically derived
-npm run cards         # the six generated cards follow the fact base
+npm run cards         # the five generated cards follow the fact base
 npm run diagrams      # so do nine of the fifteen diagrams
 npm run verify        # every listing, every keyword example, against the new ROM
 npm run screens:verify # did anything the reader looks at change?
@@ -458,7 +456,7 @@ Links into `cards/archive/` are exempt, since naming an old version is what
 that directory is for.
 
 The emulator version is pinned in `data/emulator.json`, hand-authored like
-`basic-examples.json` and `f18a.json`, and it is a gate: `npm run preflight`
+`basic-examples.json`, and it is a gate: `npm run preflight`
 compares `6502 --version` against it and fails on anything else. That matters
 more than it used to, because three different things now come off one release —
 the samples' output, the screenshots' pixels, and the bytes of every program a

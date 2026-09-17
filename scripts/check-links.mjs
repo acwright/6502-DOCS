@@ -124,6 +124,10 @@ function linksInMarkdown(md) {
  */
 function ownAddress(url) {
   if (url === SITE.slice(0, -1)) return BASE
+  // The v1 edition answers from the same address but is not in this build: the
+  // deploy nests a separate build of the `v1` branch there. So a link into it is
+  // asked of the network, where it is live.
+  if (url.startsWith(`${SITE}v1/`)) return null
   return url.startsWith(SITE) ? BASE + url.slice(SITE.length) : null
 }
 

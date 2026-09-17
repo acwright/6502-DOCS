@@ -152,8 +152,7 @@ Every one of those is a pair of writes to the same address, and the card is
 counting them. If an interrupt lands between the two and its handler also talks
 to the card, both get confused. The Kernal's own interrupt handler does not
 touch the video card, but anything of yours might — so `sei` around direct
-register work and `cli` afterwards, which is exactly what the graphics demos
-do.
+register work and `cli` afterwards.
 :::
 
 Reading `VC_STATUS` (the same address as `VC_REG`) resets the card's

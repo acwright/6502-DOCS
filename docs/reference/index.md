@@ -1,6 +1,6 @@
 # Reference cards
 
-Fourteen sheets, sized for letter paper, meant to be printed and kept next to
+Thirteen sheets, sized for letter paper, meant to be printed and kept next to
 the keyboard. Each one condenses a chapter, so a card is a shortcut to something
 this guide also explains at length — never the only copy.
 
@@ -35,14 +35,8 @@ laptop with no internet looks the same as one printed online.
 | Card | What it covers | The chapter it condenses |
 |---|---|---|
 | 📄 **[BASIC Reference](/cards/basic-reference.html)** | Every keyword with its syntax, the operator table, every error message, and the three traps that catch everyone | [Every keyword](/basic/reference) |
-| 📄 **[Monitor Reference](/cards/monitor-reference.html)** | All seventeen commands, the register display, and `G` versus `J` | [The Monitor](/using/monitor) |
 | 📄 **[Kernal Jump Table](/cards/kernal-jump-table.html)** | All 53 published entry points with their registers, grouped by job | [The Kernal](/assembly/kernal) |
 | 📄 **[Character Set](/cards/character-map.html)** | All 256 glyphs drawn from the ROM's own bytes, with names, and what `PRINT` can actually reach | [The character set](/reference/character-set) |
-| 📄 **[F18A Registers](/cards/f18a-registers.html)** | Every enhanced register on the video card, bit by bit, plus the status registers and the attribute bytes | [Every register](/f18a/registers) |
-
-That last one is the sheet to have printed rather than open in a tab: F18A mode
-runs on real hardware only, so the machine you are testing it on is not the
-machine you would be reading it on.
 
 ## The KIM add-on
 

@@ -27,11 +27,9 @@ const FILES = [
   ['hardware', 'hardware.json'],
   ['basicKeywords', 'basic-keywords.json'],
   ['basicExamples', 'basic-examples.json'],
-  ['monitorCommands', 'monitor-commands.json'],
   ['errors', 'errors.json'],
   ['charset', 'charset.json'],
   ['systems', 'systems.json'],
-  ['f18a', 'f18a.json'],
   ['emulator', 'emulator.json'],
   ['kimulator', 'kimulator.json'],
   ['embeds', 'embeds.json']
@@ -46,11 +44,9 @@ export interface Facts {
   hardware: any
   basicKeywords: any
   basicExamples: any
-  monitorCommands: any
   errors: any
   charset: any
   systems: any
-  f18a: any
   /** The emulator release the site is written against, and the embed contract. */
   emulator: any
   /** The same, for the KIM's own emulator. A separate machine, separate contract. */

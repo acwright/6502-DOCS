@@ -114,8 +114,8 @@ bin2woz -a 0x0800 build/countdown.prg > countdown.woz
 ```
 
 Get to Wozmon — `J FF00` from the Monitor's dot prompt, not `G`, which lands you
-in a Wozmon that ignores everything you type ([The Monitor](/using/monitor)
-explains why). Paste the text into your terminal and the bytes go into memory a
+in a Wozmon that ignores everything you type: `G` turns interrupts off on its
+way out, so the keystrokes never arrive. Paste the text into your terminal and the bytes go into memory a
 line at a time. No protocol, no card, nothing to install on the ACE's side.
 
 ::: warning Don't paste a program you then want to RUN

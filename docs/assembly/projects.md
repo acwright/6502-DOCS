@@ -11,7 +11,6 @@ are not about the ACE at all.
 | Hello world | [Hello world](/assembly/hello) | The startup stub, and how four lines print |
 | Reading a line | [Console](/assembly/console) | Polling for keys without blocking |
 | A framed sign | [The screen](/assembly/video) | Positioning characters, and the color byte |
-| The graphics demos | [The graphics modes](/assembly/graphics) | Setting the card's registers yourself |
 | A little fanfare | [Sound](/assembly/sound) | Parallel tables, and frequency at build time |
 | Reading the sticks | [The keyboard and the sticks](/assembly/input) | Active-low bits, and a mask table |
 | Files both ways | [Files](/assembly/storage) | The three pointers, and the carry flag |

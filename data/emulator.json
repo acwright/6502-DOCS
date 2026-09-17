@@ -1,7 +1,7 @@
 {
   "$meta": {
     "title": "The emulator this site is written against",
-    "description": "Hand-authored, like basic-examples.json and f18a.json, because the emulator is a sibling repository rather than a source file this one can read. It carries the release every sample, screenshot and embedded program on this site was produced by, and the shape of the embed contract, so both are checked rather than remembered: `npm run preflight` fails on a machine running something else, and the link checker fails on a frame parameter this release has never heard of.",
+    "description": "Hand-authored, like basic-examples.json, because the emulator is a sibling repository rather than a source file this one can read. It carries the release every sample, screenshot and embedded program on this site was produced by, and the shape of the embed contract, so both are checked rather than remembered: `npm run preflight` fails on a machine running something else, and the link checker fails on a frame parameter this release has never heard of.",
     "sources": [
       {
         "file": "6502-EMULATOR/package.json",

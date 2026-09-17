@@ -20,9 +20,8 @@
  * The method is the one in 6502-EMULATOR/docs/AGENTS.md, with one difference
  * from the sample harness: a shot gets its own machine rather than a restore
  * from a shared snapshot. Some of these want the screen *mid-run* — the splash
- * before it clears, a graphics demo before it hands text mode back — and that is
- * cleaner to hit from a cold, paused start than from a snapshot taken at the
- * prompt.
+ * before it clears — and that is cleaner to hit from a cold, paused start than
+ * from a snapshot taken at the prompt.
  *
  * The video card puts out 320×240. That is scaled up by an exact factor with
  * nearest-neighbor sampling, because a character cell is eight hard pixels and
@@ -93,7 +92,7 @@ const SHOTS = [
     program: 'samples/basic/color-loop.bas',
     // The loop paints one color at a time over the same two words, so no
     // frame of it ever holds the whole palette. What a shot can show is where
-    // it finishes. The picture of the palette is the Graphics I demo.
+    // it finishes.
     settle: 4_000_000
   },
   {
@@ -106,49 +105,10 @@ const SHOTS = [
     sends: ['1\\r', '1\\r', '3\\r', '1\\r']
   },
   {
-    name: 'monitor',
-    subject: "The Monitor's dot prompt, a memory dump and the register display.",
-    where: 'docs/using/monitor.md',
-    lines: ['BRK'],
-    sends: ['M 0800\\r', 'R\\r']
-  },
-  {
-    name: 'wozmon',
-    subject: "Wozmon's backslash, reached with J, and a dump of its own first bytes.",
-    where: 'docs/using/monitor.md',
-    lines: ['BRK'],
-    // `J`, not `G`: `G` turns interrupts off on the way out and the keyboard
-    // never reaches Wozmon's polling loop.
-    sends: ['J FF00\\r', 'FF00.FF0F\\r']
-  },
-  {
     name: 'framed-sign',
     subject: 'A framed sign drawn character by character, in the box-drawing glyphs PRINT cannot reach.',
     where: 'docs/assembly/video.md',
     program: 'samples/assembly/screen.asm'
-  },
-  {
-    name: 'graphics-1',
-    subject: 'Graphics Mode I: thirty-two color pairs, one per row of the pattern table.',
-    where: 'docs/assembly/graphics.md',
-    program: 'samples/assembly/graphics-1.asm',
-    // Caught while it waits for a key. Press one and it puts text mode back,
-    // which is the one thing a picture of it must not show.
-    settle: 8_000_000
-  },
-  {
-    name: 'graphics-2',
-    subject: 'Graphics Mode II, with a color for every eight pixels.',
-    where: 'docs/assembly/graphics.md',
-    program: 'samples/assembly/graphics-2.asm',
-    settle: 8_000_000
-  },
-  {
-    name: 'multicolor',
-    subject: 'Multicolor mode: 64×48 fat pixels, fifteen colors, no attribute clash.',
-    where: 'docs/assembly/graphics.md',
-    program: 'samples/assembly/multicolor.asm',
-    settle: 8_000_000
   }
 ]
 
