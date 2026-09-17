@@ -56,6 +56,11 @@ with `6502 dbg sym load`.
 headless 3.1.0 — serial console, 1 MHz, turbo, 1619280 cycles
 ```
 
+On a machine started with `--console video` the same line names the video card,
+`video console (picovdp)`, and it says `flow control` when `--flow-control` is
+on. `dbg info --json` has both as `vdp` and `flowControl`, which is the way for a
+script to check it started the machine it meant to.
+
 ::: tip Ports
 With one emulator running you can leave `--port` off entirely — the machine
 publishes where it is listening and every `dbg` command finds it. Give a port
@@ -249,13 +254,16 @@ hex string, so `DEADBEEF` is four of them, while `mem fill` takes a single byte
 ```
 
 A snapshot is the whole machine — RAM, registers, video memory, the clock chip,
-the card's changed sectors — in about 52 KB. Restoring is roughly a millisecond,
-against the five million cycles a cold boot costs, and it is exact, so it is the
-cheapest way to get back to a known-good starting point twenty times in a row.
+the card's changed sectors — in about 52 KB, or about 140 KB with the video card
+fitted, whose own 64 KB comes too. Restoring is roughly a millisecond, against
+the 330,000 cycles a cold boot costs, and it is exact, so it is the cheapest way
+to get back to a known-good starting point twenty times in a row.
 [Testing your program](/crossdev/testing) is built on this.
 
 A snapshot is refused rather than half-applied if the machine doesn't match —
-different ROM, different cards. Keep it next to the ROM it was taken against.
+different ROM, different cards. It names the video card it was taken with, so
+one from a machine with the other card fitted is refused too. Keep it next to
+the ROM it was taken against.
 
 ## Exit codes
 
@@ -292,6 +300,25 @@ that mode:
 6502 dbg screen png shot.png
 ```
 
-`screen hash` is the cheap version, for "has anything changed".
+`screen hash` is the cheap version, for "has anything changed", and the one to
+use on a picture made of tiles and sprites, where there is no text to read.
+`screen text` reads the characters in whatever layout the card is drawing: 40
+columns and 24 rows of text, or 32 or 40 columns and 24 or 30 rows of tiles.
+
+The video card itself has three more:
+
+```
+6502 dbg video
+6502 dbg video regs
+6502 dbg video palette
+```
+
+`video` says which layout the card is drawing, where each port is pointing, and
+what the status registers hold; `video regs` lists all 128 registers, and
+`--set` writes one; `video palette` prints the 256 colors it is drawing with.
+
+A run that doesn't need a debugger can still leave a picture behind:
+`--screenshot shot.png` on a `--console video` run saves the last one drawn when
+the machine stops.
 
 Next: [turning all of this into a test suite](/crossdev/testing).

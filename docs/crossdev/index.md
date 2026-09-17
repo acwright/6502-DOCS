@@ -13,7 +13,7 @@ to run and check itself while you are still typing.
 ## What you end up with
 
 ```
-6502 run build/countdown.prg
+6502 run --vdp picovdp build/countdown.prg
 ```
 
 A window opens, the machine boots, and your program runs. Take the window away
@@ -21,7 +21,7 @@ and the same build runs in your terminal, prints what it printed, and tells you
 whether it worked:
 
 ```
-$ printf '\rRUN\r' | 6502 run --headless --exit-on 'LIFT OFF' --timeout 20s build/countdown.prg
+$ printf 'RUN\r' | 6502 run --headless --vdp picovdp --exit-on 'LIFT OFF' --timeout 20s build/countdown.prg
 ```
 
 That second form is the interesting one. It turns "does my program work" into a

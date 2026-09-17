@@ -8,9 +8,9 @@ about a second.
 
 Five rules. The BIOS's own suite is built on them, and so is everything below.
 
-**Boot once.** Booting to the `OK` prompt costs 5,354,440 emulated cycles.
-Doing that per case is the difference between a suite you run constantly and one
-you avoid.
+**Boot once.** Booting to the `OK` prompt costs about 330,000 emulated cycles.
+It's quick, and doing it per case is still the difference between a suite you
+run constantly and one you avoid.
 
 **Restore per case.** Take a snapshot at the prompt and go back to it. About a
 millisecond, and *exact* — memory, registers, video, the card's changed sectors
@@ -107,13 +107,16 @@ happily over a serial line. It also means a test for anything visual has to boot
 a machine with the card fitted and read the screen instead of the console:
 
 ```sh
-6502 run --headless --console video --debug --debug-port 6510 &
+6502 run --headless --vdp picovdp --flow-control --console video --debug --debug-port 6510 &
 ...
 6502 dbg screen text --port 6510
 ```
 
-Screen rows come back padded to the full forty columns, so anchor a pattern with
-`\s*$` rather than `$`.
+Screen rows come back padded to the width of the screen — forty columns on the
+text screen, 32 or 40 in a layout of tiles — so anchor a pattern with `\s*$`
+rather than `$`. For a picture made of tiles and sprites, where there is no text
+to read, compare `dbg screen hash` instead: the same program draws the same
+picture every time, and one pixel out changes the hash.
 
 There is no console byte stream in video mode, so waiting works differently
 too: advance the machine by a number of *emulated cycles* rather than waiting

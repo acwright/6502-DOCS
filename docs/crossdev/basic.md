@@ -47,7 +47,7 @@ Put it on a card image and run it:
 ```
 cffs create disk.img --size 1M
 cffs add disk.img TABLE.PRG
-6502 run --headless --cf disk.img
+6502 run --headless --vdp picovdp --cf disk.img
 ```
 
 ```

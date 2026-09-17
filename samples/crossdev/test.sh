@@ -17,12 +17,13 @@ port=6510
 state=$(mktemp)
 
 # One machine for the whole run, on the PICOVDP (which boots BIOS 2.0), with
-# the clock pinned so a run here and a run on a build server land in the same
+# flow control on so a long listing typed in arrives whole, and with the clock
+# pinned so a run here and a run on a build server land in the same
 # place. It starts paused: the boot is over in a third of a second, and a
 # machine left to run would print its prompt before anything was waiting for it.
 # Its console goes to the bit bucket: the assertions below read the console
 # through the debug server, so anything it echoes here is just noise.
-6502 run --headless --quiet --vdp picovdp --pause --debug --debug-port "$port" \
+6502 run --headless --quiet --vdp picovdp --flow-control --pause --debug --debug-port "$port" \
   --rtc 2026-01-01T00:00:00 --timeout 300s >/dev/null &
 emulator=$!
 trap 'kill $emulator 2>/dev/null || true; rm -f "$state"' EXIT

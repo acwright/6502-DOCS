@@ -34,7 +34,7 @@ countdown.
 ## Watch it run
 
 ```
-6502 run build/countdown.prg
+6502 run --vdp picovdp build/countdown.prg
 ```
 
 A window opens with the machine in it, the program already in memory. Type
@@ -93,8 +93,8 @@ LIFT OFF
 Three things in that command earn their place:
 
 **`--vdp picovdp`.** The video card, and with it the ROM: the PICOVDP boots the
-BIOS this guide describes. Name it rather than relying on the emulator's
-default, which is a different card.
+BIOS this guide describes. Name it every time; without it the emulator fits
+whichever card it starts with, which may not be this one.
 
 **`--exit-on`.** Stop when the console prints something you named, rather than
 after a duration you guessed. This is what makes the run take 53 milliseconds
@@ -131,6 +131,8 @@ script can check it without capturing the console separately.
 | | |
 |---|---|
 | `6502 run build/game.prg` | A program at `$0800` |
+| `6502 run --vdp picovdp` | With the ACE's video card, and BIOS 2.0 |
+| `6502 run --flow-control` | Holding piped input while the machine asks it to wait |
 | `6502 run --cart build/game.crt` | A cartridge |
 | `6502 run --bin 0x7F00=data.bin` | Raw bytes at an address, written before boot |
 | `6502 run --cf disk.img` | With a memory card attached |
@@ -158,7 +160,12 @@ everything queued behind it, so the console looks dead. The fix is to wait for a
 prompt rather than firing and hoping:
 
 ```
-6502 run --headless --vdp picovdp --input-after 'OK' --timeout 20s build/countdown.prg < commands.txt
+6502 run --headless --vdp picovdp --flow-control --input-after 'OK' --timeout 20s build/countdown.prg < commands.txt
 ```
+
+`--flow-control` matters as soon as the file holds more than a few lines. BASIC
+takes a moment to store each line it's given, and asks the sender to wait
+meanwhile; without the flag, piped input doesn't wait, and a long listing
+arrives with lines missing.
 
 Next: [when the program doesn't do what you meant](/crossdev/debugging).
