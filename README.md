@@ -113,7 +113,7 @@ npm run facts:check   # fail if either is stale (run before committing)
 | `errors.json` | BASIC's message strings, verbatim — `BASIC.asm` |
 | `charset.json` | The 256 glyphs of PICOVDP font `$00` — `tests/fixtures/cp437-font.hex`, checked against the SHA-256 in 6502-PICOVDP's SPEC; names from `scripts/lib/cp437-names.mjs` (v1.6's `Chars.asm`) |
 | `systems.json` | The five machines. **Hand-maintained** from the KiCad READMEs, confirmed against the schematics. The ACE record describes the machine as shipped — banked RAM and storage included — with build-time caveats in `builderNotes`. |
-| `basic-examples.json` | Syntax, summary and a worked example for all 85 BASIC keywords. **Hand-authored, machine-checked** — see below. |
+| `basic-examples.json` | Syntax, summary and a worked example for all 100 BASIC keywords. **Hand-authored, machine-checked** — see below. |
 
 The extractor needs a `6502-BIOS` source tree (`--bios <path>`, `$BIOS_SRC`, or
 `~/Developer/Assembly/6502-BIOS`). The generated files are committed, so
@@ -150,8 +150,8 @@ asserts something untrue on purpose, so the suite is proved able to fail.
 
 ### The keyword examples
 
-The BASIC reference needs a working example for each of 85 keywords, which is
-too many to want as 170 files. They live instead in `data/basic-examples.json`,
+The BASIC reference needs a working example for each of 100 keywords, which is
+too many to want as 200 files. They live instead in `data/basic-examples.json`,
 one entry per keyword, and the same harness runs every one of them:
 
 ```sh
@@ -164,7 +164,10 @@ asserted verbatim — and those are the same two arrays the reference page
 renders, so what the page prints under a listing is what the machine printed
 under it. A block beginning with a line number is typed in and `RUN`; anything
 else runs as it is entered. `run: false` covers the entries that type a program
-in only to `LIST` it or load it back off a card.
+in only to `LIST` it or load it back off a card. A keyword whose effect is a
+picture — a border, a sprite, a scrolled layer — has `result` prose instead of
+`output`, and a `picture` digest that holds the prose to the machine, as the
+`.expect` directive of the same name does.
 
 That file is the one thing in `data/` that is **not** generated. What a keyword
 is for, and the shortest example worth printing, are writing decisions — and

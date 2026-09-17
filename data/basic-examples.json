@@ -539,13 +539,98 @@
       "see": ["CLS", "COLOR"]
     },
     "COLOR": {
-      "syntax": "COLOR fg, bg",
-      "summary": "Set the text and background colors, each 0 to 15, for everything printed from now on.",
+      "syntax": "COLOR fg[, bg[, border]]",
+      "summary": "Set the text and background colors, each 0 to 15, for everything printed from now on; the border follows the background unless a third number gives it its own.",
       "example": ["10 CLS", "20 COLOR 1, 15", "30 PRINT \"DARK ON WHITE\""],
       "console": "video",
       "screen": ["^DARK ON WHITE\\s*$"],
       "errors": ["ILLEGAL QUANTITY"],
       "see": ["CLS", "LOCATE"]
+    },
+    "VPOKE": {
+      "syntax": "VPOKE addr, value",
+      "summary": "Write a byte into the video card's own memory, at 0 to 65535. On a cleared text screen, byte 0 is the top left character.",
+      "example": ["10 CLS", "20 VPOKE 125, 65"],
+      "screen": ["^\\s{5}A\\s*$"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["VPEEK", "SCREEN", "POKE"]
+    },
+    "VPEEK": {
+      "syntax": "VPEEK(addr)",
+      "summary": "Read a byte of the video card's own memory, at 0 to 65535 (0 with no video card).",
+      "example": ["10 CLS", "20 PRINT \"HI\"", "30 PRINT VPEEK(0); VPEEK(1)"],
+      "screen": ["^ 72 73\\s*$"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["VPOKE", "PEEK"]
+    },
+    "VREG": {
+      "syntax": "VREG reg, value",
+      "summary": "Write one of the video card's registers, 0 to 127: the settings that decide how it draws. Register 7 is the border.",
+      "example": ["VREG 7, 4"],
+      "result": "The border around the text turns dark blue. The text and its background stay as they were.",
+      "picture": "2ac8cf9c",
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["COLOR", "SPRITE", "VSTAT"]
+    },
+    "VSTAT": {
+      "syntax": "VSTAT(n)",
+      "summary": "Read the video card's status register 0 to 15. `VSTAT(4)` is 172 on the ACE's card; `VSTAT(0)` has 32 added after two sprites touch.",
+      "example": ["10 IF VSTAT(4) = 172 THEN PRINT \"THE GRAPHICS ARE HERE\""],
+      "screen": ["^THE GRAPHICS ARE HERE\\s*$"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["VREG", "SPRITE"]
+    },
+    "PALETTE": {
+      "syntax": "PALETTE entry, r, g, b",
+      "summary": "Change color `entry` (row × 16 + color) to red, green and blue levels of 0 to 15, and everything drawn in it with it.",
+      "example": ["PALETTE 15, 15, 15, 0"],
+      "result": "Everything white turns yellow at once — the whole background, since it was drawn in color 15.",
+      "picture": "b446695f",
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["COLOR", "SCREEN"]
+    },
+    "VSYNC": {
+      "syntax": "VSYNC",
+      "summary": "Wait for the video card to finish drawing a picture, which it does sixty times a second.",
+      "example": ["10 FOR I = 1 TO 60 : VSYNC : NEXT I", "20 PRINT \"ONE SECOND LATER\""],
+      "screen": ["^ONE SECOND LATER\\s*$"],
+      "see": ["SCROLL", "SPRITE", "PAUSE"]
+    },
+    "VLOAD": {
+      "syntax": "VLOAD \"name\", addr",
+      "summary": "Copy a file from the memory card into the video card's memory at `addr`, however long it is.",
+      "example": ["10 CLS", "20 FOR I = 0 TO 4 : POKE 20000 + I, ASC(MID$(\"HELLO\", I + 1, 1)) : NEXT I", "30 BSAVE 20000, 5, \"HELLO.SCR\"", "40 VLOAD \"HELLO.SCR\", 205"],
+      "console": "video storage",
+      "screen": ["^\\s{5}HELLO\\s*$"],
+      "errors": ["LOAD", "ILLEGAL QUANTITY"],
+      "see": ["VPOKE", "BLOAD"]
+    },
+    "SPRITE": {
+      "syntax": "SPRITE n, x, y, shape[, colors]",
+      "summary": "Put sprite 0 to 63 at `x`, `y`, drawn from `shape` (32 bytes at 49152 + 32 × shape) in palette row `colors`.",
+      "example": ["10 SCREEN 2", "20 FOR I = 32 TO 63 : VPOKE 49152 + I, 119 : NEXT I", "30 SPRITE 5, 124, 116, 1, 4", "40 IF INKEY = 0 THEN 40"],
+      "result": "A small yellow square in the middle of a black screen, until you press a key.",
+      "picture": "3a81ca96",
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["SCREEN", "VPOKE", "VSYNC"]
+    },
+    "SCROLL": {
+      "syntax": "SCROLL layer, x, y",
+      "summary": "Move layer 0 or 1 by `x` (0 to 319) and `y` (0 to 255) pixels, wrapping around at the edges.",
+      "example": ["10 SCREEN 2", "20 FOR I = 0 TO 3 : VPOKE 16384 + I, 119 : NEXT I", "30 SCROLL 0, 0, 4", "40 IF INKEY = 0 THEN 40"],
+      "result": "Cyan lines across the screen every eight pixels, moved up by four so they sit halfway down each row of tiles.",
+      "picture": "8bf1ff37",
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["LAYER", "VSYNC"]
+    },
+    "LAYER": {
+      "syntax": "LAYER layer, on",
+      "summary": "Show layer 0 or 1, or hide it with `on` = 0. Layer 1 starts hidden, and its color 0 lets layer 0 show through.",
+      "example": ["10 SCREEN 2", "20 FOR I = 0 TO 31 : VPOKE 16384 + I, 119 : NEXT I", "30 FOR I = 0 TO 3 : VPOKE 32768 + I, 17 : NEXT I", "40 LAYER 1, 1", "50 IF INKEY = 0 THEN 50"],
+      "result": "Layer 0 fills the screen with one color; layer 1, in front, draws a black line along the top of every one of its cells, and the rest of it lets layer 0 show through.",
+      "picture": "5cb83c83",
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["SCROLL", "SCREEN"]
     },
     "SOUND": {
       "syntax": "SOUND voice, freq, dur",
@@ -614,7 +699,48 @@
       "summary": "256 bytes of memory on the clock card that survive a power cut. A statement to write one, a function to read one.",
       "example": ["NVRAM 0, 123", "PRINT NVRAM(0)"],
       "output": [" 123"],
-      "errors": ["ILLEGAL QUANTITY"]
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["NVSAVE", "NVSTAT"]
+    },
+    "NVSAVE": {
+      "syntax": "NVSAVE slot, id, addr",
+      "summary": "Save the 14 bytes of memory at `addr` in save slot 0 to 15 on the clock card, owned by `id`, 1 to 255.",
+      "example": ["FOR I = 0 TO 13 : POKE 20000 + I, I * 10 : NEXT I", "NVSAVE 3, 42, 20000", "PRINT NVSTAT(3); NVRAM(48)"],
+      "output": [" 1 42"],
+      "errors": ["ILLEGAL QUANTITY", "NO DEVICE"],
+      "see": ["NVLOAD", "NVFIND", "NVSTAT"]
+    },
+    "NVLOAD": {
+      "syntax": "NVLOAD slot, addr",
+      "summary": "Copy a good save slot's 14 bytes back into memory at `addr`. A free or damaged slot copies nothing.",
+      "example": ["FOR I = 0 TO 13 : POKE 20000 + I, I * 10 : NEXT I", "NVSAVE 3, 42, 20000", "NVLOAD 3, 21000", "PRINT PEEK(21013)"],
+      "output": [" 130"],
+      "errors": ["LOAD", "ILLEGAL QUANTITY", "NO DEVICE"],
+      "see": ["NVSAVE", "NVSTAT"]
+    },
+    "NVERASE": {
+      "syntax": "NVERASE slot",
+      "summary": "Make a save slot free again, by zeroing all 16 of its bytes.",
+      "example": ["NVSAVE 3, 42, 20000", "NVERASE 3", "PRINT NVSTAT(3)"],
+      "output": [" 0"],
+      "errors": ["ILLEGAL QUANTITY", "NO DEVICE"],
+      "see": ["NVSAVE", "NVSTAT"]
+    },
+    "NVSTAT": {
+      "syntax": "NVSTAT(slot)",
+      "summary": "What save slot 0 to 15 holds: 0 free, 1 a good save, 2 damaged (0 with no clock card).",
+      "example": ["PRINT NVSTAT(0)", "NVRAM 0, 7", "PRINT NVSTAT(0)"],
+      "output": [" 0", " 2"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["NVFIND", "NVSAVE", "NVRAM"]
+    },
+    "NVFIND": {
+      "syntax": "NVFIND(id)",
+      "summary": "The lowest save slot owned by `id`, good or damaged, or -1 if there is none. `NVFIND(0)` finds a free one.",
+      "example": ["PRINT NVFIND(42)", "NVSAVE 5, 42, 20000", "PRINT NVFIND(42); NVFIND(0)"],
+      "output": ["-1", " 5 0"],
+      "errors": ["ILLEGAL QUANTITY"],
+      "see": ["NVSTAT", "NVSAVE"]
     },
 
     "DIR": {

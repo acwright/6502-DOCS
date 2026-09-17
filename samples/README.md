@@ -102,7 +102,7 @@ One directive per line; `#` starts a comment. A case must assert something.
 | `pass` | Shorthand for `expect ^PASS$` + `absent ^FAIL$` — `_checks/` only |
 | `screen <regex>` | `dbg screen text` must match — implies `console video` |
 | `picture <hash>` | `dbg screen hash` must be exactly these eight hex digits — implies `console video` |
-| `console serial\|video\|storage` | Which machine to run on (default `serial`) |
+| `console serial\|video\|storage\|video storage` | Which machine to run on (default `serial`) |
 | `wait <regex>` | What `RUN` waits for before asserting (default `OK`, serial only) |
 | `cycles <n>` | Emulated cycles to advance after each send (video only, default 2,000,000) |
 | `send <text>` | Extra input after `RUN`, before asserting (repeatable) |
@@ -140,6 +140,11 @@ restores from the snapshot taken right after boot, and that restore reverts
 the CF card's contents along with everything else — confirmed directly by
 running `FORMAT` then restoring the snapshot and seeing `HELLO.TXT`
 reappear in `DIR`.
+
+`console video storage` is both at once: a video console with the same image
+attached. It exists for `VLOAD`, which reads a file off the card into the video
+card's memory, where only the screen can show the result — a serial console has
+no video card for it to write to.
 
 Watch for one thing writing a `.expect` for a storage case: typing a program
 line that contains a bare filename (`DEL "HELLO.TXT"`) gets echoed back into

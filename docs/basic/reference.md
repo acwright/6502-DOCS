@@ -41,6 +41,18 @@ const groups = [
   ['The machine underneath', ['PEEK', 'POKE', 'SYS', 'BANK', 'MEM', 'FRE', 'WAIT', 'PAUSE']]
 ]
 
+// Fail the build on a keyword no group names, rather than leaving it out of the
+// table: a BIOS release that adds keywords has to be placed here by hand.
+const grouped = new Set(groups.flatMap(([, names]) => names))
+const ungrouped = all.filter((kw) => !grouped.has(kw.name))
+if (ungrouped.length) {
+  throw new Error(`basic/reference.md: ${ungrouped.length} keyword(s) ungrouped: ${ungrouped.map((kw) => kw.name).join(', ')}`)
+}
+const unknown = [...grouped].filter((name) => !all.some((kw) => kw.name === name))
+if (unknown.length) {
+  throw new Error(`basic/reference.md: a group names a keyword BASIC does not have: ${unknown.join(', ')}`)
+}
+
 const precedence = facts.basicKeywords.operatorPrecedence
 </script>
 

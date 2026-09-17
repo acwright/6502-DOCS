@@ -14,11 +14,11 @@ const cures = {
   'TYPE MISMATCH': ['A string where a number belongs, or the other way around.', 'Nearly always a missing or stray $.'],
   'STRING TOO LONG': ['A string went past 255 characters.', 'Usually a loop that keeps adding to the same string.'],
   'FORMULA TOO COMPLEX': ['An expression nested deeper than BASIC can follow.', 'Break it into two lines with a variable in between.'],
-  'ILLEGAL QUANTITY': ['An argument outside what the function or statement allows.', 'A negative SQR, a CHR$ over 255, a LOCATE row past 23, a HEX over 65535, a negative ON.'],
+  'ILLEGAL QUANTITY': ['An argument outside what the function or statement allows.', 'A negative SQR, a CHR$ over 255, a LOCATE row past 23, a HEX over 65535, a negative ON, a SPRITE past 63, a save slot past 15.'],
   'RETURN WITHOUT GOSUB': ['A RETURN with no GOSUB waiting.', 'Classically, a main program with no END that runs on into its own subroutines.'],
   'NEXT WITHOUT FOR': ['A NEXT with no loop open.', 'A NEXT naming the wrong variable — or the comma form, NEXT J, I, which this BASIC does not accept. Give each loop its own NEXT.'],
   'OUT OF DATA': ['READ ran off the end of the DATA.', 'A missing sentinel value, or a loop that reads once too often.'],
-  'NO DEVICE': ['The card being asked for is not fitted.', 'PEEK(781) or MEM will tell you what the machine actually found at switch-on.'],
+  'NO DEVICE': ['The card being asked for is not fitted.', 'Most often NVSAVE or TIME on a machine without the clock card. PEEK(781) or MEM will tell you what the machine actually found at switch-on.'],
   "CAN'T CONTINUE": ['CONT has nothing to go back to.', 'Either nothing had stopped, or the program was edited after it stopped. Editing always throws the resume point away.']
 }
 
@@ -67,7 +67,7 @@ These print and carry on. Nothing is wrong.
 
 | | |
 |---|---|
-| `?LOAD ERROR` | The file isn't there, or isn't readable. Check `DIR` and check which `DISK` you're on. |
+| `?LOAD ERROR` | The file isn't there, or isn't readable. Check `DIR` and check which `DISK` you're on. `VLOAD` says it for the same reasons, and `NVLOAD` says it when the save slot is free or damaged. |
 | `?SAVE ERROR` | It couldn't be written. Usually a full disk. |
 | `?DEL ERROR` | The file couldn't be removed. Usually it wasn't there. |
 

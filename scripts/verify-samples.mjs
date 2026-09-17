@@ -47,6 +47,16 @@ const DEFAULT_TIMEOUT = '20s'
 // result does not depend on how fast the host is.
 const DEFAULT_SETTLE_CYCLES = 2_000_000
 
+/**
+ * The machines a case can ask for. `video storage` is a video console with the
+ * prepared card attached as well, for the one kind of case that needs both:
+ * a file read off the card and into the video card's memory (`VLOAD`), where
+ * the result is on the screen and a serial console has no card to put it on.
+ */
+const CONSOLES = ['serial', 'video', 'storage', 'video storage']
+const isVideo = (mode) => mode.startsWith('video')
+const hasStorage = (mode) => mode.endsWith('storage')
+
 // ---------------------------------------------------------------------------
 // Case discovery and .expect parsing
 // ---------------------------------------------------------------------------
@@ -125,14 +135,22 @@ function discoverExamples() {
       })),
       absent: (entry.absent ?? []).map((pattern) => ({ pattern, where })),
       screen: (entry.screen ?? []).map((pattern) => ({ pattern, where })),
+      // For a keyword whose effect is a picture rather than text: the border's
+      // color, a sprite, a scrolled layer. The reference prints `result` prose
+      // under these, and the digest is what holds the prose to the machine.
+      picture: entry.picture ? { hash: entry.picture, where } : null,
       expectFailure: false,
       file: where
     }
 
     for (const pattern of entry.expect ?? []) spec.expect.push({ pattern, where })
-    if (spec.screen.length) spec.console = 'video'
+    if ((spec.screen.length || spec.picture) && !isVideo(spec.console)) spec.console = 'video'
+    if (!CONSOLES.includes(spec.console)) throw new Error(`${where}: console must be ${CONSOLES.join(', ')}`)
+    if (spec.picture && !/^[0-9a-f]{8}$/.test(spec.picture.hash)) {
+      throw new Error(`${where}: picture must be the eight hex digits \`dbg screen hash\` prints`)
+    }
 
-    if (!spec.expect.length && !spec.absent.length && !spec.screen.length) {
+    if (!spec.expect.length && !spec.absent.length && !spec.screen.length && !spec.picture) {
       throw new Error(`${where}: asserts nothing — give it an "output" or an "expect"`)
     }
 
@@ -159,6 +177,7 @@ function discoverExamples() {
  *
  *   console video        run on a machine with a video card fitted
  *   console storage      run on a machine with a prepared CompactFlash image attached
+ *   console video storage  both: a video console with that image attached
  *   timeout 30s          per-assertion budget (default 20s)
  *   wait <pattern>       what RUN waits for before asserting (default OK, serial only)
  *   cycles <n>           emulated cycles to advance after each send (video only)
@@ -200,8 +219,8 @@ function parseExpect(path) {
 
     switch (key) {
       case 'console':
-        if (!['serial', 'video', 'storage'].includes(value)) {
-          throw new Error(`${where}: console must be serial, video, or storage`)
+        if (!CONSOLES.includes(value)) {
+          throw new Error(`${where}: console must be ${CONSOLES.join(', ')}`)
         }
         spec.console = value
         break
@@ -228,14 +247,14 @@ function parseExpect(path) {
         break
       case 'screen':
         spec.screen.push({ pattern: value, where })
-        spec.console = 'video'
+        if (!isVideo(spec.console)) spec.console = 'video'
         break
       case 'picture':
         if (!/^[0-9a-f]{8}$/.test(value)) {
           throw new Error(`${where}: picture must be the eight hex digits \`dbg screen hash\` prints`)
         }
         spec.picture = { hash: value, where }
-        spec.console = 'video'
+        if (!isVideo(spec.console)) spec.console = 'video'
         break
       case 'pass':
         spec.expect.push({ pattern: '^PASS$', where })
@@ -264,7 +283,7 @@ class Machine {
   constructor(consoleMode, port) {
     this.consoleMode = consoleMode
     this.port = port
-    this.state = join(BUILD, `ready-${consoleMode}.state`)
+    this.state = join(BUILD, `ready-${consoleMode.replace(/\s+/g, '-')}.state`)
     this.emulator = emulatorCommand()
   }
 
@@ -290,8 +309,8 @@ class Machine {
       // would print its header before anything was watching.
       '--pause'
     ]
-    if (this.consoleMode === 'video') args.push('--console', 'video')
-    if (this.consoleMode === 'storage') args.push('--cf', STORAGE_FIXTURE)
+    if (isVideo(this.consoleMode)) args.push('--console', 'video')
+    if (hasStorage(this.consoleMode)) args.push('--cf', STORAGE_FIXTURE)
 
     this.process = spawn(this.emulator.command, args, { stdio: 'ignore' })
     this.process.on('error', (error) => {
@@ -320,7 +339,7 @@ class Machine {
   waitForPrompt() {
     // A storage machine is still a serial console — the only difference is
     // the --cf attached at boot — so it waits the same way.
-    if (this.consoleMode !== 'video') {
+    if (!isVideo(this.consoleMode)) {
       const boot = this.dbg(['wait', '--serial', 'OK', '--run', 'turbo', '--timeout', '60s', '--json'], { required: true })
       assertBooted(this.consoleMode, JSON.parse(boot.out).output ?? '')
       return
@@ -420,7 +439,7 @@ function buildAssembly(caseFile) {
 
 function runCase(machine, caseFile) {
   const { spec } = caseFile
-  const video = spec.console === 'video'
+  const video = isVideo(spec.console)
   machine.reset()
 
   let output = ''
@@ -570,7 +589,7 @@ async function main() {
     process.exit(1)
   }
 
-  const needsStorage = cases.some((c) => c.spec.console === 'storage')
+  const needsStorage = cases.some((c) => hasStorage(c.spec.console))
   if (needsStorage && spawnSync('cffs', ['--version']).error) {
     console.error('verify: cffs is not installed — run `npm run preflight`')
     process.exit(1)

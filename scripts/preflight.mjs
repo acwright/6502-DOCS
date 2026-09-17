@@ -92,7 +92,7 @@ export function assertBooted(consoleMode, text) {
 export function assertMachine(info, consoleMode) {
   const problems = []
   if (info.flowControl !== true) problems.push(`flow control is ${info.flowControl ? 'on' : 'off'}`)
-  const wanted = consoleMode === 'video' ? [EMULATOR_CARD] : [EMULATOR_CARD, null]
+  const wanted = consoleMode.startsWith('video') ? [EMULATOR_CARD] : [EMULATOR_CARD, null]
   if (!wanted.includes(info.vdp)) problems.push(`the video card is ${info.vdp ?? 'none'}`)
   if (problems.length) {
     throw new Error(

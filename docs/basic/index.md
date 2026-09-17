@@ -68,6 +68,6 @@ is the first thing the next chapter is about.
 
 | Page | What's in it |
 |---|---|
-| [Every keyword](/basic/reference) | All 85 of them, with a working example each |
+| [Every keyword](/basic/reference) | All 100 of them, with a working example each |
 | [Every error message](/basic/errors) | What it means, and what to do about it |
 | [What BASIC does with your memory](/basic/inside) | Where programs, variables and strings live |
