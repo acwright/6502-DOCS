@@ -55,6 +55,17 @@ the second setting of the same name that arrived with it. **A72** is the one
 thing this release left behind: `6502-ASM`'s include has no name for
 `VID_BORDER` yet. O6 was fixed upstream in the release before this one.
 
+**The frozen `v1` edition was re-read and left alone.** Every version it names
+is the `v2.7.0` tag or the `/6502-EMULATOR/v2/` build, both immutable and both
+still served, and nothing in it mentions a flow-control flag, `dbg info`'s
+wording, `VID_BORDER` or any 2.x tag — so neither release reaches it. The one
+paragraph that could have gone stale is its serial chapter's account of RTS,
+which the reissued `v1.6` tag does change; but every sample, frame and
+screenshot in that edition runs the 1.6 that emulator 2.7.0 bundles, which is
+the build before the reissue and the machine its own README names, and the
+edition never sends a reader to the BIOS repository to build a ROM. It is A69's
+shape on the 1.x line, recorded here rather than unfrozen there.
+
 **Phase 9 closed the ledger's upstream backlog.** Every confirmed item that
 named a sibling repo has been fixed in that repo, one commit each, with the
 source-of-truth citation in the message: `6502-BIOS` (A8, A21, A22, A23, A24,
