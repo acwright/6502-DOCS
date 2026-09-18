@@ -112,8 +112,10 @@ doing.
 
 **Name the video card, and leave flow control alone.** Start every machine with
 `--vdp picovdp`: the card is what boots BIOS 2.0. Flow control is on unless
-`--no-flow-control` takes it away, and without it a long paste loses lines, so
-nothing should be reaching for that flag. An agent can check it got both:
+`--peer-rts ignore` (or the older `--no-flow-control`) takes it away, and
+without it a long paste loses lines, so nothing should be reaching for that
+flag. Leave the serial card and its jumpers alone too: at their defaults nothing
+can stop the machine, and `--cts cable` with nobody asserting CTS stalls it. An agent can check it got both:
 `dbg info --json` reports `vdp` and `flowControl`, with `vdp` null on a serial
 console, which has no video card fitted.
 

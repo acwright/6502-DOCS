@@ -33,6 +33,11 @@ the receiver is stopped is lost, where a byte waiting to go out is held until
 the line comes back. A board jumpered to the cable, plugged into something that
 does not assert those lines, shows **no banner and no echo at all**. It looks
 broken. It isn't; it is waiting.
+
+The [emulator](/using/emulator) has the same two jumpers, from 3.3.0: in
+**Settings → SERIAL**, or `--cts` and `--dcd` on the command line, at ground
+unless you move them. They do there what they do on the board, including the
+silence.
 :::
 
 ## Joystick — DB-9

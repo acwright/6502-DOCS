@@ -211,19 +211,29 @@ keypad plays on a real stick, with nothing to change in the listing.
 ## Talking to real hardware
 
 The desktop app can open one of your computer's serial ports. Pick the port,
-set it to 19200 8-N-1, connect — and now the emulated ACE is on the other end
-of a real serial cable. Which means you can use it as the terminal for a real
-ACE, or move files between the two with XModem. See
-[Serial and a terminal](/using/serial).
+set it to 19200 8-N-1, connect, and the emulated ACE's serial port is now on a
+real cable. Whatever you plug into the other end talks to the emulated ACE: a
+terminal, or a real ACE to move files to and from with XModem. The emulator is
+not a terminal itself, so it can't stand in for one in front of a real board.
+See [Serial and a terminal](/using/serial).
 
-**Settings → SERIAL** has two flow-control settings, one for each end of that
-cable, and both start out the way you want them. **Flow Control** belongs to the
-port you just opened — this computer's end, set to **RTS/CTS**, which is what
-makes a listing pasted through to a real ACE wait when the board asks it to.
-**Emulated machine: RTS/CTS flow control** is the emulated ACE's own end, for a
-listing coming the other way; it waits while BASIC stores each line. Turn either
-off only for a cable or adapter that doesn't carry the handshake wires, and
-expect a long paste to lose lines when you do.
+The emulated ACE does its own handshaking on that cable, the way the real chip
+does. It raises and lowers the port's real RTS line, and reads the port's CTS,
+DCD and DSR. There is nothing to set on the port itself.
+
+**Settings → SERIAL** also has the rest of the serial card:
+
+- **Serial card**: the ACE's own, the Serial Card or the Serial Card Pro, for
+  the machines that take a card.
+- **The card's jumpers**, `CTS EN` and `DCD EN` on the ACE, at *Ground* or
+  *Cable*, as on the [board](/reference/connectors). Leave them at ground,
+  which is how the boards are built, unless you are testing the handshake. At
+  *Cable*, a far end that doesn't assert CTS makes the machine look dead: no
+  banner, no echo, until it does.
+- **Terminal honours RTS**: whether the emulator's own console and paste hold
+  their input while the machine raises RTS. It is on, and it is what lets a
+  long paste arrive whole while BASIC stores each line. Turn it off and a long
+  paste loses lines.
 
 ## Fullscreen
 
@@ -400,7 +410,8 @@ Install**). It's how you'd fold the emulator into a build:
 | Flag | What it does |
 |---|---|
 | `--vdp picovdp` | Fit the 6502-PICOVDP, and boot BIOS 2.0 — give it every time |
-| `--no-flow-control` | Stop holding typed or piped input back while the machine asks it to wait. Input waits unless you say this, which is how a long listing arrives whole |
+| `--peer-rts ignore` | Stop holding typed or piped input back while the machine asks it to wait. Input waits unless you say this, which is how a long listing arrives whole. `--no-flow-control` is the older spelling, deprecated |
+| `--cts cable` | Move the ACE's `CTS EN` jumper to the cable (`--dcd cable` for `DCD EN`). Ground is the default and how the boards are built |
 | `--cf disk.img` | Attach a card image |
 | `--console video` | Use the video screen instead of the serial console |
 | `--screenshot shot.png` | Save the last picture on the screen when it stops (with `--console video`) |

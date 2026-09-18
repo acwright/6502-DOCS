@@ -132,7 +132,7 @@ script can check it without capturing the console separately.
 |---|---|
 | `6502 run build/game.prg` | A program at `$0800` |
 | `6502 run --vdp picovdp` | With the ACE's video card, and BIOS 2.0 |
-| `6502 run --no-flow-control` | Piped input sent regardless of the machine asking it to wait |
+| `6502 run --peer-rts ignore` | Piped input sent regardless of the machine asking it to wait (older spelling: `--no-flow-control`) |
 | `6502 run --cart build/game.crt` | A cartridge |
 | `6502 run --bin 0x7F00=data.bin` | Raw bytes at an address, written before boot |
 | `6502 run --cf disk.img` | With a memory card attached |
@@ -166,7 +166,7 @@ prompt rather than firing and hoping:
 Flow control matters as soon as the file holds more than a few lines. BASIC
 takes a moment to store each line it's given, and asks the sender to wait
 meanwhile; piped input waits, which is why the whole listing arrives. That is
-the machine's normal behavior, and `--no-flow-control` is the way to give it up
+the machine's normal behavior, and `--peer-rts ignore` is the way to give it up
 — a long listing sent that way arrives with lines missing.
 
 Next: [when the program doesn't do what you meant](/crossdev/debugging).

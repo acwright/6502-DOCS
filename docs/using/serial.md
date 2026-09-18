@@ -89,9 +89,9 @@ other end to wait: when the characters it hasn't read yet fill most of its
 buffer, it raises the serial port's RTS line, and lowers it again once it has
 caught up. A terminal set to **RTS/CTS** (hardware) flow control pauses on that
 signal, and a long paste arrives whole. With flow control off, a long paste
-quietly loses lines. If the terminal is the [emulator](/using/emulator) on
-another computer, with a real cable between them, its port is set to **RTS/CTS**
-already and there is nothing to change.
+quietly loses lines. The [emulator](/using/emulator) can't be that terminal:
+a serial port it opens is wired to the *emulated* ACE, so a real board on the
+other end is talking to a second ACE, not to you.
 :::
 
 The [emulator](/using/emulator) has a paste button that does the same job
