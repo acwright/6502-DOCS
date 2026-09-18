@@ -11,7 +11,7 @@
       },
       {
         "file": "BIOS.inc",
-        "sha256": "6004f998b6fed1231fed2af4bdea10585b7c3d729d09a85aaab240e7d7a91cbb"
+        "sha256": "51b205166e5380075abd404cbc966087575c1caa13c5e56d18c21a3281ea799e"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -528,6 +528,12 @@
           "symbol": "VDP_P3",
           "address": "$039B",
           "source": "BIOS.inc:135"
+        },
+        {
+          "symbol": "VID_BORDER",
+          "address": "$039C",
+          "description": "The border the console shows, register 7's low nibble ($0F from KernalInit, matching VID_PEN's background).  Set before the console is brought up, so InitVideo's border write is the one that was asked for and COLOR fg,bg,border never shows another color on the way",
+          "source": "BIOS.inc:136"
         }
       ],
       "source": "BIOS.inc",
@@ -545,7 +551,7 @@
           "address": "$0400",
           "end": "$07FF",
           "description": "see above; Wozmon's input buffer",
-          "source": "BIOS.inc:160"
+          "source": "BIOS.inc:164"
         }
       ],
       "source": "BIOS.inc",
@@ -563,7 +569,7 @@
           "address": "$0600",
           "end": "$07FF",
           "description": "512-byte sector buffer (overlaps BAS_TOKBUF/BAS_STRBUF)",
-          "source": "BIOS.inc:137"
+          "source": "BIOS.inc:141"
         }
       ],
       "source": "BIOS.inc",
@@ -580,7 +586,7 @@
           "symbol": "PROGRAM_START",
           "address": "$0800",
           "end": "$7FFF",
-          "source": "BIOS.inc:163"
+          "source": "BIOS.inc:167"
         }
       ],
       "source": "BIOS.inc",
@@ -661,7 +667,7 @@
     "programStart": "$0800",
     "memoryTop": "$8000",
     "stringHeapTop": "$8000",
-    "source": "BIOS.inc:163",
+    "source": "BIOS.inc:167",
     "check": "GREP"
   }
 }

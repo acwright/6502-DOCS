@@ -107,7 +107,7 @@ happily over a serial line. It also means a test for anything visual has to boot
 a machine with the card fitted and read the screen instead of the console:
 
 ```sh
-6502 run --headless --vdp picovdp --flow-control --console video --debug --debug-port 6510 &
+6502 run --headless --vdp picovdp --console video --debug --debug-port 6510 &
 ...
 6502 dbg screen text --port 6510
 ```

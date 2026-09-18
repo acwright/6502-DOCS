@@ -7,15 +7,15 @@
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "6004f998b6fed1231fed2af4bdea10585b7c3d729d09a85aaab240e7d7a91cbb"
+        "sha256": "51b205166e5380075abd404cbc966087575c1caa13c5e56d18c21a3281ea799e"
       },
       {
         "file": "Kernal.asm",
-        "sha256": "ecc1ae1ebe0846d28939c7550b8bd7142e838863924c9703784064072117ed19"
+        "sha256": "7e7b69c24f3a2ef70652d9dd96330f9acc45bc9ad2be4576b8e5ad3d0c2e519c"
       },
       {
         "file": "BASIC.asm",
-        "sha256": "e41bc5a75fed37329e0796b2634bdbe8530d4169369ec5faa9c802dc8eeae4a7"
+        "sha256": "c133cb0b08ea95d67d1a1a8ddef75394675b71f810456320af52e191615da66b"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -24,7 +24,7 @@
     "major": 2,
     "minor": 0,
     "string": "v2.0",
-    "source": "BIOS.inc:151-152",
+    "source": "BIOS.inc:155-156",
     "check": "GREP"
   },
   "headerMatchesVersion": true,
@@ -38,50 +38,50 @@
       "symbol": "MsgHeader",
       "text": "AC6502 BIOS v2.0",
       "derivedFrom": "BIOS_VERSION_MAJOR/MINOR",
-      "source": "BASIC.asm:9548",
+      "source": "BASIC.asm:9550",
       "check": "GREP"
     },
     {
       "symbol": "MsgBasicV2",
       "text": "BASIC v2.0 ",
-      "source": "BASIC.asm:9553",
+      "source": "BASIC.asm:9555",
       "check": "GREP"
     },
     {
       "symbol": "MsgBytesFreeNL",
       "text": " BYTES FREE",
-      "source": "BASIC.asm:9556",
+      "source": "BASIC.asm:9558",
       "check": "GREP"
     }
   ],
   "sequence": [
     {
       "step": "Reset the stack pointer to $FF",
-      "source": "Kernal.asm:1114"
+      "source": "Kernal.asm:1116"
     },
     {
       "step": "KernalInit — probe and initialize every card, interrupts still disabled",
-      "source": "Kernal.asm:1115"
-    },
-    {
-      "step": "Beep — guarded, skipped when no SID is fitted",
       "source": "Kernal.asm:1117"
     },
     {
+      "step": "Beep — guarded, skipped when no SID is fitted",
+      "source": "Kernal.asm:1119"
+    },
+    {
       "step": "If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)",
-      "source": "Kernal.asm:1123"
+      "source": "Kernal.asm:1125"
     },
     {
       "step": "Halt if neither video nor serial is present — there is no console to boot into",
-      "source": "Kernal.asm:1128"
+      "source": "Kernal.asm:1130"
     },
     {
       "step": "Mark BASIC cold, so the header prints and the variables clear; the program at $0800 is kept",
-      "source": "Kernal.asm:1135"
+      "source": "Kernal.asm:1137"
     },
     {
       "step": "cli, then into BASIC, which prints the header on whichever console this machine has",
-      "source": "Kernal.asm:1148"
+      "source": "Kernal.asm:1150"
     }
   ]
 }

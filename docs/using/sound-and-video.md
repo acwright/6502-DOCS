@@ -61,7 +61,8 @@ colors**. Three statements:
 - **`COLOR foreground, background`** sets the colors for what is printed next,
   each number from 0 to 15. What is already on the screen keeps its own, and
   `CLS` fills the whole screen with the new pair. The border around the text
-  follows the background:
+  follows the background, unless a third number gives it one of its own — and a
+  border set that way stays put until you change it again:
 
 <ColorChart />
 

@@ -54,22 +54,29 @@ export const EMULATOR_VERSION = EMULATOR.version
 export const EMULATOR_CARD = EMULATOR.card
 
 /**
- * The flags every harness machine starts with: the site's card, and serial
- * flow control. BIOS 2.0 crunches a line more slowly than 1.x did, and a pasted
- * listing loses lines without RTS/CTS — intermittently, which is the worst way
- * for a check to fail.
+ * The flags every harness machine starts with: the site's card, and nothing
+ * else. Serial flow control used to be asked for here with `--flow-control`;
+ * from emulator 3.2.0 it is on unless `--no-flow-control` turns it off, so the
+ * flag would be a no-op that reads as a requirement. It is still checked below
+ * rather than assumed — BIOS 2.0 crunches a line more slowly than 1.x did, and
+ * a pasted listing loses lines without RTS/CTS, intermittently, which is the
+ * worst way for a check to fail.
  */
-export const MACHINE_FLAGS = ['--vdp', EMULATOR_CARD, '--flow-control']
+export const MACHINE_FLAGS = ['--vdp', EMULATOR_CARD]
 
 /**
  * Refuse a machine that is not the one the site is written against.
  *
- * `info` is `dbg info --json`. The flags above ask for the card and for flow
- * control, and this is what checks that they were honored: a wrapper that drops
- * an argument, or an emulator that spells one differently, would otherwise boot
- * the default card and BIOS 1.6 and fail forty cases later for a reason nobody
- * would guess. With a serial console the video slot is empty whichever card was
- * named, so `vdp` is null there and the card is known only by the flag.
+ * `info` is `dbg info --json`. The flag above asks for the card, and this is
+ * what checks it was honored: a wrapper that drops an argument, or an emulator
+ * that spells one differently, would otherwise boot the default card and BIOS
+ * 1.6 and fail forty cases later for a reason nobody would guess. With a serial
+ * console the video slot is empty whichever card was named, so `vdp` is null
+ * there and the card is known only by the flag.
+ *
+ * Flow control is read back for the opposite reason: nothing here asks for it,
+ * so this is the only thing standing between a `--no-flow-control` somewhere in
+ * a wrapper and a paste that loses lines once in a while.
  */
 /**
  * The first line the site's BIOS prints, read from the fact base.
@@ -91,13 +98,13 @@ export function assertBooted(consoleMode, text) {
 
 export function assertMachine(info, consoleMode) {
   const problems = []
-  if (info.flowControl !== true) problems.push(`flow control is ${info.flowControl ? 'on' : 'off'}`)
+  if (info.flowControl !== true) problems.push('flow control is off')
   const wanted = consoleMode.startsWith('video') ? [EMULATOR_CARD] : [EMULATOR_CARD, null]
   if (!wanted.includes(info.vdp)) problems.push(`the video card is ${info.vdp ?? 'none'}`)
   if (problems.length) {
     throw new Error(
       `refusing a ${consoleMode} machine: ${problems.join(' and ')}. This site runs --vdp ${EMULATOR_CARD} ` +
-        'with --flow-control on, and a machine without them is not the check it looks like.'
+        'with flow control left on, and a machine without either is not the check it looks like.'
     )
   }
 }

@@ -41,7 +41,6 @@ add your own is to put yourself *in front of* it.
 ```
 RUN
 TYPE SOMETHING AND PRESS ENTER
-
 HELLO
 THE PROCESSOR WAS INTERRUPTED 6 TIMES
 
@@ -54,6 +53,16 @@ OK
 />
 
 Five letters and an Enter: six characters, six interrupts.
+
+::: tip Down a serial line the count comes out lower
+Typing at the machine's own keyboard, every character is an interrupt. Over a
+[serial console](/using/serial) the Kernal echoes each character back up the
+line, and while it is doing that it looks at the port itself and keeps anything
+that has landed — so a character that arrives during the echo of the one before
+it costs no interrupt at all. Nothing is lost; it simply did not need waking up
+for. Run this over a cable and the number is three or four, and not the same
+number twice.
+:::
 
 Three things in there are the whole technique.
 

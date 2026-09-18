@@ -7,11 +7,11 @@
     "sources": [
       {
         "file": "BASIC.asm",
-        "sha256": "e41bc5a75fed37329e0796b2634bdbe8530d4169369ec5faa9c802dc8eeae4a7"
+        "sha256": "c133cb0b08ea95d67d1a1a8ddef75394675b71f810456320af52e191615da66b"
       },
       {
         "file": "README.md",
-        "sha256": "8eaff3196625e4587494ebcf6e726d408fe53fbefcf1fa1254e2d0872ec5ca6b"
+        "sha256": "48cc8e3c25c53f5bef2eaa6396554ea3ca9c270a5b2f0d9a48428239baba81d2"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -144,7 +144,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9413",
+      "source": "BASIC.asm:9415",
       "check": "GREP"
     },
     {
@@ -165,7 +165,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9414",
+      "source": "BASIC.asm:9416",
       "check": "GREP"
     },
     {
@@ -186,7 +186,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9415",
+      "source": "BASIC.asm:9417",
       "check": "GREP"
     },
     {
@@ -207,7 +207,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9416",
+      "source": "BASIC.asm:9418",
       "check": "GREP"
     },
     {
@@ -228,7 +228,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9417",
+      "source": "BASIC.asm:9419",
       "check": "GREP"
     },
     {
@@ -249,7 +249,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9418",
+      "source": "BASIC.asm:9420",
       "check": "GREP"
     },
     {
@@ -270,7 +270,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9419",
+      "source": "BASIC.asm:9421",
       "check": "GREP"
     },
     {
@@ -291,7 +291,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9420",
+      "source": "BASIC.asm:9422",
       "check": "GREP"
     },
     {
@@ -312,7 +312,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9421",
+      "source": "BASIC.asm:9423",
       "check": "GREP"
     },
     {
@@ -333,7 +333,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9422",
+      "source": "BASIC.asm:9424",
       "check": "GREP"
     },
     {
@@ -354,7 +354,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9423",
+      "source": "BASIC.asm:9425",
       "check": "GREP"
     },
     {
@@ -375,7 +375,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9424",
+      "source": "BASIC.asm:9426",
       "check": "GREP"
     },
     {
@@ -396,7 +396,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9425",
+      "source": "BASIC.asm:9427",
       "check": "GREP"
     },
     {
@@ -417,7 +417,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9426",
+      "source": "BASIC.asm:9428",
       "check": "GREP"
     },
     {
@@ -438,7 +438,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9427",
+      "source": "BASIC.asm:9429",
       "check": "GREP"
     },
     {
@@ -459,7 +459,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9428",
+      "source": "BASIC.asm:9430",
       "check": "GREP"
     },
     {
@@ -480,7 +480,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9429",
+      "source": "BASIC.asm:9431",
       "check": "GREP"
     },
     {
@@ -501,7 +501,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9430",
+      "source": "BASIC.asm:9432",
       "check": "GREP"
     },
     {
@@ -536,7 +536,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9431",
+      "source": "BASIC.asm:9433",
       "check": "GREP"
     },
     {
@@ -571,7 +571,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9432",
+      "source": "BASIC.asm:9434",
       "check": "GREP"
     },
     {
@@ -592,7 +592,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9433",
+      "source": "BASIC.asm:9435",
       "check": "GREP"
     },
     {
@@ -613,7 +613,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9434",
+      "source": "BASIC.asm:9436",
       "check": "GREP"
     },
     {
@@ -634,7 +634,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9435",
+      "source": "BASIC.asm:9437",
       "check": "GREP"
     },
     {
@@ -655,7 +655,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9436",
+      "source": "BASIC.asm:9438",
       "check": "GREP"
     },
     {
@@ -676,7 +676,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9437",
+      "source": "BASIC.asm:9439",
       "check": "GREP"
     },
     {
@@ -697,7 +697,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9438",
+      "source": "BASIC.asm:9440",
       "check": "GREP"
     },
     {
@@ -718,7 +718,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9439",
+      "source": "BASIC.asm:9441",
       "check": "GREP"
     },
     {
@@ -739,7 +739,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9440",
+      "source": "BASIC.asm:9442",
       "check": "GREP"
     },
     {
@@ -752,7 +752,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:9441",
+      "source": "BASIC.asm:9443",
       "check": "GREP"
     },
     {
@@ -765,7 +765,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:9442",
+      "source": "BASIC.asm:9444",
       "check": "GREP"
     },
     {
@@ -786,7 +786,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9443",
+      "source": "BASIC.asm:9445",
       "check": "GREP"
     },
     {
@@ -799,7 +799,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:9444",
+      "source": "BASIC.asm:9446",
       "check": "GREP"
     },
     {
@@ -812,7 +812,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:9445",
+      "source": "BASIC.asm:9447",
       "check": "GREP"
     },
     {
@@ -825,7 +825,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:9446",
+      "source": "BASIC.asm:9448",
       "check": "GREP"
     },
     {
@@ -838,7 +838,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:9447",
+      "source": "BASIC.asm:9449",
       "check": "GREP"
     },
     {
@@ -851,7 +851,7 @@
       "statementUsable": false,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:9448",
+      "source": "BASIC.asm:9450",
       "check": "GREP"
     },
     {
@@ -864,7 +864,7 @@
       "statementUsable": true,
       "forms": [],
       "verified": false,
-      "source": "BASIC.asm:9449",
+      "source": "BASIC.asm:9451",
       "check": "GREP"
     },
     {
@@ -885,7 +885,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9450",
+      "source": "BASIC.asm:9452",
       "check": "GREP"
     },
     {
@@ -906,7 +906,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9451",
+      "source": "BASIC.asm:9453",
       "check": "GREP"
     },
     {
@@ -927,7 +927,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9452",
+      "source": "BASIC.asm:9454",
       "check": "GREP"
     },
     {
@@ -948,7 +948,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9453",
+      "source": "BASIC.asm:9455",
       "check": "GREP"
     },
     {
@@ -969,7 +969,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9454",
+      "source": "BASIC.asm:9456",
       "check": "GREP"
     },
     {
@@ -983,14 +983,14 @@
       "forms": [
         {
           "syntax": "COLOR <fg>[, <bg>[, <border>]]",
-          "description": "Set the pen for text printed next (0–15 each); `bg` defaults to the current background. The border follows `bg` unless `border` is given",
+          "description": "Set the pen for text printed next (0–15 each); `bg` defaults to the current background. The border follows `bg` unless `border` is given, and is written once — the border asked for is the only one shown, even when the `COLOR` is what brings the console up",
           "verified": false,
           "source": "6502-BIOS/README.md",
           "check": "pending RUN (Phase 4)"
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9455",
+      "source": "BASIC.asm:9457",
       "check": "GREP"
     },
     {
@@ -1011,7 +1011,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9456",
+      "source": "BASIC.asm:9458",
       "check": "GREP"
     },
     {
@@ -1032,7 +1032,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9457",
+      "source": "BASIC.asm:9459",
       "check": "GREP"
     },
     {
@@ -1053,7 +1053,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9458",
+      "source": "BASIC.asm:9460",
       "check": "GREP"
     },
     {
@@ -1074,7 +1074,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9459",
+      "source": "BASIC.asm:9461",
       "check": "GREP"
     },
     {
@@ -1095,7 +1095,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9460",
+      "source": "BASIC.asm:9462",
       "check": "GREP"
     },
     {
@@ -1116,7 +1116,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9461",
+      "source": "BASIC.asm:9463",
       "check": "GREP"
     },
     {
@@ -1144,7 +1144,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9462",
+      "source": "BASIC.asm:9464",
       "check": "GREP"
     },
     {
@@ -1165,7 +1165,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9463",
+      "source": "BASIC.asm:9465",
       "check": "GREP"
     },
     {
@@ -1186,7 +1186,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9464",
+      "source": "BASIC.asm:9466",
       "check": "GREP"
     },
     {
@@ -1207,7 +1207,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9465",
+      "source": "BASIC.asm:9467",
       "check": "GREP"
     },
     {
@@ -1228,7 +1228,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9466",
+      "source": "BASIC.asm:9468",
       "check": "GREP"
     },
     {
@@ -1247,7 +1247,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9468",
+      "source": "BASIC.asm:9470",
       "check": "GREP"
     },
     {
@@ -1266,7 +1266,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9469",
+      "source": "BASIC.asm:9471",
       "check": "GREP"
     },
     {
@@ -1285,7 +1285,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9470",
+      "source": "BASIC.asm:9472",
       "check": "GREP"
     },
     {
@@ -1304,7 +1304,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9471",
+      "source": "BASIC.asm:9473",
       "check": "GREP"
     },
     {
@@ -1323,7 +1323,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9472",
+      "source": "BASIC.asm:9474",
       "check": "GREP"
     },
     {
@@ -1342,7 +1342,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9473",
+      "source": "BASIC.asm:9475",
       "check": "GREP"
     },
     {
@@ -1361,7 +1361,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9474",
+      "source": "BASIC.asm:9476",
       "check": "GREP"
     },
     {
@@ -1380,7 +1380,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9475",
+      "source": "BASIC.asm:9477",
       "check": "GREP"
     },
     {
@@ -1399,7 +1399,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9476",
+      "source": "BASIC.asm:9478",
       "check": "GREP"
     },
     {
@@ -1418,7 +1418,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9477",
+      "source": "BASIC.asm:9479",
       "check": "GREP"
     },
     {
@@ -1437,7 +1437,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9478",
+      "source": "BASIC.asm:9480",
       "check": "GREP"
     },
     {
@@ -1456,7 +1456,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9479",
+      "source": "BASIC.asm:9481",
       "check": "GREP"
     },
     {
@@ -1475,7 +1475,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9480",
+      "source": "BASIC.asm:9482",
       "check": "GREP"
     },
     {
@@ -1494,7 +1494,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9481",
+      "source": "BASIC.asm:9483",
       "check": "GREP"
     },
     {
@@ -1513,7 +1513,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9482",
+      "source": "BASIC.asm:9484",
       "check": "GREP"
     },
     {
@@ -1532,7 +1532,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9483",
+      "source": "BASIC.asm:9485",
       "check": "GREP"
     },
     {
@@ -1551,7 +1551,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9484",
+      "source": "BASIC.asm:9486",
       "check": "GREP"
     },
     {
@@ -1570,7 +1570,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9485",
+      "source": "BASIC.asm:9487",
       "check": "GREP"
     },
     {
@@ -1589,7 +1589,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9486",
+      "source": "BASIC.asm:9488",
       "check": "GREP"
     },
     {
@@ -1608,7 +1608,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9487",
+      "source": "BASIC.asm:9489",
       "check": "GREP"
     },
     {
@@ -1627,7 +1627,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9488",
+      "source": "BASIC.asm:9490",
       "check": "GREP"
     },
     {
@@ -1646,7 +1646,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9489",
+      "source": "BASIC.asm:9491",
       "check": "GREP"
     },
     {
@@ -1665,7 +1665,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9490",
+      "source": "BASIC.asm:9492",
       "check": "GREP"
     },
     {
@@ -1684,7 +1684,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9491",
+      "source": "BASIC.asm:9493",
       "check": "GREP"
     },
     {
@@ -1703,7 +1703,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9492",
+      "source": "BASIC.asm:9494",
       "check": "GREP"
     },
     {
@@ -1722,7 +1722,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9493",
+      "source": "BASIC.asm:9495",
       "check": "GREP"
     },
     {
@@ -1741,7 +1741,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9494",
+      "source": "BASIC.asm:9496",
       "check": "GREP"
     },
     {
@@ -1762,7 +1762,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9495",
+      "source": "BASIC.asm:9497",
       "check": "GREP"
     },
     {
@@ -1790,7 +1790,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9496",
+      "source": "BASIC.asm:9498",
       "check": "GREP"
     },
     {
@@ -1818,7 +1818,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9497",
+      "source": "BASIC.asm:9499",
       "check": "GREP"
     },
     {
@@ -1839,7 +1839,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9498",
+      "source": "BASIC.asm:9500",
       "check": "GREP"
     },
     {
@@ -1860,7 +1860,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9500",
+      "source": "BASIC.asm:9502",
       "check": "GREP"
     },
     {
@@ -1881,7 +1881,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9501",
+      "source": "BASIC.asm:9503",
       "check": "GREP"
     },
     {
@@ -1902,7 +1902,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9502",
+      "source": "BASIC.asm:9504",
       "check": "GREP"
     },
     {
@@ -1923,7 +1923,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9503",
+      "source": "BASIC.asm:9505",
       "check": "GREP"
     },
     {
@@ -1944,7 +1944,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9504",
+      "source": "BASIC.asm:9506",
       "check": "GREP"
     },
     {
@@ -1965,7 +1965,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9505",
+      "source": "BASIC.asm:9507",
       "check": "GREP"
     },
     {
@@ -1986,7 +1986,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9506",
+      "source": "BASIC.asm:9508",
       "check": "GREP"
     },
     {
@@ -2007,7 +2007,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9507",
+      "source": "BASIC.asm:9509",
       "check": "GREP"
     },
     {
@@ -2028,7 +2028,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9508",
+      "source": "BASIC.asm:9510",
       "check": "GREP"
     },
     {
@@ -2049,7 +2049,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9509",
+      "source": "BASIC.asm:9511",
       "check": "GREP"
     },
     {
@@ -2070,7 +2070,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9510",
+      "source": "BASIC.asm:9512",
       "check": "GREP"
     },
     {
@@ -2089,7 +2089,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9512",
+      "source": "BASIC.asm:9514",
       "check": "GREP"
     },
     {
@@ -2108,7 +2108,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9513",
+      "source": "BASIC.asm:9515",
       "check": "GREP"
     },
     {
@@ -2127,7 +2127,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9514",
+      "source": "BASIC.asm:9516",
       "check": "GREP"
     },
     {
@@ -2146,7 +2146,7 @@
         }
       ],
       "verified": false,
-      "source": "BASIC.asm:9515",
+      "source": "BASIC.asm:9517",
       "check": "GREP"
     }
   ]

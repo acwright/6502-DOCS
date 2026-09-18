@@ -93,7 +93,11 @@ next, and the screen fills up with as many colors as it likes:
 
 **The border follows the pen.** The strip around the text takes the background
 nibble of the last `VideoSetColor`, so a program that sets white on black gets a
-black frame to go with it.
+black frame to go with it. The card's register 7 cannot be read back, so the
+Kernal keeps the border in `VID_BORDER` — which is how the border you asked for
+is still there after a program has been off in another screen layout and come
+back, and why a screen brought up by a `COLOR` with a border of its own comes up
+in that border rather than flashing the old one first.
 
 **A color number is a palette entry.** The card doesn't store "magenta" in a
 cell; it stores 13, and looks 13 up in its palette every time it draws a line.
@@ -102,9 +106,9 @@ green and blue, four bits each — and everything drawn with that number changes
 on the next line the card draws. That is what the program does to line 13.
 
 **`InitVideo` puts the colors back.** It restores the first sixteen palette
-entries along with everything else about text mode, but it doesn't clear the
-screen, so the program's last instruction returns the orange line to magenta
-without losing a character.
+entries, and the border from `VID_BORDER`, along with everything else about text
+mode — but it doesn't clear the screen, so the program's last instruction
+returns the orange line to magenta without losing a character.
 
 ## The colors
 

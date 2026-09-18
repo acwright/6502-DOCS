@@ -216,10 +216,14 @@ of a real serial cable. Which means you can use it as the terminal for a real
 ACE, or move files between the two with XModem. See
 [Serial and a terminal](/using/serial).
 
-Tick **RTS/CTS flow control** under **Settings → SERIAL** as well. It is off
-until you turn it on, and without it a long listing pasted in from the other
-end arrives with lines missing: the machine asks the sender to wait while
-BASIC stores each line, and only a connection with flow control on listens.
+**Settings → SERIAL** has two flow-control settings, one for each end of that
+cable, and both start out the way you want them. **Flow Control** belongs to the
+port you just opened — this computer's end, set to **RTS/CTS**, which is what
+makes a listing pasted through to a real ACE wait when the board asks it to.
+**Emulated machine: RTS/CTS flow control** is the emulated ACE's own end, for a
+listing coming the other way; it waits while BASIC stores each line. Turn either
+off only for a cable or adapter that doesn't carry the handshake wires, and
+expect a long paste to lose lines when you do.
 
 ## Fullscreen
 
@@ -388,7 +392,7 @@ The desktop app installs a `6502` command (**Settings → Command Line →
 Install**). It's how you'd fold the emulator into a build:
 
 ```
-6502 run --headless --vdp picovdp --flow-control mygame.prg
+6502 run --headless --vdp picovdp mygame.prg
 ```
 
 `--headless` runs with no window at all, wired to your terminal. Useful flags:
@@ -396,7 +400,7 @@ Install**). It's how you'd fold the emulator into a build:
 | Flag | What it does |
 |---|---|
 | `--vdp picovdp` | Fit the 6502-PICOVDP, and boot BIOS 2.0 — give it every time |
-| `--flow-control` | Hold typed or piped input while the machine asks it to wait, so a long listing arrives whole |
+| `--no-flow-control` | Stop holding typed or piped input back while the machine asks it to wait. Input waits unless you say this, which is how a long listing arrives whole |
 | `--cf disk.img` | Attach a card image |
 | `--console video` | Use the video screen instead of the serial console |
 | `--screenshot shot.png` | Save the last picture on the screen when it stops (with `--console video`) |

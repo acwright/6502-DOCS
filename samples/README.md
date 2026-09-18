@@ -161,12 +161,13 @@ real directory line.
 The method is the one in
 [`6502-EMULATOR/docs/AGENTS.md`](https://github.com/acwright/6502-EMULATOR/blob/main/docs/AGENTS.md):
 
-- **The site's machine, or none.** Every emulator starts with
-  `--vdp picovdp --flow-control`, and the harness refuses one whose
-  `dbg info` doesn't show flow control on and the PICOVDP fitted (or, on a
-  serial console, no card at all), or that didn't print `AC6502 BIOS v2.0` on
-  the way to the prompt. Without flow control a pasted listing loses lines,
-  intermittently.
+- **The site's machine, or none.** Every emulator starts with `--vdp picovdp`
+  and nothing said about flow control, which is on unless `--no-flow-control`
+  takes it away. The harness refuses one whose `dbg info` doesn't show flow
+  control on and the PICOVDP fitted (or, on a serial console, no card at all),
+  or that didn't print `AC6502 BIOS v2.0` on the way to the prompt. Reading it
+  back rather than asking for it is the point: without flow control a pasted
+  listing loses lines, intermittently.
 - **Boot once.** One emulator per console mode, clock pinned with
   `--rtc 2026-01-01T00:00:00`, snapshotted at the `OK` prompt.
 - **Restore per case.** About a millisecond, against the 330,000 cycles it takes to

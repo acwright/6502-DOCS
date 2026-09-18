@@ -53,13 +53,15 @@ with `6502 dbg sym load`.
 ```
 
 ```
-headless 3.1.0 — serial console, 1 MHz, turbo, 1619280 cycles
+headless 3.2.0 — serial console, 1 MHz, turbo, 1619280 cycles
 ```
 
 On a machine started with `--console video` the same line names the video card,
-`video console (picovdp)`, and it says `flow control` when `--flow-control` is
-on. `dbg info --json` has both as `vdp` and `flowControl`, which is the way for a
-script to check it started the machine it meant to.
+`video console (picovdp)`, and it adds `no flow control` on a machine started
+with `--no-flow-control` — flow control being on is the ordinary case, so the
+line says nothing about it. `dbg info --json` has both as `vdp` and
+`flowControl`, which is the way for a script to check it started the machine it
+meant to.
 
 ::: tip Ports
 With one emulator running you can leave `--port` off entirely — the machine

@@ -22,12 +22,14 @@ it on the emulator), `INSPECT` (`6502 dbg mem` / `disasm` / `screen`), `SCHEM`
 | `open` | Suspected, not yet verified. |
 | `wontfix` | Deliberate; the reason is recorded. |
 
-**Baseline for entries from here on:** BIOS v2.0, emulator 3.1.0 on its PICOVDP
-card (`--vdp picovdp --flow-control`), cc65 built from HEAD (`cl65 V2.19 - Git
-547d92358`). The fact base is extracted from `6502-BIOS` tag **`v2.0.1`**
-(`62254c1`), a serial fix that reports the same version string — so the ROM
-inside emulator 3.1.0, which every sample and screenshot here still runs, is the
-`v2.0` build, and A69 is the one place the two differ on the page. Every entry
+**Baseline for entries from here on:** BIOS v2.0, emulator 3.2.0 on its PICOVDP
+card (`--vdp picovdp`, and the RTS/CTS flow control that release leaves on),
+cc65 built from HEAD (`cl65 V2.19 - Git 547d92358`). The fact base is extracted
+from `6502-BIOS` tag **`v2.0.2`** (`bd476a8`), which reports the same version
+string — and that is the ROM emulator 3.2.0 bundles, so the firmware the fact
+base describes and the firmware every sample and screenshot runs are for the
+first time on the 2.x line the same build. A70 is what their being different had
+been hiding. Every entry
 already below was recorded on BIOS v1.6 and emulator
 2.7.0 or earlier, and stands as a record of that machine: entries recorded before
 Phase 11 name the release they were found on, and where that matters — A31 and
@@ -39,10 +41,19 @@ A32 — the entry says so.
 
 | Status | Count |
 |---|---|
-| fixed | 59 |
-| confirmed | 5 |
-| open | 6 |
+| fixed | 62 |
+| confirmed | 6 |
+| open | 5 |
 | wontfix | 4 |
+
+**The move to emulator 3.2.0 and BIOS v2.0.2 closed O6 and opened three.**
+**A70** is the one that mattered: the site's interrupt sample asserted a number
+the ROM had stopped producing on a serial console two BIOS tags earlier, and
+only said so once the pinned emulator started carrying the ROM the fact base
+describes. **A71** is the flow control that stopped needing to be asked for, and
+the second setting of the same name that arrived with it. **A72** is the one
+thing this release left behind: `6502-ASM`'s include has no name for
+`VID_BORDER` yet. O6 was fixed upstream in the release before this one.
 
 **Phase 9 closed the ledger's upstream backlog.** Every confirmed item that
 named a sibling repo has been fixed in that repo, one commit each, with the
@@ -932,15 +943,48 @@ serial are false at the machine itself.
 | **Status** | `fixed` — this repository, in the same commit as the pin. The serial chapter now names all three places the line moves and says the transmitter goes with it, which is what somebody writing `SC_CMD` themselves needs to know; the console chapter says what happens past a full buffer. |
 | **Consequence** | Nothing on the site was measurably wrong and nothing shipped broken, which is the point of recording it. The fact base pins slot *addresses*, and not one of the 72 moved — 42 slot *targets* did, and the extractor never sees a target address — so a re-extraction that ought to have been the loudest signal of the release came back as two changed note blocks and a set of hashes. The prose was the only place the change could show up at all, and prose is the one thing in this repository no check reads for truth. It is A58's shape again: the sentence was true of the machine the docs are checked against (emulator 3.1.0 still carries the `v2.0` ROM) and false of the machine they describe. |
 
-### O6 — A picture of a moving program cannot be pinned from the harness
+### A70 — Six characters, six interrupts — and the ROM stopped counting six
+
+| | |
+|---|---|
+| **Claim** | `docs/assembly/interrupts.md`, under *Chaining*: a transcript ending `THE PROCESSOR WAS INTERRUPTED 6 TIMES`, and the line beneath it, "Five letters and an Enter: six characters, six interrupts." `samples/assembly/ticker.expect` asserted the same six over a serial console. |
+| **Truth** | Six at the machine's own keyboard, where every key is an interrupt and nothing else picks one up. Over a serial console it has been three or four since BIOS `v2.0.1`, and not the same number twice: `SerialChrout` calls `ScRxPoll` while it echoes, which reads the ACIA's receive register straight into the ring buffer, and a byte taken that way clears the interrupt the chip was about to raise. The typed character is not lost — it never needed waking the processor for. Three runs of the old case on the new ROM gave 3, 3 and 4. |
+| **Source** | `6502-BIOS` `Kernal.asm` — `ScRxPoll` and its call from `SerialChrout`, added at tag `v2.0.1` (`62254c1`) and unchanged at `v2.0.2`. |
+| **Check** | RUN — emulator 3.2.0, the case on both consoles. Six every time on `--console video`, eight runs; three or four on the serial console. |
+| **Status** | `fixed` — this repository, in the same commit as the pin. `ticker.expect` runs on a video console, which is the machine the chapter shows and the machine in the frame beside it, and asserts the count off the screen. The chapter keeps its six and gains a tip saying what a serial line does to the number and why. |
+| **Consequence** | This is the entry A69 said was coming. The claim was true of the ROM the site described until `v2.0.1`, and the site went on checking it against emulator 3.1.0's bundled `v2.0` image for as long as that was the pinned release — so the one sample that could have caught the change was the one being asked the question on the wrong machine. It surfaced the moment the two came back into step, as the single failing case out of 153. The lesson is not about interrupts: a sample whose assertion depends on which console it runs on should name the console it means, and this one did not. |
+
+### A71 — The chapter told a reader to turn on something the emulator no longer leaves off
+
+| | |
+|---|---|
+| **Claim** | `docs/using/emulator.md`, under *Talking to real hardware*: "Tick **RTS/CTS flow control** under **Settings → SERIAL** as well. It is off until you turn it on." The command-line table offered `--flow-control` as the way to hold input back, `docs/crossdev/agents.md` told an agent to "turn on flow control", `docs/crossdev/build-run-loop.md` said `--flow-control` mattered "as soon as the file holds more than a few lines", and `docs/crossdev/debugging.md` said `dbg info` "says `flow control` when `--flow-control` is on". |
+| **Truth** | From emulator 3.2.0 RTS/CTS flow control on the emulated machine's ACIA is on unless `--no-flow-control` takes it away, in the core, the CLI and the app; a settings file from 3.1.1 or earlier is migrated on once. `--flow-control` still parses and does nothing. `dbg info` says the opposite thing now — `no flow control`, and only when it is off. And the app has gained a *second* setting spelled almost the same: **Flow Control** on the serial port row, this computer's end of a real cable, RTS/CTS by default, reached from the CLI as `--serial-flow`. |
+| **Source** | `6502-EMULATOR` v3.2.0 — `README.md` *Settings Panel* and *Notes*, `src/cli/dbg/Commands.ts` (`flowControl === false`), `src/renderer/src/components/SettingsPanel.vue`. |
+| **Check** | RUN — `6502 dbg info --json` on a machine started with no flow-control flag at all reports `flowControl: true`. |
+| **Status** | `fixed` — this repository, in the same commit as the pin. Every page that told a reader to switch it on now says it is already on and what turning it off costs; the emulator chapter names both settings and which cable each one belongs to; `scripts/preflight.mjs` and `samples/crossdev/test.sh` stopped passing a flag and kept reading the answer back. |
+| **Consequence** | A reader following the old text would have gone looking for a tick box that is ticked, which is harmless, and an agent would have passed a flag that does nothing, which is also harmless. The part that was not harmless is the two settings with one name: the new **Flow Control** is about the *real* port and the old one about the *emulated* ACIA, and a chapter that said "flow control" without saying whose would have sent somebody to change the wrong one while debugging a cable. The advice for a real terminal in `docs/using/serial.md` and `docs/assembly/serial.md` was never about the emulator and did not move. |
+
+### A72 — `6502-ASM/6502-VDP.inc` predates `VID_BORDER`
+
+| | |
+|---|---|
+| **Claim** | `6502-VDP.inc` — the include a reader's `make VDP=1` project uses, copied verbatim into `samples/lib/` — ends the Kernal's video variables at `VDP_P3` (`$039B`), and describes `InitVideo` as setting "the border from `VID_PEN`". |
+| **Truth** | BIOS `v2.0.2` adds `VID_BORDER` at `$039C`, and `InitVideo` sets the border from *it* rather than from the pen — which is the whole point of the variable: the border a `COLOR fg,bg,border` asked for survives a return to the Text console, and a console brought up by that `COLOR` comes up in the right border instead of flashing the old one. `VideoSetColor`'s contract is unchanged; it now stores the background in `VID_BORDER` on the way through. |
+| **Source** | `6502-BIOS` tag `v2.0.2` (`bd476a8`) — `BIOS.inc` (`VID_BORDER`), `Kernal.asm` (`VideoSetPenBorder`, `InitVideoImpl`, `KernalInitImpl`). |
+| **Check** | GREP — the tag's `BIOS.inc` and `Kernal.asm` read against `v2.0.1`'s, and `data/memory-map.json` re-extracted, which is where the address on the site comes from. |
+| **Status** | `confirmed` — the fix belongs in `6502-ASM`, whose include this is; `samples/lib/6502-VDP.inc` is a verbatim copy and is not edited here, which is what keeps a listing on the site identical to the one a reader assembles. The extractor's include check passes either way, because a RAM variable the include leaves out is not an error — it is how the include drops BASIC's and the filesystem's internals on purpose. |
+| **Consequence** | Small and easy to hit: a program that wants to set a border before the console comes up has no name for the byte, and the comment sends anyone reading it to `VID_PEN`. Nothing on the site is wrong — the memory map, the Kernal variables table and the screen chapter all come off the fact base or were rewritten with it — and no sample names `VID_BORDER`, so nothing fails to assemble. |
+
+### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 
 | | |
 |---|---|
 | **Observation** | `6502 dbg runcycles n` stops on its budget exactly, but serial input queued with `dbg send` is not delivered while it runs: `PRINT 12` sent to a paused machine and followed by `runcycles 2000000` never reaches BASIC, and the same send followed by `wait --cycles 100000 --run turbo` does. `wait --run turbo` in turn returns at its budget and leaves the machine running. So a case that types `RUN` and then settles cannot stop at a fixed emulated cycle after the input arrived, and a program that animates is hashed at a different frame each run (four runs of the first `sprites.asm` gave four digests). |
-| **Status** | `open` — an emulator question, not a documentation error. `DEBUG-PROTOCOL.md` says of `input.type` that it "needs a running machine"; it does not say the same of the serial console. |
-| **Mitigation here** | The harness's `picture` directive is documented as for still pictures, and `samples/assembly/sprites.asm` holds still until a key. `scripts/capture-screens.mjs` is unaffected, since its shots are taken of still pictures too. |
+| **Status** | `fixed` — `6502-EMULATOR` `c3e1e38`, released in 3.1.1 and carried into the 3.2.0 this site now pins. `Session.runCycles` made one straight call into the engine, so the headless host's paced serial input — a chunk listener — never ran; it now runs in the scheduler's chunks and calls the listeners between them, landing on the same cycle as before. The suggested fix below is the one that was taken. |
+| **Mitigation here** | Kept as it was. The harness's `picture` directive is still documented as for still pictures and `samples/assembly/sprites.asm` still holds still until a key, because a case that does not depend on landing mid-animation is a better case; what has changed is that one could now be written. |
 | **Suggested upstream fix** | Let `runcycles` (or `wait` with a stop-on-budget option) deliver queued console input, so a test can type and then stop exactly. |
-| **Check** | RUN — emulator 3.1.0, `--console video --vdp picovdp --flow-control`. |
+| **Check** | RUN — emulator 3.2.0, `--console video --vdp picovdp`. `dbg send 'PRINT 12\r'` then `runcycles 2000000` now prints ` 12`. Three runs of a program that recolors the border in a loop, typed in and advanced with `runcycles` alone, gave one digest three times; the same three runs with a `wait --run turbo` anywhere in them still give three, since that call returns at its budget and leaves the machine running. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.

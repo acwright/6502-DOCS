@@ -40,7 +40,8 @@ That line waits for a key, which is also how a player tells it they've seen
 enough.
 
 `SCREEN 0` goes back to text on purpose, part way through. It also puts back
-the sixteen text colors, whatever `PALETTE` did to them.
+the sixteen text colors, whatever `PALETTE` did to them, and the border you last
+gave `COLOR`.
 
 ## The card's memory
 

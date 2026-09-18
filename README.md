@@ -10,7 +10,7 @@ Published at **<https://acwright.github.io/6502-DOCS/>**.
 Built with [VitePress](https://vitepress.dev/), deployed to GitHub Pages.
 
 **The site describes BIOS v2.0 on the 6502-PICOVDP, and every sample, screenshot
-and embedded program in it was produced by emulator 3.1.0 with that card.** Those are the two versions that
+and embedded program in it was produced by emulator 3.2.0 with that card.** Those are the two versions that
 move, and both are now gates rather than notes: `npm run check:voice` fails on a
 page stating a BIOS version the firmware disagrees with, and `npm run preflight`
 fails on an emulator that is not the one in `data/emulator.json`. See
@@ -119,9 +119,9 @@ The extractor needs a `6502-BIOS` source tree (`--bios <path>`, `$BIOS_SRC`, or
 `~/Developer/Assembly/6502-BIOS`). The generated files are committed, so
 building the site and running CI need only this repo.
 
-The committed files were extracted from **tag `v2.0.1`** (`62254c1`), a serial
-fix that carries no version bump — the firmware still reports `v2.0`, which is
-what the footer and `check:voice` hold every page to. Each file's `$meta.sources`
+The committed files were extracted from **tag `v2.0.2`** (`bd476a8`), which
+carries no version bump — the firmware still reports `v2.0`, which is what the
+footer and `check:voice` hold every page to. Each file's `$meta.sources`
 records the SHA-256 of every BIOS file it was read from, so a fact base built
 from a different tree is visible in the diff rather than only in the numbers.
 
@@ -426,8 +426,8 @@ it somewhere out of the way, which leaves the BIOS repository alone. Each one
 either prints `ok` or tells you what moved.
 
 ```sh
-mkdir -p /tmp/bios-v2.0.1 && git -C ../6502-BIOS archive v2.0.1 | tar -x -C /tmp/bios-v2.0.1
-npm run facts -- --bios /tmp/bios-v2.0.1 # re-extract data/ from the BIOS source
+mkdir -p /tmp/bios-v2.0.2 && git -C ../6502-BIOS archive v2.0.2 | tar -x -C /tmp/bios-v2.0.2
+npm run facts -- --bios /tmp/bios-v2.0.2 # re-extract data/ from the BIOS source
 git diff data/        # read this — it is the release notes, mechanically derived
 npm run cards         # the five generated cards follow the fact base
 npm run diagrams      # so do nine of the fifteen diagrams

@@ -105,7 +105,7 @@ you look it up:
   `HW_*` bits, the `TMS_*` colors.
 
 So `VDP_` at the start of a name always means one of the Kernal's own variables
-in `$0391`–`$039B`, never a register.
+in `$0391`–`$039C`, never a register.
 
 ## How a program gets run
 

@@ -7,7 +7,7 @@
     "sources": [
       {
         "file": "BASIC.asm",
-        "sha256": "e41bc5a75fed37329e0796b2634bdbe8530d4169369ec5faa9c802dc8eeae4a7"
+        "sha256": "c133cb0b08ea95d67d1a1a8ddef75394675b71f810456320af52e191615da66b"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -21,7 +21,7 @@
         "symbol": "ERR_SYNTAX",
         "text": "SYNTAX",
         "printed": "?SYNTAX ERROR",
-        "source": "BASIC.asm:9523",
+        "source": "BASIC.asm:9525",
         "check": "GREP"
       },
       {
@@ -29,7 +29,7 @@
         "symbol": "ERR_OVERFLOW",
         "text": "OVERFLOW",
         "printed": "?OVERFLOW ERROR",
-        "source": "BASIC.asm:9524",
+        "source": "BASIC.asm:9526",
         "check": "GREP"
       },
       {
@@ -37,7 +37,7 @@
         "symbol": "ERR_OUTOFMEM",
         "text": "OUT OF MEMORY",
         "printed": "?OUT OF MEMORY ERROR",
-        "source": "BASIC.asm:9525",
+        "source": "BASIC.asm:9527",
         "check": "GREP"
       },
       {
@@ -45,7 +45,7 @@
         "symbol": "ERR_UNDEFSTMT",
         "text": "UNDEF'D STATEMENT",
         "printed": "?UNDEF'D STATEMENT ERROR",
-        "source": "BASIC.asm:9526",
+        "source": "BASIC.asm:9528",
         "check": "GREP"
       },
       {
@@ -53,7 +53,7 @@
         "symbol": "ERR_BADSUBSCR",
         "text": "BAD SUBSCRIPT",
         "printed": "?BAD SUBSCRIPT ERROR",
-        "source": "BASIC.asm:9527",
+        "source": "BASIC.asm:9529",
         "check": "GREP"
       },
       {
@@ -61,7 +61,7 @@
         "symbol": "ERR_REDIM",
         "text": "REDIM'D ARRAY",
         "printed": "?REDIM'D ARRAY ERROR",
-        "source": "BASIC.asm:9528",
+        "source": "BASIC.asm:9530",
         "check": "GREP"
       },
       {
@@ -69,7 +69,7 @@
         "symbol": "ERR_DIVZERO",
         "text": "DIVISION BY ZERO",
         "printed": "?DIVISION BY ZERO ERROR",
-        "source": "BASIC.asm:9529",
+        "source": "BASIC.asm:9531",
         "check": "GREP"
       },
       {
@@ -77,7 +77,7 @@
         "symbol": "ERR_ILLDIRECT",
         "text": "ILLEGAL DIRECT",
         "printed": "?ILLEGAL DIRECT ERROR",
-        "source": "BASIC.asm:9530",
+        "source": "BASIC.asm:9532",
         "check": "GREP"
       },
       {
@@ -85,7 +85,7 @@
         "symbol": "ERR_TYPEMISM",
         "text": "TYPE MISMATCH",
         "printed": "?TYPE MISMATCH ERROR",
-        "source": "BASIC.asm:9531",
+        "source": "BASIC.asm:9533",
         "check": "GREP"
       },
       {
@@ -93,7 +93,7 @@
         "symbol": "ERR_LONGSTR",
         "text": "STRING TOO LONG",
         "printed": "?STRING TOO LONG ERROR",
-        "source": "BASIC.asm:9532",
+        "source": "BASIC.asm:9534",
         "check": "GREP"
       },
       {
@@ -101,7 +101,7 @@
         "symbol": "ERR_FORMULA",
         "text": "FORMULA TOO COMPLEX",
         "printed": "?FORMULA TOO COMPLEX ERROR",
-        "source": "BASIC.asm:9533",
+        "source": "BASIC.asm:9535",
         "check": "GREP"
       },
       {
@@ -109,7 +109,7 @@
         "symbol": "ERR_ILLQUAN",
         "text": "ILLEGAL QUANTITY",
         "printed": "?ILLEGAL QUANTITY ERROR",
-        "source": "BASIC.asm:9534",
+        "source": "BASIC.asm:9536",
         "check": "GREP"
       },
       {
@@ -117,7 +117,7 @@
         "symbol": "ERR_RG",
         "text": "RETURN WITHOUT GOSUB",
         "printed": "?RETURN WITHOUT GOSUB ERROR",
-        "source": "BASIC.asm:9535",
+        "source": "BASIC.asm:9537",
         "check": "GREP"
       },
       {
@@ -125,7 +125,7 @@
         "symbol": "ERR_NF",
         "text": "NEXT WITHOUT FOR",
         "printed": "?NEXT WITHOUT FOR ERROR",
-        "source": "BASIC.asm:9536",
+        "source": "BASIC.asm:9538",
         "check": "GREP"
       },
       {
@@ -133,7 +133,7 @@
         "symbol": "ERR_OD",
         "text": "OUT OF DATA",
         "printed": "?OUT OF DATA ERROR",
-        "source": "BASIC.asm:9537",
+        "source": "BASIC.asm:9539",
         "check": "GREP"
       },
       {
@@ -141,7 +141,7 @@
         "symbol": "ERR_NODEV",
         "text": "NO DEVICE",
         "printed": "?NO DEVICE ERROR",
-        "source": "BASIC.asm:9538",
+        "source": "BASIC.asm:9540",
         "check": "GREP"
       },
       {
@@ -149,7 +149,7 @@
         "symbol": "ERR_CANTCONT",
         "text": "CAN'T CONTINUE",
         "printed": "?CAN'T CONTINUE ERROR",
-        "source": "BASIC.asm:9539",
+        "source": "BASIC.asm:9541",
         "check": "GREP"
       }
     ]
@@ -176,61 +176,61 @@
     {
       "symbol": "MsgFree",
       "text": " BYTES FREE  HW=",
-      "source": "BASIC.asm:9305",
+      "source": "BASIC.asm:9307",
       "check": "GREP"
     },
     {
       "symbol": "MsgLoadErr",
       "text": "?LOAD ERROR\\r\\n",
-      "source": "BASIC.asm:9306",
+      "source": "BASIC.asm:9308",
       "check": "GREP"
     },
     {
       "symbol": "MsgSaveErr",
       "text": "?SAVE ERROR\\r\\n",
-      "source": "BASIC.asm:9307",
+      "source": "BASIC.asm:9309",
       "check": "GREP"
     },
     {
       "symbol": "MsgDelErr",
       "text": "?DEL ERROR\\r\\n",
-      "source": "BASIC.asm:9308",
+      "source": "BASIC.asm:9310",
       "check": "GREP"
     },
     {
       "symbol": "MsgEraseDisk",
       "text": "ERASE DISK ",
-      "source": "BASIC.asm:9309",
+      "source": "BASIC.asm:9311",
       "check": "GREP"
     },
     {
       "symbol": "MsgConfirm",
       "text": "? (Y/N) ",
-      "source": "BASIC.asm:9310",
+      "source": "BASIC.asm:9312",
       "check": "GREP"
     },
     {
       "symbol": "MsgBytesFreeNL",
       "text": " BYTES FREE\\r\\n",
-      "source": "BASIC.asm:9556",
+      "source": "BASIC.asm:9558",
       "check": "GREP"
     },
     {
       "symbol": "MsgOK",
       "text": "OK\\r\\n",
-      "source": "BASIC.asm:9559",
+      "source": "BASIC.asm:9561",
       "check": "GREP"
     },
     {
       "symbol": "MsgErrorWord",
       "text": " ERROR",
-      "source": "BASIC.asm:9562",
+      "source": "BASIC.asm:9564",
       "check": "GREP"
     },
     {
       "symbol": "MsgInWord",
       "text": " IN ",
-      "source": "BASIC.asm:9565",
+      "source": "BASIC.asm:9567",
       "check": "GREP"
     }
   ]

@@ -64,7 +64,7 @@ finds it.
 ## The debugging loop
 
 ```sh
-6502 run --headless --vdp picovdp --flow-control --debug --pause --bin 0x7F00=code.bin &
+6502 run --headless --vdp picovdp --debug --pause --bin 0x7F00=code.bin &
 
 6502 dbg break 0x7F00
 6502 dbg wait --serial 'OK' --run turbo
@@ -110,9 +110,10 @@ rather than text, `dbg screen hash` compares and `--screenshot` or
 `dbg screen png` saves one to look at, and `dbg video` says what the card is
 doing.
 
-**Name the video card, and turn on flow control.** Start every machine with
-`--vdp picovdp --flow-control`. The card is what boots BIOS 2.0, and without
-flow control a long paste loses lines. An agent can check it got both:
+**Name the video card, and leave flow control alone.** Start every machine with
+`--vdp picovdp`: the card is what boots BIOS 2.0. Flow control is on unless
+`--no-flow-control` takes it away, and without it a long paste loses lines, so
+nothing should be reaching for that flag. An agent can check it got both:
 `dbg info --json` reports `vdp` and `flowControl`, with `vdp` null on a serial
 console, which has no video card fitted.
 

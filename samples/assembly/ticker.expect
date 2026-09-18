@@ -2,8 +2,14 @@
 #
 # Six characters go in — five letters and the Enter — and each one arrives as
 # an interrupt, so the count at the end is six.
+#
+# On the machine's own console, which is the one the chapter shows and the one
+# the frame beside it runs. Over a serial console the Kernal's echo path looks
+# at the port while it sends, and a character that lands during the echo of the
+# one before is taken without an interrupt — so the count there is three or
+# four, and not the same twice. See ACCURACY A70.
 
-wait (OK|ENTER)
+console video
 send HELLO\r
-expect ^HELLO$
-expect ^THE PROCESSOR WAS INTERRUPTED 6 TIMES$
+screen ^HELLO\s*$
+screen ^THE PROCESSOR WAS INTERRUPTED 6 TIMES\s*$

@@ -132,7 +132,7 @@ script can check it without capturing the console separately.
 |---|---|
 | `6502 run build/game.prg` | A program at `$0800` |
 | `6502 run --vdp picovdp` | With the ACE's video card, and BIOS 2.0 |
-| `6502 run --flow-control` | Holding piped input while the machine asks it to wait |
+| `6502 run --no-flow-control` | Piped input sent regardless of the machine asking it to wait |
 | `6502 run --cart build/game.crt` | A cartridge |
 | `6502 run --bin 0x7F00=data.bin` | Raw bytes at an address, written before boot |
 | `6502 run --cf disk.img` | With a memory card attached |
@@ -160,12 +160,13 @@ everything queued behind it, so the console looks dead. The fix is to wait for a
 prompt rather than firing and hoping:
 
 ```
-6502 run --headless --vdp picovdp --flow-control --input-after 'OK' --timeout 20s build/countdown.prg < commands.txt
+6502 run --headless --vdp picovdp --input-after 'OK' --timeout 20s build/countdown.prg < commands.txt
 ```
 
-`--flow-control` matters as soon as the file holds more than a few lines. BASIC
+Flow control matters as soon as the file holds more than a few lines. BASIC
 takes a moment to store each line it's given, and asks the sender to wait
-meanwhile; without the flag, piped input doesn't wait, and a long listing
-arrives with lines missing.
+meanwhile; piped input waits, which is why the whole listing arrives. That is
+the machine's normal behavior, and `--no-flow-control` is the way to give it up
+— a long listing sent that way arrives with lines missing.
 
 Next: [when the program doesn't do what you meant](/crossdev/debugging).
