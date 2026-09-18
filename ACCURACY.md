@@ -41,8 +41,8 @@ A32 — the entry says so.
 
 | Status | Count |
 |---|---|
-| fixed | 62 |
-| confirmed | 6 |
+| fixed | 63 |
+| confirmed | 5 |
 | open | 6 |
 | wontfix | 4 |
 
@@ -52,9 +52,9 @@ fourth turned up behind it.**
 the ROM had stopped producing on a serial console two BIOS tags earlier, and
 only said so once the pinned emulator started carrying the ROM the fact base
 describes. **A71** is the flow control that stopped needing to be asked for, and
-the second setting of the same name that arrived with it. **A72** is the one
-thing this release left behind: `6502-ASM`'s include has no name for
-`VID_BORDER` yet. **O7** went red in CI a commit later, and is not the release's
+the second setting of the same name that arrived with it. **A72** — `6502-ASM`'s
+include having no name for `VID_BORDER` — was fixed in the same close-out, in
+all five copies of the include and the C header. **O7** went red in CI a commit later, and is not the release's
 doing: a one-shot `dbg wait` keeps only what arrived before its match, so a case
 whose pattern lands in the middle of a line loses the rest of it — which 3.1.1
 does as readily as 3.2.0, on the harness as it stood before the pin moved. O6
@@ -981,7 +981,7 @@ serial are false at the machine itself.
 | **Status** | `fixed` — this repository, in the same commit as the pin. Every page that told a reader to switch it on now says it is already on and what turning it off costs; the emulator chapter names both settings and which cable each one belongs to; `scripts/preflight.mjs` and `samples/crossdev/test.sh` stopped passing a flag and kept reading the answer back. |
 | **Consequence** | A reader following the old text would have gone looking for a tick box that is ticked, which is harmless, and an agent would have passed a flag that does nothing, which is also harmless. The part that was not harmless is the two settings with one name: the new **Flow Control** is about the *real* port and the old one about the *emulated* ACIA, and a chapter that said "flow control" without saying whose would have sent somebody to change the wrong one while debugging a cable. The advice for a real terminal in `docs/using/serial.md` and `docs/assembly/serial.md` was never about the emulator and did not move. |
 
-### A72 — `6502-ASM/6502-VDP.inc` predates `VID_BORDER`
+### A72 — `6502-ASM/6502-VDP.inc` predates `VID_BORDER` — **fixed**
 
 | | |
 |---|---|
@@ -989,7 +989,7 @@ serial are false at the machine itself.
 | **Truth** | BIOS `v2.0.2` adds `VID_BORDER` at `$039C`, and `InitVideo` sets the border from *it* rather than from the pen — which is the whole point of the variable: the border a `COLOR fg,bg,border` asked for survives a return to the Text console, and a console brought up by that `COLOR` comes up in the right border instead of flashing the old one. `VideoSetColor`'s contract is unchanged; it now stores the background in `VID_BORDER` on the way through. |
 | **Source** | `6502-BIOS` tag `v2.0.2` (`bd476a8`) — `BIOS.inc` (`VID_BORDER`), `Kernal.asm` (`VideoSetPenBorder`, `InitVideoImpl`, `KernalInitImpl`). |
 | **Check** | GREP — the tag's `BIOS.inc` and `Kernal.asm` read against `v2.0.1`'s, and `data/memory-map.json` re-extracted, which is where the address on the site comes from. |
-| **Status** | `confirmed` — the fix belongs in `6502-ASM`, whose include this is; `samples/lib/6502-VDP.inc` is a verbatim copy and is not edited here, which is what keeps a listing on the site identical to the one a reader assembles. The extractor's include check passes either way, because a RAM variable the include leaves out is not an error — it is how the include drops BASIC's and the filesystem's internals on purpose. |
+| **Status** | `fixed` — `6502-ASM` `7476e62` names `VID_BORDER` at `$039C`, corrects `InitVideo`'s description and records that `VideoSetColor` stores the background there; the same commit went into `6502-CRT`, `6502-PRG`, `6502-BIN` and `6502-C`'s `6502-VDP.h`, and `samples/lib/6502-VDP.inc` was re-copied so the listing on the site is still byte-identical to the one a reader assembles. The extractor's include check passed either way, because a RAM variable the include leaves out is not an error — it is how the include drops BASIC's and the filesystem's internals on purpose. |
 | **Consequence** | Small and easy to hit: a program that wants to set a border before the console comes up has no name for the byte, and the comment sends anyone reading it to `VID_PEN`. Nothing on the site is wrong — the memory map, the Kernal variables table and the screen chapter all come off the fact base or were rewritten with it — and no sample names `VID_BORDER`, so nothing fails to assemble. |
 
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
