@@ -22,6 +22,19 @@ There are four small jumper headers as well — `PHI2 SELECT` for the CPU speed,
 reset switch out to a panel-mounted button. Those are build-time decisions,
 not things to plug into.
 
+::: tip `CTS EN` and `DCD EN` default to ground
+Ground is how the boards are built, and it means the line is permanently
+asserted: the ACIA can always send and always receive, and a three-wire cable
+is enough.
+
+Moved to the cable, they do real work. On a real R6551, `CTS` high stops the
+transmitter and `DCD` high stops the receiver — and the byte that arrives while
+the receiver is stopped is lost, where a byte waiting to go out is held until
+the line comes back. A board jumpered to the cable, plugged into something that
+does not assert those lines, shows **no banner and no echo at all**. It looks
+broken. It isn't; it is waiting.
+:::
+
 ## Joystick — DB-9
 
 Both ports are wired the same way, port A to the VIA's port A and port B to
