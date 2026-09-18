@@ -1,10 +1,21 @@
 # "Reading the keyboard" — INKEY in a polling loop, five keys deep.
-wait (OK|PRESS)
+#
+# On a video console, which is the machine the chapter's reader is sitting at
+# and the one with a keyboard to poll. It also settles the case: a video case
+# advances a fixed number of emulated cycles after each key rather than waiting
+# on a console pattern, and reads the finished screen at the end. Every pattern
+# this program offers sits in the middle of a line it is still printing, and a
+# wait that lands there keeps only what had arrived by then. See ACCURACY O7.
+
+console video
 send A
 send B
 send C
 send D
 send E
-expect ^ 1 YOU PRESSED A \(CODE 65\)$
-expect ^ 5 YOU PRESSED E \(CODE 69\)$
-expect ^THAT IS FIVE$
+screen ^ 1 YOU PRESSED A \(CODE 65\)\s*$
+screen ^ 2 YOU PRESSED B \(CODE 66\)\s*$
+screen ^ 3 YOU PRESSED C \(CODE 67\)\s*$
+screen ^ 4 YOU PRESSED D \(CODE 68\)\s*$
+screen ^ 5 YOU PRESSED E \(CODE 69\)\s*$
+screen ^THAT IS FIVE\s*$

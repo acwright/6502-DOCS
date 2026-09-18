@@ -43,7 +43,7 @@ A32 — the entry says so.
 |---|---|
 | fixed | 62 |
 | confirmed | 6 |
-| open | 5 |
+| open | 6 |
 | wontfix | 4 |
 
 **The move to emulator 3.2.0 and BIOS v2.0.2 closed O6 and opened three.**
@@ -996,6 +996,16 @@ serial are false at the machine itself.
 | **Mitigation here** | Kept as it was. The harness's `picture` directive is still documented as for still pictures and `samples/assembly/sprites.asm` still holds still until a key, because a case that does not depend on landing mid-animation is a better case; what has changed is that one could now be written. |
 | **Suggested upstream fix** | Let `runcycles` (or `wait` with a stop-on-budget option) deliver queued console input, so a test can type and then stop exactly. |
 | **Check** | RUN — emulator 3.2.0, `--console video --vdp picovdp`. `dbg send 'PRINT 12\r'` then `runcycles 2000000` now prints ` 12`. Three runs of a program that recolors the border in a loop, typed in and advanced with `runcycles` alone, gave one digest three times; the same three runs with a `wait --run turbo` anywhere in them still give three, since that call returns at its budget and leaves the machine running. |
+
+### O7 — A one-shot `dbg wait` keeps only what arrived before the match
+
+| | |
+|---|---|
+| **Observation** | `6502 dbg send <text> --wait <pattern>` returns the output between the write and the match, and nothing after the match. It already passes `since` — the cursor `serial.write` hands back — so the gap is not the write's own output but everything the machine prints *between one match and the next write*, which no later call asks for. A harness that stitches those returns together therefore has the whole transcript only if every wait pattern sits at the end of what the machine had to say. `samples/basic/keys` waited on `(OK\|PRESS)`, which matches the `PRESSED` in a line the machine is still printing, and one run in CI came back with ` 1 YOU PRESSED A (CODE 6` and lost the `5)`. It had passed for six weeks. |
+| **Status** | `open` — a protocol question rather than a documentation error, and nothing on the site is affected: the two cases it reached are fixed here, and no chapter shows a transcript the harness assembled. |
+| **Mitigation here** | The two cases that typed keys at a program mid-run — `samples/basic/keys` and `samples/assembly/ticker` — run on a video console instead, where the harness advances a fixed emulated-cycle budget after each key and reads the screen at the end, so there is no pattern to land in the middle of. Both are programs a reader drives from a keyboard, so that is also the right machine for them (A70). |
+| **Suggested upstream fix** | Return the end cursor from `wait.for`, as `serial.write` returns one. A one-shot client cannot close the gap without it: `wait.for` reports no cursor, and `dbg send` has no `--since` to pass one to. With it, a harness could carry the cursor from each match into the next call and keep the whole transcript whatever its patterns match. |
+| **Check** | RUN — emulator 3.2.0. The truncation is in the CI log for `3c36c3a`, a commit that changed only `ACCURACY.md`; eight local runs of the same case did not reproduce it. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
