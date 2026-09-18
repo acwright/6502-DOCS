@@ -46,14 +46,19 @@ A32 — the entry says so.
 | open | 6 |
 | wontfix | 4 |
 
-**The move to emulator 3.2.0 and BIOS v2.0.2 closed O6 and opened three.**
+**The move to emulator 3.2.0 and BIOS v2.0.2 closed O6 and opened three, and a
+fourth turned up behind it.**
 **A70** is the one that mattered: the site's interrupt sample asserted a number
 the ROM had stopped producing on a serial console two BIOS tags earlier, and
 only said so once the pinned emulator started carrying the ROM the fact base
 describes. **A71** is the flow control that stopped needing to be asked for, and
 the second setting of the same name that arrived with it. **A72** is the one
 thing this release left behind: `6502-ASM`'s include has no name for
-`VID_BORDER` yet. O6 was fixed upstream in the release before this one.
+`VID_BORDER` yet. **O7** went red in CI a commit later, and is not the release's
+doing: a one-shot `dbg wait` keeps only what arrived before its match, so a case
+whose pattern lands in the middle of a line loses the rest of it — which 3.1.1
+does as readily as 3.2.0, on the harness as it stood before the pin moved. O6
+was fixed upstream in the release before this one.
 
 **The frozen `v1` edition was re-read and left alone.** Every version it names
 is the `v2.7.0` tag or the `/6502-EMULATOR/v2/` build, both immutable and both
@@ -1001,11 +1006,12 @@ serial are false at the machine itself.
 
 | | |
 |---|---|
-| **Observation** | `6502 dbg send <text> --wait <pattern>` returns the output between the write and the match, and nothing after the match. It already passes `since` — the cursor `serial.write` hands back — so the gap is not the write's own output but everything the machine prints *between one match and the next write*, which no later call asks for. A harness that stitches those returns together therefore has the whole transcript only if every wait pattern sits at the end of what the machine had to say. `samples/basic/keys` waited on `(OK\|PRESS)`, which matches the `PRESSED` in a line the machine is still printing, and one run in CI came back with ` 1 YOU PRESSED A (CODE 6` and lost the `5)`. It had passed for six weeks. |
-| **Status** | `open` — a protocol question rather than a documentation error, and nothing on the site is affected: the two cases it reached are fixed here, and no chapter shows a transcript the harness assembled. |
-| **Mitigation here** | The two cases that typed keys at a program mid-run — `samples/basic/keys` and `samples/assembly/ticker` — run on a video console instead, where the harness advances a fixed emulated-cycle budget after each key and reads the screen at the end, so there is no pattern to land in the middle of. Both are programs a reader drives from a keyboard, so that is also the right machine for them (A70). |
+| **Observation** | `6502 dbg send <text> --wait <pattern>` returns the output between the write and the match, and nothing after the match. It already passes `since` — the cursor `serial.write` hands back — so the gap is not the write's own output but everything the machine prints *between one match and the next write*, which no later call asks for. Worse, the match is tested once per delivered chunk, after the whole chunk has been appended, so where the return is cut is wherever the host happened to flush — a few characters past the match on an idle machine, a whole line past it on a busy one. A harness that stitches those returns together therefore has the whole transcript only if every wait pattern sits at the end of what the machine had to say. `samples/basic/keys` waited on `(OK\|PRESS)`, which matches the `PRESS` inside the `YOU PRESSED` of a line the machine is still printing, and CI's run of `3c36c3a` came back with ` 1 YOU PRESSED A (CODE 6` and nothing where the `5)` should have been. It had passed since the case was written, and passes every time on a machine with nothing else to do. |
+| **Status** | `open` — a protocol question rather than a documentation error, and nothing on the site is affected: the one case it reached is fixed here, and no chapter shows a transcript the harness assembled. |
+| **Not a 3.2.0 regression** | The release is what made it show, not what caused it. The same case on the harness as it stood at `b84ef7d` — `--flow-control` asked for, emulator `3.1.1` built from its tag — truncates the same line in the same way: 64 runs across four concurrent checkouts failed 8 times on 3.1.1 and 14 times on 3.2.0, and a run of 32 of each *at the same time*, under the same load, failed 4 times each. The mechanism is in `wait.for`, which neither release changed. |
+| **Mitigation here** | `samples/basic/keys` runs on a video console, where the harness advances a fixed emulated-cycle budget after each key and reads the finished screen at the end, so there is no console pattern to land in the middle of. It is also a program a reader drives from a keyboard, which is the right machine for it anyway — the same reasoning that moved `samples/assembly/ticker` there under A70. No other case is exposed: every other `wait` on the site matches either an `INPUT` prompt the program has stopped at or the `OK` that comes back last, and in both the machine prints nothing more until the harness writes again. |
 | **Suggested upstream fix** | Return the end cursor from `wait.for`, as `serial.write` returns one. A one-shot client cannot close the gap without it: `wait.for` reports no cursor, and `dbg send` has no `--since` to pass one to. With it, a harness could carry the cursor from each match into the next call and keep the whole transcript whatever its patterns match. |
-| **Check** | RUN — emulator 3.2.0. The truncation is in the CI log for `3c36c3a`, a commit that changed only `ACCURACY.md`; eight local runs of the same case did not reproduce it. |
+| **Check** | RUN — emulators 3.2.0 and 3.1.1, four checkouts of this repository running the case at once on a ten-core laptop. The committed serial case failed 14 of 64 runs on 3.2.0 and 8 of 64 on 3.1.1, cut at a different character from run to run — ` (C` here, ` (CODE` there, ` (CODE 6` in CI — which is the chunk boundary showing through. The video-console case in its place: 40 runs under the same four-way load, no failures. |
 
 - **The Monitor has its own version.** Its banner is `6502 MONITOR v1.1`
   (`Monitor.asm:2537`), independent of the BIOS version and of the BASIC banner.
