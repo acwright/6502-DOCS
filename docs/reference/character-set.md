@@ -65,7 +65,7 @@ Row is the high hex digit, column the low one. `A` is row `4`, column `1` —
 
 ## What `PRINT` can reach
 
-Not all of it — and this is the thing that catches people.
+Not all of it, and the part it leaves out is what catches people.
 
 `PRINT CHR$(n)` goes through the Kernal's `Chrout`, and `Chrout`'s video path
 passes **`$20` to `$7E`** through to the screen, honours four control codes

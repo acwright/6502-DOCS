@@ -1,13 +1,16 @@
-# Driving it from an agent
+# Driving the machine from an agent
 
-Everything in this section is a command with a bounded runtime and a meaningful
-exit code. That makes the machine unusually easy to hand to an AI coding agent:
-it can write 6502 code, run it on a real emulated machine, read what happened,
-and fix it — without you in the loop for each turn.
+Every command in this section runs for a bounded time and exits with a
+meaningful status code. That combination makes the machine straightforward to
+hand to an AI coding agent: the agent can write 6502 code, run that code on an
+emulated machine, read what the machine printed, and correct the code —
+repeating the cycle without needing you between each attempt.
 
-This is genuinely unusual. An agent asked to write 6502 code with no machine to
-hand will write something that looks right, and looking right is not a property
-6502 code has reliably. Give it a machine and the guessing stops.
+Having a machine to run on matters more for 6502 code than it does for most
+languages. An agent asked to write 6502 code with nothing to run it on will
+produce something that looks correct, and for this processor looking correct
+is a poor guide to whether the code works. Give the agent a machine and it can
+check its work instead of guessing at it.
 
 ## The short version
 
@@ -111,13 +114,17 @@ rather than text, `dbg screen hash` compares and `--screenshot` or
 doing.
 
 **Name the video card, and leave flow control alone.** Start every machine with
-`--vdp picovdp`: the card is what boots BIOS 2.0. Flow control is on unless
-`--peer-rts ignore` (or the older `--no-flow-control`) takes it away, and
-without it a long paste loses lines, so nothing should be reaching for that
-flag. Leave the serial card and its jumpers alone too: at their defaults nothing
-can stop the machine, and `--cts cable` with nobody asserting CTS stalls it. An agent can check it got both:
-`dbg info --json` reports `vdp` and `flowControl`, with `vdp` null on a serial
-console, which has no video card fitted.
+`--vdp picovdp`, because that card is what boots BIOS 2.0. Flow control is on
+by default, and `--peer-rts ignore` (or the older spelling
+`--no-flow-control`) turns it off. Turning flow control off means a long paste
+loses lines, so an agent has no reason to pass that flag at all.
+
+Leave the serial card and its jumpers alone for the same reason. At their
+default settings nothing outside the machine can stall it, whereas starting
+with `--cts cable` and no far end asserting CTS produces a machine that never
+prints anything. An agent can confirm it started the machine it meant to:
+`dbg info --json` reports `vdp` and `flowControl`, and `vdp` is null on a
+serial console, which has no video card fitted.
 
 ## What to actually hand over
 

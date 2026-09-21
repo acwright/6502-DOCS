@@ -67,8 +67,14 @@ works, still builds the same way, and still goes in the same slot. A Flash Cart
 is what you reach for when a game has outgrown one, and `6502-flash layout`
 puts an existing 16 KB game onto one unchanged.
 
-The board's own design notes are in
-[`Hardware/Flash Cart/Rev 1.0/DESIGN.md`](https://github.com/acwright/6502-VCS/blob/main/Hardware/Flash%20Cart/Rev%201.0/DESIGN.md).
+Both boards are in this repository rather than one of their own. The cart is
+under [`Hardware/Flash Cart/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Cart),
+whose `DESIGN.md` covers the mapper and the programming sequences in full; the
+Flash Helper is under
+[`Hardware/Flash Helper/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Helper),
+and the sketch it runs together with the `6502-flash` command that drives it
+are under
+[`Firmware/FH Programmer/`](https://github.com/acwright/6502-VCS/tree/main/Firmware/FH%20Programmer).
 
 ::: tip The ACE takes the same cartridges
 The ACE has a cartridge slot too, so anything built for the VCS runs there —
@@ -83,9 +89,10 @@ encoder, rather than giving them connectors of their own — they come in on the
 
 ## Where to get it
 
-[6502-VCS repository](https://github.com/acwright/6502-VCS) — three boards, the
-cartridge, the input firmware and the bills of materials. The printable
-reference sheet is [here](/cards/vcs.html).
+[6502-VCS repository](https://github.com/acwright/6502-VCS) — the three
+machine boards, both kinds of cartridge, the Flash Helper that programs one of
+them, the input firmware and the bills of materials for all of it. The
+printable reference sheet is [here](/cards/vcs.html).
 
 The Main Board is also one of the two ways to build a
 [standalone KIM](/addons/kim#building-a-kim-on-its-own).

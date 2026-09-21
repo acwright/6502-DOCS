@@ -36,8 +36,9 @@ broken. It isn't; it is waiting.
 
 The [emulator](/using/emulator) has the same two jumpers: in
 **Settings → SERIAL**, or `--cts` and `--dcd` on the command line, at ground
-unless you move them. They do there what they do on the board, including the
-silence.
+unless you move them. Both jumpers behave in the emulator exactly as they do
+on the board, which includes producing the same silent machine when one is on
+the cable and nothing at the far end asserts the line.
 :::
 
 ## Joystick — DB-9

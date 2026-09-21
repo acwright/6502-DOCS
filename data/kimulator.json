@@ -16,10 +16,10 @@
         "authority": "The KC Monitor build bundled with the release, and what changed in it. The contract is not the only thing a bump moves: the ROM travels with it, so a release that leaves EMBEDDING.md untouched can still change what the machine on the page does. Read it as well as the contract. v1.0.8 is the case that proves it — serial `R` became a call, and nothing about the frame moved at all."
       }
     ],
-    "warning": "Hand-authored file. Bumping the version here is what moves the KIM chapter to a new release."
+    "warning": "Hand-authored file. Bumping the version here is what moves the KIM chapter to a new release. v1.0.9 to v1.2.1 moved one line of the contract \u2014 the generated frame\u0027s default title \u2014 and left the parameter table, the panel names, the pad\u0027s key names and the frame size alone, so nothing the site builds from this file changed. The ROM did: the bundled KC Monitor now holds the far end off with RTS on its serial console, so a long paste into the terminal arrives whole where it used to lose lines, and the bundled BIOS is a later reissue of the same v1.6 tag."
   },
 
-  "version": "1.0.9",
+  "version": "1.2.1",
 
   "web": {
     "app": "https://acwright.github.io/6502-KIMULATOR/",

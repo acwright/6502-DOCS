@@ -296,7 +296,7 @@ export default defineConfig({
           { text: 'Testing your program', link: '/crossdev/testing' },
           { text: 'Onto real hardware', link: '/crossdev/to-hardware' },
           { text: 'BASIC from your editor', link: '/crossdev/basic' },
-          { text: 'Driving it from an agent', link: '/crossdev/agents' }
+          { text: 'Driving the machine from an agent', link: '/crossdev/agents' }
         ]
       },
       {

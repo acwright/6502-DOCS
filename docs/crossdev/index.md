@@ -63,7 +63,7 @@ Everything works the same on macOS, Linux and Windows.
 | [Testing your program](/crossdev/testing) | A suite that boots once and runs every case in a second |
 | [Onto real hardware](/crossdev/to-hardware) | Memory card, serial cable, Wozmon paste, EEPROM |
 | [BASIC from your editor](/crossdev/basic) | Write listings as text, keep them in version control |
-| [Driving it from an agent](/crossdev/agents) | The machine as something a program can operate |
+| [Driving the machine from an agent](/crossdev/agents) | The machine as something a program can operate |
 
 If you are here to write assembly, this section is the part that gets your
 build working. What to write once it does — the 65C02 itself, and the Kernal

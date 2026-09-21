@@ -24,11 +24,13 @@ stays put. The vectors do not move.</small>
 So you lose BASIC and gain 16 KB of ROM, and you keep every Kernal routine in
 this section. That is the trade, and for a finished program it is a good one.
 
-Sixteen kilobytes is the fixed cartridge, and it is the normal case. When a
-game outgrows it there is a Flash Cart, which trades that fixed 16 KB for an
-8 KB window onto one bank at a time and up to a megabyte behind it — and can
-write to itself, so a game can save. [Bigger cartridges](/assembly/flash-carts)
-is the next chapter; everything on this page still applies there.
+Sixteen kilobytes is what a fixed cartridge holds, and for most cartridges
+that is the right amount. A game that outgrows 16 KB can move to a Flash Cart
+instead, which gives up the fixed 16 KB in exchange for an 8 KB window onto
+one bank at a time with up to a megabyte behind it. A Flash Cart can also
+write to itself, so a game on one can save. The next chapter,
+[Bigger cartridges](/assembly/flash-carts), covers all of that; everything on
+this page still applies to a Flash Cart as well.
 
 <Diagram
   name="cartridge-overlay"
@@ -168,4 +170,4 @@ are not. Anything that changes lives in RAM — zero page from `$3A`, and the
 whole of `$0800–$7FFF`, which no longer has a BASIC program in it.
 :::
 
-Next: [BASIC and machine code together](/assembly/basic-interop).
+Next: [bigger cartridges](/assembly/flash-carts).

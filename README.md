@@ -589,7 +589,7 @@ to `v1` runs its `redeploy.yml`, which starts this workflow on `main`; the
 | [6502-COB](https://github.com/acwright/6502-COB) | Backplane and card-based system. Builder-facing. |
 | [6502-DEV](https://github.com/acwright/6502-DEV) | Teensy-emulated CPU development vehicle. Builder-facing. |
 | [6502-KIM](https://github.com/acwright/6502-KIM) | Keypad/LCD boards — an ACE add-on, and a standalone build. |
-| [6502-VCS](https://github.com/acwright/6502-VCS) | Cartridge-based console. Builder-facing. |
+| [6502-VCS](https://github.com/acwright/6502-VCS) | Cartridge-based console. Builder-facing. Also holds the Flash Cart, the Flash Helper that programs it, and `6502-flash`. |
 | [6502-PRG](https://github.com/acwright/6502-PRG) | Cross-dev template for RAM programs. |
 | [6502-CRT](https://github.com/acwright/6502-CRT) | Cross-dev template for cartridges. |
 | [6502-ASM](https://github.com/acwright/6502-ASM) | Assembly sample code. |

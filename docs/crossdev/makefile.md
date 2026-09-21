@@ -70,10 +70,10 @@ instead of the one the emulator carries.
 
 ## `FLASH=`
 
-A cartridge template has a second axis, alongside `VDP=1`. `FLASH=` picks a
-[Flash Cart](/assembly/flash-carts) target instead of the 32 KB ROM cart, and
-what falls out is a different linker config, a different output name, and a
-much bigger file:
+A cartridge template has a second build option alongside `VDP=1`. Setting
+`FLASH=` asks for a [Flash Cart](/assembly/flash-carts) instead of the 32 KB
+ROM cart, which changes three things at once: the linker config the build
+uses, the name of the output file, and how large that file is.
 
 ```sh
 make                # Cart.crt, 32,768 bytes
@@ -98,14 +98,15 @@ else
 endif
 ```
 
-The `filter` is worth copying rather than skipping. Without it, `FLASH=512`
-instead of `FLASH=512K` asks for a config that does not exist, and the error
-you get is about a missing file rather than about the typo.
+Copy the `filter` line rather than leaving it out. Without that check, typing
+`FLASH=512` instead of `FLASH=512K` asks for a linker config that does not
+exist, and the error you get complains about a missing file rather than about
+the typo that caused it.
 
-Combine the two axes and **`-VDP` comes first, then the target**:
-`make VDP=1 FLASH=1M` is `Cart-VDP-1M.crt`. The Makefile is the one place that
-ordering can be enforced, which is why it builds the name rather than leaving
-it to whoever types it.
+Use both options together and **`-VDP` comes first, then the size**:
+`make VDP=1 FLASH=1M` produces `Cart-VDP-1M.crt`. A Makefile is the only place
+that ordering can actually be enforced, which is why the build assembles the
+name itself instead of leaving it to whoever types the command.
 
 ::: tip Why `FLASH=` and not `ROM=`
 `ROM=` already means something here: it names a BIOS image for `make run` to

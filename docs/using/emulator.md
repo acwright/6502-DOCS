@@ -169,17 +169,20 @@ The **NVRAM** row works the same way, for the 256 battery-backed bytes.
 
 **Document+** takes a [Flash Cart](/assembly/flash-carts) image as happily as a
 32 KB one — 128 KB, 256 KB, 512 KB or 1 MB. There is no setting to change and
-nothing to tell it: the emulator reads the size of the file and fits the cart
-that size implies.
+nothing to declare beforehand: the emulator reads how many bytes the file
+holds and fits the cartridge that byte count belongs to.
 
 ::: warning The size in the name is a label; the size in the bytes is what the machine reads
-Name a 131,072-byte file `Game-512K.crt` and it still loads as a 128 KB cart,
-with a warning about the name. The bytes decide, every time.
+Name a 131,072-byte file `Game-512K.crt` and the emulator still loads it as a
+128 KB cart, and warns that the name disagrees with the contents. Whenever the
+name and the byte count conflict, the byte count is what the machine acts
+on.
 :::
 
 A Flash Cart can write to itself, which is how a game on one saves a high score
-table with no memory card in the machine. Those writes have to go somewhere,
-and where they go is the one thing worth knowing about this:
+table with no memory card in the machine. Those writes have to be kept
+somewhere between runs, and where the emulator keeps them is the part worth
+reading carefully:
 
 **No emulator ever writes to a `.crt`.** Not on save, not when you eject the
 cart, not on quit. The image you loaded is the image you still have, down to
@@ -199,11 +202,12 @@ There is no in-game "erase save" you have to hope the author wrote. Throw the
 file away and the cart boots as it came off the programmer.
 :::
 
-The save records the size and checksum of the image it came from. Rebuild the
-cart and the old save refuses to apply rather than landing over new code: the
-cart starts without it, says so, and the stale file is left exactly where it
-was. That is the answer you want — a save written against last week's level
-layout, applied to this week's, is a bug you would chase for hours.
+Each save records the size and checksum of the image it was written against.
+Rebuild the cart and the old save refuses to apply rather than landing on top
+of new code: the cart starts without the save, says so, and leaves the stale
+file exactly where it was. That refusal is deliberate. A save written against
+last week's level layout, applied to this week's, produces a cartridge that
+misbehaves for reasons nothing on screen explains.
 
 On the command line:
 

@@ -16,9 +16,10 @@ A [Flash Cart](/assembly/flash-carts) banks an 8 KB window at `$C000–$DFFF`
 through a write-only register anywhere in `$E000–$FFFF`, and what is behind it
 is the cartridge.
 
-Different addresses, different latches, different sizes. Writing to the wrong
-one gets you no error at all — the machine does exactly what you asked, to
-something you did not mean.
+The two use different addresses, different latches and different window
+sizes, and neither reports a mistake. Write a cartridge bank number to a RAM
+card latch and nothing complains: the machine does exactly what the store
+asked for, to memory you did not intend to touch.
 :::
 
 | Window | Latch | |

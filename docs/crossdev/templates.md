@@ -199,11 +199,13 @@ make                # Cart.crt, a 32 KB ROM cart
 make FLASH=512K     # Cart-512K.crt, a 512 KB banked Flash Cart
 ```
 
-Everything the banked build adds is inside `.ifdef FLASH`, so plain `make`
-produces the same bytes it always did. What appears under `FLASH=` is the bank
-register, the `SetBank` routine, the zero-page shadow, and a worked call that
-prints a string out of bank `$01` — enough to see the shape of it before you
-write your own. [Bigger cartridges](/assembly/flash-carts) is the chapter.
+Everything the banked build adds sits inside `.ifdef FLASH`, so a plain `make`
+still produces exactly the bytes it always did. Building with `FLASH=` brings
+in the bank register, the `SetBank` routine, the zero-page shadow that tracks
+the selected bank, and a worked call that prints a string stored in bank
+`$01`. That is enough to show how a banked cartridge is put together before
+you write one of your own; the [Bigger cartridges](/assembly/flash-carts)
+chapter explains every part of it.
 
 ## Renaming things
 

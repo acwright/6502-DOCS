@@ -85,8 +85,10 @@ that complains.
 ## A banked cartridge
 
 The [Flash Cart](/assembly/flash-carts) puts a switchable 8 KB window at
-`$C000–$DFFF` and pins the fixed region at `$E000–$FFF9`, and the config is
-what turns that from a description into a layout. A 512 KB cart, abbreviated:
+`$C000–$DFFF` and pins the fixed region at `$E000–$FFF9`. The linker config is
+where that arrangement stops being a description of the hardware and becomes
+the actual layout of the file you program onto the chip. Here is the config
+for a 512 KB cart, with most of the banks left out:
 
 ```
 MEMORY {
@@ -107,11 +109,14 @@ SEGMENTS {
 }
 ```
 
-Sixty-three banks all starting at `$C000`, which looks wrong the first time
-you see it and is not: they all appear at `$C000`, one at a time. The window
-is the same 8 KB of address space whichever bank is in it.
+Every one of the sixty-three banks starts at `$C000`, which looks like a
+mistake the first time you read it and is not. Each bank appears at `$C000`
+when that bank is the selected one, and only one bank is ever selected, so
+they are not competing for the address: the window is the same 8 KB of address
+space no matter which bank is behind it.
 
-Three details do real work here.
+Three details in that config matter, and none of them is obvious from reading
+it:
 
 **The declaration order *is* the layout on the chip.** `ld65` writes each
 region that names a file into that file in the order the regions are
@@ -130,10 +135,12 @@ erased state to take advantage of.
 have to declare fifty-nine empty ones. Without it, every `BANKnn` segment the
 config names has to exist in the source or the link fails.
 
-::: tip The four configs are generated
-Fifteen to a hundred and twenty-seven near-identical stanzas is how a
-hand-written set drifts, so the templates generate them and commit the result.
-You read and diff them like any other file; you just do not edit them.
+::: tip The four configs are generated rather than typed
+Depending on the size, a config holds between fifteen and a hundred and
+twenty-seven near-identical stanzas, and a set that large is one nobody keeps
+consistent by hand. The templates generate all four and commit the results, so
+you can read them and compare them like any other file in the project — but
+change the generator rather than the config, or the next build will undo you.
 :::
 
 ## Adding a segment

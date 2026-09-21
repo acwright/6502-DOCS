@@ -1,17 +1,24 @@
 # Bigger cartridges
 
-A cartridge is 16 KB, and a game runs out. Not of code — 16 KB of 65C02 is a
-lot of program — but of everything else. Levels, tile sets, tunes, text. You
-cut the last three screens, then the music, and eventually you are cutting the
-thing you were making.
+A cartridge holds 16 KB, and that is usually enough room for the program but
+not for everything the program needs. 16 KB of 65C02 is a great deal of code.
+The trouble is that the same 16 KB has to hold the levels, the tile sets, the
+tunes and the text as well, so a game that keeps growing starts losing the
+last few screens, then the music, and eventually something it was actually
+about.
 
-The Flash Cart is the way out. Same slot, same machine, same reset vector, and
-128 KB to 1 MB behind it instead of 16. This chapter is what changes.
+A **Flash Cart** is a cartridge that holds between 128 KB and 1 MB. A Flash
+Cart plugs into the same slot as a 16 KB cart, boots the same way, and takes
+over the machine at the same reset vector. What is different is that the
+machine can only see 8 KB of the cartridge at a time, and the program on the
+cartridge chooses which 8 KB that is. This chapter covers how a program
+selects one of those 8 KB banks, where the code that does the selecting has to
+be stored, and how that requirement shapes the way you lay a cartridge out.
 
-[Writing a cartridge](/assembly/cartridges) is still where to start, and most
-of it still applies: a Flash Cart boots the same way, calls the same Kernal,
-and owns the same vectors. What is new is that half of the address space it
-owns can be pointed at more than one thing.
+Read [Writing a cartridge](/assembly/cartridges) first. Nearly all of it still
+holds — a Flash Cart boots the same way, calls the same Kernal, and owns the
+same vectors — and everything below assumes you have written a 16 KB cart or
+at least read how one works.
 
 ## The window and the fixed bank
 
@@ -29,21 +36,24 @@ behave completely differently.
 | `$E000–$FFF9` | **The fixed region.** The chip's last bank, always, whatever the register holds |
 | `$FFFA–$FFFF` | The vectors, which are therefore in the half that never moves |
 
-The vectors could not be anywhere else, and it is worth seeing why rather than
-taking it on trust. Reset clears the bank register to zero. So a reset vector
-in a bank would be read out of bank 0 — not because anybody chose bank 0, but
-because that is what the register happens to hold at the one moment the
-processor reads it. The fixed region exists so that the machine always knows
-where to look.
+The vectors could not be anywhere else, and the reason is worth following
+through rather than taking on trust. Reset clears the bank register to zero,
+and reading the reset vector is the first thing the processor does afterwards.
+A reset vector stored in a bank would therefore always be read out of bank 0 —
+not because the program chose bank 0, but because zero is what the register
+happens to hold at that one moment. Putting the vectors in a region that does
+not move means the machine always knows where to look for them.
 
 ::: warning This is not the RAM card kind of banking
-[Banked RAM](/assembly/banking) is a different mechanism with the same name:
-kilobyte windows at `$8000` and `$8400`, latches at `$83FF` and `$87FF`, and
-read-write memory behind them. It is still there on a machine with a Flash
-Cart in the slot, and the two have nothing to do with each other.
+[Banked RAM](/assembly/banking) is a different mechanism that goes by the same
+name: kilobyte windows at `$8000` and `$8400`, latches at `$83FF` and `$87FF`,
+and read-write memory behind them. Banked RAM is still present on a machine
+with a Flash Cart in the slot, and the two mechanisms have nothing to do with
+each other.
 
-Write to the wrong latch and there is no error. The machine does exactly what
-you asked, to something you did not mean.
+Neither one reports a mistake. Write a bank number to a RAM card latch instead
+of to the cartridge's bank register and nothing complains: the machine does
+exactly what the store asked for, to memory you did not intend to touch.
 :::
 
 ## The bank register
@@ -58,18 +68,21 @@ BANK      = $E000
   sta BANK                      ; bank $07 is now at $C000-$DFFF
 ```
 
-Three things about it:
+Three properties of that register shape everything else in this chapter:
 
-- **The write reaches no flash.** The register is a latch in front of the chip,
-  and the chip's write line is not asserted in the fixed region. Writing the
-  register is never also a write to the cartridge.
-- **It cannot be read back.** There is no address that returns what is
-  selected. A cartridge that loses track has no way to recover it.
-- **Reset clears it to zero.** The register's own reset is on the machine's
-  reset line, so after power-on or a reset button the window is bank 0.
+- **The write reaches no flash.** The register is a latch sitting in front of
+  the chip, and the chip's own write line is never asserted in the fixed
+  region. Writing the register cannot also write to the cartridge by accident.
+- **It cannot be read back.** No address returns the bank that is currently
+  selected, so a program that loses track of which bank it chose has no way to
+  ask the hardware.
+- **Reset clears it to zero.** The register's reset input is on the machine's
+  reset line, so after a power-on or a press of the reset button the window is
+  showing bank 0.
 
-Because it cannot be read back, every Flash Cart keeps a shadow copy in the
-zero page — one byte, holding what was last written:
+Since the register cannot be read back, a program has to remember what it last
+wrote there. Every Flash Cart keeps that in one byte of zero page, called the
+shadow:
 
 ```asm
 BANKSHDW  = $3A                 ; the first byte free for a program that has
@@ -85,8 +98,8 @@ SetBank:
   rts
 ```
 
-Four lines, and both of the interesting things about them are about placement
-and order.
+Four lines, and two things about them need explaining: why the stores are in
+that order, and why the routine cannot live anywhere but the fixed region.
 
 **The shadow is written first.** If an interrupt lands between the two stores,
 a handler that reads the shadow sees it one instruction *ahead* of the
@@ -103,17 +116,20 @@ wrong bank.
 to mean something else. The `rts` returns to the same address in a *different*
 bank, and the processor runs whatever is there.
 
-It does not fault. It does not stop. It executes data as instructions and
-carries on until something else goes wrong, a long way from here. This is the
-single easiest way to lose an afternoon on a Flash Cart, so:
+Nothing about this produces an error. The processor does not fault and does
+not stop; the processor simply treats whatever bytes are now at that address
+as instructions and carries on executing them, and the crash that eventually
+follows happens somewhere else entirely. A bug that shows up nowhere near its
+cause is a hard one to find, so the safe rule is a blunt one:
 
 **All the code goes in the fixed region. The banks hold data.**
 :::
 
-That is a real constraint and not a stylistic one, and it is the thing to
-design around from the start. You have 8,186 bytes for the whole program —
-half what a fixed cartridge gives you — and 120 KB to 1,016 KB for everything
-the program reads.
+That rule decides the shape of the whole cartridge, so design around the rule
+from the start rather than discovering it later. Keeping all the code in the
+fixed region leaves 8,186 bytes for the entire program — half of what a 16 KB
+cart gives you — and between 120 KB and 1,016 KB of banks for everything that
+program reads.
 
 ## Laying a cartridge out
 
@@ -131,18 +147,19 @@ THIS LINE IS IN THE FIXED REGION
 AND THIS ONE IS IN BANK $01
 ```
 
-Two things in that listing repay a second look.
+Two details in that listing are easy to misread.
 
-`BankedMsg` is a `$C0xx` address, the same as it would be in any other bank.
-That is the window, not a position in the file — every bank appears at
-`$C000`, so a routine that reads one set of addresses works on whichever bank
-is selected. Give every bank the same layout and you only write that routine
-once.
+The first is that `BankedMsg` assembles to a `$C0xx` address, and would do so
+in any other bank as well. That address is the window rather than a position
+in the file: every bank appears at `$C000` when it is the selected one. A
+routine that reads a fixed set of addresses therefore works on whichever bank
+happens to be selected, so if you give every bank the same internal layout you
+only have to write that routine once.
 
-And `PrintStr` is called with bank `$01` still selected. It can be, because
-`PrintStr` is in the Kernal at `$A090`, which is nowhere near the window. The
-Kernal, the I/O slots and all of RAM are untouched by banking; only
-`$C000–$DFFF` moves.
+The second is that `PrintStr` is called while bank `$01` is still selected,
+which is safe because `PrintStr` lives in the Kernal at `$A090` — nowhere near
+the window. Banking moves `$C000–$DFFF` and nothing else: the Kernal, the I/O
+slots and the whole of RAM stay where they are.
 
 ## Interrupts
 
@@ -166,8 +183,9 @@ MyIrqHandler:                   ; in FIXED, like every handler on a flash cart
   rti
 ```
 
-Saving the shadow rather than the register is the whole reason the shadow
-exists: there is nothing else to read.
+The handler saves the shadow rather than the register because there is no way
+to read the register. Keeping a shadow at all is what makes an interrupt
+handler able to leave the window as it found it.
 
 ## The sizes
 
@@ -182,13 +200,15 @@ The last bank of the first chip is always the fixed region, which is why every
 count is one short of a round number. On a 1 MB cart, bit 6 of the register
 picks the second chip.
 
-::: tip The high bits simply are not connected
-On a 128 KB or a 256 KB part, the address pins the top bank bits would drive do
-not exist. Write `$10` to a 128 KB cart and you get bank `$00` — not an error,
-not an empty bank, just bank `$00` again, because nothing is decoding that bit.
+::: tip On a smaller part the high bank bits go nowhere
+A 128 KB or 256 KB chip has fewer address pins than a 512 KB one, so the top
+bits of the bank register are not connected to anything. Writing `$10` to a
+128 KB cart selects bank `$00`: not an error and not an empty bank, just bank
+`$00` a second time, because no hardware is decoding that bit.
 
-A cart that reads bank `$25` and finds bank `$05` is not broken. It is a 128 KB
-part with a 512 KB program on it.
+So a cart that asks for bank `$25` and gets the contents of bank `$05` is
+working correctly. It is a 128 KB part running a program that was built for a
+512 KB one.
 :::
 
 ## Saving
@@ -213,12 +233,13 @@ in the listing below:
    erasing or programming, *every* read of it returns status bits instead of
    data. That includes the fixed region, where the code is, and the vectors.
 
-::: danger A programming routine in ROM will hang the machine
-Point three is not a style rule. A routine that runs from the cartridge while
-the cartridge is busy is fetching status bits and executing them, and an
-interrupt during the same window fetches a vector that is also status bits.
+::: danger A programming routine left in ROM will hang the machine
+The third point above is not advice about tidiness. A routine that runs from
+the cartridge while the cartridge is busy is fetching status bits and
+executing them as instructions, and an interrupt taken during the same period
+fetches a vector that is also status bits.
 
-Copy the routine into RAM and call it there, and `sei` before it starts.
+Copy the routine into RAM, `sei` before it starts, and call it there.
 :::
 
 <<< @/../samples/assembly/flash-save.asm{asm}
@@ -234,12 +255,13 @@ back as the *complement* of the bit just written, so the read matches the value
 only when the chip is done. During an erase, `DQ7` reads 0 until the sector is
 `$FF` again.
 
-::: tip The routine needs no relocating, and that is deliberate
+::: tip The routine runs correctly wherever it is copied to
 Every address in it is an absolute constant and every branch is relative, so
-the same bytes work wherever they land. One `jsr` to a label inside it would
-break that silently — the jump would go back to the copy still sitting in ROM
-and run it there, with the chip busy. If you extend the routine, keep it
-branch-only.
+the same bytes work at any address. That is what lets it be copied into RAM
+with no relocation step. Adding a single `jsr` to a label inside it would
+break that quietly: the assembler would fix that call to the address the
+routine has in ROM, so the copy in RAM would jump back into the cartridge and
+run there, with the chip busy. If you extend the routine, keep it to branches.
 :::
 
 The sector is 4 KB and it erases as a unit, so a save area wants a sector of
@@ -265,8 +287,9 @@ itself — picks the mapper from the **byte count**. The name is a convenience
 for you.
 
 A file named `Game-512K.crt` that is 131,072 bytes long loads as a 128 KB cart
-and warns you about the name. A file named `Game.crt` that is 524,288 bytes
-long loads as a 512 KB cart and warns about that. Believe the bytes.
+and warns you that the name disagrees. A file named `Game.crt` that is 524,288
+bytes long loads as a 512 KB cart and warns about that instead. When the two
+disagree, the byte count is the one to trust.
 :::
 
 ## Building one
@@ -289,15 +312,17 @@ make FLASH=512K     # Cart-512K.crt, 524,288 bytes
 ## Getting it onto a cart
 
 A ROM cart comes out of its socket and goes into a programmer. A Flash Cart
-does not: the chip is a surface-mount part soldered to the board, and it is
-programmed **in circuit**, through the card edge, by the Flash Helper.
+cannot, because its chip is a surface-mount part soldered to the board. It is
+programmed **in circuit** instead, through the card edge, by a small board
+called the Flash Helper:
 
 ```sh
 6502-flash program Cart-512K.crt
 ```
 
-[Onto real hardware](/crossdev/to-hardware) is the whole procedure, including
-what happens to a save that is already on the cart — which is nothing, because
-`program` reads the `.crt` and nothing else.
+[Onto real hardware](/crossdev/to-hardware#programming-a-flash-cart) is the
+whole procedure, and says where the Helper and the `6502-flash` command come
+from. It also covers what happens to a save already on the cart, which is
+nothing: `program` reads the `.crt` and nothing else.
 
 Next: [BASIC and machine code together](/assembly/basic-interop).
