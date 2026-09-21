@@ -44,7 +44,18 @@ A32 — the entry says so.
 | fixed | 64 |
 | confirmed | 5 |
 | open | 5 |
-| wontfix | 4 |
+| wontfix | 6 |
+
+**The Flash Cart adds two `wontfix` entries, A75 and A76**, both agreed across
+the rollout rather than particular to one emulator: open bus on an unfitted
+second chip reads `$FF` in all three, and two of the three complete a flash
+program or erase instantly instead of modelling the busy window. The second is
+the one worth reading — a self-programming routine that runs from the cartridge
+instead of from RAM will work on those two and hang on real hardware, and this
+is the only place that is written down. Only 6502-EMULATOR runs a flash cart
+today, at 3.4.0, which is where the measured halves of both entries come from;
+the rest is a decision recorded before the other two ports exist, and each
+entry says which part is which.
 
 **The move to emulator 3.2.0 and BIOS v2.0.2 closed O6 and opened three, and a
 fourth turned up behind it.**
@@ -1014,6 +1025,28 @@ serial are false at the machine itself.
 | **Check** | RUN — `6502 run --help` on 3.3.0, and `6502 dbg info` on a machine started with `--peer-rts ignore`, which still reads `no flow control`. |
 | **Status** | `fixed` — this repository, in the same commit as the pin. The emulator chapter says what the port is wired to, drops the port setting, and describes the card, its jumpers and **Terminal honours RTS** by the panel's labels. `docs/using/serial.md` no longer offers the emulator as a terminal for a board. The flag tables, `agents.md`, `build-run-loop.md`, `debugging.md`, `samples/README.md` and `samples/crossdev/test.sh` name `--peer-rts ignore`. A71 is left as it was: it is the record of 3.2.0. |
 | **Consequence** | The old text sent a reader with a real ACE to the emulator as its terminal, which would have put two machines on one cable, and it described a setting that had been the OS guarding its own buffer for a machine it knew nothing about. Nothing was lost, but a reader debugging a cable would have been changing the wrong thing. |
+
+### A75 — Open bus on a cartridge's unfitted second chip reads `$FF` everywhere — **wontfix**
+
+| | |
+|---|---|
+| **Claim** | *Bigger cartridges* and the Flash Cart linker configs say a one-chip cart has 15, 31 or 63 selectable banks, and say nothing about what the bank values above that do. A reader who writes one finds out by trying it. |
+| **Truth** | Bit 6 of the bank register selects the cart's second chip. On a 512 KB cart, which has only U1 fitted, bank values `$40`–`$7F` select a chip that is not there, and every byte of the 8 KB window reads `$FF` for as long as one of them is selected. 6502-EMULATOR does this today; the PicoCalc port and the DEV's DB Emulator do not run a flash cart at all yet, and `$FF` is the value all three are to give when they do. |
+| **On the board** | A floating bus. The window's data lines are pulled nowhere in particular and hold whatever the last driven cycle left on them, so a real cart reads back something that depends on what the CPU did immediately before — often the low byte of the address, often the last opcode, and not reliably either. |
+| **Why it stays** | `$FF` is what an erased chip reads, what the linker fills with, and what one value all three emulators can implement the same way. Modelling a floating bus faithfully would mean modelling bus capacitance, and would make a program that reads an absent chip behave differently in each of the three — which is worse than being predictably wrong, because a program that accidentally depends on it would then appear to work in one place and not another. A cart selecting a chip it does not have is a bug in the cart either way. |
+| **Check** | RUN — emulator 3.4.0, a 512 KB cart with bank `$40` selected, reads `$FF` across `$C000-$DFFF`. SCHEM — 6502-VCS `Hardware/Flash Cart/Rev 1.0`, where U2's footprint is unpopulated on every size below 1 MB and nothing pulls the bus. |
+| **Status** | `wontfix` — a decision taken for the whole family rather than a property of one emulator, and recorded here so that a reader who finds `$FF` on their own does not conclude the documentation is wrong. |
+
+### A76 — Program and erase finish instantly on two of the three emulators — **wontfix**
+
+| | |
+|---|---|
+| **Claim** | *Bigger cartridges* says a routine that programs the cart's flash **has to run from RAM with interrupts off**, because while the chip is busy every read of it returns status bits — including the fixed region, where the code and the vectors are. |
+| **Truth** | That is true of the hardware and of one emulator. 6502-EMULATOR paces the CPU against a fixed clock, so it models the busy window — 20 µs for a byte program, 25 ms for a sector erase, 100 ms for a chip erase — and a routine that got this wrong hangs there exactly as it would on the board. The PicoCalc port and the DEV's DB Emulator do not pace the CPU that way and so have no cycle count to measure a window against; neither runs a flash cart yet, and when they do, both are to complete a program or an erase instantly rather than grow a clock for it. |
+| **Consequence** | A self-programming routine that runs from the cartridge instead of from RAM will **work on those two and hang on real hardware**. It is the worst shape a divergence can take: the mistake is invisible exactly where somebody is most likely to be trying things out, and shows up only when the cart is real. |
+| **Why it stays** | Neither of those two is where a self-programming cartridge is developed, and giving either a cycle-accurate clock to model one chip's timing would be a large change for one feature. 6502-EMULATOR is where carts get written and is where the window is modelled; the sample routine in *Bigger cartridges* is written and run there. |
+| **Check** | RUN — the chapter's save routine on emulator 3.4.0, which erases, programs and reads back through the standard `DQ7` polls, and would hang if it ran from the cartridge. The other two halves of this entry are a decision recorded in advance rather than a measurement: there is nothing yet to run them against. |
+| **Status** | `wontfix` — settled for the family before either port was written, and written down now rather than left to be discovered because of the consequence above. |
 
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 
