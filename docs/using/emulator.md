@@ -100,7 +100,7 @@ Everything happens from the row of buttons under the picture:
 | Button | What it does |
 |---|---|
 | **CPU chip** | Load a ROM, in place of the built-in BIOS |
-| **Document+** | Load a cartridge |
+| **Document+** | Load a cartridge — a 32 KB ROM cart or a [Flash Cart](/assembly/flash-carts) |
 | **Document$** | Load a program (`.prg` / `.bas`) into memory |
 | **▶ / ■** | Run or stop the machine |
 | **↺** | Reset — exactly like the button on a real ACE. Memory survives. |
@@ -164,6 +164,57 @@ hardware, and what you save is written back to the image. The **✕** goes back
 to the emulator's own blank card.
 
 The **NVRAM** row works the same way, for the 256 battery-backed bytes.
+
+## Flash carts and their saves
+
+**Document+** takes a [Flash Cart](/assembly/flash-carts) image as happily as a
+32 KB one — 128 KB, 256 KB, 512 KB or 1 MB. There is no setting to change and
+nothing to tell it: the emulator reads the size of the file and fits the cart
+that size implies.
+
+::: warning The size in the name is a label; the size in the bytes is what the machine reads
+Name a 131,072-byte file `Game-512K.crt` and it still loads as a 128 KB cart,
+with a warning about the name. The bytes decide, every time.
+:::
+
+A Flash Cart can write to itself, which is how a game on one saves a high score
+table with no memory card in the machine. Those writes have to go somewhere,
+and where they go is the one thing worth knowing about this:
+
+**No emulator ever writes to a `.crt`.** Not on save, not when you eject the
+cart, not on quit. The image you loaded is the image you still have, down to
+the byte and the timestamp.
+
+What a cart programs goes into a **`.sav` file beside the image** —
+`Game-512K.sav` next to `Game-512K.crt` — written when you eject the cart, load
+another, or quit. Load the cart again and the save comes back with it. A run
+that programmed nothing writes no file at all.
+
+A cart opened through a file picker, or one running on a web page, has no path
+to sit beside, so its saves go into the browser's own storage under the image's
+checksum instead.
+
+::: tip Deleting the `.sav` is how you start over
+There is no in-game "erase save" you have to hope the author wrote. Throw the
+file away and the cart boots as it came off the programmer.
+:::
+
+The save records the size and checksum of the image it came from. Rebuild the
+cart and the old save refuses to apply rather than landing over new code: the
+cart starts without it, says so, and the stale file is left exactly where it
+was. That is the answer you want — a save written against last week's level
+layout, applied to this week's, is a bug you would chase for hours.
+
+On the command line:
+
+```
+6502 run --cart Game-512K.crt                     # Game-512K.sav beside it
+6502 run --cart Game-512K.crt --cart-save my.sav  # somewhere else
+6502 run --cart Game-512K.crt --no-cart-save      # throw the writes away
+```
+
+[Onto real hardware](/crossdev/to-hardware#saves-never-travel-with-the-image)
+covers what happens to a save when the cart is programmed, which is nothing.
 
 ## Playing without a joystick
 
@@ -413,6 +464,9 @@ Install**). It's how you'd fold the emulator into a build:
 | `--peer-rts ignore` | Stop holding typed or piped input back while the machine asks it to wait. Input waits unless you say this, which is how a long listing arrives whole. `--no-flow-control` is the older spelling, deprecated |
 | `--cts cable` | Move the ACE's `CTS EN` jumper to the cable (`--dcd cable` for `DCD EN`). Ground is the default and how the boards are built |
 | `--cf disk.img` | Attach a card image |
+| `--cart Game.crt` | Put a cartridge in the slot — 32 KB ROM, or a 128 KB to 1 MB [Flash Cart](/assembly/flash-carts) |
+| `--cart-save Game.sav` | Where a flash cart's writes go. The default is the image's name with `.sav` |
+| `--no-cart-save` | Discard a flash cart's writes when it stops |
 | `--console video` | Use the video screen instead of the serial console |
 | `--screenshot shot.png` | Save the last picture on the screen when it stops (with `--console video`) |
 | `--freq 2` | Run the CPU at 2 MHz |
