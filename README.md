@@ -517,6 +517,57 @@ are outside `npm run cards:verify`, so they are never regenerated against a ROM
 they never described, but `npm run cards:check` still holds them to the print
 rules like any other card.
 
+### Editing the BIOS 1.6 edition
+
+Branch `v1` is the frozen legacy edition published under `/6502-DOCS/v1/` (see
+[Deploying](#deploying) for how it gets there). Its own README sets the rule:
+fix mistakes there, put new material on `main`. Frozen means the firmware it
+describes stops moving, not that the pages can never be touched — and a gap
+counts as a mistake, so something that was always true of the 1.6 machine and
+simply never got written down belongs there too.
+
+Most changes do not. A page only earns a `v1` edit if it is true of a machine
+with a TMS9918A, BIOS 1.6 and **a Monitor** — and then it has to be *written*
+for that machine, not pasted across. The two editions describe different
+hardware, and the copy that reads correctly on `main` usually names something
+1.6 does not have.
+
+Work in a worktree rather than switching branches, so `main` stays where it is:
+
+```sh
+git worktree add ../6502-DOCS-v1 v1
+cd ../6502-DOCS-v1
+npm ci                  # its own node_modules — the branch has its own lockfile
+```
+
+Then, before committing:
+
+```sh
+npm run check:voice
+npm run docs:build
+npm run links:offline
+```
+
+Those three are the gates that matter here, and the build one is not optional:
+`main`'s deploy builds this branch into the same artifact, so **a `v1` that
+fails to build takes the whole site down with it**, both editions at once.
+
+`npm run verify` and `npm run preflight` are a different story. This branch pins
+emulator 2.7.0 and `main` pins 3.4.0, and preflight fails on anything else — so
+whichever edition's emulator you have installed, the other one's sample and
+screenshot checks cannot run on that machine. CI runs both, each against the
+release its branch names. That pin is the reason these are two branches and not
+two directories.
+
+Push `v1` first and `main` second when a change touches both. A push to `v1`
+dispatches `main`'s deploy, and a push to `main` builds `v1` from its current
+head, so that order gets both editions into one final run. Then put the
+worktree away:
+
+```sh
+git worktree remove ../6502-DOCS-v1
+```
+
 ### Checking links
 
 ```sh
