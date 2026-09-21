@@ -1,6 +1,6 @@
 # Onto real hardware
 
-Your program runs in the emulator. Here are the four ways to get it onto an ACE,
+Your program runs in the emulator. Here are the five ways to get it onto an ACE,
 in the order most people reach for them.
 
 | Way | You need | Good for |
@@ -8,7 +8,8 @@ in the order most people reach for them.
 | [Memory card](#the-memory-card) | A CompactFlash card and a reader | Everything, most of the time |
 | [Serial cable](#over-the-serial-cable) | A USB-to-serial adapter | Iterating without moving a card |
 | [Wozmon paste](#the-wozmon-paste) | Just the cable | Small machine-code experiments |
-| [EEPROM](#burning-a-cartridge) | A TL866-family programmer | Cartridges |
+| [EEPROM](#burning-a-cartridge) | A TL866-family programmer | ROM cartridges |
+| [Flash Helper](#programming-a-flash-cart) | An Arduino Mega 2560 and the shield | [Flash Carts](/assembly/flash-carts) |
 
 ## The memory card
 
@@ -154,6 +155,10 @@ with `SYS`, not for programs you intend to `RUN`.
 
 ## Burning a cartridge
 
+This is the ROM cart: one 28C256 EEPROM in a socket, pulled out to be burnt and
+put back. A [Flash Cart](/assembly/flash-carts) is programmed differently and
+[has its own section below](#programming-a-flash-cart).
+
 A cartridge is a 32 KB image for an AT28C256 EEPROM, and `make` in the
 [`6502-CRT`](https://github.com/acwright/6502-CRT) template produces one:
 
@@ -190,6 +195,98 @@ the file matches the chip, which is what the programmer expects.
 [The linker config](/crossdev/linker#a-cartridge) is where that padding is set
 up.
 :::
+
+## Programming a Flash Cart
+
+A [Flash Cart](/assembly/flash-carts) is not burnt the way a ROM cart is, and
+the difference is not a preference. There is no chip to take out: the flash is
+a surface-mount part soldered to the board. It is programmed **in circuit**,
+through the card edge.
+
+The programmer is the **Flash Helper** — an Arduino Mega 2560 with a shield on
+it that carries one card-edge connector, the same one the Main Board uses. The
+cart plugs into the shield, the Mega plugs into your computer, and
+`6502-flash` on this end drives it.
+
+Start by proving the cart is there and answering:
+
+```
+6502-flash id
+```
+
+```
+U1  $BF $B7  SST39SF040, 512 KB
+U2  $FF $FF  not fitted, or not answering
+
+512 KB in total - a 512K cart
+```
+
+That reads each chip's own ID out of it. `$FF $FF` for U2 is what a one-chip
+cart looks like — the socket is empty and the bus floats high. `$FF $FF` for
+**U1** is not: that is a cart that is not answering at all, and the problem is
+the board or the connector rather than anything programming will fix.
+
+Then write the image:
+
+```
+6502-flash program Game-512K.crt --verify
+```
+
+`program` erases what it has to, writes the image, and with `--verify` reads
+the whole thing back and compares. A cart is a megabyte at the outside, so
+this is worth the extra half-minute every time.
+
+::: tip A smaller program in a bigger part goes on faster than you expect
+The linker fills unused space with `$FF`, which is what an erased chip already
+holds, so `program` skips every sector that already matches. A four-bank cart
+in a 512 KB part is a few seconds rather than a minute and a half.
+:::
+
+### Putting an old cartridge on a Flash Cart
+
+`6502-flash layout` takes a 32 KB ROM cart image and places it on a flash cart
+as the fixed region, so a game written before any of this existed runs from the
+new board:
+
+```
+6502-flash layout Game.crt -o Game-512K.crt --size 512K
+```
+
+It never overwrites its input, so the original 32 KB image is still there
+afterwards.
+
+::: warning A legacy game that writes to $E000–$FFFF will change banks
+On a ROM cart, a write anywhere in `$C000–$FFFF` goes nowhere — it is ROM, and
+a stray store is harmless. On a Flash Cart, a write in `$E000–$FFFF` latches
+the bank register.
+
+A game that uses a ROM address as a scratch write target, or that walks off the
+end of a table and stores past it, worked by accident on a ROM cart and will
+not here: the window under it changes and the program carries on into whatever
+the new bank holds. Nothing reports it. If a converted game misbehaves in a way
+it never did before, this is the first thing to suspect.
+:::
+
+### Saves never travel with the image
+
+This is the guarantee the whole save design exists to provide, so it is worth
+stating flatly:
+
+**`6502-flash program` reads the `.crt` and nothing else.** There is no flag
+that folds a save into what it writes, and no setting that makes one appear.
+Programming a cart puts the image on it and nothing more.
+
+A save lives in a `.sav` file beside the image — see
+[The emulator](/using/emulator#flash-carts-and-their-saves) for where it comes
+from. The only route from a `.sav` back to a `.crt` is deliberate:
+
+```
+6502-flash merge Game-512K.crt Game-512K.sav -o Game-saved-512K.crt
+```
+
+`merge` writes a **new file** and refuses to overwrite either input. So the
+only way a save reaches a cartridge is that you asked for it, named the output,
+and programmed that one.
 
 ## Onto somebody else's screen
 
