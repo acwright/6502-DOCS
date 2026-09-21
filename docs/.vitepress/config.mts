@@ -322,6 +322,7 @@ export default defineConfig({
           { text: 'Interrupts', link: '/assembly/interrupts' },
           { text: "What's fitted", link: '/assembly/detection' },
           { text: 'Writing a cartridge', link: '/assembly/cartridges' },
+          { text: 'Bigger cartridges', link: '/assembly/flash-carts' },
           { text: 'BASIC and machine code', link: '/assembly/basic-interop' },
           { text: 'Banked RAM', link: '/assembly/banking' },
           { text: 'Idioms and speed', link: '/assembly/idioms' },

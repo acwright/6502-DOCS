@@ -53,7 +53,7 @@ with `6502 dbg sym load`.
 ```
 
 ```
-headless 3.3.0 — serial console, 1 MHz, turbo, 1619280 cycles
+headless 3.4.0 — serial console, 1 MHz, turbo, 1619280 cycles
 ```
 
 On a machine started with `--console video` the same line names the video card,

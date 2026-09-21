@@ -15,7 +15,7 @@
     "warning": "Hand-authored file. Bumping the version here is what moves the whole site to a new release, and nothing will pass until the samples and screenshots have been re-run against it."
   },
 
-  "version": "3.3.0",
+  "version": "3.4.0",
 
   "card": "picovdp",
   "cardNote": "The video card every machine on this site runs: the 6502-PICOVDP, which boots BIOS 2.0. The emulator's default card is the TMS9918A with BIOS 1.6, and the default is due to change, so nothing here relies on it: every frame passes vdp=, and the sample harness and the screenshots pass --vdp and refuse a machine that reports anything else. RTS/CTS flow control is on by default from 3.2.0 — no flag asks for it — but the harness still reads it back, since --peer-rts ignore (the older --no-flow-control) would silently cost a long paste its lines. The serial card is left at its default, the ACE with CTS EN and DCD EN at ground, where nothing on the far end can stop the machine.",

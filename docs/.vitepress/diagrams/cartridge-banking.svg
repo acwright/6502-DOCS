@@ -1,0 +1,42 @@
+<svg class="dg" viewBox="0 0 660 360" role="img" aria-label="The Flash Cart window, the fixed bank, and where the vectors live"
+ xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<title>The Flash Cart window, the fixed bank, and where the vectors live</title>
+<defs>
+<marker id="dg-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+ orient="auto-start-reverse"><path class="dg-head" d="M0 0 L8 4 L0 8 z"/></marker>
+</defs>
+<text class="dg-t" x="40" y="26" text-anchor="start">What the CPU sees</text>
+<text class="dg-t" x="390" y="26" text-anchor="start">What is on the chip</text>
+<text class="dg-n" x="40" y="44" text-anchor="start">the same 16K a cartridge always owned</text>
+<text class="dg-n" x="390" y="44" text-anchor="start">up to 128 banks of 8K, in file order</text>
+<rect class="dg-solid" x="40" y="64" width="230" height="104"/>
+<text class="dg-t dg-inv" x="52" y="88" text-anchor="start">Fixed</text>
+<text class="dg-a dg-inv" x="52" y="106" text-anchor="start">$E000–$FFFF</text>
+<text class="dg-n dg-inv" x="52" y="128" text-anchor="start">never moves, whatever</text>
+<text class="dg-n dg-inv" x="52" y="144" text-anchor="start">the register holds</text>
+<text class="dg-a dg-inv" x="258" y="160" text-anchor="end">$FFFA–$FFFF vectors</text>
+<rect class="dg-open" x="40" y="188" width="230" height="104"/>
+<text class="dg-t" x="52" y="212" text-anchor="start">Window</text>
+<text class="dg-a" x="52" y="230" text-anchor="start">$C000–$DFFF</text>
+<text class="dg-n" x="52" y="252" text-anchor="start">one bank at a time</text>
+<text class="dg-n" x="52" y="268" text-anchor="start">changes under your feet</text>
+<rect class="dg-r" x="390" y="60" width="230" height="28"/>
+<text class="dg-t" x="402" y="79" text-anchor="start">bank $00</text>
+<rect class="dg-r" x="390" y="94" width="230" height="28"/>
+<text class="dg-t" x="402" y="113" text-anchor="start">bank $01</text>
+<rect class="dg-r" x="390" y="128" width="230" height="28"/>
+<text class="dg-t" x="402" y="147" text-anchor="start">bank $02</text>
+<rect class="dg-open" x="390" y="162" width="230" height="28"/>
+<text class="dg-t" x="402" y="181" text-anchor="start">…up to bank $3E</text>
+<rect class="dg-solid" x="390" y="196" width="230" height="28"/>
+<text class="dg-t dg-inv" x="402" y="215" text-anchor="start">bank $3F</text>
+<text class="dg-n dg-inv" x="608" y="215" text-anchor="end">the last one</text>
+<path class="dg-l" d="M382 64 H374 V186 H382"/>
+<line class="dg-l" x1="368" y1="125" x2="284" y2="240" marker-end="url(#dg-arrow)"/>
+<line class="dg-l" x1="382" y1="210" x2="284" y2="148" marker-end="url(#dg-arrow)"/>
+<text class="dg-n" x="292" y="134" text-anchor="start">always</text>
+<text class="dg-n" x="292" y="262" text-anchor="start">whichever the</text>
+<text class="dg-n" x="292" y="278" text-anchor="start">register last named</text>
+<text class="dg-n" x="40" y="330" text-anchor="start">The vectors are in the half that never moves. They could not be anywhere else:</text>
+<text class="dg-n" x="40" y="346" text-anchor="start">reset clears the register, so a vector in a bank would point into bank 0 by luck.</text>
+</svg>
