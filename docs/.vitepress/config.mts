@@ -24,6 +24,11 @@ const BASE = '/6502-DOCS/v1/'
 const SITE = `https://acwright.github.io${BASE}`
 const OG_CARD = `${SITE}images/og-card.png`
 
+// The current edition, which this one is the frozen predecessor of. Every way
+// out of /v1/ points here: the banner across the top of every page, and the
+// edition menu in the nav bar.
+const CURRENT = 'https://acwright.github.io/6502-DOCS/'
+
 export default defineConfig({
   title: 'ACE Documentation',
   description:
@@ -144,7 +149,24 @@ export default defineConfig({
     // each theme takes the variant whose plate matches its paper and disappears.
     logo: { light: '/images/logo-bow.png', dark: '/images/logo.png' },
 
-    nav: [{ text: 'Guide', link: '/' }],
+    // Which edition this is, and the way to the other one — the same menu the
+    // current edition carries, so a reader who lands here from a search can
+    // get to the machine they actually have.
+    //
+    // The entry leaving /v1/ needs `target`. The current docs are on this
+    // origin, so without it VitePress's router treats the link as one of this
+    // build's own pages and client-side routes to an address this build cannot
+    // answer, which shows the reader a 404 instead of the current guide.
+    nav: [
+      { text: 'Guide', link: '/' },
+      {
+        text: `BIOS ${BIOS_VERSION}`,
+        items: [
+          { text: `BIOS ${BIOS_VERSION} · TMS9918A`, link: '/' },
+          { text: 'BIOS 2.0 · 6502-PICOVDP', link: CURRENT, target: '_self' }
+        ]
+      }
+    ],
 
     sidebar: [
       {
@@ -253,6 +275,7 @@ export default defineConfig({
           { text: 'Interrupts', link: '/assembly/interrupts' },
           { text: "What's fitted", link: '/assembly/detection' },
           { text: 'Writing a cartridge', link: '/assembly/cartridges' },
+          { text: 'Bigger cartridges', link: '/assembly/flash-carts' },
           { text: 'BASIC and machine code', link: '/assembly/basic-interop' },
           { text: 'Banked RAM', link: '/assembly/banking' },
           { text: 'Idioms and speed', link: '/assembly/idioms' },

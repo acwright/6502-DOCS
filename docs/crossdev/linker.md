@@ -80,6 +80,67 @@ uses that to decide what can be initialized at load time and what can't.
 exactly the size of the chip. Without it you'd get a short file and a burner
 that complains.
 
+## A banked cartridge
+
+The [Flash Cart](/assembly/flash-carts) puts a switchable 8 KB window at
+`$C000–$DFFF` and pins the fixed region at `$E000–$FFF9`. The linker config is
+where that arrangement stops being a description of the hardware and becomes
+the actual layout of the file you program onto the chip. Here is the config
+for a 512 KB cart, with most of the banks left out:
+
+```
+MEMORY {
+  BANK00:  start=$C000, size=$2000, file="%O", fill=yes, fillval=$FF;
+  BANK01:  start=$C000, size=$2000, file="%O", fill=yes, fillval=$FF;
+  ...
+  BANK3E:  start=$C000, size=$2000, file="%O", fill=yes, fillval=$FF;
+  FIXED:   start=$E000, size=$1FFA, file="%O", fill=yes, fillval=$FF;
+  VECTORS: start=$FFFA, size=$0006, file="%O", fill=yes, fillval=$FF;
+}
+
+SEGMENTS {
+  BANK00:  load=BANK00,  type=ro, optional=yes;
+  BANK01:  load=BANK01,  type=ro, optional=yes;
+  ...
+  FIXED:   load=FIXED,   type=ro;
+  VECTORS: load=VECTORS, type=ro;
+}
+```
+
+Every one of the sixty-three banks starts at `$C000`, which looks like a
+mistake the first time you read it and is not. Each bank appears at `$C000`
+when that bank is the selected one, and only one bank is ever selected, so
+they are not competing for the address: the window is the same 8 KB of address
+space no matter which bank is behind it.
+
+Three details in that config matter, and none of them is obvious from reading
+it:
+
+**The declaration order *is* the layout on the chip.** `ld65` writes each
+region that names a file into that file in the order the regions are
+declared. So the file is bank `$00`, then bank `$01`, and so on, then the
+fixed region, then the vectors — which is exactly how the chip is addressed.
+Reorder the blocks and you have reordered the cartridge.
+
+**`fillval=$FF`, not `$00`.** An erased flash chip holds `$FF` everywhere.
+Filling the gaps with `$FF` means every unused byte of the image already
+matches an erased chip, so the programmer can skip whole sectors instead of
+writing them — a small cart in a big part goes on in seconds rather than a
+minute and a half. The ROM cart config above keeps `$00`, because an EEPROM
+has no erased state to take advantage of.
+
+**`optional=yes` on the bank segments.** A cart that uses four banks should not
+have to declare fifty-nine empty ones. Without it, every `BANKnn` segment the
+config names has to exist in the source or the link fails.
+
+::: tip The four configs are generated rather than typed
+Depending on the size, a config holds between fifteen and a hundred and
+twenty-seven near-identical stanzas, and a set that large is one nobody keeps
+consistent by hand. The templates generate all four and commit the results, so
+you can read them and compare them like any other file in the project — but
+change the generator rather than the config, or the next build will undo you.
+:::
+
 ## Adding a segment
 
 Say you want your level data kept apart from your code. Add a segment, and give

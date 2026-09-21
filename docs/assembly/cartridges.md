@@ -131,4 +131,12 @@ are not. Anything that changes lives in RAM — zero page from `$3A`, and the
 whole of `$0800–$7FFF`, which no longer has a BASIC program in it.
 :::
 
-Next: [BASIC and machine code together](/assembly/basic-interop).
+Sixteen kilobytes is what a fixed cartridge holds, and for most cartridges
+that is the right amount. A game that outgrows 16 KB can move to a Flash Cart
+instead, which gives up the fixed 16 KB in exchange for an 8 KB window onto
+one bank at a time with up to a megabyte behind it. A Flash Cart can also
+write to itself, so a game on one can save. The next chapter,
+[Bigger cartridges](/assembly/flash-carts), covers all of that; everything on
+this page still applies to a Flash Cart as well.
+
+Next: [bigger cartridges](/assembly/flash-carts).

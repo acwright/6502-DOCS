@@ -1,6 +1,6 @@
 # Onto real hardware
 
-Your program runs in the emulator. Here are the four ways to get it onto an ACE,
+Your program runs in the emulator. Here are the five ways to get it onto an ACE,
 in the order most people reach for them.
 
 | Way | You need | Good for |
@@ -8,7 +8,8 @@ in the order most people reach for them.
 | [Memory card](#the-memory-card) | A CompactFlash card and a reader | Everything, most of the time |
 | [Serial cable](#over-the-serial-cable) | A USB-to-serial adapter | Iterating without moving a card |
 | [Wozmon paste](#the-wozmon-paste) | Just the cable | Small machine-code experiments |
-| [EEPROM](#burning-a-cartridge) | A TL866-family programmer | Cartridges |
+| [EEPROM](#burning-a-cartridge) | A TL866-family programmer | ROM cartridges |
+| [Flash Helper](#programming-a-flash-cart) | An Arduino Mega 2560 and the shield | [Flash Carts](/assembly/flash-carts) |
 
 ## The memory card
 
@@ -132,6 +133,10 @@ Wozmon for code you'll enter from the Monitor, not for programs you intend to
 
 ## Burning a cartridge
 
+This is the ROM cart: one 28C256 EEPROM in a socket, pulled out to be burnt and
+put back. A [Flash Cart](/assembly/flash-carts) is programmed differently and
+[has its own section below](#programming-a-flash-cart).
+
 A cartridge is a 32 KB image for an AT28C256 EEPROM, and `make` in the
 [`6502-CRT`](https://github.com/acwright/6502-CRT) template produces one:
 
@@ -169,9 +174,134 @@ the file matches the chip, which is what the programmer expects.
 up.
 :::
 
+## Programming a Flash Cart
+
+A [Flash Cart](/assembly/flash-carts) cannot be burnt the way a ROM cart is.
+There is no chip to take out — the flash is a surface-mount part soldered to
+the board — so it is programmed **in circuit** instead, through the card edge.
+
+The programmer is the **Flash Helper**: an Arduino Mega 2560 with a shield on
+it that carries one card-edge connector, the same connector the VCS Main Board
+uses for its cartridge slot. The cart plugs into the shield, the Mega plugs
+into your computer over USB, and a command line tool called `6502-flash`
+drives the whole thing from your end.
+
+### Where the Helper and `6502-flash` come from
+
+Both the Flash Cart and the Flash Helper are part of the
+[6502-VCS repository](https://github.com/acwright/6502-VCS), which is where
+the VCS's own boards live. Three directories matter:
+
+| In 6502-VCS | What it is |
+|---|---|
+| [`Hardware/Flash Cart/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Cart) | The cartridge board itself — schematic, layout and a `DESIGN.md` covering the mapper and the programming sequences |
+| [`Hardware/Flash Helper/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Helper) | The programmer board. Two parts: an Arduino Mega 2560 R3 and one card-edge connector |
+| [`Firmware/FH Programmer/`](https://github.com/acwright/6502-VCS/tree/main/Firmware/FH%20Programmer) | The sketch that runs on the Mega, and `6502-flash` under its `host/` directory |
+
+Build and upload the sketch to the Mega once — it is a PlatformIO project, and
+its own README has the steps. Then install `6502-flash` from `host/`, which
+needs Node 22 or later:
+
+```sh
+cd "Firmware/FH Programmer/host"
+npm install
+```
+
+Everything below runs from there. `--port` picks the serial port, and if
+exactly one Arduino Mega is plugged in you can leave it off; with more than
+one, the tool lists them rather than guessing. `6502-flash ports` prints the
+same list at any time.
+
+Start by proving the cart is there and answering:
+
+```
+6502-flash id
+```
+
+```
+U1  $BF $B7  SST39SF040, 512 KB
+U2  $FF $FF  not fitted, or not answering
+
+512 KB in total - a 512K cart
+```
+
+That command reads each chip's own identifier out of the chip itself. `$FF
+$FF` for U2 is what a one-chip cart looks like: nothing is fitted in that
+position, and the bus floats high when nothing drives it. `$FF $FF` for **U1**
+means something different, because U1 is always fitted — a cart whose U1 does
+not answer is not responding at all, and the fault is in the board or the
+connector rather than in anything programming will fix.
+
+Then write the image:
+
+```
+6502-flash program Game-512K.crt --verify
+```
+
+`program` erases the sectors it needs to, writes the image, and with
+`--verify` reads the whole cart back afterwards and compares it against the
+file. Even the largest cart is only a megabyte, so verifying costs about half
+a minute and is worth doing every time.
+
+::: tip A smaller program in a bigger part goes on faster than you expect
+The linker fills unused space with `$FF`, which is what an erased chip already
+holds, so `program` skips every sector that already matches. A four-bank cart
+in a 512 KB part is a few seconds rather than a minute and a half.
+:::
+
+### Putting an old cartridge on a Flash Cart
+
+`6502-flash layout` takes a 32 KB ROM cart image and places it on a flash cart
+as the fixed region, so a game written before any of this existed runs from the
+new board:
+
+```
+6502-flash layout Game.crt -o Game-512K.crt --size 512K
+```
+
+It never overwrites its input, so the original 32 KB image is still there
+afterwards.
+
+::: warning A legacy game that writes to $E000–$FFFF will change banks
+On a ROM cart, a write anywhere in `$C000–$FFFF` goes nowhere — it is ROM, and
+a stray store is harmless. On a Flash Cart, a write in `$E000–$FFFF` latches
+the bank register.
+
+Some games use a ROM address as a scratch write target, and some walk off the
+end of a table and store past its end. Either one worked by accident on a ROM
+cart. On a Flash Cart the same store selects a different bank, the window at
+`$C000–$DFFF` changes underneath the running program, and the program carries
+on reading whatever the newly selected bank happens to hold. Nothing reports
+any of this. If a converted game misbehaves in a way it never did as a ROM
+cart, look here first.
+:::
+
+### Saves never travel with the image
+
+Keeping saves out of cartridge images is the point of the whole save design,
+so the rule is worth stating in full:
+
+**`6502-flash program` reads the `.crt` and nothing else.** There is no flag
+that folds a save into what it writes, and no setting that makes one appear.
+Programming a cart puts the image on it and nothing more.
+
+A save lives in a `.sav` file beside the image. Running a banked cartridge
+needs a newer emulator than this edition describes, so where those files come
+from is covered in the
+[current edition's emulator chapter](https://acwright.github.io/6502-DOCS/using/emulator#flash-carts-and-their-saves).
+The only route from a `.sav` back to a `.crt` is deliberate:
+
+```
+6502-flash merge Game-512K.crt Game-512K.sav -o Game-saved-512K.crt
+```
+
+`merge` writes a **new file** and refuses to overwrite either input. So the
+only way a save reaches a cartridge is that you asked for it, named the output,
+and programmed that one.
+
 ## Onto somebody else's screen
 
-There's a fifth destination, and it isn't hardware at all: a web page, where
+There's a sixth destination, and it isn't hardware at all: a web page, where
 anyone with a browser can play your program without owning a machine or a card
 reader. It takes about six lines of HTML, and it lives with the rest of the
 emulator in

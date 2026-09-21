@@ -15,6 +15,15 @@ const CURRENT = 'https://acwright.github.io/6502-DOCS/'
       DEV, KIM, VCS, PicoCalc and ACEs still on the original video card</span><span
       class="legacy-banner-short"> edition</span>
     </span>
-    <a class="legacy-banner-link" :href="CURRENT">Current docs →</a>
+    <!--
+      `target` is what makes this leave the v1 edition at all. The current docs
+      are on the same origin as these, so VitePress's router treats the link as
+      one of its own pages, calls preventDefault(), and client-side routes to
+      `/6502-DOCS/` — an address this build has no page for, so the reader gets
+      v1's 404 instead of the current guide. The router skips any link carrying
+      a `target`, which restores a plain full-page navigation in the same tab.
+      The same reasoning is why the edition menu's entry carries one.
+    -->
+    <a class="legacy-banner-link" target="_self" :href="CURRENT">Current docs →</a>
   </div>
 </template>

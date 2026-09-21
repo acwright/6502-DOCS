@@ -33,6 +33,41 @@ Two cartridge revisions exist, differing in which memory parts they accept.
 [6502-CRT](https://github.com/acwright/6502-CRT) is the template project for
 writing one.
 
+### The Flash Cart
+
+There is a second kind of cartridge, for when 16 KB is not enough. The **Flash
+Cart** is one board built in four sizes from 128 KB to 1 MB, and it holds all
+of it in the same 16 KB of address space by switching an 8 KB window at
+`$C000–$DFFF` between banks, with a fixed 8 KB at `$E000–$FFFF` that the
+vectors live in.
+
+It is all surface mount — the flash is soldered down, not socketed — so it is
+programmed two ways, neither of which involves taking a chip out:
+
+- **In circuit**, through the card edge, by the **Flash Helper**: an Arduino
+  Mega 2560 with a shield on it carrying the same card-edge connector the Main
+  Board uses. [Onto real hardware](/crossdev/to-hardware#programming-a-flash-cart)
+  is the procedure.
+- **By the 6502 itself.** The chip takes command sequences over the same bus
+  the machine reads it with, so a game can erase a sector and program a byte
+  while it runs. That is how a cartridge keeps a high score table with no
+  memory card anywhere. [Bigger cartridges](/assembly/flash-carts#saving) has
+  the details.
+
+**The ROM Cart is not replaced.** Every 32 KB image that works today still
+works, still builds the same way, and still goes in the same slot. A Flash
+Cart is what you reach for when a game has outgrown one, and `6502-flash
+layout` puts an existing 16 KB game onto one unchanged.
+
+Both boards are in this repository rather than one of their own. The cart is
+under [`Hardware/Flash Cart/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Cart),
+whose `DESIGN.md` covers the mapper and the programming sequences in full; the
+Flash Helper is under
+[`Hardware/Flash Helper/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Helper),
+and the sketch it runs together with the `6502-flash` command that drives it
+are under
+[`Firmware/FH Programmer/`](https://github.com/acwright/6502-VCS/tree/main/Firmware/FH%20Programmer).
+
 ::: tip The ACE takes the same cartridges
 The ACE has a cartridge slot too, so anything built for the VCS runs there —
 and the same slot is what the [KIM keypad](/addons/kim) plugs into.
@@ -46,9 +81,10 @@ encoder, rather than giving them connectors of their own — they come in on the
 
 ## Where to get it
 
-[6502-VCS repository](https://github.com/acwright/6502-VCS) — three boards, the
-cartridge, the input firmware and the bills of materials. The printable
-reference sheet is [here](/cards/vcs.html).
+[6502-VCS repository](https://github.com/acwright/6502-VCS) — the three
+machine boards, both kinds of cartridge, the Flash Helper that programs one of
+them, the input firmware and the bills of materials for all of it. The
+printable reference sheet is [here](/cards/vcs.html).
 
 The Main Board is also one of the two ways to build a
 [standalone KIM](/addons/kim#building-a-kim-on-its-own).

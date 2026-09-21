@@ -249,6 +249,9 @@ async function checkExternal(url) {
         if (status === 403 || status === 429) {
           return { unreachable: `the GitHub API says ${status} — out of quota, not an answer` }
         }
+        if (status >= 500) {
+          return { unreachable: `the GitHub API says ${status} — it failed, not an answer` }
+        }
         return { broken: `the GitHub API says ${status}` }
       }
     }
@@ -272,6 +275,17 @@ async function checkExternal(url) {
     // reasoning that keeps `www.analog.com` from failing the build applies, and
     // a check that goes red at random is a check everyone learns to re-run.
     if (status === 429) return { unreachable: 'HTTP 429 — rate-limited, not an answer' }
+
+    // Same reasoning, one layer down. A 5xx is the server saying it failed,
+    // not that the page is missing, and 408 is it giving up on the request
+    // before reading it. github.com answered two perfectly good links with 504
+    // in the same second on 2026-09-21, and both were back a minute later; a
+    // 404 from the same host would still have failed the build, as it should.
+    // The retry above already asked a second time with GET, so anything still
+    // in this range has failed twice.
+    if (status === 408 || status >= 500) {
+      return { unreachable: `HTTP ${status} — the server failed, not an answer` }
+    }
 
     return status >= 200 && status < 400 ? null : { broken: `HTTP ${status}` }
   })()

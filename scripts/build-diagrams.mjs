@@ -96,6 +96,130 @@ function box(x, y, w, h, label, { sub = null, cls = 'dg-r', labelCls = 'dg-t', r
 }
 
 // ---------------------------------------------------------------------------
+// The Flash Cart window, the fixed bank, and where the vectors are
+// ---------------------------------------------------------------------------
+
+/**
+ * The idea the *Bigger cartridges* chapter rests on, in one picture.
+ *
+ * Left: the 16 KB of address space a cartridge owns, split in two. Right: the
+ * banks on the chip, in the order the file holds them. The lower half of the
+ * address space changes under your feet; the upper half never does, and the
+ * vectors are in the upper half. That last sentence is the whole chapter, and
+ * a reader who takes only it away has taken away the right thing.
+ */
+function cartridgeBanking() {
+  const W = 660
+  const COL = 230
+  const LEFT = 40
+  const RIGHT = W - COL - 40
+
+  const body = [
+    text(LEFT, 26, 'What the CPU sees', 'dg-t'),
+    text(RIGHT, 26, 'What is on the chip', 'dg-t'),
+    text(LEFT, 44, 'the same 16K a cartridge always owned', 'dg-n'),
+    text(RIGHT, 44, 'up to 128 banks of 8K, in file order', 'dg-n')
+  ]
+
+  // --- left: the two halves ------------------------------------------------
+  const FIXED_Y = 64
+  const FIXED_H = 104
+  const WINDOW_Y = 188
+  const WINDOW_H = 104
+
+  body.push(rect(LEFT, FIXED_Y, COL, FIXED_H, 'dg-solid'))
+  body.push(text(LEFT + 12, FIXED_Y + 24, 'Fixed', 'dg-t dg-inv'))
+  body.push(text(LEFT + 12, FIXED_Y + 42, '$E000–$FFFF', 'dg-a dg-inv'))
+  body.push(text(LEFT + 12, FIXED_Y + 64, 'never moves, whatever', 'dg-n dg-inv'))
+  body.push(text(LEFT + 12, FIXED_Y + 80, 'the register holds', 'dg-n dg-inv'))
+  body.push(text(LEFT + COL - 12, FIXED_Y + 96, '$FFFA–$FFFF vectors', 'dg-a dg-inv', 'end'))
+
+  body.push(rect(LEFT, WINDOW_Y, COL, WINDOW_H, 'dg-open'))
+  body.push(text(LEFT + 12, WINDOW_Y + 24, 'Window', 'dg-t'))
+  body.push(text(LEFT + 12, WINDOW_Y + 42, '$C000–$DFFF', 'dg-a'))
+  body.push(text(LEFT + 12, WINDOW_Y + 64, 'one bank at a time', 'dg-n'))
+  body.push(text(LEFT + 12, WINDOW_Y + 80, 'changes under your feet', 'dg-n'))
+
+  // --- right: the banks, in the order the file holds them ------------------
+  const ROW_H = 28
+  const GAP = 6
+  const banks = [
+    { label: 'bank $00' },
+    { label: 'bank $01' },
+    { label: 'bank $02' },
+    { label: '…up to bank $3E', cls: 'dg-open' },
+    { label: 'bank $3F', cls: 'dg-solid', fixed: true }
+  ]
+
+  let y = 60
+  const placed = []
+  for (const bank of banks) {
+    placed.push({ ...bank, y })
+    y += ROW_H + GAP
+  }
+  const lastSwitchable = placed[placed.length - 2]
+  const fixedBank = placed[placed.length - 1]
+
+  for (const bank of placed) {
+    const inv = bank.cls === 'dg-solid'
+    body.push(rect(RIGHT, bank.y, COL, ROW_H, bank.cls ?? 'dg-r'))
+    body.push(text(RIGHT + 12, bank.y + 19, bank.label, inv ? 'dg-t dg-inv' : 'dg-t'))
+    if (bank.fixed) {
+      body.push(text(RIGHT + COL - 12, bank.y + 19, 'the last one', 'dg-n dg-inv', 'end'))
+    }
+  }
+
+  // A brace down the switchable banks, gathering into one arrow at the window.
+  const braceX = RIGHT - 16
+  const braceTop = placed[0].y + 4
+  const braceBottom = lastSwitchable.y + ROW_H - 4
+  const braceMid = (braceTop + braceBottom) / 2
+  body.push(
+    path(
+      `M${r(braceX + 8)} ${r(braceTop)} H${r(braceX)} V${r(braceBottom)} H${r(braceX + 8)}`,
+      'dg-l'
+    )
+  )
+  body.push(arrow(braceX - 6, braceMid, LEFT + COL + 14, WINDOW_Y + WINDOW_H / 2))
+
+  // The fixed bank has no register to answer to. The two arrows cross, and
+  // they have to: the fixed bank is the LAST one in the file and the window it
+  // does not feed is the LOWER half of the address space. So each label sits
+  // at its own arrowhead rather than in the middle, where it would belong to
+  // either.
+  body.push(
+    arrow(RIGHT - 8, fixedBank.y + ROW_H / 2, LEFT + COL + 14, FIXED_Y + FIXED_H - 20)
+  )
+
+  const labelX = LEFT + COL + 22
+  body.push(text(labelX, FIXED_Y + FIXED_H - 34, 'always', 'dg-n'))
+  body.push(text(labelX, WINDOW_Y + WINDOW_H / 2 + 22, 'whichever the', 'dg-n'))
+  body.push(text(labelX, WINDOW_Y + WINDOW_H / 2 + 38, 'register last named', 'dg-n'))
+
+  const bottom = Math.max(WINDOW_Y + WINDOW_H, fixedBank.y + ROW_H) + 58
+
+  body.push(
+    text(
+      LEFT,
+      bottom - 20,
+      'The vectors are in the half that never moves. They could not be anywhere else:',
+      'dg-n'
+    )
+  )
+  body.push(
+    text(LEFT, bottom - 4, 'reset clears the register, so a vector in a bank would point into bank 0 by luck.', 'dg-n')
+  )
+
+  return svg({
+    width: W,
+    height: bottom + 10,
+    title: 'The Flash Cart window, the fixed bank, and where the vectors live',
+    body
+  })
+}
+
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 // The whole address space
 // ---------------------------------------------------------------------------
 
@@ -911,6 +1035,7 @@ const DIAGRAMS = {
   'joystick-bits': joystickBits,
   'io-slots': ioSlots,
   'cartridge-overlay': cartridgeOverlay,
+  'cartridge-banking': cartridgeBanking,
   'cf-disks': cfDisks,
   'xmodem': xmodem,
   'toolchain': toolchain,

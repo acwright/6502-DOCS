@@ -1,5 +1,21 @@
 # Banked RAM
 
+::: warning This is not the cartridge kind of banking
+Two different mechanisms on this machine are called banking, and they share
+nothing but the word. This page is the **RAM card**: kilobyte windows at
+`$8000` and `$8400`, latches at `$83FF` and `$87FF`, and read-write memory
+behind them.
+
+A [Flash Cart](/assembly/flash-carts) banks an 8 KB window at `$C000–$DFFF`
+through a write-only register anywhere in `$E000–$FFFF`, and what sits behind
+that window is the cartridge.
+
+The two use different addresses, different latches and different window
+sizes, and neither reports a mistake. Write a cartridge bank number to a RAM
+card latch and nothing complains: the machine does exactly what the store
+asked for, to memory you did not intend to touch.
+:::
+
 The processor can only see 64 KB, and most of it is spoken for. The RAM card
 gets round that with a window: a kilobyte of address space that can be pointed
 at any one of 256 kilobyte-sized banks, one at a time.
