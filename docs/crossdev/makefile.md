@@ -164,7 +164,7 @@ cl65 -t none --asm-define VDP -C 6502.cfg -l Program-VDP.lst -o Program-VDP.prg 
 | Flag | Meaning |
 |---|---|
 | `--asm-define VDP` | Defines the symbol `VDP`, so `.ifdef VDP` in the source is true. |
-| `-t none` | No target machine. cc65 knows about the C64 and the Apple II; it does not know about this one, and we don't want its startup code or its memory assumptions. |
+| `-t none` | No target machine. cc65 knows about the C64 and the Apple II; it does not know about this one, and its startup code and memory assumptions would both be wrong here. |
 | `-C 6502.cfg` | Use [this memory layout](/crossdev/linker) instead. |
 | `-l Program-VDP.lst` | Write a listing: your source, interleaved with the bytes each line produced. |
 | `-o Program-VDP.prg` | The output image. |

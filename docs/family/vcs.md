@@ -67,8 +67,10 @@ works, still builds the same way, and still goes in the same slot. A Flash Cart
 is what you reach for when a game has outgrown one, and `6502-flash layout`
 puts an existing 16 KB game onto one unchanged.
 
-Both boards are in this repository rather than one of their own. The cart is
-under [`Hardware/Flash Cart/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Cart),
+Neither board has a repository of its own: both are part of the
+[6502-VCS project](https://github.com/acwright/6502-VCS), alongside the three
+machine boards. The cart is under
+[`Hardware/Flash Cart/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Cart),
 whose `DESIGN.md` covers the mapper and the programming sequences in full; the
 Flash Helper is under
 [`Hardware/Flash Helper/`](https://github.com/acwright/6502-VCS/tree/main/Hardware/Flash%20Helper),
