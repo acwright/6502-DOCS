@@ -7,7 +7,7 @@ carry the file you would otherwise spend an evening writing by hand.
 | Template | What it makes | Runs |
 |---|---|---|
 | [`6502-PRG`](https://github.com/acwright/6502-PRG) | A program in RAM, loaded from BASIC | Alongside BASIC, the Kernal, everything |
-| [`6502-CRT`](https://github.com/acwright/6502-CRT) | A cartridge ROM | Instead of BASIC — it owns the machine |
+| [`6502-CRT`](https://github.com/acwright/6502-CRT) | A cartridge ROM, or a banked Flash Cart | Instead of BASIC — it owns the machine |
 
 Start with `6502-PRG`. A cartridge is the right answer for a finished game you
 want to plug in, and the wrong answer for anything you are still writing.
@@ -189,6 +189,21 @@ handler a cartridge needs of its own.
 The template also supplies IRQ and NMI trampolines that jump through the RAM
 vectors the Kernal set up, so a keyboard still works in a cartridge you haven't
 written any interrupt code for.
+
+### The same source builds a Flash Cart
+
+`6502-CRT` builds both kinds of cartridge from one `Cart.asm`:
+
+```sh
+make                # Cart.crt, a 32 KB ROM cart
+make FLASH=512K     # Cart-512K.crt, a 512 KB banked Flash Cart
+```
+
+Everything the banked build adds is inside `.ifdef FLASH`, so plain `make`
+produces the same bytes it always did. What appears under `FLASH=` is the bank
+register, the `SetBank` routine, the zero-page shadow, and a worked call that
+prints a string out of bank `$01` — enough to see the shape of it before you
+write your own. [Bigger cartridges](/assembly/flash-carts) is the chapter.
 
 ## Renaming things
 

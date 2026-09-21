@@ -68,6 +68,75 @@ Tired of typing it? Change `VDP ?= 0` to `VDP ?= 1` and plain `make` does the
 same. `ROM=path/to/BIOS.bin` on the `run` line boots a ROM image of your own
 instead of the one the emulator carries.
 
+## `FLASH=`
+
+A cartridge template has a second axis, alongside `VDP=1`. `FLASH=` picks a
+[Flash Cart](/assembly/flash-carts) target instead of the 32 KB ROM cart, and
+what falls out is a different linker config, a different output name, and a
+much bigger file:
+
+```sh
+make                # Cart.crt, 32,768 bytes
+make FLASH=128K     # Cart-128K.crt, 131,072 bytes
+make FLASH=256K     # Cart-256K.crt, 262,144 bytes
+make FLASH=512K     # Cart-512K.crt, 524,288 bytes
+make FLASH=1M       # Cart-1M.crt, 1,048,576 bytes
+```
+
+```make
+FLASH_TARGETS = 128K 256K 512K 1M
+FLASH ?=
+ifeq ($(FLASH),)
+  CONFIG = 6502
+else
+  ifeq ($(filter $(FLASH),$(FLASH_TARGETS)),)
+    $(error FLASH=$(FLASH) is not a cart target)
+  endif
+  SUFFIX  := $(SUFFIX)-$(FLASH)
+  CONFIG   = 6502-$(FLASH)
+  ASFLAGS += --asm-define FLASH
+endif
+```
+
+The `filter` is worth copying rather than skipping. Without it, `FLASH=512`
+instead of `FLASH=512K` asks for a config that does not exist, and the error
+you get is about a missing file rather than about the typo.
+
+Combine the two axes and **`-VDP` comes first, then the target**:
+`make VDP=1 FLASH=1M` is `Cart-VDP-1M.crt`. The Makefile is the one place that
+ordering can be enforced, which is why it builds the name rather than leaving
+it to whoever types it.
+
+::: tip Why `FLASH=` and not `ROM=`
+`ROM=` already means something here: it names a BIOS image for `make run` to
+boot instead of the emulator's own. Two different meanings for one variable,
+and the collision would be silent — `make ROM=512K run` would try to boot a
+BIOS called `512K`.
+:::
+
+::: warning `make eeprom` refuses a flash image
+A 28C256 holds 32 KB. A 512 KB image sent to one is truncated at the first 32
+KB with no complaint from the programmer, and what comes back is a cartridge
+that boots into the middle of bank `$03`. The template checks and refuses:
+
+```make
+eeprom:
+	@if [ -n "$(FLASH)" ]; then \
+	  echo "make eeprom writes a 28C256, which holds 32K" >&2; \
+	  exit 1; \
+	fi
+	minipro -p AT28C256 -w $(OUT).crt
+```
+
+A Flash Cart is burnt with `make flash`, in circuit — see
+[Onto real hardware](/crossdev/to-hardware).
+:::
+
+**The size in the name is a label; the size in the bytes is what the machine
+reads.** Everything that loads a `.crt` picks the mapper from the byte count
+and only warns when the name disagrees, so the naming above is a convenience
+for you rather than something the machine relies on.
+
 ## Target by target
 
 | `make …` | What happens |
@@ -80,6 +149,10 @@ instead of the one the emulator carries.
 | `woz` | The paste-over-serial form |
 | `cf` | A one-megabyte card image with the program on it |
 | `clean` | Delete the build output |
+| `FLASH=…` | Added to a cartridge template's build: a Flash Cart image instead of a ROM cart |
+| `all-flash` | *(cartridge templates)* every Flash Cart size, one after the other |
+| `eeprom` | *(cartridge templates)* burn a 28C256 |
+| `flash` | *(cartridge templates)* burn a Flash Cart in circuit, through the Flash Helper |
 
 ## The build line
 
