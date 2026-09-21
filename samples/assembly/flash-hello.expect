@@ -1,0 +1,11 @@
+# "Bigger cartridges" — the smallest banked cartridge there is: the code in the
+# fixed region, the string in bank $01.
+#
+# A cart case runs in its own emulator, because a cartridge replaces the half
+# of the address space the shared machine's BASIC prompt lives in.
+
+cart 512K
+timeout 20s
+
+expect ^THIS LINE IS IN THE FIXED REGION$
+expect ^AND THIS ONE IS IN BANK \$01$

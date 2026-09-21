@@ -17,7 +17,7 @@ A listing that cannot be verified does not go in.
 | `embed/` | The starter page the emulator chapter hands a reader who wants their program on the web |
 | `_checks/` | Regression cases that are **never shown** in the docs |
 | `_harness/` | Cases that test the harness itself, not the machine |
-| `lib/` | `6502.cfg` (linker config) and `6502-VDP.inc` (**a copy of 6502-ASM's** — see below) |
+| `lib/` | `6502.cfg` and `6502-512K.cfg` (linker configs) and `6502-VDP.inc` (**a copy of 6502-ASM's** — see below) |
 | `build/` | Assembler output and boot snapshots. Git-ignored, rebuilt every run. |
 
 ### Shown versus not shown
@@ -107,6 +107,7 @@ One directive per line; `#` starts a comment. A case must assert something.
 | `cycles <n>` | Emulated cycles to advance after each send (video only, default 2,000,000) |
 | `send <text>` | Extra input after `RUN`, before asserting (repeatable) |
 | `timeout <duration>` | Per-assertion budget (default `20s`) |
+| `cart <512K>` | Build as a Flash Cart image and boot it with `--cart`, in its own emulator |
 | `expect-failure` | This case is *meant* to fail; the harness inverts the result |
 
 Regexes are matched per line (`m` flag) against output with `\r` stripped — the
@@ -130,6 +131,29 @@ settled. The machine is deterministic — pinned clock, fixed cycle budgets — 
 the same program draws the same frame, and one wrong pixel changes the digest.
 To take a new one, run the case with a placeholder digest and copy the one the
 failure reports, after looking at the picture (`npm run screens` shows it).
+
+### Cartridge cases
+
+A `cart` case is a cartridge, not a program: it is linked with
+`lib/6502-512K.cfg` into a 524,288-byte `.crt` and booted with `--cart`. A
+cartridge replaces `$C000-$FFFF`, which is where the shared machine's BASIC
+prompt lives, so there is no prompt to restore to and the boot snapshot means
+nothing. Each cart case therefore gets **its own one-shot emulator**, run to
+its `timeout` and asserted on what it printed.
+
+That is also why `screen`, `picture` and `send` are refused in a cart case,
+and why the harness says so rather than failing obscurely: all three go
+through the debugger on a machine the harness is holding open, and this one is
+not.
+
+The emulator is given `--no-cart-save`. A cartridge that programs its own
+flash would otherwise leave a `.sav` beside the image, and the next run would
+start from the save rather than from the erased chip — so the case would pass
+once and assert something different every time after.
+
+The built `.crt` carries its size in the name (`assembly-flash-save-512K.crt`)
+because everything that loads a `.crt` picks the mapper from the byte count
+and warns when the name disagrees. The name is a label; the bytes decide.
 
 ### Storage cases
 
@@ -181,6 +205,10 @@ The method is the one in
 `_harness/deliberate-failure` asserts something untrue on purpose. A suite that
 cannot fail is not testing anything, so that case is reported `ok` when its
 assertions do *not* hold — and goes red if they ever do.
+
+`lib/6502-512K.cfg` is a copy too — of 6502-ASM's, which is a copy of the one
+6502-CRT generates — so a Flash Cart sample here links against the same file a
+reader's own `make FLASH=512K` uses. Same rule: do not edit it here.
 
 ## `lib/6502-VDP.inc` is a copy
 

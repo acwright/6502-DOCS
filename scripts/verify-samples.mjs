@@ -57,6 +57,22 @@ const CONSOLES = ['serial', 'video', 'storage', 'video storage']
 const isVideo = (mode) => mode.startsWith('video')
 const hasStorage = (mode) => mode.endsWith('storage')
 
+/**
+ * The Flash Cart sizes a `cart` case can name.
+ *
+ * A cartridge case is not like any other case here, and the difference is not
+ * a convenience: a cartridge REPLACES $C000-$FFFF, so there is no BASIC prompt
+ * to restore to and the shared snapshot is meaningless. Each one therefore
+ * gets its own emulator process, started with --cart, run to its timeout, and
+ * asserted on what it printed. That also means no `screen`, `picture` or
+ * `send`: those all go through the debugger on a machine this harness kept a
+ * handle on, and this one is a one-shot.
+ *
+ * samples/lib holds only the 512K config, which is the one the chapter works
+ * in; the others differ from it by their bank count alone.
+ */
+const CART_SIZES = ['512K']
+
 // ---------------------------------------------------------------------------
 // Case discovery and .expect parsing
 // ---------------------------------------------------------------------------
@@ -206,6 +222,7 @@ function parseExpect(path) {
     absent: [],
     screen: [],
     picture: null,
+    cart: null,
     expectFailure: false,
     file: relative(ROOT, path)
   }
@@ -260,6 +277,12 @@ function parseExpect(path) {
         spec.expect.push({ pattern: '^PASS$', where })
         spec.absent.push({ pattern: '^FAIL$', where })
         break
+      case 'cart':
+        if (!CART_SIZES.includes(value)) {
+          throw new Error(`${where}: cart must be ${CART_SIZES.join(', ')}`)
+        }
+        spec.cart = value
+        break
       case 'expect-failure':
         spec.expectFailure = true
         break
@@ -270,6 +293,20 @@ function parseExpect(path) {
 
   if (!spec.expect.length && !spec.absent.length && !spec.screen.length && !spec.picture) {
     throw new Error(`${spec.file}: asserts nothing`)
+  }
+
+  if (spec.cart) {
+    const unavailable = [
+      spec.screen.length && 'screen',
+      spec.picture && 'picture',
+      spec.sends.length && 'send'
+    ].filter(Boolean)
+    if (unavailable.length) {
+      throw new Error(
+        `${spec.file}: a cart case cannot use ${unavailable.join(' or ')} — it runs in its own ` +
+          'one-shot emulator with no debugger attached, so console output is all it can assert on'
+      )
+    }
   }
 
   return spec
@@ -437,6 +474,94 @@ function buildAssembly(caseFile) {
   return prg
 }
 
+/**
+ * Build a cartridge case into a .crt, named with its size.
+ *
+ * The suffix is not decoration. Everything that loads a .crt picks the mapper
+ * from the byte count and warns when the name disagrees, so building this as
+ * `flash-hello.crt` would put a warning on stderr on every run — correctly.
+ * The name is a label; the bytes decide.
+ */
+function buildCartridge(caseFile) {
+  mkdirSync(BUILD, { recursive: true })
+  const crt = join(
+    BUILD,
+    `${caseFile.name.replace(/[\/\\]/g, '-')}-${caseFile.spec.cart}.crt`
+  )
+
+  const result = spawnSync(
+    'cl65',
+    [
+      '-t', 'none',
+      '-C', join(SAMPLES, 'lib', `6502-${caseFile.spec.cart}.cfg`),
+      '--asm-include-dir', join(SAMPLES, 'lib'),
+      '-o', crt,
+      caseFile.path
+    ],
+    { encoding: 'utf-8' }
+  )
+
+  if (result.status !== 0) {
+    throw new Error(`cl65 failed:\n${(result.stderr || result.stdout || '').trim()}`)
+  }
+
+  return crt
+}
+
+/** "20s", "500ms", "5m" — the emulator's own spelling, in milliseconds. */
+function durationMs(text) {
+  const m = /^(\d+)(ms|s|m)$/.exec(text.trim())
+  if (!m) throw new Error(`cannot read a duration from "${text}"`)
+  return Number(m[1]) * { ms: 1, s: 1000, m: 60_000 }[m[2]]
+}
+
+/**
+ * Run a cartridge case in its own emulator and assert on what it printed.
+ *
+ * --no-cart-save because a cart that programs itself would otherwise leave a
+ * .sav beside the image, and the next run would start from the save rather
+ * than from the erased chip — so the case would pass once and then assert
+ * something different for the rest of the day.
+ */
+function runCartCase(caseFile) {
+  const { spec } = caseFile
+  const crt = buildCartridge(caseFile)
+  const { command, prefix } = emulatorCommand()
+  const budget = durationMs(spec.timeout)
+
+  const result = spawnSync(
+    command,
+    [
+      ...prefix,
+      'run',
+      '--headless',
+      ...MACHINE_FLAGS,
+      '--cart', crt,
+      '--no-cart-save',
+      '--timeout', spec.timeout
+    ],
+    { encoding: 'utf-8', timeout: budget + 10_000 }
+  )
+
+  if (result.error) {
+    return { ok: false, output: '', reason: `the emulator did not run: ${result.error.message}` }
+  }
+
+  const output = (result.stdout || '').replace(/\r/g, '')
+  const failures = []
+
+  for (const { pattern, where } of spec.expect) {
+    if (!new RegExp(pattern, 'm').test(output)) failures.push(`${where}: expected /${pattern}/`)
+  }
+  for (const { pattern, where } of spec.absent) {
+    if (new RegExp(pattern, 'm').test(output)) failures.push(`${where}: unexpected /${pattern}/`)
+  }
+
+  return failures.length
+    ? { ok: false, output, reason: failures.join('\n       ') }
+    : { ok: true, output }
+}
+
 function runCase(machine, caseFile) {
   const { spec } = caseFile
   const video = isVideo(spec.console)
@@ -589,7 +714,7 @@ async function main() {
     process.exit(1)
   }
 
-  const needsStorage = cases.some((c) => hasStorage(c.spec.console))
+  const needsStorage = cases.some((c) => hasStorage(c.spec.console) && !c.spec.cart)
   if (needsStorage && spawnSync('cffs', ['--version']).error) {
     console.error('verify: cffs is not installed — run `npm run preflight`')
     process.exit(1)
@@ -599,7 +724,10 @@ async function main() {
   mkdirSync(BUILD, { recursive: true })
   if (needsStorage) buildStorageFixture()
 
-  const modes = [...new Set(cases.map((c) => c.spec.console))]
+  // A cart case brings its own emulator, so it does not put a mode on this
+  // list — otherwise a run filtered down to cart cases alone would boot a
+  // machine to the BASIC prompt and never use it.
+  const modes = [...new Set(cases.filter((c) => !c.spec.cart).map((c) => c.spec.console))]
   const machines = new Map()
   let failed = 0
 
@@ -613,11 +741,12 @@ async function main() {
     }
 
     for (const caseFile of cases) {
-      const machine = machines.get(caseFile.spec.console)
       let result
 
       try {
-        result = runCase(machine, caseFile)
+        result = caseFile.spec.cart
+          ? runCartCase(caseFile)
+          : runCase(machines.get(caseFile.spec.console), caseFile)
       } catch (error) {
         result = { ok: false, output: '', reason: error.message }
       }

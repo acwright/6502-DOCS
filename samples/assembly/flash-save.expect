@@ -1,0 +1,13 @@
+# "Bigger cartridges" — a cartridge writing to its own flash.
+#
+# BEFORE is what the linker left in an unused bank, which is what an erased
+# chip holds. AFTER is the byte the RAM-resident routine programmed. If the
+# routine were run from ROM instead of RAM this would hang rather than fail,
+# because 6502-EMULATOR models the busy window — which is the point of it.
+
+cart 512K
+timeout 30s
+
+expect ^FLASH CART SAVE$
+expect ^BEFORE \$FF$
+expect ^AFTER  \$5A$
