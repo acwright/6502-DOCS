@@ -133,4 +133,12 @@ matters, assembly for the parts where speed does. Both halves fit in this
 workflow — the listing in `listings/`, the assembly in `src/`, both built by the
 same `make`.
 
+## Where listings live
+
+[`6502-BAS`](https://github.com/acwright/6502-BAS) is a collection of short
+listings kept exactly this way: the text committed, the program file built from
+it, one directory each. It is somewhere to put a listing worth keeping that
+isn't big enough to want a repository of its own, and somewhere to read a few
+that other people thought were worth keeping.
+
 Next: [handing the whole thing to an agent](/crossdev/agents).

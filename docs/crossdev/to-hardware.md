@@ -151,6 +151,11 @@ overwrites itself.
 
 `LOAD` hands BASIC the byte count properly. Use Wozmon for code you'll start
 with `SYS`, not for programs you intend to `RUN`.
+
+If the cable is your only way in, build a raw binary instead — no stub, entry
+at `$0800`, started with `800R` where it sits. That is what
+[`6502-BIN`](https://github.com/acwright/6502-BIN) is for, and
+[the template chapter](/crossdev/templates#the-raw-binary-template) covers it.
 :::
 
 ## Burning a cartridge
