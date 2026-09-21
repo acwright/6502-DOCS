@@ -591,9 +591,11 @@ to `v1` runs its `redeploy.yml`, which starts this workflow on `main`; the
 | [6502-KIM](https://github.com/acwright/6502-KIM) | Keypad/LCD boards — an ACE add-on, and a standalone build. |
 | [6502-VCS](https://github.com/acwright/6502-VCS) | Cartridge-based console. Builder-facing. Also holds the Flash Cart, the Flash Helper that programs it, and `6502-flash`. |
 | [6502-PRG](https://github.com/acwright/6502-PRG) | Cross-dev template for RAM programs. |
-| [6502-CRT](https://github.com/acwright/6502-CRT) | Cross-dev template for cartridges. |
-| [6502-ASM](https://github.com/acwright/6502-ASM) | Assembly sample code. |
-| [6502-BAS](https://github.com/acwright/6502-BAS) | BASIC sample code. |
+| [6502-CRT](https://github.com/acwright/6502-CRT) | Cross-dev template for cartridges and banked Flash Carts. |
+| [6502-BIN](https://github.com/acwright/6502-BIN) | Cross-dev template for raw binaries with no BASIC stub. |
+| [6502-ASM](https://github.com/acwright/6502-ASM) | Small assembly programs — demos, samples, scratchpads and tests, one directory each. Also the copy of `6502.inc` and `6502-VDP.inc` that this site's samples are kept in step with (see [`samples/README.md`](samples/README.md)). Games and applications live in repositories of their own. |
+| [6502-BAS](https://github.com/acwright/6502-BAS) | The same, in BASIC: short listings, one directory each. |
+| [6502-C](https://github.com/acwright/6502-C) | The same, in C: short programs built with cc65, plus `6502.h` and the `6502.lib` they link against. |
 | [bastok](https://github.com/acwright/bastok) | BASIC tokenizer (`.bas` text → `.prg`). |
 | [cffs](https://github.com/acwright/cffs) | CompactFlash disk image tool. |
 | [bin2woz](https://github.com/acwright/bin2woz) | Binary → Wozmon paste-able upload helper. |
