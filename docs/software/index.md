@@ -81,3 +81,13 @@ on this site's repository and say:
 It doesn't have to be finished, and it doesn't have to be a game. A tool, a
 demo, a language, half a game with the controls working — all of it is worth
 somebody else seeing.
+
+### Smaller than a repository
+
+Not everything wants one. A demo, a test, one screen of something that works —
+three repositories collect those a directory at a time, and each says in its
+README what a new directory needs:
+[`6502-ASM`](https://github.com/acwright/6502-ASM) for assembly,
+[`6502-BAS`](https://github.com/acwright/6502-BAS) for BASIC listings, and
+[`6502-C`](https://github.com/acwright/6502-C) for C. Send a pull request there
+rather than an issue here.

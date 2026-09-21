@@ -1,16 +1,21 @@
 # Starting from a template
 
-Don't build a project from an empty directory. Two templates exist, both of
-them working programs you can assemble in the next thirty seconds, and both
-carry the file you would otherwise spend an evening writing by hand.
+Don't build a project from an empty directory. Three templates exist, all of
+them working programs you can assemble in the next thirty seconds, and all of
+them carrying the file you would otherwise spend an evening writing by hand.
 
 | Template | What it makes | Runs |
 |---|---|---|
 | [`6502-PRG`](https://github.com/acwright/6502-PRG) | A program in RAM, loaded from BASIC | Alongside BASIC, the Kernal, everything |
-| [`6502-CRT`](https://github.com/acwright/6502-CRT) | A cartridge ROM | Instead of BASIC — it owns the machine |
+| [`6502-CRT`](https://github.com/acwright/6502-CRT) | A cartridge ROM, or a banked Flash Cart | Instead of BASIC — it owns the machine |
+| [`6502-BIN`](https://github.com/acwright/6502-BIN) | Raw machine code, with no BASIC stub in front of it | Alongside BASIC, but started by hand |
 
 Start with `6502-PRG`. A cartridge is the right answer for a finished game you
-want to plug in, and the wrong answer for anything you are still writing.
+want to plug in, and the wrong answer for anything you are still writing. A raw
+binary is the answer when BASIC is in the way rather than in the picture — when
+the only cable you have is a serial one, when you are working from the Monitor,
+or when the program means to take the machine over.
+[It has a section below](#the-raw-binary-template).
 
 ## Clone it
 
@@ -121,6 +126,75 @@ The template also supplies IRQ and NMI trampolines that jump through the RAM
 vectors the Kernal set up, so a keyboard still works in a cartridge you haven't
 written any interrupt code for.
 
+## The raw binary template
+
+`6502-BIN` drops the twelve-byte BASIC stub entirely. A `.bin` is machine code
+from its very first byte, that first byte *is* the entry point, and BASIC is
+never involved:
+
+| | `.prg`, from `6502-PRG` | `.bin`, from `6502-BIN` |
+|---|---|---|
+| First bytes | The `10 SYS 2060` stub | Your code |
+| Entry point | `$080C` | `$0800` |
+| Started with | `LOAD`, then `RUN` | `SYS 2048`, the Monitor's `J 0800`, or `800R` in Wozmon |
+| Survives a Wozmon paste | No | **Yes** |
+
+That last row is the reason the template exists. [The Wozmon
+paste](/crossdev/to-hardware#the-wozmon-paste) is the one route to a real
+machine that needs nothing but the cable, and it is the one route a `.prg`
+cannot travel: Wozmon deposits bytes one at a time and never tells BASIC how
+many arrived, so `RUN` walks the tokenized line chain, decides the program ends
+at `$080C`, and puts its first variable there — on top of the machine code. A
+`.bin` asks BASIC for nothing, so none of that applies. Paste it, type `800R`,
+and it runs.
+
+It is also the natural shape for anything you drive from
+[the Monitor](/using/monitor), which loads to `$0800` by default and has two
+ways of starting code sitting there, and for a program that is taking the
+machine over rather than borrowing it. The programs for
+[the KIM keypad](/addons/kim) are `.bin` files of exactly this kind.
+
+### Choose an ending that matches the start
+
+A `.bin` cannot tell how it was reached, and the four ways of reaching it do not
+leave the stack in the same state:
+
+| Launch | What it does | How to end |
+|---|---|---|
+| `SYS 2048` at BASIC's prompt | `JSR` — there is a return address waiting | `rts`, back to the `OK` prompt |
+| `J 0800` in the Monitor | `JSR` — the same | `rts`, back to the `.` prompt |
+| `G 0800` in the Monitor | `JMP` via `RTI`, machine handed over, interrupts and all | `BRK`, which lands back in the Monitor |
+| `800R` in Wozmon | `JMP` — no return address anywhere | Loop forever, `BRK`, or `JMP ($FFFC)` to reboot |
+
+The template ends in `rts`, which makes `J` the command to launch it with and
+`G` the one to save for a program that means to keep the machine. The
+alternative endings sit commented out beside it, and so does a block at the top
+of `Start:` that resets the stack pointer, calls `KernalInit` to probe and
+initialize every card again, and re-enables interrupts — for exactly that
+program. Running that block throws away whatever return address `J` or `SYS`
+pushed, so it is a one-way door.
+
+::: warning Zero page is only yours if the program never returns
+A `.bin` entered with `SYS` or `J` leaves BASIC or the Monitor live underneath
+it, still using zero page `$3A`–`$FF` as it runs. The table above calls that
+range yours, and it is — for a program that takes the machine over and never
+comes back. For one that ends in `rts`, treat it as occupied.
+:::
+
+### Getting it there
+
+The Monitor loads a `.bin` and starts it in two lines:
+
+```
+L "BINARY.BIN"
+J 0800
+```
+
+`L` loads to `$0800` unless you tell it otherwise, and `L` with no filename
+receives the file over XMODEM instead — which is the answer when there is no
+card in the slot. From BASIC, `BLOAD 2048,"BINARY.BIN"` does the same job and
+`SYS 2048` starts it.
+
 ## Renaming things
 
 The `Makefile` names the target once:
@@ -133,5 +207,22 @@ EIGHTTHREE = PROGRAM
 Change both, rename `Program.asm` to match, and everything downstream follows.
 `EIGHTTHREE` is the name the file gets on the memory card, where names are
 eight characters plus a three-character extension.
+
+## Where a program goes when it works
+
+A template is where a project starts, not where a finished one lives. Three
+repositories collect the small things — a demo, a test, one screen of something
+that works — a directory each, with its own build and its own README:
+
+| | |
+|---|---|
+| [`6502-ASM`](https://github.com/acwright/6502-ASM) | Assembly programs, including worked examples of all three templates |
+| [`6502-BAS`](https://github.com/acwright/6502-BAS) | BASIC listings, kept as text the way [BASIC from your editor](/crossdev/basic) describes |
+| [`6502-C`](https://github.com/acwright/6502-C) | C programs, compiled with the cc65 you already installed |
+
+Each of those says what a new directory needs. Anything with a life of its own
+— a game, an application, something with releases and issues of its own — wants
+a repository of its own instead, and then a place on the
+[software list](/software/), which is how anybody else finds it.
 
 Next: [what each Makefile target actually does](/crossdev/makefile).
