@@ -6,6 +6,21 @@ at any one of 256 kilobyte-sized banks, one at a time.
 
 There are two of these, side by side.
 
+::: warning This is not the cartridge kind of banking
+Two different mechanisms on this machine are called banking, and they share
+nothing but the word. This page is the **RAM card**: kilobyte windows at
+`$8000` and `$8400`, latches at `$83FF` and `$87FF`, and read-write memory
+behind them.
+
+A [Flash Cart](/assembly/flash-carts) banks an 8 KB window at `$C000–$DFFF`
+through a write-only register anywhere in `$E000–$FFFF`, and what is behind it
+is the cartridge.
+
+Different addresses, different latches, different sizes. Writing to the wrong
+one gets you no error at all — the machine does exactly what you asked, to
+something you did not mean.
+:::
+
 | Window | Latch | |
 |---|---|---|
 | `$8000–$83FE` | `RAM_BANK_L` at `$83FF` | The low window — what BASIC's `BANK` uses |

@@ -41,6 +41,35 @@ Two cartridge revisions exist, differing in which memory parts they accept.
 [6502-CRT](https://github.com/acwright/6502-CRT) is the template project for
 writing one.
 
+### The Flash Cart
+
+There is a second kind of cartridge, for when 16 KB is not enough. The **Flash
+Cart** is one board built in four sizes from 128 KB to 1 MB, and it holds all
+of it in the same 16 KB of address space by switching an 8 KB window at
+`$C000–$DFFF` between banks, with a fixed 8 KB at `$E000–$FFFF` that the
+vectors live in.
+
+It is all surface mount — the flash is soldered down, not socketed — so it is
+programmed two ways, neither of which involves taking a chip out:
+
+- **In circuit**, through the card edge, by the **Flash Helper**: an Arduino
+  Mega 2560 with a shield on it carrying the same card-edge connector the Main
+  Board uses. [Onto real hardware](/crossdev/to-hardware#programming-a-flash-cart)
+  is the procedure.
+- **By the 6502 itself.** The chip takes command sequences over the same bus
+  the machine reads it with, so a game can erase a sector and program a byte
+  while it runs. That is how a cartridge keeps a high score table with no
+  memory card anywhere. [Bigger cartridges](/assembly/flash-carts#saving) has
+  the routine.
+
+**The ROM Cart is not replaced.** Every 32 KB image that works today still
+works, still builds the same way, and still goes in the same slot. A Flash Cart
+is what you reach for when a game has outgrown one, and `6502-flash layout`
+puts an existing 16 KB game onto one unchanged.
+
+The board's own design notes are in
+[`Hardware/Flash Cart/Rev 1.0/DESIGN.md`](https://github.com/acwright/6502-VCS/blob/main/Hardware/Flash%20Cart/Rev%201.0/DESIGN.md).
+
 ::: tip The ACE takes the same cartridges
 The ACE has a cartridge slot too, so anything built for the VCS runs there —
 and the same slot is what the [KIM keypad](/addons/kim) plugs into.

@@ -17,8 +17,18 @@ The ROM in the cartridge overlays `$C000–$FFFF`:
 | `$C000–$FFF9` | **Yours**, in place of BASIC and Wozmon |
 | `$FFFA–$FFFF` | The processor's NMI, reset and interrupt vectors — now yours to supply |
 
+<small>On a [Flash Cart](/assembly/flash-carts) the middle row splits in two:
+`$C000–$DFFF` becomes a window onto one bank at a time, and `$E000–$FFF9`
+stays put. The vectors do not move.</small>
+
 So you lose BASIC and gain 16 KB of ROM, and you keep every Kernal routine in
 this section. That is the trade, and for a finished program it is a good one.
+
+Sixteen kilobytes is the fixed cartridge, and it is the normal case. When a
+game outgrows it there is a Flash Cart, which trades that fixed 16 KB for an
+8 KB window onto one bank at a time and up to a megabyte behind it — and can
+write to itself, so a game can save. [Bigger cartridges](/assembly/flash-carts)
+is the next chapter; everything on this page still applies there.
 
 <Diagram
   name="cartridge-overlay"

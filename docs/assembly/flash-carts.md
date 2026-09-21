@@ -36,6 +36,16 @@ because that is what the register happens to hold at the one moment the
 processor reads it. The fixed region exists so that the machine always knows
 where to look.
 
+::: warning This is not the RAM card kind of banking
+[Banked RAM](/assembly/banking) is a different mechanism with the same name:
+kilobyte windows at `$8000` and `$8400`, latches at `$83FF` and `$87FF`, and
+read-write memory behind them. It is still there on a machine with a Flash
+Cart in the slot, and the two have nothing to do with each other.
+
+Write to the wrong latch and there is no error. The machine does exactly what
+you asked, to something you did not mean.
+:::
+
 ## The bank register
 
 Writing to **any address in `$E000–$FFFF`** latches the bank register. By
