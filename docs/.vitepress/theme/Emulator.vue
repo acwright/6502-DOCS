@@ -54,14 +54,12 @@ const props = withDefaults(
     sound?: boolean
     /** The frame's own control bar. */
     controls?: 'full' | 'minimal' | 'none'
-    /** CPU clock in MHz. The ACE ships at 1. */
-    freq?: 1 | 2
     /** What the panel says before it is started. */
     label?: string
     /** Shown under the machine. Describes the machine, never the mechanism. */
     caption?: string
   }>(),
-  { run: true, controls: 'minimal', freq: 1, sound: false }
+  { run: true, controls: 'minimal', sound: false }
 )
 
 const started = ref(false)
@@ -92,7 +90,6 @@ const src = computed(() => {
   if (typed) params.set('autotype', typed)
 
   if (props.controls !== 'minimal') params.set('controls', props.controls)
-  if (props.freq !== 1) params.set('freq', String(props.freq))
   // Browsers block autoplay in a frame regardless, so this is not a promise of
   // noise — it is the difference between the reader's first click in the frame
   // producing sound and the reader having to find the mute button first.

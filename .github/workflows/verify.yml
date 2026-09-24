@@ -14,7 +14,7 @@ env:
   # checks `6502 --version` against `data/emulator.json` — the site's samples,
   # screenshots and embedded payloads all came off one release, and a run on a
   # different one is not the check it looks like. Bump both together.
-  EMULATOR_REF: v3.4.0
+  EMULATOR_REF: v3.5.0
   CC65_REF: master
   CFFS_REF: main
   # v1.1.0 is the first release with the BIOS 2.x token table (`--bios 2`).

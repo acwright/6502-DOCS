@@ -19,7 +19,7 @@ PCB. No cards to fit, no expansion decisions to make.
 ## The tour
 
 **The big chip in the middle** is a **W65C02S** — the processor. It's a 1970s
-design still in production today, running here at 1 or 2 MHz. That sounds slow.
+design still in production today, running here at 1 MHz. That sounds slow.
 It is slow. It's also completely comprehensible, which is the point: there is
 nothing happening inside the ACE that you can't eventually understand.
 
@@ -74,12 +74,13 @@ also holds the CPU in reset for a quarter of a second at power-on, which is why
 the machine comes up cleanly instead of mid-thought.
 :::
 
-## The jumper and the DIP switches
+## The DIP switches, and a jumper on older boards
 
-`J1 PHI2 SELECT` picks the CPU speed: **1 MHz or 2 MHz**. 1 MHz is the safe
-default and the speed everything in this guide assumes. 2 MHz is free
-performance if your particular set of chips is happy with it — try it, and move
-the jumper back if anything gets flaky.
+The ACE runs at **1 MHz**. A Rev 1.0 board also has a jumper, `J1 PHI2 SELECT`,
+that offers 2 MHz. Leave it on 1 MHz, which is pins 1 and 2. The sound chip
+runs at 1 MHz whatever the jumper says, so at 2 MHz it hears only every other
+thing the processor says to it: music loses notes, and the BIOS finds the sound
+chip on some starts and not on others. Rev 1.1 boards don't have the jumper.
 
 The eight-way DIP switch marked **IO ENABLE** has one position for each of the
 machine's eight I/O sections — banked RAM, clock, storage, serial, joysticks,

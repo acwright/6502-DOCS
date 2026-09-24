@@ -41,7 +41,7 @@ A32 — the entry says so.
 
 | Status | Count |
 |---|---|
-| fixed | 64 |
+| fixed | 65 |
 | confirmed | 5 |
 | open | 5 |
 | wontfix | 6 |
@@ -1048,6 +1048,17 @@ serial are false at the machine itself.
 | **Why it stays** | Neither of those two is where a self-programming cartridge is developed, and giving either a cycle-accurate clock to model one chip's timing would be a large change for one feature. 6502-EMULATOR is where carts get written and is where the window is modelled; the sample routine in *Bigger cartridges* is written and run there. |
 | **Check** | RUN — the chapter's save routine on emulator 3.4.0, which erases, programs and reads back through the standard `DQ7` polls, and would hang if it ran from the cartridge. RUN — 6502-PICOCALC `test/cart` and 6502-DEV `Firmware/DB Emulator/test/cart`, where a byte programmed into the live window reads back on the very next access, with no window to wait out. What neither port has done yet is run a cart on its own board; that is hardware, not this entry. |
 | **Status** | `wontfix` — settled for the family before either port was written, and now what both of them do. Written down because of the consequence above rather than left to be discovered. |
+
+### A77 — The guide called 2 MHz "free performance", and the ACE's sound chip cannot run there — **fixed**
+
+| | |
+|---|---|
+| **Claim** | `docs/the-ace.md`: "`J1 PHI2 SELECT` picks the CPU speed: **1 MHz or 2 MHz** … 2 MHz is free performance if your particular set of chips is happy with it". `65c02.md`, `idioms.md`, `projects.md`, the ACE and connector cards and `data/systems.json` all offered 2 MHz the same way, and the emulator chapter documented a **1 MHz / 2 MHz** toolbar toggle and `--freq 2`. |
+| **Truth** | The SID's clock (U9 pin 6) is wired to the 74HC163's fixed 1 MHz output, not to the jumper, and its chip select is decoded from the address alone. At 2 MHz the SID's clock is high for all of one CPU cycle and low for all of the next, so only every other CPU cycle can reach it: a write in the other cycle is lost, and a read there returns whatever the bus last held. A Rev 1.0 ACE at 2 MHz found its SID on some boots and not others, and its CompactFlash card too, whose probe waits a number of CPU cycles, half as long in time at 2 MHz. The ACE now runs at 1 MHz only: Rev 1.1 drops the jumper, and emulator 3.5.0 drops the setting. |
+| **Source** | 6502-ACE `TODO.md`, "The ACE runs at 1 MHz only", from the Rev 1.0 and Rev 1.1 netlists and 6502-PICOVDP's Phase 14 results. 6502-EMULATOR v3.5.0. |
+| **Check** | SCHEM — `U9.6` is on `U5.11` (Q3, 1 MHz) in both revisions; `J1` switches only the CPU, VIA, ACIA and connectors. RUN — the emulator's core with the ACE's 2 MHz clocking added: BIOS 1.6 and 2.0.2 boot with the SID found on one cycle parity and missing on the other. RUN — emulator 3.5.0, `6502 run --freq 2` exits 1: *the emulator runs at 1 MHz only, as the ACE does*. |
+| **Status** | `fixed` — this repository, in the same commit as the 3.5.0 pin. The ACE chapter tells a Rev 1.0 owner to leave `J1` on 1 MHz and why; the cards and `data/systems.json` say 1 MHz; the toggle and `--freq 2` are gone from the emulator chapter and `build-run-loop.md`. |
+| **Consequence** | A reader who took the advice got a machine that seemed to work and then lost notes, or booted without its sound chip or its memory card on some starts and not others — a fault that looks like a bad chip or a bad socket, and is neither. |
 
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 

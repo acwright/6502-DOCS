@@ -137,7 +137,6 @@ script can check it without capturing the console separately.
 | `6502 run --bin 0x7F00=data.bin` | Raw bytes at an address, written before boot |
 | `6502 run --cf disk.img` | With a memory card attached |
 | `6502 run --rom custom.bin` | With your own ROM in place of the BIOS |
-| `6502 run --freq 2` | At 2 MHz |
 | `6502 run --pause` | Stopped at the reset vector, for attaching a debugger |
 
 `--headless` composes with all of them.

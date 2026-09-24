@@ -55,8 +55,8 @@ Loop:
 ```
 
 The counter is one byte, so it needs no wrap check. `SysDelay` is doing the
-timing on the VIA's timer, so the rate does not change if the machine is
-running at 2 MHz. And there is no exit — a program for a machine with no
+timing on the VIA's timer, so the rate stays steady however long the rest of
+the loop takes. And there is no exit — a program for a machine with no
 operating system runs until you reset it.
 
 ### A KITT scanner

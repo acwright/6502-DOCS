@@ -59,7 +59,7 @@
         {
           "role": "CPU",
           "part": "W65C02S",
-          "detail": "1 or 2 MHz, jumper-selectable (J1 PHI2 SELECT)"
+          "detail": "1 MHz. Rev 1.0 boards have a PHI2 SELECT jumper (J1) offering 2 MHz; keep it on 1 MHz, because the SID always runs at 1 MHz"
         },
         {
           "role": "RAM",
@@ -134,7 +134,7 @@
         {
           "role": "Clock",
           "part": "16 MHz DIP-14 oscillator (X1)",
-          "detail": "Drives the ATmega1284 at 16 MHz and the 65C02 at 1 or 2 MHz via a 74HC163 divider"
+          "detail": "Drives the ATmega1284 at 16 MHz and the 65C02 at 1 MHz via a 74HC163 divider"
         },
         {
           "role": "Reset",

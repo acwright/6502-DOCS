@@ -553,7 +553,7 @@ Those three are the gates that matter here, and the build one is not optional:
 fails to build takes the whole site down with it**, both editions at once.
 
 `npm run verify` and `npm run preflight` are a different story. This branch pins
-emulator 2.7.0 and `main` pins 3.4.0, and preflight fails on anything else — so
+emulator 2.7.0 and `main` pins 3.5.0, and preflight fails on anything else — so
 whichever edition's emulator you have installed, the other one's sample and
 screenshot checks cannot run on that machine. CI runs both, each against the
 release its branch names. That pin is the reason these are two branches and not

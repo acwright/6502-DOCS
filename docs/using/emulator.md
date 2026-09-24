@@ -105,7 +105,6 @@ Everything happens from the row of buttons under the picture:
 | **▶ / ■** | Run or stop the machine |
 | **↺** | Reset — exactly like the button on a real ACE. Memory survives. |
 | **⏻** | Power cycle — the cold start. Memory is cleared. |
-| **1 MHz / 2 MHz** | Switch CPU speed |
 | **Speaker** | Mute and unmute |
 | **⌨** | Put the ACE's keyboard on the screen |
 | **Clipboard** | Paste text in as keystrokes |
@@ -473,7 +472,6 @@ Install**). It's how you'd fold the emulator into a build:
 | `--no-cart-save` | Discard a flash cart's writes when it stops |
 | `--console video` | Use the video screen instead of the serial console |
 | `--screenshot shot.png` | Save the last picture on the screen when it stops (with `--console video`) |
-| `--freq 2` | Run the CPU at 2 MHz |
 | `--timeout 30s` | Stop after a while, whatever happens |
 
 `--vdp` picks the BIOS even when there's no screen: a serial console has no

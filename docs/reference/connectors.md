@@ -17,10 +17,11 @@ the headers where the silkscreen is too crowded to label.
 | **Cartridge** | 2 × 20 card edge, standing up behind the keyboard | Cartridges, and the [KIM keypad](/addons/kim) boards |
 | **Bus** | 2 × 20 box header | The whole 65C02 bus, for anything you build |
 
-There are four small jumper headers as well — `PHI2 SELECT` for the CPU speed,
-`CTS EN` and `DCD EN` for the serial handshake lines, and one that brings the
-reset switch out to a panel-mounted button. Those are build-time decisions,
-not things to plug into.
+There are small jumper headers as well — `CTS EN` and `DCD EN` for the serial
+handshake lines, and one that brings the reset switch out to a panel-mounted
+button. Those are build-time decisions, not things to plug into. A Rev 1.0
+board also has `PHI2 SELECT`, which must stay on 1 MHz; see
+[The ACE](/the-ace#the-dip-switches-and-a-jumper-on-older-boards).
 
 ::: tip `CTS EN` and `DCD EN` default to ground
 Ground is how the boards are built, and it means the line is permanently
