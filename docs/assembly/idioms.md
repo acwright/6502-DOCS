@@ -116,7 +116,7 @@ The wake-up is immediate, and nothing is burned in between. It also needs
 
 `SysDelay` waits a number of hundredths of a second: low byte in A, high byte
 in X. It uses the VIA's timer rather than a counting loop, so it takes the same
-time at 1 MHz and 2 MHz.
+time whatever the processor is doing.
 
 ```asm
   lda #50                       ; half a second
@@ -129,8 +129,9 @@ window (`GPIO_T1CL` and friends), and it is yours between `SysDelay` calls.
 
 ::: warning A delay loop is not a clock
 Counting cycles in a loop is a fine way to pause for a few microseconds and a
-terrible way to time anything longer: it changes when the CPU jumper moves, and
-an interrupt in the middle stretches it. Use the timer.
+terrible way to time anything longer: it runs at whatever speed the processor
+does, which is not the same on every machine in the family, and an interrupt in
+the middle stretches it. Use the timer.
 :::
 
 ## Self-modifying code

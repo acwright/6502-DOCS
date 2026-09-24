@@ -50,7 +50,7 @@
       <span class="sec-title">What is on the board</span>
       <table>
         <tbody>
-          <tr><td class="td-label">CPU</td><td class="td-desc">WDC W65C02S at 1 MHz, jumper-selectable to 2 MHz</td></tr>
+          <tr><td class="td-label">CPU</td><td class="td-desc">WDC W65C02S at 1 MHz</td></tr>
           <tr><td class="td-label">RAM</td><td class="td-desc">32 KB SRAM (62256) + 512 KB banked SRAM (AS6C4008)</td></tr>
           <tr><td class="td-label">ROM</td><td class="td-desc">32 KB EEPROM (28C256) &mdash; the whole 6502 BIOS</td></tr>
           <tr><td class="td-label">Video</td><td class="td-desc">Pico9918 &mdash; TMS9918A-compatible, VGA out, 40&times;24 text, 16 colors</td></tr>
@@ -75,9 +75,9 @@
         makes it the safe way out of anything that has run away.
       </div>
       <div class="note-box">
-        <strong>PHI2 SELECT</strong> picks 1 or 2 MHz. The eight-way <strong>IO ENABLE</strong>
-        DIP bank has one switch per I/O section &mdash; leave them all on; they are for
-        fault-finding.
+        The eight-way <strong>IO ENABLE</strong> DIP bank has one switch per I/O section
+        &mdash; leave them all on; they are for fault-finding. A Rev 1.0 board also has a
+        <strong>PHI2 SELECT</strong> jumper: keep it on 1 MHz.
       </div>
     </div>
 
