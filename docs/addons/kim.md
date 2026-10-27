@@ -102,7 +102,7 @@ bus by themselves, though: something has to notice the write and hold the byte
 afterwards. That is all the demo circuit does. A `74HC138` picks `$9400` out of
 the eight I/O slots, a couple of gates turn a write to it into a latch pulse,
 and a `74HC373` holds the byte on eight LEDs behind 330 Ω resistors. Four
-chips, a 2×20 header onto the bus, and an evening.
+chips, jumper wires from the bus, and an evening.
 
 <div class="card-link">
 
