@@ -130,7 +130,7 @@ You don't need the boards to try this, and you don't need the breadboard
 either. Here is a KIM with the LED circuit already on the bus at `$9400`:
 
 <KIM
-  accessory="led-latch"
+  breadboard="led-latch"
   caption="A KIM, with eight LEDs on the bus. Click the pad once to give it the keyboard, then key a program in."
 />
 
@@ -144,11 +144,11 @@ the hex digits, <kbd>Esc</kbd>, <kbd>Insert</kbd>, <kbd>Delete</kbd>,
 left, right and up arrows are `◄`, `►` and `▲`. Eighteen bytes go in faster
 than you'd think.
 
-The machine above shows one panel at a time, and the **KIM / TERM / BAY** switch
+The machine above shows one panel at a time, and the **KIM / TERM / BREADBOARD** switch
 in the bar underneath chooses which. **KIM** is the card — the display and the
 pad. **TERM** is the serial monitor described in the next section, on the same
-machine at the same time. **BAY** is whatever is on the bus, which here is the
-eight LEDs. Switching only changes what you are looking at: a program counting
+machine at the same time. **BREADBOARD** is whatever is on the bus, which here
+is the eight LEDs. Switching only changes what you are looking at: a program counting
 on the LEDs goes on counting while you watch the terminal.
 
 The **⌨** button puts a keyboard on the screen for the terminal, and on a phone

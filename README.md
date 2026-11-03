@@ -369,7 +369,7 @@ keyboard, and its own emulator at `6502-KIMULATOR`, pinned in
 `data/kimulator.json`.
 
 ```
-<KIM accessory="led-latch" caption="…" />
+<KIM breadboard="led-latch" caption="…" />
 ```
 
 `<KIM>` is a separate component rather than a mode of `<Emulator>`, for the same

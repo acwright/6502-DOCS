@@ -19,7 +19,7 @@
     "warning": "Hand-authored file. Bumping the version here is what moves the KIM chapter to a new release. v1.0.9 to v1.2.1 moved one line of the contract \u2014 the generated frame\u0027s default title \u2014 and left the parameter table, the panel names, the pad\u0027s key names and the frame size alone, so nothing the site builds from this file changed. The ROM did: the bundled KC Monitor now holds the far end off with RTS on its serial console, so a long paste into the terminal arrives whole where it used to lose lines, and the bundled BIOS is a later reissue of the same v1.6 tag."
   },
 
-  "version": "1.2.1",
+  "version": "1.3.0",
 
   "web": {
     "app": "https://acwright.github.io/6502-KIMULATOR/",
@@ -37,7 +37,7 @@
   "parameters": {
     "media": ["rom", "bin"],
     "flags": ["autostart", "serialcard"],
-    "other": ["accessory", "panels", "keys", "autotype", "controls", "keyboard", "origins"],
+    "other": ["breadboard", "panels", "keys", "autotype", "controls", "keyboard", "origins"],
     "note": "`rom` and `bin` also have a `64` twin carrying the bytes in the URL itself. There is no `prg`, `cart`, `cf`, `muted`, `persist` or `freq`: every one of those went with hardware a KIM does not carry. An unrecognized parameter is ignored silently by the frame, which is right for a reader's page and wrong for this one, so the link checker spells them out."
   },
 

@@ -33,8 +33,8 @@ const props = withDefaults(
      * than a quirk of the frame.
      */
     keys?: string
-    /** What is wired to the bay at `$9400`. `led-latch`, or nothing. */
-    accessory?: 'led-latch'
+    /** What is wired to the breadboard at `$9400`. `led-latch`, or nothing. */
+    breadboard?: 'led-latch'
     /** The frame's own control bar. */
     controls?: 'full' | 'minimal' | 'none'
     /** What the panel says before it is started. */
@@ -57,7 +57,7 @@ const started = ref(false)
 const src = computed(() => {
   const params = new URLSearchParams()
 
-  if (props.accessory) params.set('accessory', props.accessory)
+  if (props.breadboard) params.set('breadboard', props.breadboard)
   if (props.keys) params.set('keys', props.keys)
   if (props.controls !== 'minimal') params.set('controls', props.controls)
 
