@@ -337,9 +337,11 @@ class Machine {
       RTC,
       ...MACHINE_FLAGS,
       // A ceiling on the whole session, so a wedged machine fails the run
-      // instead of holding CI open.
+      // instead of holding CI open. A machine stays up for the whole harness,
+      // which takes about 10 minutes on a CI runner, so this has to be well
+      // above that: at 600s, a slow runner's last cases all lost their emulator.
       '--timeout',
-      '600s',
+      '1800s',
       // Held at the first instruction until the harness asks it to run. BIOS
       // 2.0 reaches its prompt in a third of a second of turbo, which is less
       // time than it takes to connect, so a machine that started on its own
