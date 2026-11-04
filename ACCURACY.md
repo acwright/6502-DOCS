@@ -41,7 +41,7 @@ A32 — the entry says so.
 
 | Status | Count |
 |---|---|
-| fixed | 65 |
+| fixed | 66 |
 | confirmed | 5 |
 | open | 5 |
 | wontfix | 6 |
@@ -435,6 +435,8 @@ serial are false at the machine itself.
 | **Consequence** | Anyone cross-referencing the README against the board or the schematic is sent to the wrong part. Schematics outrank READMEs, so the README is the thing to fix. |
 | **Fix** | `fixed` — `6502-ACE` 2b8d717. The audit went further than this entry: the schematic numbers RESET as **SW17**, a push button inside the keyboard's own numbering, which shifts *every* designator from SW15 up by one, so the BOM's size groupings were wrong too (CAPS LOCK is SW32 not SW31, SPACE is SW62 not SW61, the 2.25u group is SW42/SW45/SW50). All of it was re-derived from the schematic's Footprint properties rather than transcribed. These docs continue to name no designator — "just above the Esc key" is more use to a reader anyway. |
 
+> **Superseded by A78.** The README was right about the board and this entry was wrong: the schematic it trusted had drifted from the silkscreen. On Rev 1.0, `SW70` is RESET, `SW69` is IO ENABLE and `SW68` is POWER.
+
 ### A21 — `6502-BIOS/README.md`: BASIC numbers documented as six significant digits
 
 | | |
@@ -668,6 +670,8 @@ serial are false at the machine itself.
 | **Check** | SCHEM |
 | **Consequence** | The same class of error as A20, which found the switch designators shifted — and it means A11's citation of "`J16` `5V DC`" from the README named the wrong part. The barrel jack is **`J17`**. Anyone cross-referencing the README against the board from `J14` up is sent one connector out. |
 | **Fix** | `fixed` — `6502-ACE` 2b8d717 renumbers all nine. [Connectors](docs/reference/connectors.md) and `docs/public/cards/connectors.html` were already built from the schematic, so nothing on the site changes. |
+
+> **Superseded by A78.** The README was right about the board and this entry was wrong: the schematic it trusted had drifted from the silkscreen. A11's citation of `J16` for the barrel jack was correct.
 
 ### A43 — `data/monitor-commands.json` reached Wozmon with `G`, which A18 had already disproved
 
@@ -1059,6 +1063,17 @@ serial are false at the machine itself.
 | **Check** | SCHEM — `U9.6` is on `U5.11` (Q3, 1 MHz) in both revisions; `J1` switches only the CPU, VIA, ACIA and connectors. RUN — the emulator's core with the ACE's 2 MHz clocking added: BIOS 1.6 and 2.0.2 boot with the SID found on one cycle parity and missing on the other. RUN — emulator 3.5.0, `6502 run --freq 2` exits 1: *the emulator runs at 1 MHz only, as the ACE does*. |
 | **Status** | `fixed` — this repository, in the same commit as the 3.5.0 pin. The ACE chapter tells a Rev 1.0 owner to leave `J1` on 1 MHz and why; the cards and `data/systems.json` say 1 MHz; the toggle and `--freq 2` are gone from the emulator chapter and `build-run-loop.md`. |
 | **Consequence** | A reader who took the advice got a machine that seemed to work and then lost notes, or booted without its sound chip or its memory card on some starts and not others — a fault that looks like a bad chip or a bad socket, and is neither. |
+
+### A78 — The ACE Rev 1.0 schematic stopped matching the board, and A20 and A42 changed the README to follow it — **fixed**
+
+| | |
+|---|---|
+| **Claim** | A20 and A42 said the ACE README's designators were wrong because they disagreed with the Rev 1.0 schematic. `docs/public/cards/connectors.html` put the barrel jack at `J17`, `CART` at `J18`, `BUS` at `J19`, `STORAGE` at `J22` and `KEYBOARD` at `J14`. |
+| **Truth** | The Rev 1.0 files were edited after the board was ordered. On 2026-05-31, `6502-ACE` c862158 removed `R1` and re-annotated, 18 days after the order. It renumbered every resistor after `R1`, moved `J14`–`J22`, and moved `SW17`–`SW70`. On the board that was made, the barrel jack is `J16`, `CART` is `J17`, `BUS` is `J18`, `STORAGE` is `J21`, `KEYBOARD` is `J22` and RESET is `SW70`. That is what the README said before A20 and A42 changed it. The ACE CF Adapter drifted the same way: `6502-ACE` e6add3f renamed `J21` to `J1` and `J3` to `J2` after that board was ordered. |
+| **Source** | JLCPCB's own copies of the orders. Y91, the ACE Board: its 13 Gerber and drill files are byte-identical to the export in `6502-ACE` 83b1b1a. Y89, the CF Adapter: its 13 are byte-identical to ef6370e. The owner checked the silkscreen on real boards. |
+| **Check** | SCHEM — the restored PCB's copper, mask, outline and drills regenerate to the same geometry as JLCPCB's files, and its parity against the restored schematic is clean. |
+| **Consequence** | "Schematics outrank READMEs" holds only while the schematic still describes the board. For a board that has been made, the Gerbers sent to the fab outrank both. Check a designator against them, or against the board, before calling it wrong. Anyone who followed the numbers from J14 up, or the resistor numbers, was sent to the wrong part: the build notes' `J20` is the POWER LED header on a real board, not VCC. |
+| **Status** | `fixed` — `6502-ACE` ba72e5a restores both boards' Rev 1.0 files to the orders, and corrects its README, its firmware README and the build notes. This repository corrects the connector card, the keyboard card's source comment and the Rev 1.1 note in `data/systems.json`. `data/systems.json` already named the reset button `SW70`, which is correct for Rev 1.0, so it stays. |
 
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 

@@ -168,7 +168,7 @@
         {
           "board": "ACE Board",
           "revision": "1.1",
-          "notes": "Fixes the LOADL/LOADH latch-enable gating for the banked SRAM: the final NAND stage becomes a NOR (LOADL = NOR(SEL_L, WB)), added as one 74HC02 (U23). Pull-ups R1–R4 and R25 go from 1 kΩ to 10 kΩ; C31 (10 µF) added at the power input. No firmware change."
+          "notes": "Fixes the LOADL/LOADH latch-enable gating for the banked SRAM: the final NAND stage becomes a NOR (LOADL = NOR(SEL_L, WB)), added as one 74HC02 (U13). Pull-ups R1–R4 and R26 (Rev 1.0's R2–R5 and R27) go from 1 kΩ to 10 kΩ; C20 (10 µF) added at the power input. No firmware change."
         },
         {
           "board": "ACE Board",
