@@ -7,11 +7,11 @@
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "51b205166e5380075abd404cbc966087575c1caa13c5e56d18c21a3281ea799e"
+        "sha256": "7d2d83f801d0d7767671a498cab228694ea46b23654765f72f049c9e4351d2b5"
       },
       {
         "file": "Kernal.asm",
-        "sha256": "7e7b69c24f3a2ef70652d9dd96330f9acc45bc9ad2be4576b8e5ad3d0c2e519c"
+        "sha256": "9950b565711abb4a12b47d53b6f1a6c54145b6ceeccc79e105b7a6327079cc19"
       },
       {
         "file": "BASIC.asm",

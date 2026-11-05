@@ -412,7 +412,7 @@ const SLOT_CHIPS = {
   HW_RAM_H: { slot: 2, chip: 'AS6C4008 banked SRAM (high)', card: 'RAM Card' },
   HW_RTC: { slot: 3, chip: 'DS1511Y', card: 'RTC Card' },
   HW_CF: { slot: 4, chip: 'CompactFlash (8-bit True IDE)', card: 'Storage Card' },
-  HW_SC: { slot: 5, chip: 'R65C51 / W65C51 ACIA', card: 'Serial Card' },
+  HW_SC: { slot: 5, chip: 'R6551AP ACIA', card: 'Serial Card' },
   HW_GPIO: { slot: 6, chip: 'W65C22 VIA', card: 'GPIO Card / Input Board' },
   HW_SID: { slot: 7, chip: 'MOS 6581 SID / ARMSID', card: 'Sound Card' },
   HW_VID: { slot: 8, chip: '6502-PICOVDP', card: 'Video Card / VGA Card' }

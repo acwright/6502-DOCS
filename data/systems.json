@@ -100,7 +100,7 @@
         },
         {
           "role": "Serial",
-          "part": "65C51 ACIA + MAX238",
+          "part": "R6551AP ACIA + MAX238",
           "detail": "RS-232 via DB9, 50–19200 baud",
           "slot": 5
         },
@@ -177,7 +177,7 @@
         }
       ],
       "verified": true,
-      "check": "SCHEM — Hardware/ACE Board/Rev 1.0 and Rev 1.1, Hardware/ACE CF Adapter/Rev 1.0 (6502-ACE.kicad_sch): confirms W65C02S, AS6C62256, AT28C256, the Pico9918 footprint at U3 (the PICO9918 PRO v2.0 fits it with no board change; its firmware is 6502-PICOVDP, per 6502-PICOVDP SPEC.md §2), 6581/ARMSID, 65C51+MAX238, 65C22, DS1511Y, AS6C4008, ATmega1284-P, PS/2 connector, X1, SW70, J1/J6/J8. Rev 1.1 revision note confirmed directly: R1-R4/R25 read 1k in Rev 1.0 and 10k in Rev 1.1, C31 (10uF) exists only in Rev 1.1, and U23 (74HC02) appears four times in Rev 1.1 driving the LOADL/LOADH global labels the note describes, absent from Rev 1.0.",
+      "check": "SCHEM — Hardware/ACE Board/Rev 1.0 and Rev 1.1, Hardware/ACE CF Adapter/Rev 1.0 (6502-ACE.kicad_sch): confirms W65C02S, AS6C62256, AT28C256, the Pico9918 footprint at U3 (the PICO9918 PRO v2.0 fits it with no board change; its firmware is 6502-PICOVDP, per 6502-PICOVDP SPEC.md §2), 6581/ARMSID, R6551AP+MAX238, 65C22, DS1511Y, AS6C4008, ATmega1284-P, PS/2 connector, X1, SW70, J1/J6/J8. Rev 1.1 revision note confirmed directly: R1-R4/R25 read 1k in Rev 1.0 and 10k in Rev 1.1, C31 (10uF) exists only in Rev 1.1, and U23 (74HC02) appears four times in Rev 1.1 driving the LOADL/LOADH global labels the note describes, absent from Rev 1.0.",
       "optional": [],
       "builderNotes": [
         "The ACE CF Adapter is a separate small board that plugs into the Storage header — part of the machine, but its own PCB and its own BOM.",
@@ -244,7 +244,7 @@
         {
           "role": "Serial",
           "part": "Serial Card",
-          "detail": "RS-232 via 65C51 ACIA + MAX232",
+          "detail": "RS-232 via R6551AP ACIA + MAX232",
           "slot": 5
         },
         {
@@ -333,7 +333,7 @@
         }
       ],
       "verified": true,
-      "check": "SCHEM — every card under Hardware/ confirms its claimed chip (65C02/65C816 CPU cards, AS6C62256+AT28C256 Memory Card, AS6C4008 RAM Card, DS1511Y RTC Card, CompactFlash Storage Card, W25Q128JVS+microSD Storage Card Pro, 65C51+MAX232 Serial Card/Pro with DTR/DCD/DSR, 65C22 GPIO Card, Pico9918A VGA Card/Pro, TMS9918A Video Card, 65C22+16x2 LCD Card, 6581-socket Sound Card). Backplane Pro Rev 1.1 confirmed: adds a Barrel_Jack_Switch + POWER switch absent from Rev 1.0, and nearly every passive switches from _SMD to _THT footprints, matching \"entirely through-hole\" plus the power switch/barrel jack. Slot numbers (1-8) are not silkscreen-labeled in any schematic, so those remain sourced from the README rather than SCHEM."
+      "check": "SCHEM — every card under Hardware/ confirms its claimed chip (65C02/65C816 CPU cards, AS6C62256+AT28C256 Memory Card, AS6C4008 RAM Card, DS1511Y RTC Card, CompactFlash Storage Card, W25Q128JVS+microSD Storage Card Pro, R6551AP+MAX232 Serial Card/Pro with DTR/DCD/DSR, 65C22 GPIO Card, Pico9918A VGA Card/Pro, TMS9918A Video Card, 65C22+16x2 LCD Card, 6581-socket Sound Card). Backplane Pro Rev 1.1 confirmed: adds a Barrel_Jack_Switch + POWER switch absent from Rev 1.0, and nearly every passive switches from _SMD to _THT footprints, matching \"entirely through-hole\" plus the power switch/barrel jack. Slot numbers (1-8) are not silkscreen-labeled in any schematic, so those remain sourced from the README rather than SCHEM."
     },
     {
       "id": "dev",

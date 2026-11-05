@@ -36,7 +36,7 @@
 <rect class="dg-solid" x="128" y="227" width="24" height="24" rx="3"/>
 <text class="dg-a dg-inv" x="140" y="244" text-anchor="middle">5</text>
 <text class="dg-t" x="162" y="244" text-anchor="start">Serial Card</text>
-<text class="dg-n" x="434" y="244" text-anchor="start">R65C51 / W65C51 ACIA</text>
+<text class="dg-n" x="434" y="244" text-anchor="start">R6551AP ACIA</text>
 <rect class="dg-r" x="120" y="262" width="300" height="38"/>
 <text class="dg-a" x="110" y="286" text-anchor="end">$9400</text>
 <rect class="dg-solid" x="128" y="269" width="24" height="24" rx="3"/>

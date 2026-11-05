@@ -7,7 +7,7 @@
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "51b205166e5380075abd404cbc966087575c1caa13c5e56d18c21a3281ea799e"
+        "sha256": "7d2d83f801d0d7767671a498cab228694ea46b23654765f72f049c9e4351d2b5"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -287,9 +287,9 @@
       "mask": "%00010000",
       "maskHex": "$10",
       "slot": 5,
-      "chip": "R65C51 / W65C51 ACIA",
+      "chip": "R6551AP ACIA",
       "card": "Serial Card",
-      "description": "Serial card (IO 5, R65C51)",
+      "description": "Serial card (IO 5, R6551AP)",
       "source": "BIOS.inc:67",
       "check": "GREP",
       "start": "$9000",

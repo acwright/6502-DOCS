@@ -3,7 +3,7 @@
 Terms this guide uses, in the sense this guide uses them. Where a word means
 something slightly different in the wider world, that is noted.
 
-**ACIA** — the serial chip, a 65C51. Turns bytes into the stream of pulses that
+**ACIA** — the serial chip, an R6551AP. Turns bytes into the stream of pulses that
 goes down the [serial cable](/using/serial), and back again.
 
 **ACE** — All-in-one Computer Experience. The machine this guide is about: one

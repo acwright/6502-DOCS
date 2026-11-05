@@ -66,7 +66,7 @@ without looking — and it is *not* the same as switching off:
   from scratch.
 
 ::: details What the other chips do
-A **65C22 VIA** handles the joysticks and general-purpose I/O. A **65C51 ACIA**
+A **65C22 VIA** handles the joysticks and general-purpose I/O. A **R6551AP ACIA**
 with a MAX238 next to it drives the serial port. A **DS1511Y** keeps the time
 and date when the power's off, and hangs on to 256 bytes of memory for you.
 An **ATmega1284P** scans the keyboard and hands keystrokes to the 65C02 — it
