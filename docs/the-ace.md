@@ -69,7 +69,7 @@ without looking — and it is *not* the same as switching off:
 A **65C22 VIA** handles the joysticks and general-purpose I/O. A **R6551AP ACIA**
 with a MAX238 next to it drives the serial port. A **DS1511Y** keeps the time
 and date when the power's off, and hangs on to 256 bytes of memory for you.
-An **ATmega1284P** scans the keyboard and hands keystrokes to the 65C02 — it
+An **ATmega1284** scans the keyboard and hands keystrokes to the 65C02 — it
 also holds the CPU in reset for a quarter of a second at power-on, which is why
 the machine comes up cleanly instead of mid-thought.
 :::

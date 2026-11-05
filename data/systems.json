@@ -118,7 +118,7 @@
         },
         {
           "role": "Keyboard controller",
-          "part": "ATmega1284P",
+          "part": "ATmega1284",
           "detail": "Runs AB Controller firmware"
         },
         {
@@ -572,8 +572,8 @@
         },
         {
           "role": "GPIO",
-          "part": "65C22 VIA + ATmega1284p",
-          "detail": "On the Input Board; the ATmega1284p is the keyboard encoder controller",
+          "part": "65C22 VIA + ATmega1284",
+          "detail": "On the Input Board; the ATmega1284 is the keyboard encoder controller",
           "slot": 6
         },
         {
@@ -622,7 +622,7 @@
         {
           "name": "Input Board",
           "path": "Hardware/Input Board/",
-          "detail": "Matrix keyboard, PS/2 keyboard and joysticks over a 65C22 VIA with an ATmega1284p encoder"
+          "detail": "Matrix keyboard, PS/2 keyboard and joysticks over a 65C22 VIA with an ATmega1284 encoder"
         },
         {
           "name": "Output Board",

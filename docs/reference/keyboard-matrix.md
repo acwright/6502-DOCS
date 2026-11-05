@@ -1,7 +1,7 @@
 # The keyboard matrix
 
 The ACE's 67 keys are wired as an 8 × 8 grid. A microcontroller on the board —
-an ATmega1284P running the **AB Controller** firmware — drives one row at a
+an ATmega1284 running the **AB Controller** firmware — drives one row at a
 time on `PA0`–`PA7`, reads the columns back on `PB0`–`PB7`, and hands the CPU
 the ASCII code for whatever it found.
 

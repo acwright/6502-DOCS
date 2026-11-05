@@ -23,7 +23,7 @@ instead of nine:
 - **Main Board** — 65C02, 32 KB of RAM, 32 KB of ROM, clock and reset. Powered
   over USB-C. It carries the bus for the other two.
 - **Input Board** — matrix keyboard, PS/2 keyboard and both joysticks, through a
-  65C22 VIA with an ATmega1284P doing the scanning.
+  65C22 VIA with an ATmega1284 doing the scanning.
 - **Output Board** — VGA video and SID audio.
 
 That consolidation is the direct ancestor of the ACE, which does the same job
