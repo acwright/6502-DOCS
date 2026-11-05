@@ -48,7 +48,7 @@
 <rect class="dg-solid" x="128" y="311" width="24" height="24" rx="3"/>
 <text class="dg-a dg-inv" x="140" y="328" text-anchor="middle">7</text>
 <text class="dg-t" x="162" y="328" text-anchor="start">Sound Card</text>
-<text class="dg-n" x="434" y="328" text-anchor="start">MOS 6581 SID / ARMSID</text>
+<text class="dg-n" x="434" y="328" text-anchor="start">ARMSID (SID)</text>
 <rect class="dg-r" x="120" y="346" width="300" height="38"/>
 <text class="dg-a" x="110" y="370" text-anchor="end">$9C00</text>
 <rect class="dg-solid" x="128" y="353" width="24" height="24" rx="3"/>

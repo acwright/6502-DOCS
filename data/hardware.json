@@ -447,7 +447,7 @@
       "mask": "%01000000",
       "maskHex": "$40",
       "slot": 7,
-      "chip": "MOS 6581 SID / ARMSID",
+      "chip": "ARMSID (SID)",
       "card": "Sound Card",
       "description": "Sound card (IO 7, SID/ARMSID)",
       "source": "BIOS.inc:69",
