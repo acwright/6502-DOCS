@@ -117,8 +117,8 @@ down one side, even pins down the other.
 | Pin | Signal | Pin | Signal |
 |---|---|---|---|
 | 1 | `GND` | 2 | `VCC` |
-| 3 | `RESB` | 4 | `EXP0` |
-| 5 | `IRQB` | 6 | `EXP1` |
+| 3 | `RESB` | 4 | `HRDB` (`EXP1`) |
+| 5 | `IRQB` | 6 | `HRDB` (`EXP0`) |
 | 7 | `NMIB` | 8 | `A15` |
 | 9 | `RDY` | 10 | `A14` |
 | 11 | `BE` | 12 | `A13` |
@@ -137,11 +137,13 @@ down one side, even pins down the other.
 | 37 | `D0` | 38 | `A0` |
 | 39 | `VCC` | 40 | `GND` |
 
-::: tip Two of the four expansion pins are spoken for
-The family bus reserves `EXP0` to `EXP3`. On the ACE, `EXP0` and `EXP1` are
-both tied to the hard-reset line — so a card designed against a
-[COB](/family/cob) backplane, expecting all four to be free, will not behave
-here.
+::: tip Two of the four extra pins are spoken for
+The family bus has four extra pins for a builder's own use: pin 4 is `EXP1`,
+pin 6 is `EXP0`, pin 19 is `EXP3` and pin 21 is `EXP2`. On the ACE, pins 4 and
+6 are both joined to `HRDB`, High ROM disable bar. A cartridge grounds them,
+which takes `$C000–$FFFF` from the ROM so that the cartridge answers there. So
+a card built for a [COB](/family/cob) that uses `EXP0` or `EXP1` for its own
+purpose will not behave here. `EXP2` and `EXP3` are free.
 :::
 
 ## GPIO — port A and port B

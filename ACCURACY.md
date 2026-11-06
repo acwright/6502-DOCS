@@ -1075,6 +1075,16 @@ serial are false at the machine itself.
 | **Consequence** | "Schematics outrank READMEs" holds only while the schematic still describes the board. For a board that has been made, the Gerbers sent to the fab outrank both. Check a designator against them, or against the board, before calling it wrong. Anyone who followed the numbers from J14 up, or the resistor numbers, was sent to the wrong part: the build notes' `J20` is the POWER LED header on a real board, not VCC. |
 | **Status** | `fixed` — `6502-ACE` ba72e5a restores both boards' Rev 1.0 files to the orders, and corrects its README, its firmware README and the build notes. `6502-COB` 8547d58, ead6448 and bd61605, `6502-DEV` ed979f4 and `6502-KIM` 0d88c00 do the same for those boards, and keep their later edits as Rev 1.1. This repository corrects the connector card, the keyboard card's source comment and the Rev 1.1 note in `data/systems.json`. `data/systems.json` already named the reset button `SW70`, which is correct for Rev 1.0, so it stays. |
 
+### A79 — The connector pages swapped pins 4 and 6, and called `HRDB` a hard-reset line — **fixed**
+
+| | |
+|---|---|
+| **Claim** | `docs/reference/connectors.md` and `docs/public/cards/connectors.html` put `EXP0` on bus pin 4 and `EXP1` on pin 6. The card called `HRDB` the ACE's "hard-reset line", and the reference page said `EXP0` and `EXP1` were "tied to the hard-reset line". |
+| **Truth** | Pin 4 is `EXP1` and pin 6 is `EXP0`, on every bus, cart and card connector in the five KiCad repositories. `HRDB` is High ROM disable bar: active low, it takes `$C000–$FFFF` away from the ROM, and a cartridge pulls it low by grounding pins 4 and 6. It has nothing to do with reset. |
+| **Source** | The netlists of all 56 schematics with a 6502 bus, cart or card connector, read on 2026-11-06. The owner gave the name. |
+| **Check** | SCHEM — on the ACE Board Rev 1.0 and Rev 1.1, J17 and J18 pins 4 and 6 are one net, `HRDB`, which also reaches a 1k pull-up and a 74HC00 input. |
+| **Status** | `fixed` — both pages give the pins in order and say what `HRDB` does. Each KiCad repository's README now explains `EXP0`–`EXP3` and `HRDB` under *Extra pins*. |
+
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 
 | | |

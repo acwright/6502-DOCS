@@ -143,8 +143,8 @@
         <thead><tr><th class="th-hex" style="width:10%">Pin</th><th style="width:26%">Signal</th><th class="th-hex" style="width:10%">Pin</th><th>Signal</th></tr></thead>
         <tbody>
           <tr><td class="td-hex">1</td><td class="td-label">GND</td><td class="td-hex">2</td><td class="td-label">VCC</td></tr>
-          <tr><td class="td-hex">3</td><td class="td-label">RESB</td><td class="td-hex">4</td><td class="td-label">EXP0 &mdash; HRDB</td></tr>
-          <tr><td class="td-hex">5</td><td class="td-label">IRQB</td><td class="td-hex">6</td><td class="td-label">EXP1 &mdash; HRDB</td></tr>
+          <tr><td class="td-hex">3</td><td class="td-label">RESB</td><td class="td-hex">4</td><td class="td-label">HRDB &mdash; EXP1</td></tr>
+          <tr><td class="td-hex">5</td><td class="td-label">IRQB</td><td class="td-hex">6</td><td class="td-label">HRDB &mdash; EXP0</td></tr>
           <tr><td class="td-hex">7</td><td class="td-label">NMIB</td><td class="td-hex">8</td><td class="td-label">A15</td></tr>
           <tr><td class="td-hex">9</td><td class="td-label">RDY</td><td class="td-hex">10</td><td class="td-label">A14</td></tr>
           <tr><td class="td-hex">11</td><td class="td-label">BE</td><td class="td-hex">12</td><td class="td-label">A13</td></tr>
@@ -165,11 +165,12 @@
         </tbody>
       </table>
       <div class="note-box" style="margin-top:5px;">
-        <strong>Four expansion pins, two of them spoken for.</strong> The family bus calls pins
-        4, 6, 21 and 19 <code>EXP0</code>&ndash;<code>EXP3</code>. The ACE ties
-        <code>EXP0</code> and <code>EXP1</code> to <code>HRDB</code>, its hard-reset line;
-        <code>EXP2</code> and <code>EXP3</code> are free. A COB card that expects all four to
-        be free will not behave on an ACE.
+        <strong>Four extra pins, two of them spoken for.</strong> Pins 4, 6, 19 and 21 are
+        <code>EXP1</code>, <code>EXP0</code>, <code>EXP3</code> and <code>EXP2</code>. The ACE
+        joins pins 4 and 6 to <code>HRDB</code>, High ROM disable bar: a cartridge grounds them
+        to take <code>$C000&ndash;$FFFF</code> from the ROM. <code>EXP2</code> and
+        <code>EXP3</code> are free. A COB card that uses <code>EXP0</code> or <code>EXP1</code>
+        will not behave on an ACE.
       </div>
     </div>
 
