@@ -60,7 +60,11 @@
         The small three-pin headers &mdash; <code>J2</code> CTS EN, <code>J4</code> DCD EN, and on a
         Rev 1.0 board <code>J1</code> PHI2 SELECT, kept on 1 MHz &mdash; are build-time jumpers,
         not things to plug into.
-        <code>J3</code> brings the reset switch out for a panel-mounted button.
+        Five more headers are for an ACE built into a case, and a standard build leaves them empty:
+        <code>J3</code> RESET SW, <code>J19</code> VCC, <code>J20</code> POWER LED, <code>J15</code> AUDIO
+        and <code>J22</code> KEYBOARD. The case's button, jack and switch, LED, audio jack and keyboard wire to them,
+        and the matching parts on the board are left off. Nothing on the board protects <code>J19</code>:
+        the case's supply must be a regulated 5&nbsp;V, the right way around.
       </div>
     </div>
 
