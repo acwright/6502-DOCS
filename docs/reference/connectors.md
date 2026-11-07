@@ -18,10 +18,11 @@ the headers where the silkscreen is too crowded to label.
 | **Bus** | 2 × 20 box header | The whole 65C02 bus, for anything you build |
 
 There are small jumper headers as well — `CTS EN` and `DCD EN` for the serial
-handshake lines, and one that brings the reset switch out to a panel-mounted
-button. Those are build-time decisions, not things to plug into. A Rev 1.0
-board also has `PHI2 SELECT`, which must stay on 1 MHz; see
-[The ACE](/the-ace#the-dip-switches-and-a-jumper-on-older-boards).
+handshake lines. Those are build-time decisions, not things to plug into. A
+Rev 1.0 board also has `PHI2 SELECT`, which must stay on 1 MHz; see
+[The ACE](/the-ace#the-dip-switches-and-a-jumper-on-older-boards). A few more
+headers are for building the ACE into a case; see
+[Headers for a case](#headers-for-a-case).
 
 ## Joystick — DB-9
 
@@ -98,8 +99,8 @@ down one side, even pins down the other.
 | Pin | Signal | Pin | Signal |
 |---|---|---|---|
 | 1 | `GND` | 2 | `VCC` |
-| 3 | `RESB` | 4 | `EXP0` |
-| 5 | `IRQB` | 6 | `EXP1` |
+| 3 | `RESB` | 4 | `HRDB` (`EXP1`) |
+| 5 | `IRQB` | 6 | `HRDB` (`EXP0`) |
 | 7 | `NMIB` | 8 | `A15` |
 | 9 | `RDY` | 10 | `A14` |
 | 11 | `BE` | 12 | `A13` |
@@ -118,11 +119,13 @@ down one side, even pins down the other.
 | 37 | `D0` | 38 | `A0` |
 | 39 | `VCC` | 40 | `GND` |
 
-::: tip Two of the four expansion pins are spoken for
-The family bus reserves `EXP0` to `EXP3`. On the ACE, `EXP0` and `EXP1` are
-both tied to the hard-reset line — so a card designed against a
-[COB](/family/cob) backplane, expecting all four to be free, will not behave
-here.
+::: tip Two of the four extra pins are spoken for
+The family bus has four extra pins for a builder's own use: pin 4 is `EXP1`,
+pin 6 is `EXP0`, pin 19 is `EXP3` and pin 21 is `EXP2`. On the ACE, pins 4 and
+6 are both joined to `HRDB`, High ROM disable bar. A cartridge grounds them,
+which takes `$C000–$FFFF` from the ROM so that the cartridge answers there. So
+a card built for a [COB](/family/cob) that uses `EXP0` or `EXP1` for its own
+purpose will not behave here. `EXP2` and `EXP3` are free.
 :::
 
 ## GPIO — port A and port B
@@ -155,6 +158,32 @@ board's own switches are soldered across it.
 a read strobe, a write strobe and one chip select. That chip select is I/O slot
 4, which is why the CompactFlash card appears at `$8C00`. The CF adapter board
 is nothing more than this header wired to a CF socket.
+
+## Headers for a case
+
+Five headers are left empty on a standard build. They are for an ACE built
+into a full enclosure, which AC6502 doesn't offer today. In such a build, the
+parts a person handles are mounted on the case and wired to the board through
+these headers, and the matching parts on the board are left off. For example,
+the ACE Board can sit inside a case with its power jack, power switch and key
+switches left off, and a Keyboard Helper as its keyboard. Each header is a
+plain 2.54 mm pin header, except the keyboard's.
+
+| Header | What goes on the case | What to leave off the board |
+|---|---|---|
+| `RESET SW` | A reset button. The header is wired across the board's own reset button | Nothing: both buttons reset the machine |
+| `VCC` | The power jack and power switch: 5 V on pin 1, ground on pin 2 | The barrel jack and the power switch |
+| `POWER LED` | A power LED: anode on pin 1, which is `VCC` | The board's power LED, which shares its resistor |
+| `AUDIO` | An audio jack or an amplifier: the same signal as the RCA jacks, on pin 1 | The RCA jacks, if the case has its own |
+| `KEYBOARD` | A keyboard matrix, such as a Keyboard Helper (see [Two internal headers](#two-internal-headers)) | The key switches |
+
+The `VCC` header joins the supply after the power switch, so nothing on the
+board protects it. The supply on the case must be a regulated 5 V, wired the
+right way around.
+
+The [6502-ACE repository](https://github.com/acwright/6502-ACE#off-board-headers)
+gives each header's reference on the board, and the same headers on the other
+AC6502 boards.
 
 <div class="card-link">
 

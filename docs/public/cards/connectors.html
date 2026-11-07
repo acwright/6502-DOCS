@@ -7,14 +7,16 @@
 <link rel="stylesheet" href="card.css">
 </head>
 <!--
-  Hand-authored, SCHEM-verified. Every reference designator, every pin and
-  every net name below was read out of
+  Hand-authored, SCHEM-verified. Every pin and every net name below was read
+  out of the ACE Board schematic by walking each connector symbol's pins onto
+  the wire graph and reading the label at the far end.
 
-    6502-ACE/Hardware/ACE Board/Rev 1.1/ACE Board.kicad_sch
+  The reference designators are Rev 1.0's, as printed on the board on sale:
 
-  by walking each connector symbol's pins onto the wire graph and reading the
-  label at the far end. Rev 1.0 agrees on all of it. Where 6502-ACE/README.md
-  disagrees, the schematic wins and the disagreement is ACCURACY.md A42.
+    6502-ACE/Hardware/ACE Board/Rev 1.0/ACE Board.kicad_sch
+
+  Rev 1.1 renumbers J2-J13 and KEYBOARD. See ACCURACY.md A78, which also says
+  why this card once carried different numbers for J14 and up.
 
   Recreated from 6502-ASSETS/Documentation/Connectors/ (an .afdesign file),
   which drew the bus, the card edge and the ports correctly and named the bus
@@ -44,12 +46,12 @@
           <tr><td class="td-addr">J8</td><td class="td-label">JOYSTICK B</td><td class="td-desc">DB-9 male &mdash; Atari 2600 style</td></tr>
           <tr><td class="td-addr">J12</td><td class="td-label">SERIAL (DTE)</td><td class="td-desc">DB-9 male &mdash; RS-232</td></tr>
           <tr><td class="td-addr">J13</td><td class="td-label">PS/2</td><td class="td-desc">6-pin mini-DIN</td></tr>
-          <tr><td class="td-addr">J11 / J15</td><td class="td-label">AUDIO L / R</td><td class="td-desc">RCA jacks</td></tr>
-          <tr><td class="td-addr">J17</td><td class="td-label">5V DC</td><td class="td-desc">Barrel jack, 5&nbsp;V, 2&ndash;3&nbsp;A</td></tr>
-          <tr><td class="td-addr">J18</td><td class="td-label">CART</td><td class="td-desc">2&times;20 card edge, 2.54&nbsp;mm</td></tr>
-          <tr><td class="td-addr">J19</td><td class="td-label">BUS</td><td class="td-desc">2&times;20 box header, 2.54&nbsp;mm</td></tr>
-          <tr><td class="td-addr">J22</td><td class="td-label">STORAGE</td><td class="td-desc">2&times;10 socket &mdash; the CF adapter</td></tr>
-          <tr><td class="td-addr">J14</td><td class="td-label">KEYBOARD</td><td class="td-desc">1&times;16 header, 2.00&nbsp;mm</td></tr>
+          <tr><td class="td-addr">J11 / J14</td><td class="td-label">AUDIO L / R</td><td class="td-desc">RCA jacks</td></tr>
+          <tr><td class="td-addr">J16</td><td class="td-label">5V DC</td><td class="td-desc">Barrel jack, 5&nbsp;V, 2&ndash;3&nbsp;A</td></tr>
+          <tr><td class="td-addr">J17</td><td class="td-label">CART</td><td class="td-desc">2&times;20 card edge, 2.54&nbsp;mm</td></tr>
+          <tr><td class="td-addr">J18</td><td class="td-label">BUS</td><td class="td-desc">2&times;20 box header, 2.54&nbsp;mm</td></tr>
+          <tr><td class="td-addr">J21</td><td class="td-label">STORAGE</td><td class="td-desc">2&times;10 socket &mdash; the CF adapter</td></tr>
+          <tr><td class="td-addr">J22</td><td class="td-label">KEYBOARD</td><td class="td-desc">1&times;16 header, 2.00&nbsp;mm</td></tr>
           <tr><td class="td-addr">J9 / J10</td><td class="td-label">PORT B / PORT A</td><td class="td-desc">2&times;6 box headers &mdash; VIA GPIO</td></tr>
           <tr><td class="td-addr">J7</td><td class="td-label">PADDLES</td><td class="td-desc">1&times;4 header &mdash; SID paddle inputs</td></tr>
         </tbody>
@@ -58,7 +60,11 @@
         The small three-pin headers &mdash; <code>J2</code> CTS EN, <code>J4</code> DCD EN, and on a
         Rev 1.0 board <code>J1</code> PHI2 SELECT, kept on 1 MHz &mdash; are build-time jumpers,
         not things to plug into.
-        <code>J3</code> brings the reset switch out for a panel-mounted button.
+        Five more headers are for an ACE built into a case, and a standard build leaves them empty:
+        <code>J3</code> RESET SW, <code>J19</code> VCC, <code>J20</code> POWER LED, <code>J15</code> AUDIO
+        and <code>J22</code> KEYBOARD. The case's button, jack and switch, LED, audio jack and keyboard wire to them,
+        and the matching parts on the board are left off. Nothing on the board protects <code>J19</code>:
+        the case's supply must be a regulated 5&nbsp;V, the right way around.
       </div>
     </div>
 
@@ -132,7 +138,7 @@
          to the top of column two and leave the tail of column one blank,
          which is what pushed this card onto a second sheet. -->
     <div class="section flow">
-      <span class="sec-title">The bus &mdash; J19 and the cartridge edge J18</span>
+      <span class="sec-title">The bus &mdash; J18 and the cartridge edge J17</span>
       <div class="note-box">
         Both carry the same forty signals in the same order: the whole 65C02 bus, brought out
         twice. <strong>Odd pins down the left, even pins down the right.</strong>
@@ -141,8 +147,8 @@
         <thead><tr><th class="th-hex" style="width:10%">Pin</th><th style="width:26%">Signal</th><th class="th-hex" style="width:10%">Pin</th><th>Signal</th></tr></thead>
         <tbody>
           <tr><td class="td-hex">1</td><td class="td-label">GND</td><td class="td-hex">2</td><td class="td-label">VCC</td></tr>
-          <tr><td class="td-hex">3</td><td class="td-label">RESB</td><td class="td-hex">4</td><td class="td-label">EXP0 &mdash; HRDB</td></tr>
-          <tr><td class="td-hex">5</td><td class="td-label">IRQB</td><td class="td-hex">6</td><td class="td-label">EXP1 &mdash; HRDB</td></tr>
+          <tr><td class="td-hex">3</td><td class="td-label">RESB</td><td class="td-hex">4</td><td class="td-label">HRDB &mdash; EXP1</td></tr>
+          <tr><td class="td-hex">5</td><td class="td-label">IRQB</td><td class="td-hex">6</td><td class="td-label">HRDB &mdash; EXP0</td></tr>
           <tr><td class="td-hex">7</td><td class="td-label">NMIB</td><td class="td-hex">8</td><td class="td-label">A15</td></tr>
           <tr><td class="td-hex">9</td><td class="td-label">RDY</td><td class="td-hex">10</td><td class="td-label">A14</td></tr>
           <tr><td class="td-hex">11</td><td class="td-label">BE</td><td class="td-hex">12</td><td class="td-label">A13</td></tr>
@@ -163,11 +169,12 @@
         </tbody>
       </table>
       <div class="note-box" style="margin-top:5px;">
-        <strong>Four expansion pins, two of them spoken for.</strong> The family bus calls pins
-        4, 6, 21 and 19 <code>EXP0</code>&ndash;<code>EXP3</code>. The ACE ties
-        <code>EXP0</code> and <code>EXP1</code> to <code>HRDB</code>, its hard-reset line;
-        <code>EXP2</code> and <code>EXP3</code> are free. A COB card that expects all four to
-        be free will not behave on an ACE.
+        <strong>Four extra pins, two of them spoken for.</strong> Pins 4, 6, 19 and 21 are
+        <code>EXP1</code>, <code>EXP0</code>, <code>EXP3</code> and <code>EXP2</code>. The ACE
+        joins pins 4 and 6 to <code>HRDB</code>, High ROM disable bar: a cartridge grounds them
+        to take <code>$C000&ndash;$FFFF</code> from the ROM. <code>EXP2</code> and
+        <code>EXP3</code> are free. A COB card that uses <code>EXP0</code> or <code>EXP1</code>
+        will not behave on an ACE.
       </div>
     </div>
 
@@ -193,7 +200,7 @@
     </div>
 
     <div class="section">
-      <span class="sec-title">Keyboard &mdash; J14 &middot; Storage &mdash; J22</span>
+      <span class="sec-title">Keyboard &mdash; J22 &middot; Storage &mdash; J21</span>
       <table>
         <thead><tr><th style="width:22%">Header</th><th>Pins</th></tr></thead>
         <tbody>
