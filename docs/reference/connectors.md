@@ -19,8 +19,9 @@ the headers where the silkscreen is too crowded to label.
 
 There are small jumper headers as well — `CTS EN` and `DCD EN` for the serial
 handshake lines. Those are build-time decisions, not things to plug into. A
-Rev 1.0 board also has `PHI2 SELECT`, which must stay on 1 MHz; see
-[The ACE](/the-ace#the-dip-switches-and-a-jumper-on-older-boards). A few more
+`PHI2 SELECT` sets the clock and stays on 1 MHz; see
+[The ACE](/the-ace#the-dip-switches-and-the-jumpers), which also covers the
+serial chip's two solder jumpers on a Rev 1.1 board. A few more
 headers are for building the ACE into a case; see
 [Headers for a case](#headers-for-a-case).
 

@@ -1085,6 +1085,17 @@ serial are false at the machine itself.
 | **Check** | SCHEM — on the ACE Board Rev 1.0 and Rev 1.1, J17 and J18 pins 4 and 6 are one net, `HRDB`, which also reaches a 1k pull-up and a 74HC00 input. |
 | **Status** | `fixed` — both pages give the pins in order and say what `HRDB` does. Each KiCad repository's README now explains `EXP0`–`EXP3` and `HRDB` under *Extra pins*. |
 
+
+### A80 — "Rev 1.1 boards don't have the jumper": Rev 1.1 has `PHI2 SELECT` again, with the sound chip on the CPU's clock — **fixed**
+
+| | |
+|---|---|
+| **Claim** | `docs/the-ace.md` (after A77): "Rev 1.1 boards don't have the jumper", and the 2 MHz advice addressed only Rev 1.0. `docs/reference/connectors.md`, the ACE and connector cards and `data/systems.json` said `PHI2 SELECT` is on Rev 1.0 boards only. Nothing mentioned the serial chip's crystal jumpers. |
+| **Truth** | The ACE Board Rev 1.1, never made and so changed in place, has `J1 PHI2 SELECT` back where Rev 1.0 has it: pin 1 is the 74HC163's 1 MHz output, pin 2 `PHI2`, pin 3 its 2 MHz output. Unlike Rev 1.0, the SID's clock is `PHI2`, so at 2 MHz the sound chip follows the CPU. 1 MHz stays the family's tested speed; 2 MHz on Rev 1.1 is at the builder's risk. On 2026-11-10 and 11, at 2 MHz, an ACE with an Alliance AS6C62256 RAM and a fast-releasing 74HC00 lot at U14 (the gate that ends `RB` and `WB`) misread one bit of RAM reads; a 74HCT00 at U14, which ends them a few nanoseconds later, or a slower Hitachi RAM, cured it, and the 74HCT00 ran an hour of reads and writes clean. Rev 1.1 fits the 74HCT00. Rev 1.1 also adds the COB Serial Card's optional crystal parts, 1 MΩ and 22 pF behind solder jumpers `JP1` and `JP2`, open for the R6551AP; a Rockwell R65C51P2 gives no serial on a bare crystal and runs with them closed. |
+| **Source** | 6502-ACE `REVISIONS.md` and README *Clock*; commits `9217663`, `54643ab`, `959c38e` (J1 and the crystal jumpers), `8764eeb` (U14), on 2026-11-11. The bench runs of 2026-11-09 to 11 are to be published with 6502-ACE's bench log (`Bench/2MHZ.md`). |
+| **Check** | SCHEM — 6502-ACE `Tests/check-schematics.mjs` evaluates Rev 1.1 with `J1` on pins 1–2 (the CPU, VIA, ACIA and SID all on U5 pin 11) and on pins 2–3 (all on U5 pin 12); the same 2 MHz check fails on Rev 1.0, whose SID stays on pin 11. BENCH — R65C51P2 on a Serial Card at IO5 with JP2/JP3 closed: 6.3 million register reads and 100 XMODEM loads, no errors. |
+| **Status** | `fixed` — the ACE chapter's section is now *The DIP switches and the jumpers*, giving both revisions' advice and the solder jumpers; the connectors page, both cards and `data/systems.json` say `PHI2 SELECT` sets the clock on either revision. The emulator still runs at 1 MHz only; a 2 MHz Setting is planned, and its chapter changes with that release. |
+| **Consequence** | A Rev 1.1 builder told the board has no jumper would have looked for one that's there, and left it without a shunt: with no shunt the CPU has no clock. |
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 
 | | |

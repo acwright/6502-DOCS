@@ -74,13 +74,30 @@ also holds the CPU in reset for a quarter of a second at power-on, which is why
 the machine comes up cleanly instead of mid-thought.
 :::
 
-## The DIP switches, and a jumper on older boards
+## The DIP switches and the jumpers
 
-The ACE runs at **1 MHz**. A Rev 1.0 board also has a jumper, `J1 PHI2 SELECT`,
-that offers 2 MHz. Leave it on 1 MHz, which is pins 1 and 2. The sound chip
-runs at 1 MHz whatever the jumper says, so at 2 MHz it hears only every other
-thing the processor says to it: music loses notes, and the BIOS finds the sound
-chip on some starts and not on others. Rev 1.1 boards don't have the jumper.
+The ACE runs at **1 MHz**, the speed every AC6502 is built and tested at. A
+jumper, `J1 PHI2 SELECT`, sets the clock. Leave it on 1 MHz, which is pins 1
+and 2.
+
+On a **Rev 1.1** board, pins 2 and 3 run the whole machine at 2 MHz: the
+processor, the I/O chips and the sound chip together. That hasn't been tested
+the way 1 MHz has, so it's at your own risk. At 2 MHz some combinations of
+chips misread memory: a fast memory chip can stop driving the data bus a few
+nanoseconds before the processor has finished reading it. Rev 1.1 fits a
+74HCT00 at U14, the chip that ends each memory read, which holds the bus a
+little longer, and the test machine ran clean with it. The current BIOS also
+misses the CompactFlash card at start-up at 2 MHz.
+
+On a **Rev 1.0** board, keep the jumper on 1 MHz. Its sound chip runs at 1 MHz
+whatever the jumper says, so at 2 MHz it hears only every other thing the
+processor says to it: music loses notes, and the BIOS finds the sound chip on
+some starts and not on others.
+
+A Rev 1.1 board also has two solder jumpers beside the serial chip, `JP1` and
+`JP2`. Leave them open: the R6551AP the ACE is built with doesn't need them.
+They're for a Rockwell R65C51P1 or R65C51P2 in its place, which needs both
+closed before its clock will start.
 
 The eight-way DIP switch marked **IO ENABLE** has one position for each of the
 machine's eight I/O sections — banked RAM, clock, storage, serial, joysticks,
