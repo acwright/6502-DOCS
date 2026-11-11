@@ -3,7 +3,7 @@
     "title": "Character set",
     "description": "All 256 CP437 glyphs of PICOVDP font $00, eight pixel rows each, as the card loads them.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "2.0",
+    "biosVersion": "2.1",
     "sources": [
       {
         "file": "tests/fixtures/cp437-font.hex",

@@ -4,7 +4,7 @@ Switch it on. You'll hear a short beep, the AC6502 logo appears at the top of
 the screen in color, and under it:
 
 ```
-AC6502 BIOS v2.0
+AC6502 BIOS v2.1
 BASIC v2.0 30718 BYTES FREE
 RAM RTC CF SER VIA SID VDP
 
@@ -17,7 +17,7 @@ under a second.
 
 <Figure
   src="/images/screens/boot-header.png"
-  alt="A screen showing the AC6502 logo, then AC6502 BIOS v2.0, BASIC v2.0 30718 BYTES FREE, the list of cards, and OK."
+  alt="A screen showing the AC6502 logo, then AC6502 BIOS v2.1, BASIC v2.0 30718 BYTES FREE, the list of cards, and OK."
   caption="The first thing the machine shows you: the logo, the header, and the prompt."
   screen
 />
@@ -31,14 +31,14 @@ Click it before you type, or your keys go to this page instead.
 />
 
 ::: tip A splash screen and a countdown instead?
-Then the machine has the older video card and BIOS 1.6, which boot into a menu
+Then the machine has the older video card and BIOS 1.7, which boot into a menu
 rather than straight into BASIC. That machine has a guide of its own: the
 [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/).
 :::
 
 ## The three lines
 
-**`AC6502 BIOS v2.0`** is the version of the ROM — the Kernal, BASIC and
+**`AC6502 BIOS v2.1`** is the version of the ROM — the Kernal, BASIC and
 everything else the machine knows how to do before you've typed a thing.
 
 **`BASIC v2.0 30718 BYTES FREE`** is how much room your programs have. It's
@@ -63,7 +63,7 @@ find, which makes this line the first thing to look at when something isn't
 working — see [When something's wrong](/getting-started/troubleshooting).
 
 ::: details Two lines, one version
-The top line is the ROM's version: the **BIOS** is v2.0. The `BASIC v2.0` at the
+The top line is the ROM's version: the **BIOS** is v2.1. The `BASIC v2.0` at the
 start of the second line is a nod to the BASIC V2 of the classic 8-bit
 machines rather than a second release number, so it will stay put when the
 BIOS moves on.

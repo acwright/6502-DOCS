@@ -12,11 +12,11 @@ manual will not run here, and the keys are not where that manual says they are.
 What carries over is the way you program the thing, which is the part that was
 worth having.
 
-::: info The KIM runs BIOS 1.6
-The KC Monitor was written for an ACE running BIOS 1.6, and the KIMulator on
-this page runs that BIOS under it. The Kernal
-calls, memory map and character set a keyed-in program works with are 1.6's,
-and the [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/addons/kim)
+::: info The KIM runs BIOS 1.7
+The KC Monitor was written for an ACE running BIOS 1.x, and the KIM and the
+KIMulator on this page run BIOS 1.7 under it. The Kernal
+calls, memory map and character set a keyed-in program works with are the same
+in 1.7 as in 1.6, and the [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/addons/kim)
 of this guide is their reference. What this page says about the keypad itself
 holds either way.
 :::

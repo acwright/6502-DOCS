@@ -15,7 +15,7 @@ There is no operating system to log into and nothing to install. You switch it
 on, you get this:
 
 ```
-AC6502 BIOS v2.0
+AC6502 BIOS v2.1
 BASIC v2.0 30718 BYTES FREE
 RAM RTC CF SER VIA SID VDP
 

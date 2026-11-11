@@ -3,11 +3,11 @@
     "title": "Kernal jump table",
     "description": "Every published entry point, in slot order, plus the reserved range.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "2.0",
+    "biosVersion": "2.1",
     "sources": [
       {
         "file": "Kernal.asm",
-        "sha256": "9950b565711abb4a12b47d53b6f1a6c54145b6ceeccc79e105b7a6327079cc19"
+        "sha256": "46f5fcdd5666507b4647f7039fb1458c003c58adff9d74e11ebd89e32d3e11f7"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."

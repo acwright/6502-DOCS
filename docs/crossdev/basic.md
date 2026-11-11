@@ -37,7 +37,7 @@ That's the same form BASIC's own `SAVE` writes: keywords replaced by one-byte
 tokens, lines chained together. It's smaller than the text, and it's what `LOAD`
 expects.
 
-`-b 2` picks BIOS 2.0's keywords. Without it `bastok` uses the older machine's
+`-b 2` picks BIOS 2.x's keywords. Without it `bastok` uses the older machine's
 list, and a line with `SCREEN`, `SPRITE` or `NVSAVE` in it comes out as the
 letters rather than the keyword — `bastok` warns you when that happens, and
 BASIC says `?SYNTAX ERROR` when it runs.

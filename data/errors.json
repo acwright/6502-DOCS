@@ -3,7 +3,7 @@
     "title": "Error and status messages",
     "description": "Verbatim strings from the ROM. Text is byte-for-byte what the machine prints.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "2.0",
+    "biosVersion": "2.1",
     "sources": [
       {
         "file": "BASIC.asm",

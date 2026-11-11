@@ -19,8 +19,8 @@ import { data as facts } from '../data/facts.data.mts'
  * printed above it.
  *
  * **The card is always named.** Every frame asks for `vdp=picovdp`, the
- * card this edition documents, which boots BIOS 2.0. The frame's default is
- * the TMS9918A with BIOS 1.6, it is due to change, and the frame never reads
+ * card this edition documents, which boots BIOS 2.1. The frame's default is
+ * the TMS9918A with BIOS 1.7, it is due to change, and the frame never reads
  * the card a reader chose in the full app, so a frame that left it out would
  * boot whatever the emulator's default is that year.
  *

@@ -23,7 +23,7 @@
 <line class="dg-l" x1="280" y1="384" x2="280" y2="398"/>
 <rect class="dg-solid" x="40" y="414" width="220" height="66"/>
 <text class="dg-t dg-inv" x="54" y="440" text-anchor="start">BASIC</text>
-<text class="dg-n dg-inv" x="54" y="460" text-anchor="start">AC6502 BIOS v2.0</text>
+<text class="dg-n dg-inv" x="54" y="460" text-anchor="start">AC6502 BIOS v2.1</text>
 <rect class="dg-r" x="300" y="414" width="220" height="66"/>
 <text class="dg-t" x="314" y="440" text-anchor="start">The cartridge</text>
 <text class="dg-n" x="314" y="460" text-anchor="start">whatever it does</text>

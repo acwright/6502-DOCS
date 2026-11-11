@@ -41,7 +41,7 @@ A32 — the entry says so.
 
 | Status | Count |
 |---|---|
-| fixed | 66 |
+| fixed | 67 |
 | confirmed | 5 |
 | open | 5 |
 | wontfix | 6 |
@@ -1096,6 +1096,17 @@ serial are false at the machine itself.
 | **Check** | SCHEM — 6502-ACE `Tests/check-schematics.mjs` evaluates Rev 1.1 with `J1` on pins 1–2 (the CPU, VIA, ACIA and SID all on U5 pin 11) and on pins 2–3 (all on U5 pin 12); the same 2 MHz check fails on Rev 1.0, whose SID stays on pin 11. BENCH — R65C51P2 on a Serial Card at IO5 with JP2/JP3 closed: 6.3 million register reads and 100 XMODEM loads, no errors. |
 | **Status** | `fixed` — the ACE chapter's section is now *The DIP switches and the jumpers*, giving both revisions' advice and the solder jumpers; the connectors page, both cards and `data/systems.json` say `PHI2 SELECT` sets the clock on either revision. The emulator still runs at 1 MHz only; a 2 MHz Setting is planned, and its chapter changes with that release. |
 | **Consequence** | A Rev 1.1 builder told the board has no jumper would have looked for one that's there, and left it without a shunt: with no shunt the CPU has no clock. |
+
+### A81 — An empty slot read `$00` in both emulators, which hid a BIOS that took a real one's open bus for a sound chip — **fixed**
+
+| | |
+|---|---|
+| **Claim** | 6502-EMULATOR and 6502-KIMULATOR: a read of an empty slot returns `$00`. 6502-BIOS 1.6 and 2.0.2: the boot probe records a SID when voice 3's output reads anything but `$00` or `$FF`, and waits for a CF card for a fixed 65,536 polls. |
+| **Truth** | Nothing drives the data bus in an empty slot, and the boards have no pull-ups, so a read returns the last byte on the bus: for `LDA $981B` the operand's high byte, `$98`. A KIM with no Sound Card therefore booted with `HW_PRESENT` `$50` and ran the SID setup into an empty window, and read `$8C` (busy) at the CF status register and waited out the CF probe's 0.85 s on every boot. Real CF cards took 426 to 545 ms to start, so at 2 MHz, where the count halves, all three measured would have been missed. |
+| **Source** | BIOS 1.7 and 2.1.0 (6502-BIOS `v1.7`, `v2.1.0`): the SID probe wants voice 3's noise to change between reads; the CF probe recognises an empty slot (`$8C` at `$8C07` and `$8F` at `$8F07`) and otherwise waits up to 3.0 s, leaving how long at `$0376–$0378`. 6502-EMULATOR 3.6.0 and 6502-KIMULATOR 1.4.0 read an empty slot as open bus, bundle those ROMs, and the emulator adds `--cf-busy` for a card that takes time to start. |
+| **Check** | BENCH — a KIM over serial, 2026-11-03 and 11: `$981B` read `$98`, `$8C07` `$8C`, `$8F07` `$8F`, with no Storage Card or an empty socket; with BIOS 1.7, 20 boots of 20 read `HW_PRESENT` `$10` without a Sound Card and `$50` with its ARMSID; three CF cards timed at 425.6 ms (Promaster 128 MB) and 460.6 to 550.0 ms (two SanDisk Ultra II 2 GB), all busy as `$80`. RUN — emulator 3.6.0 with `--empty sound`: BIOS 2.0.2 and 1.6 read `HW_PRESENT` 127, 2.1.0 and 1.7 read 63. |
+| **Status** | `fixed` — in the BIOS and both emulators, and here: the fact base, cards, transcripts and screenshots follow 2.1, the pages for the 1.x machines say they run 1.7, and the site is verified against emulator 3.6.0. |
+| **Consequence** | Every ROM tested on an emulator passed a probe that a real machine without the card would fail, and the emulators showed nothing wrong. A program that checked `HW_SID` before playing sound would have written to an empty slot on any machine without one. |
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 
 | | |

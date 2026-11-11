@@ -568,7 +568,7 @@
       "summary": "Write one of the video card's registers, 0 to 127: the settings that decide how it draws. Register 7 is the border.",
       "example": ["VREG 7, 4"],
       "result": "The border around the text turns dark blue. The text and its background stay as they were.",
-      "picture": "2ac8cf9c",
+      "picture": "2ba24fbb",
       "errors": ["ILLEGAL QUANTITY"],
       "see": ["COLOR", "SPRITE", "VSTAT"]
     },
@@ -585,7 +585,7 @@
       "summary": "Change color `entry` (row × 16 + color) to red, green and blue levels of 0 to 15, and everything drawn in it with it.",
       "example": ["PALETTE 15, 15, 15, 0"],
       "result": "Everything white turns yellow at once — the whole background, since it was drawn in color 15.",
-      "picture": "b446695f",
+      "picture": "fee59693",
       "errors": ["ILLEGAL QUANTITY"],
       "see": ["COLOR", "SCREEN"]
     },

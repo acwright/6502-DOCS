@@ -37,7 +37,7 @@ the screen come from the card. Three things fail that test:
 
 - **The card isn't seated,** or its IO ENABLE switch is off.
 - **It's still running the Pico9918's original firmware,** which behaves as a
-  TMS9918A. That card is for BIOS 1.6 — see
+  TMS9918A. That card is for BIOS 1.7 — see
   [Setting up](/getting-started/setup).
 - **Its 6502-PICOVDP firmware is older than the built-in character set.**
   Update the firmware.

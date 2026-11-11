@@ -1,10 +1,11 @@
 # VCS — Video Computer System
 
-::: info The VCS runs BIOS 1.6
+::: info The VCS runs BIOS 1.7
 The VCS's Output Board draws with a Pico9918, a TMS9918A stand-in.
-It runs BIOS 1.6, not the BIOS 2.0 this guide describes, so its programming
+It runs BIOS 1.7, not the BIOS 2.1 this guide describes, so its programming
 reference — the Monitor, the TMS9918A's screen modes, the BIOS it boots — is the
-[BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/family/vcs) of this guide.
+[BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/family/vcs) of this guide,
+which holds for 1.7: 1.7 changed only two of the boot probes.
 The rest of this page is about the machine itself, and holds either way.
 :::
 

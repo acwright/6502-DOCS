@@ -46,11 +46,11 @@ on any of them — the BIOS looks at startup, so nothing crashes when a card
 isn't there.
 
 What they don't all share any more is the video card. The COB, the DEV and the
-VCS were built around the TMS9918A, and they run BIOS 1.6, which drives that
+VCS were built around the TMS9918A, and they run BIOS 1.7, which drives that
 chip, has a machine-code Monitor, and boots through a splash screen and a menu.
-This guide describes BIOS 2.0 and the ACE's newer video card, so for
+This guide describes BIOS 2.1 and the ACE's newer video card, so for
 programming one of those three, the reference is the
-[BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/) of this guide.
+[BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/) of this guide, which holds for 1.7.
 
 The KIM is the exception in a different way. Its Keypad Card brings its own ROM
 and takes the top of the memory map, so there's no BASIC while it's fitted — but

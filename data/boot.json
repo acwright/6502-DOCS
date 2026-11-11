@@ -3,15 +3,15 @@
     "title": "Boot sequence",
     "description": "Version, the header, and the path from reset to the BASIC prompt.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "2.0",
+    "biosVersion": "2.1",
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "7d2d83f801d0d7767671a498cab228694ea46b23654765f72f049c9e4351d2b5"
+        "sha256": "895f48505c4783709a7aa690e1d1c0a4eadd324a85232177dda1f9a135bba0cc"
       },
       {
         "file": "Kernal.asm",
-        "sha256": "9950b565711abb4a12b47d53b6f1a6c54145b6ceeccc79e105b7a6327079cc19"
+        "sha256": "46f5fcdd5666507b4647f7039fb1458c003c58adff9d74e11ebd89e32d3e11f7"
       },
       {
         "file": "BASIC.asm",
@@ -22,21 +22,21 @@
   },
   "version": {
     "major": 2,
-    "minor": 0,
-    "string": "v2.0",
-    "source": "BIOS.inc:155-156",
+    "minor": 1,
+    "string": "v2.1",
+    "source": "BIOS.inc:165-166",
     "check": "GREP"
   },
   "headerMatchesVersion": true,
   "headerDerivedFromVersion": true,
   "header": [
-    "AC6502 BIOS v2.0",
+    "AC6502 BIOS v2.1",
     "BASIC v2.0 nnnnn BYTES FREE"
   ],
   "strings": [
     {
       "symbol": "MsgHeader",
-      "text": "AC6502 BIOS v2.0",
+      "text": "AC6502 BIOS v2.1",
       "derivedFrom": "BIOS_VERSION_MAJOR/MINOR",
       "source": "BASIC.asm:9550",
       "check": "GREP"

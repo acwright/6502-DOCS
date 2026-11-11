@@ -30,7 +30,7 @@ printf 'PRINT 6*7\r' | 6502 run --headless --vdp picovdp --exit-on 'OK[\s\S]*OK'
 ```
 
 ```
-AC6502 BIOS v2.0
+AC6502 BIOS v2.1
 BASIC v2.0 30718 BYTES FREE
 RAM RTC CF SER VIA SID
 
@@ -114,7 +114,7 @@ rather than text, `dbg screen hash` compares and `--screenshot` or
 doing.
 
 **Name the video card, and leave flow control alone.** Start every machine with
-`--vdp picovdp`, because that card is what boots BIOS 2.0. Flow control is on
+`--vdp picovdp`, because that card is what boots BIOS 2.1. Flow control is on
 by default, and `--peer-rts ignore` (or the older spelling
 `--no-flow-control`) turns it off. Turning flow control off means a long paste
 loses lines, so an agent has no reason to pass that flag at all.

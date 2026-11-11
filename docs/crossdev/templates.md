@@ -30,7 +30,7 @@ and [the next chapter](/crossdev/makefile) explains the rest.
 
 ::: tip `make VDP=1`, every time
 Written as plain `make`, the template builds for the older ACE with a TMS9918A
-video card and BIOS 1.6 — the machine the
+video card and BIOS 1.7 — the machine the
 [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/crossdev/templates)
 of this guide describes. Everything in this guide wants `make VDP=1`, and
 everything below assumes it.
@@ -41,8 +41,8 @@ everything below assumes it.
 | File | What it's for |
 |---|---|
 | `Program.asm` | The source. Yours to replace. |
-| `6502-VDP.inc` | Every Kernal routine, hardware register and constant, by name, for BIOS 2.0 and the 6502-PICOVDP |
-| `6502.inc` | The same for the older ACE with a TMS9918A and BIOS 1.6 |
+| `6502-VDP.inc` | Every Kernal routine, hardware register and constant, by name, for BIOS 2.1 and the 6502-PICOVDP |
+| `6502.inc` | The same for the older ACE with a TMS9918A and BIOS 1.7 |
 | `6502.cfg` | The linker configuration — where things go in memory |
 | `Makefile` | The build |
 
@@ -74,7 +74,7 @@ files: every name they share would be defined twice.
 
 A program written only for this machine can drop the choice and include
 `6502-VDP.inc` on its own, which is what every listing in this guide does. What
-it must not do is run on the older machine by accident. BIOS 1.6's jump table
+it must not do is run on the older machine by accident. BIOS 1.x's jump table
 stops just short of `$A0B1`, where the video card's calls begin, and every slot
 from there on is a bare return — so a program that calls one there does nothing
 and carries on as though it had. The

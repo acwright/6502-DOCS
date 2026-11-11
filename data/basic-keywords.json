@@ -3,7 +3,7 @@
     "title": "BASIC keywords",
     "description": "Every keyword the tokenizer recognizes, with its token and dispatch. Token, name and dispatch are GREP-verified against BASIC.asm; syntax and description are lifted from the BIOS README (rank 4) and stay verified:false until a RUN-backed sample proves them in Phase 4.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "2.0",
+    "biosVersion": "2.1",
     "sources": [
       {
         "file": "BASIC.asm",
@@ -11,7 +11,7 @@
       },
       {
         "file": "README.md",
-        "sha256": "69fa38fee5129367d8b039f2800c1b6275de81e3ed3c0def83fa87f62732f4fe"
+        "sha256": "0e8a171aeb3f214c1bb22b4d6759d0bb1d777a60fd1de96615d0badb6e975c20"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."

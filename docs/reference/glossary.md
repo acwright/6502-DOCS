@@ -21,7 +21,7 @@ See [Banked RAM](/assembly/banking).
 runs it. Version 2.0 here. See [Programming in BASIC](/basic/).
 
 **BIOS** — the whole 32 KB of ROM: Kernal, BASIC and Wozmon together. This
-guide describes BIOS v2.0. Not the same sense as a PC's
+guide describes BIOS v2.1. Not the same sense as a PC's
 BIOS, which is only a boot loader.
 
 **CompactFlash** — the storage card. Behaves as an 8-bit IDE drive; the BIOS

@@ -71,7 +71,7 @@ printf 'RUN\r' | 6502 run --headless --vdp picovdp --exit-on 'LIFT OFF' --timeou
 ```
 
 ```
-AC6502 BIOS v2.0
+AC6502 BIOS v2.1
 BASIC v2.0 30671 BYTES FREE
 RAM RTC CF SER VIA SID
 
@@ -97,7 +97,7 @@ BIOS this guide describes. Name it every time; without it the emulator fits
 whichever card it starts with, which may not be this one.
 
 **`--exit-on`.** Stop when the console prints something you named, rather than
-after a duration you guessed. This is what makes the run take 53 milliseconds
+after a duration you guessed. This is what makes the run take 49 milliseconds
 instead of however long you would have waited.
 
 **`--timeout`.** Always. A program that hangs should fail your build, not wedge
@@ -118,7 +118,7 @@ And for a machine-readable summary, add `--json`, which prints one line to
 stderr on exit:
 
 ```json
-{"reason":"exit-on","cycles":338000,"wallMs":53,"output":"\r\nAC6502 BIOS v2.0\r\nBASIC v2.0 30671 BYTES FREE\r\nRAM RTC CF SER VIA SID\r\n\r\nOK\r\nRUN\r\n10\r\n9\r\n8\r\n7\r\n6\r\n5\r\n4\r\n3\r\n2\r\n1\r\nLIFT OFF\r"}
+{"reason":"exit-on","cycles":367640,"wallMs":49,"output":"\r\nAC6502 BIOS v2.1\r\nBASIC v2.0 30671 BYTES FREE\r\nRAM RTC CF SER VIA SID\r\n\r\nOK\r\nRUN\r\n10\r\n9\r\n8\r\n7\r\n6\r\n5\r\n4\r\n3\r\n2\r\n1\r\nLIFT OFF\r"}
 ```
 
 `reason` tells you *why* it stopped — `exit-on`, `timeout`, `max-cycles` — which
@@ -131,7 +131,7 @@ script can check it without capturing the console separately.
 | | |
 |---|---|
 | `6502 run build/game.prg` | A program at `$0800` |
-| `6502 run --vdp picovdp` | With the ACE's video card, and BIOS 2.0 |
+| `6502 run --vdp picovdp` | With the ACE's video card, and BIOS 2.1 |
 | `6502 run --peer-rts ignore` | Piped input sent regardless of the machine asking it to wait (older spelling: `--no-flow-control`) |
 | `6502 run --cart build/game.crt` | A cartridge |
 | `6502 run --bin 0x7F00=data.bin` | Raw bytes at an address, written before boot |

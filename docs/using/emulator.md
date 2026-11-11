@@ -53,11 +53,11 @@ fits decides which BIOS it boots:
 
 | Settings → VIDEO CARD | Boots | Documented in |
 |---|---|---|
-| **6502-PICOVDP (BIOS 2.x)** | `AC6502 BIOS v2.0`, straight to BASIC | This guide |
-| **TMS9918A (BIOS 1.6)** | The older ACE, with its splash and Monitor | [The BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/using/emulator) |
+| **6502-PICOVDP (BIOS 2.x)** | `AC6502 BIOS v2.1`, straight to BASIC | This guide |
+| **TMS9918A (BIOS 1.7)** | The older ACE, with its splash and Monitor | [The BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/using/emulator) |
 
 An ACE in this guide is always the 6502-PICOVDP. If the machine greets you with
-a splash and a countdown instead of the logo and `AC6502 BIOS v2.0`, it has the
+a splash and a countdown instead of the logo and `AC6502 BIOS v2.1`, it has the
 other card fitted, and half of what these pages say won't work on it.
 
 Changing the card is a power cycle with the other card in the slot: memory is
@@ -313,7 +313,7 @@ inside a page of yours:
 ```
 
 That's the whole integration. `vdp=picovdp` fits the video card, and with it
-BIOS 2.0; `prg` is your program; `autostart` boots the machine as the page
+BIOS 2.1; `prg` is your program; `autostart` boots the machine as the page
 opens; `autotype` types `RUN` once BASIC is up, so a visitor gets a game rather
 than an `OK` prompt and a puzzle. `%5Cr` is how a `\r` — the Enter key —
 survives being written in a URL.
@@ -463,7 +463,7 @@ Install**). It's how you'd fold the emulator into a build:
 
 | Flag | What it does |
 |---|---|
-| `--vdp picovdp` | Fit the 6502-PICOVDP, and boot BIOS 2.0 — give it every time |
+| `--vdp picovdp` | Fit the 6502-PICOVDP, and boot BIOS 2.1 — give it every time |
 | `--peer-rts ignore` | Stop holding typed or piped input back while the machine asks it to wait. Input waits unless you say this, which is how a long listing arrives whole. `--no-flow-control` is the older spelling, deprecated |
 | `--cts cable` | Move the ACE's `CTS EN` jumper to the cable (`--dcd cable` for `DCD EN`). Ground is the default and how the boards are built |
 | `--cf disk.img` | Attach a card image |
