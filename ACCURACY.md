@@ -1107,6 +1107,17 @@ serial are false at the machine itself.
 | **Check** | BENCH — a KIM over serial, 2026-11-03 and 11: `$981B` read `$98`, `$8C07` `$8C`, `$8F07` `$8F`, with no Storage Card or an empty socket; with BIOS 1.7, 20 boots of 20 read `HW_PRESENT` `$10` without a Sound Card and `$50` with its ARMSID; three CF cards timed at 425.6 ms (Promaster 128 MB) and 460.6 to 550.0 ms (two SanDisk Ultra II 2 GB), all busy as `$80`. RUN — emulator 3.6.0 with `--empty sound`: BIOS 2.0.2 and 1.6 read `HW_PRESENT` 127, 2.1.0 and 1.7 read 63. |
 | **Status** | `fixed` — in the BIOS and both emulators, and here: the fact base, cards, transcripts and screenshots follow 2.1, the pages for the 1.x machines say they run 1.7, and the site is verified against emulator 3.6.0. |
 | **Consequence** | Every ROM tested on an emulator passed a probe that a real machine without the card would fail, and the emulators showed nothing wrong. A program that checked `HW_SID` before playing sound would have written to an empty slot on any machine without one. |
+
+### A82 — "The current BIOS also misses the CompactFlash card at start-up at 2 MHz": 2.1.0 finds it — **fixed**
+
+| | |
+|---|---|
+| **Claim** | `docs/the-ace.md`, *The DIP switches and the jumpers*: "The current BIOS also misses the CompactFlash card at start-up at 2 MHz", true of 2.0.2 and left standing when the site moved to 2.1.0 (A81). |
+| **Truth** | BIOS 2.1.0's CF probe waits up to 30,000 polls, 1.5 s at 2 MHz, so it finds the card at start-up at 2 MHz; 2.0.x's counted wait was about 426 ms there, shorter than a Promaster 128 MB takes. Files written and read at 2 MHz match byte for byte. |
+| **Source** | 6502-BIOS `v2.1.0`; the ACE round of 2026-11-12 (6502-WORKING `BIOS-PLAN.md`, to be published with 6502-ACE's bench log). |
+| **Check** | BENCH — an ACE Rev 1.0 with RAM Patch 1.1 and a 74HCT00 at U14, BIOS 2.1.0 (`991ba3c2…`), J1 at 2 MHz: the Promaster found on 6 boots of 6 (8,595 to 8,604 polls, about 430 ms); ROM `$C000–$FFFF` saved to the card with `BSAVE`, loaded back with `BLOAD` over a zeroed buffer and returned over XMODEM: 0 bytes of 16,384 differing in each of 4 files written at 2 MHz and read at 2 MHz and at 1 MHz, and a 1 MHz file read at 2 MHz. |
+| **Status** | `fixed` — the page says BIOS v2.1 finds the card at 2 MHz and earlier versions don't. 6502-ACE's README says the same, with the SID and CF probes' bench results under *Known limits*. |
+| **Consequence** | A builder running Rev 1.1 at 2 MHz on 2.1.0 would have been told their CF card can't be found at start-up. |
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 
 | | |
