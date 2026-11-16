@@ -278,13 +278,6 @@
           "slot": 8
         },
         {
-          "role": "Video",
-          "part": "Video Card Pro",
-          "detail": "Enhanced composite video",
-          "slot": 8,
-          "status": "untested"
-        },
-        {
           "role": "Display",
           "part": "LCD Card",
           "detail": "16×2 character LCD via 65C22 VIA, 4- or 8-bit mode"
