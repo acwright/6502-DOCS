@@ -273,13 +273,6 @@
         },
         {
           "role": "Video",
-          "part": "VGA Card Pro",
-          "detail": "Fully programmable VGA via Pi Pico",
-          "slot": 8,
-          "status": "untested"
-        },
-        {
-          "role": "Video",
           "part": "Video Card",
           "detail": "Composite video via a real TMS9918A with 16 KB VRAM",
           "slot": 8
