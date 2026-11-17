@@ -197,9 +197,9 @@ plain 2.54 mm pin header, except the keyboard's.
 | `AUDIO` | An audio jack or an amplifier: the same signal as the RCA jacks, on pin 1 | The RCA jacks, if the case has its own |
 | `KEYBOARD` | A keyboard matrix, such as a Keyboard Helper (see [Two internal headers](#two-internal-headers)) | The key switches |
 
-The `VCC` header joins the supply after the power switch, and on a Rev 1.1
-board after the reverse-polarity diode too, so nothing on the board protects
-it. The supply on the case must be a regulated 5 V, wired the right way around.
+The `VCC` header joins the supply after the power switch, so nothing on the
+board protects it. The supply on the case must be a regulated 5 V, wired the
+right way around.
 
 The [6502-ACE repository](https://github.com/acwright/6502-ACE#off-board-headers)
 gives each header's reference on the board, and the same headers on the other
