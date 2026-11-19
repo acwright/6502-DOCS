@@ -14,8 +14,20 @@ yourself.
 
 To play one, download its `.crt` and load it as a cartridge in
 [the emulator](/using/emulator), or burn it to a 28C256 and plug it into the
-cartridge slot on the board. The games all need a video card, and all of them
-are better with a joystick.
+cartridge slot on the board. A game that says it is a [Flash
+Cart](/assembly/flash-carts) is bigger than a 28C256 holds, so it goes onto a
+Flash Cart instead. The games all need a video card, and all of them are better
+with a joystick.
+
+**[HexFleet](https://github.com/jayrdeaton/6502-HexFleet)** by Jay Deaton. A
+fleet battle on a hex map for up to four ships, people and the computer in any
+mix: all against all, two teams, or two machines joined by a null-modem cable
+between their serial ports. Everyone plans a move and a shot in secret, then
+every ship moves and fires at once. Each of the four factions has a special of
+its own — a flak shell, mines, a cloak or a jump. Either joystick works, or
+WASD and the arrow keys. Beat the computer and your score goes on a table of
+the best five, saved on the cartridge itself, so it's still there after the
+power goes off. HexFleet is a 128 KB Flash Cart and needs BIOS 2.x.
 
 **[LightCycles](https://github.com/jayrdeaton/6502-LightCycles)** by Jay Deaton.
 Tron on a 32 × 24 grid. The bikes never stop and never slow down — all you do
