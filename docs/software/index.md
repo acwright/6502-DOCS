@@ -29,6 +29,20 @@ WASD and the arrow keys. Beat the computer and your score goes on a table of
 the best five, saved on the cartridge itself, so it's still there after the
 power goes off. HexFleet is a 128 KB Flash Cart and needs BIOS 2.x.
 
+<!--
+  Invaders is a private repository for now. When it goes public, take this
+  comment away and check the entry against its README.
+
+**[Invaders](https://github.com/willisblackburn/invaders)** by Willis
+Blackburn. The arcade alien invasion: a block of invaders marches side to side
+and steps down every time it reaches an edge, and your tank, sheltering behind
+shields that wear away with every hit, has to shoot them all before they land.
+Joystick, or the arrow keys or A and D to move and Space to fire. The high
+scores are kept on the CompactFlash card when there is one. It is a 16 KB
+cartridge for BIOS 2.x, and one set of sources builds it for Willis's VC83
+computer as well.
+-->
+
 **[LightCycles](https://github.com/jayrdeaton/6502-LightCycles)** by Jay Deaton.
 Tron on a 32 × 24 grid. The bikes never stop and never slow down — all you do
 is steer — and each one leaves a wall behind it, so the wall you have to worry
