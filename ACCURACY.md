@@ -42,7 +42,7 @@ A32 — the entry says so.
 | Status | Count |
 |---|---|
 | fixed | 67 |
-| confirmed | 5 |
+| confirmed | 6 |
 | open | 5 |
 | wontfix | 6 |
 
@@ -1118,6 +1118,17 @@ serial are false at the machine itself.
 | **Check** | BENCH — an ACE Rev 1.0 with RAM Patch 1.1 and a 74HCT00 at U14, BIOS 2.1.0 (`991ba3c2…`), J1 at 2 MHz: the Promaster found on 6 boots of 6 (8,595 to 8,604 polls, about 430 ms); ROM `$C000–$FFFF` saved to the card with `BSAVE`, loaded back with `BLOAD` over a zeroed buffer and returned over XMODEM: 0 bytes of 16,384 differing in each of 4 files written at 2 MHz and read at 2 MHz and at 1 MHz, and a 1 MHz file read at 2 MHz. |
 | **Status** | `fixed` — the page says BIOS v2.1 finds the card at 2 MHz and earlier versions don't. 6502-ACE's README says the same, with the SID and CF probes' bench results under *Known limits*. |
 | **Consequence** | A builder running Rev 1.1 at 2 MHz on 2.1.0 would have been told their CF card can't be found at start-up. |
+### A83 — The pages name only the DS1511Y; the RTC Adapter and Rev 1.1's DS1501 now fit too — **confirmed**
+
+| | |
+|---|---|
+| **Claim** | `docs/the-ace.md`, `docs/assembly/clock.md`, `docs/public/cards/ace.html`, `cob.html` and `memory-map.html`, `docs/.vitepress/diagrams/io-slots.svg`, and the fact base (`data/hardware.json`, `data/systems.json`, `scripts/extract-facts.mjs`): the RTC is a DS1511Y. |
+| **Truth** | Still the part every board was made and tested with, so nothing here is false. But a builder now has two cheaper choices the pages don't mention: the RTC Adapter (6502-COB), a DS1501 and its crystal on a DIP-28 plug that fits the DS1511Y's socket on any ACE Board or RTC Card, and a bare DS1501 on ACE Board 1.1 and RTC Card 1.1, which carry its crystal. Both are untested, and both need the CR2032 kept fitted and the Crystal Select bit cleared once (`POKE 34831,PEEK(34831) AND 191`) until 6502-BIOS #4 is fixed. |
+| **Source** | 6502-ACE README, *The RTC* (`98c0763`); 6502-COB README, *Adapters* (`0e34485b`); [6502-BIOS #4](https://github.com/acwright/6502-BIOS/issues/4). |
+| **Check** | SCHEM — 6502-COB `Hardware/RTC Adapter/Rev 1.1`: U1, a DS1501, straight through to the plug but for pins 2, 3, 21 and 25; ACE Board 1.1 and RTC Card 1.1 put a 32.768 kHz crystal on the socket's pins 2 and 3 and ground 21 and 25. |
+| **Status** | `confirmed` — to be worked with the rewrite of the machine pages, from the two READMEs. `samples/lib/6502-VDP.inc` stays: its comments are the BIOS include's, and BIOS #4 covers them. |
+| **Consequence** | A reader pricing a build sees only the $41 module. |
+
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 
 | | |
