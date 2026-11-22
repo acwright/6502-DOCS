@@ -162,13 +162,23 @@
           "name": "ACE RAM Patch",
           "path": "Hardware/ACE RAM Patch/",
           "detail": "Piggyback fix for Rev 1.0 banked RAM; plugs into the U13 socket"
+        },
+        {
+          "name": "ACE SD Adapter Bottom",
+          "path": "Hardware/ACE SD Adapter Bottom/",
+          "detail": "SD card adapter for the Storage header, which the stock BIOS takes for CompactFlash, with a 16 MB built-in drive; untested, not yet made"
+        },
+        {
+          "name": "ACE SD Adapter Top",
+          "path": "Hardware/ACE SD Adapter Top/",
+          "detail": "The SD Adapter's top board, with the SD card socket, stacked on the Bottom; untested, not yet made"
         }
       ],
       "revisions": [
         {
           "board": "ACE Board",
           "revision": "1.1",
-          "notes": "Fixes the LOADL/LOADH latch-enable gating for the banked SRAM: the final NAND stage becomes a NOR (LOADL = NOR(SEL_L, WB)), added as one 74HC02 (U13). Pull-ups R1–R4 and R26 (Rev 1.0's R2–R5 and R27) go from 1 kΩ to 10 kΩ; C20 (10 µF) added at the power input. No firmware change."
+          "notes": "Drawn, not yet made. The banked SRAM works on the board itself, with no ACE RAM Patch: a 74HC02 (U13) makes the bank latches' enables, LOADL and LOADH, which now load only on a write to $83FF or $87FF. U14, which makes RB and WB, is a 74HCT00. Five pull-ups (R2–R5, R27) go from 1 kΩ to 10 kΩ, and new 10 kΩ pull-ups go on RESB (R37) and on the PS/2 lines (R39, R40); SOB is tied to VCC. A BAT85 (D4) stops the video card's /INT holding IRQB high. The SID runs on the CPU's clock, as J1 sets it. The audio jacks carry the signal on the tip, where Rev 1.0 has it on the sleeve. Also adds the ACIA's crystal jumpers (open as shipped), a 10 µF bulk capacitor (C31), and a crystal (Y2) so that U18 takes a DS1501 as well as the DS1511Y; removes the SID's 12 V header (J5). The parts keep Rev 1.0's designators."
         },
         {
           "board": "ACE Board",
@@ -240,7 +250,7 @@
           "part": "Storage Card Pro",
           "detail": "SD card the stock BIOS takes for CompactFlash, with a 16 MB built-in drive",
           "slot": 4,
-          "status": "untested — Rev 1.1 is being drawn"
+          "status": "untested — Rev 1.1 is drawn and routed, not yet made"
         },
         {
           "role": "Serial",
@@ -320,7 +330,7 @@
         }
       ],
       "verified": true,
-      "check": "SCHEM — every card under Hardware/ confirms its claimed chip (65C02/65C816 CPU cards, AS6C62256+AT28C256 Memory Card, AS6C4008 RAM Card, DS1511Y RTC Card, CompactFlash Storage Card, RP2350A+W25Q128 Storage Card Pro (Rev 1.1; Rev 1.0 retired 2026-11-16), R6551AP+MAX232 Serial Card/Pro with DTR/DCD/DSR, 65C22 GPIO Card, Pico9918A VGA Card (VGA Card Pro retired 2026-11-16), TMS9918A Video Card, 65C22+16x2 LCD Card, 6581-socket Sound Card). Backplane Pro Rev 1.1 confirmed: adds a Barrel_Jack_Switch + POWER switch absent from Rev 1.0, and nearly every passive switches from _SMD to _THT footprints, matching \"entirely through-hole\" plus the power switch/barrel jack. Slot numbers (1-8) are not silkscreen-labeled in any schematic, so those remain sourced from the README rather than SCHEM."
+      "check": "SCHEM — every card under Hardware/ confirms its claimed chip (65C02/65C816 CPU cards, AS6C62256+AT28C256 Memory Card, AS6C4008 RAM Card, DS1511Y RTC Card, CompactFlash Storage Card, Pico 2+W25Q128 Storage Card Pro (Rev 1.1; Rev 1.0 retired 2026-11-16), R6551AP+MAX232 Serial Card/Pro with DTR/DCD/DSR, 65C22 GPIO Card, Pico9918A VGA Card (VGA Card Pro retired 2026-11-16), TMS9918A Video Card, 65C22+16x2 LCD Card, 6581-socket Sound Card). Backplane Pro Rev 1.1 confirmed: adds a Barrel_Jack_Switch + POWER switch absent from Rev 1.0, and nearly every passive switches from _SMD to _THT footprints, matching \"entirely through-hole\" plus the power switch/barrel jack. Slot numbers (1-8) are not silkscreen-labeled in any schematic, so those remain sourced from the README rather than SCHEM."
     },
     {
       "id": "dev",
