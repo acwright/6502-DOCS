@@ -86,8 +86,11 @@ the way 1 MHz has, so it's at your own risk. At 2 MHz some combinations of
 chips misread memory: a fast memory chip can stop driving the data bus a few
 nanoseconds before the processor has finished reading it. Rev 1.1 fits a
 74HCT00 at U14, the chip that ends each memory read, which holds the bus a
-little longer, and the test machine ran clean with it. BIOS v2.1 finds the
-CompactFlash card at start-up at 2 MHz and reads and writes it clean there.
+little longer, and the test machine ran clean with it. Rev 1.1 also wires the
+memory chip at U7 to keep driving the bus until the processor has finished
+every read, and with that the test machine read memory clean at 1 MHz and
+2 MHz, at every supply voltage tried, from 4.5 to 5.24 volts. BIOS v2.1 finds
+the CompactFlash card at start-up at 2 MHz and reads and writes it clean there.
 Earlier versions miss the card at start-up at 2 MHz.
 
 On a **Rev 1.0** board, keep the jumper on 1 MHz. Its sound chip runs at 1 MHz
