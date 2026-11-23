@@ -138,6 +138,32 @@ RUN 20
 Useful when the first half of a program has already done its job and you only
 want to see the rest.
 
+`GOTO` typed at the prompt starts a program from a line too, with one
+difference: it keeps the variables.
+
+```
+10 PRINT "A IS"; A
+A = 99
+GOTO 10
+```
+
+```
+A IS 99
+
+OK
+```
+
+`RUN 10` would have printed `A IS 0`. That makes `GOTO` the way to set a value
+by hand and then run the part of a program that uses it. `GOSUB` works at the
+prompt too, and comes back to the rest of the line you typed:
+`GOSUB 500 : PRINT "DONE"` runs the subroutine at line 500 and then prints
+`DONE`. `IF A > 5 THEN 10` and `ON N GOTO 10, 20` typed at the prompt jump the
+same way.
+
+A BIOS older than 2.2, or older than 1.8 on a machine with the older video
+card, prints `OK` for a `GOTO` or `GOSUB` typed at the prompt and runs nothing.
+Use `RUN 10` there.
+
 ## More than one thing on a line
 
 A colon joins statements together on a single line:

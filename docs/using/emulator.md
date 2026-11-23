@@ -53,11 +53,11 @@ fits decides which BIOS it boots:
 
 | Settings → VIDEO CARD | Boots | Documented in |
 |---|---|---|
-| **6502-PICOVDP (BIOS 2.x)** | `AC6502 BIOS v2.1`, straight to BASIC | This guide |
-| **TMS9918A (BIOS 1.7)** | The older ACE, with its splash and Monitor | [The BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/using/emulator) |
+| **6502-PICOVDP (BIOS 2.x)** | `AC6502 BIOS v2.2`, straight to BASIC | This guide |
+| **TMS9918A (BIOS 1.8)** | The older ACE, with its splash and Monitor | [The BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/using/emulator) |
 
 An ACE in this guide is always the 6502-PICOVDP. If the machine greets you with
-a splash and a countdown instead of the logo and `AC6502 BIOS v2.1`, it has the
+a splash and a countdown instead of the logo and `AC6502 BIOS v2.2`, it has the
 other card fitted, and half of what these pages say won't work on it.
 
 Changing the card is a power cycle with the other card in the slot: memory is
@@ -65,6 +65,24 @@ cleared and the machine boots again, while the CompactFlash card and the clock
 card's memory are kept. The choice is saved, in the desktop app's settings or
 in the browser. A ROM you loaded yourself stays loaded whichever card you pick;
 only the built-in BIOS follows the card.
+
+## The clock
+
+The emulated machine runs at 1 MHz, as a real one does. **Settings → CPU
+CLOCK** offers 2 MHz as well, under this note:
+
+> 1 MHz is the AC6502 standard, and every machine is tested at it. 2 MHz is
+> untested on most machines. At 2 MHz the SID, which runs on the CPU's clock,
+> plays an octave higher.
+
+Leave it at 1 MHz. 2 MHz is there for trying a program on a machine whose
+builder has moved the clock jumper, as [the ACE's chapter](/the-ace#the-dip-switches-and-the-jumpers)
+describes, and every program, listing and timing in this guide is written for
+1 MHz. The setting is not on the toolbar, so it can't be changed by a stray
+click. The choice is saved with the rest of the settings, and a settings file
+saved by an older release starts at 1 MHz. On the command line the same choice
+is `--freq 1` or `--freq 2`, and in a frame on a web page it is `freq=1` or
+`freq=2`.
 
 ## On a handheld
 
@@ -262,6 +280,12 @@ written against a real stick plays on the keypad, and a game written at the
 keypad plays on a real stick, with nothing to change in the listing.
 :::
 
+The emulated keyboard shares its wires with the sticks as the real one does, so
+a key typed while a stick is held, from a gamepad or the keypad, can wait until
+the stick is let go: with the stick held left, every letter waits.
+[Keys typed while a stick is held](/assembly/input#keys-typed-while-a-stick-is-held)
+explains which keys and why.
+
 ## Talking to real hardware
 
 The desktop app can open one of your computer's serial ports. Pick the port,
@@ -313,7 +337,7 @@ inside a page of yours:
 ```
 
 That's the whole integration. `vdp=picovdp` fits the video card, and with it
-BIOS 2.1; `prg` is your program; `autostart` boots the machine as the page
+BIOS 2.2; `prg` is your program; `autostart` boots the machine as the page
 opens; `autotype` types `RUN` once BASIC is up, so a visitor gets a game rather
 than an `OK` prompt and a puzzle. `%5Cr` is how a `\r` — the Enter key —
 survives being written in a URL.
@@ -463,7 +487,7 @@ Install**). It's how you'd fold the emulator into a build:
 
 | Flag | What it does |
 |---|---|
-| `--vdp picovdp` | Fit the 6502-PICOVDP, and boot BIOS 2.1 — give it every time |
+| `--vdp picovdp` | Fit the 6502-PICOVDP, and boot BIOS 2.2 — give it every time |
 | `--peer-rts ignore` | Stop holding typed or piped input back while the machine asks it to wait. Input waits unless you say this, which is how a long listing arrives whole. `--no-flow-control` is the older spelling, deprecated |
 | `--cts cable` | Move the ACE's `CTS EN` jumper to the cable (`--dcd cable` for `DCD EN`). Ground is the default and how the boards are built |
 | `--cf disk.img` | Attach a card image |
@@ -471,6 +495,7 @@ Install**). It's how you'd fold the emulator into a build:
 | `--cart-save Game.sav` | Where a flash cart's writes go. The default is the image's name with `.sav` |
 | `--no-cart-save` | Discard a flash cart's writes when it stops |
 | `--console video` | Use the video screen instead of the serial console |
+| `--freq 2` | Run the CPU at 2 MHz instead of 1 MHz. Every machine is tested at 1 MHz; see [The clock](#the-clock) |
 | `--screenshot shot.png` | Save the last picture on the screen when it stops (with `--console video`) |
 | `--timeout 30s` | Stop after a while, whatever happens |
 
@@ -481,4 +506,5 @@ you named.
 There's a debugger in there too — breakpoints, single-stepping, memory
 watching, screenshots — which the [cross-development
 chapters](/crossdev/debugging) of this guide use heavily. A snapshot of a
-machine remembers which video card it had, and loads only on that card.
+machine remembers which video card it had, and loads only on that card. It
+remembers its clock too, and comes back at the speed it was saved at.

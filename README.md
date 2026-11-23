@@ -119,9 +119,8 @@ The extractor needs a `6502-BIOS` source tree (`--bios <path>`, `$BIOS_SRC`, or
 `~/Developer/Assembly/6502-BIOS`). The generated files are committed, so
 building the site and running CI need only this repo.
 
-The committed files were extracted from **tag `v2.0.2`** (`bd476a8`), which
-carries no version bump — the firmware still reports `v2.0`, which is what the
-footer and `check:voice` hold every page to. Each file's `$meta.sources`
+The committed files were extracted from **tag `v2.2.0`** (`1603ed1`), which
+reports `v2.2` — what the footer and `check:voice` hold every page to. Each file's `$meta.sources`
 records the SHA-256 of every BIOS file it was read from, so a fact base built
 from a different tree is visible in the diff rather than only in the numbers.
 
@@ -426,8 +425,8 @@ it somewhere out of the way, which leaves the BIOS repository alone. Each one
 either prints `ok` or tells you what moved.
 
 ```sh
-mkdir -p /tmp/bios-v2.0.2 && git -C ../6502-BIOS archive v2.0.2 | tar -x -C /tmp/bios-v2.0.2
-npm run facts -- --bios /tmp/bios-v2.0.2 # re-extract data/ from the BIOS source
+mkdir -p /tmp/bios-v2.2.0 && git -C ../6502-BIOS archive v2.2.0 | tar -x -C /tmp/bios-v2.2.0
+npm run facts -- --bios /tmp/bios-v2.2.0 # re-extract data/ from the BIOS source
 git diff data/        # read this — it is the release notes, mechanically derived
 npm run cards         # the five generated cards follow the fact base
 npm run diagrams      # so do nine of the fifteen diagrams
@@ -461,7 +460,7 @@ disagrees with the fact base:
 
 ```
 docs/reference/glossary.md:24  stale BIOS version — "BIOS v1.6"
-       the firmware reports v2.0; re-run `npm run facts` and fix the page
+       the firmware reports v2.2; re-run `npm run facts` and fix the page
 ```
 
 Links into `cards/archive/` are exempt, since naming an old version is what
@@ -553,7 +552,7 @@ Those three are the gates that matter here, and the build one is not optional:
 fails to build takes the whole site down with it**, both editions at once.
 
 `npm run verify` and `npm run preflight` are a different story. This branch pins
-emulator 2.7.0 and `main` pins 3.5.0, and preflight fails on anything else — so
+emulator 2.7.0 and `main` pins 3.7.0, and preflight fails on anything else — so
 whichever edition's emulator you have installed, the other one's sample and
 screenshot checks cannot run on that machine. CI runs both, each against the
 release its branch names. That pin is the reason these are two branches and not

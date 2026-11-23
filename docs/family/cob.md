@@ -5,12 +5,14 @@ const cob = facts.systems.systems.find(s => s.id === 'cob')
 
 # COB — Computer On a Backplane
 
-::: info The COB runs BIOS 1.7
+::: info The COB runs BIOS 1.8
 The COB's video cards are the TMS9918A and its Pico9918 stand-in.
-It runs BIOS 1.7, not the BIOS 2.1 this guide describes, so its programming
+It runs BIOS 1.8, not the BIOS 2.2 this guide describes, so its programming
 reference — the Monitor, the TMS9918A's screen modes, the BIOS it boots — is the
 [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/family/cob) of this guide,
-which holds for 1.7: 1.7 changed only two of the boot probes.
+which holds for 1.8: 1.7 changed two of the boot probes, and 1.8 adds the
+three changes BIOS 2.2 brought, among them a `GOTO` that runs from the prompt
+and [the serial mirror](/using/serial#the-serial-mirror).
 The rest of this page is about the machine itself, and holds either way.
 :::
 

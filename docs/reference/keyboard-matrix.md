@@ -56,13 +56,22 @@ firmware does not know the difference.
 ## Why reading a joystick is fiddly
 
 Those two ports are the same sixteen VIA lines the joysticks use. The
-controller is scanning them ten times a second, so a program that reads the
-port directly will catch the scan mid-sweep and get nonsense.
+controller sweeps the grid every 10 ms, a hundred times a second, so a program
+that reads the port directly will catch the scan mid-sweep and get nonsense.
 
 That is why the Kernal's joystick routines disable the encoder, wait for it to
 let go of the lines, read, and enable it again — and why doing it by hand needs
-the same `KBDisable` → read → `KBEnable` dance, with about 200 µs of settling
-in the middle. [The keyboard and the sticks](/assembly/input) has the code.
+the same `KBDisable` → read → `KBEnable` dance, with about 250 µs of settling
+in the middle at 1 MHz. [The keyboard and the sticks](/assembly/input) has the
+code.
+
+The sharing works the other way too. While a stick is held, its lines are held
+low, and the controller can't use them: a key whose code needs one of those
+lines high waits until the stick lets go, and a key in a column joystick 1
+holds, or a row joystick 2 holds, can't be seen until then. Read a stick once a
+frame, not in a tight loop, or the controller never has the lines long enough
+to read the keyboard. [Keys typed while a stick is held](/assembly/input#keys-typed-while-a-stick-is-held)
+has the details.
 
 ## Scanning it yourself
 

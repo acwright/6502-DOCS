@@ -30,7 +30,8 @@ What happens next depends on whether the ACE has a screen. With no video card
 fitted, press reset and the header appears in your terminal, and the whole
 session happens there. With one, the console stays on the screen: what you type
 in the terminal still reaches BASIC, but the answers appear on the ACE's own
-display. Type `PRINT 2+2` in the terminal and watch it land.
+display. Type `PRINT 2+2` in the terminal and watch it land. To have the
+answers in the terminal as well, turn on [the serial mirror](#the-serial-mirror).
 
 ::: tip Esc versus your terminal
 Some terminal programs swallow <kbd>Esc</kbd> for their own menus. If pressing
@@ -40,6 +41,72 @@ it does the same job. See [The keyboard](/using/keyboard).
 
 Note that this is a *second* way in, not a replacement: the ACE's own keyboard
 stays live the whole time, and both feed the same BASIC.
+
+## The serial mirror
+
+With a video card fitted, BASIC answers on the screen, so a terminal can type
+to the ACE but can't see what it says back. One `POKE` changes that:
+
+```
+POKE 774,2
+```
+
+From then on, everything the console prints on the screen goes down the serial
+line as well, and the `OK` after the `POKE` is the first thing to arrive in the
+terminal. `POKE 774,0` turns it off again, and so does every boot: reset and
+power-on both leave it off. A program that should always report to a terminal
+turns it on in its first lines:
+
+<<< @/../samples/basic/mirror.bas{basic}
+
+The table appears on the screen, and the terminal shows the same lines, with
+the `OK` after them:
+
+```
+SEVEN TIMES TABLE
+ 1 X 7 = 7
+ 2 X 7 = 14
+ 3 X 7 = 21
+ 4 X 7 = 28
+ 5 X 7 = 35
+
+OK
+```
+
+The terminal gets a copy of everything the console prints: what `PRINT` and
+`LIST` print, error messages, the `OK` prompt, the echo of every line typed at
+either keyboard or in the terminal, Wozmon, and the report a `BRK` prints. It
+does not get what is drawn without printing: `CLS`, `LOCATE`, `COLOR`, `VPOKE`
+and the graphics statements reach the screen and nothing else. So the terminal
+holds a record of what was printed, not a picture of the screen. Text that
+`LOCATE` placed in the middle of the screen arrives in the terminal straight
+after whatever was printed before it.
+
+The `POKE` does nothing on a machine with no video card, where the terminal is
+the console already, or on one with no serial card. The mirror is new in BIOS
+2.2, and in 1.8 on the machines with the older video card; an older BIOS
+ignores the `POKE`.
+
+**It slows a program that does nothing but print.** At 19200 baud each
+character takes about half a millisecond to go down the cable, so with the
+mirror on the console prints at most about 1,900 characters a second. BASIC
+printing whole lines to the screen alone manages about 3,300 a second, so a
+loop that only prints runs about 1.7 times slower. A program that prints a line
+now and then between other work hardly notices.
+
+**A terminal that stops the line never stops the screen.** A terminal holding
+the ACE off with flow control, or a serial card wired to take its CTS from a
+cable with nothing at the other end, stops the serial chip sending. If the chip
+hasn't taken a character after about 7.6 milliseconds, the mirror drops that
+character and carries on with the screen. While the line stays stopped, each
+character after it gets one try and is dropped if the line is still stopped,
+so the screen keeps its speed. The terminal misses those characters; the screen
+has all of them. The mirror also drops characters while a paste is filling
+BASIC's input buffer, so the paste still arrives whole.
+
+**A file transfer keeps it.** `LOAD`, `SAVE`, `BLOAD` and `BSAVE` over the
+cable use the serial line for the transfer, and put the mirror back as it was
+when the transfer ends.
 
 ## Moving files over the cable
 

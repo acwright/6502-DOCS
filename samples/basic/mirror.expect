@@ -1,0 +1,16 @@
+# "The serial mirror" — POKE 774,2 on a video console sends what the screen
+# prints down the serial line too.
+#
+# The expect and absent lines read the serial line, not the screen: a video
+# case that names a `wait` waits for it there. The table and the OK after it
+# arrive; the RUN typed before line 20 does not, because every boot leaves the
+# mirror off. The screen shows the same table, which CLS cleared the way for
+# without sending anything down the line.
+console video
+wait OK
+expect ^SEVEN TIMES TABLE$
+expect ^ 1 X 7 = 7\s*$
+expect ^ 5 X 7 = 35\s*$
+absent ^RUN
+screen ^SEVEN TIMES TABLE\s*$
+screen ^ 5 X 7 = 35\s*$

@@ -195,7 +195,10 @@ function discoverExamples() {
  *   console storage      run on a machine with a prepared CompactFlash image attached
  *   console video storage  both: a video console with that image attached
  *   timeout 30s          per-assertion budget (default 20s)
- *   wait <pattern>       what RUN waits for before asserting (default OK, serial only)
+ *   wait <pattern>       what RUN waits for before asserting (default OK). On a
+ *                        video case it is waited for in the serial stream, which
+ *                        carries the console only while the serial mirror is on
+ *                        (POKE 774,2), and `expect`/`absent` then read that stream
  *   cycles <n>           emulated cycles to advance after each send (video only)
  *   send <text>          extra input after RUN, before asserting (repeatable)
  *   expect <pattern>     console output must match this regex
@@ -246,6 +249,7 @@ function parseExpect(path) {
         break
       case 'wait':
         spec.wait = value
+        spec.waitSerial = true
         break
       case 'cycles':
         spec.cycles = Number(value)
@@ -580,6 +584,15 @@ function runCase(machine, caseFile) {
    * pinned and turbo is not paced against the host.
    */
   const send = (text, waitFor) => {
+    // A video case that names a `wait` is watching the serial line: with the
+    // serial mirror on, what the screen prints goes down the cable as well, and
+    // that copy is a console stream like a serial machine's. Program lines are
+    // still typed blind, since the mirror is off until the program turns it on.
+    if (video && spec.waitSerial && waitFor === spec.wait) {
+      const sent = machine.dbg(['send', text, '--wait', waitFor, '--timeout', spec.timeout])
+      machine.settle(spec.cycles)
+      return sent
+    }
     if (video) {
       const sent = machine.dbg(['send', text, '--timeout', spec.timeout], { required: true })
       machine.settle(spec.cycles)

@@ -3,11 +3,11 @@
     "title": "Kernal jump table",
     "description": "Every published entry point, in slot order, plus the reserved range.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "2.1",
+    "biosVersion": "2.2",
     "sources": [
       {
         "file": "Kernal.asm",
-        "sha256": "46f5fcdd5666507b4647f7039fb1458c003c58adff9d74e11ebd89e32d3e11f7"
+        "sha256": "22873b0a9eca23c10c82b33b1c64797f05e698721354b7825fabdfc0a6a990b4"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
@@ -32,13 +32,13 @@
     "Filesystem",
     "Keyboard / GPIO",
     "Serial (6551)",
-    "RTC (DS1511Y)",
+    "RTC (DS1511Y or DS1501)",
     "CompactFlash Storage",
     "System",
     "Disk banking / addressed storage",
     "General output utilities (console = IO_MODE-routed via Chrout)",
     "Keyboard encoder control (raw port access)",
-    "NVRAM save slots (DS1511Y)",
+    "NVRAM save slots (DS1511Y or DS1501)",
     "PICOVDP (2.0)"
   ],
   "slots": [
@@ -56,6 +56,12 @@
       ],
       "modifies": [
         "Flags"
+      ],
+      "notes": [
+        "Bit 0 chooses the console: 0 = video, 1 = serial.  Bit 1 (IO_MIRROR), with",
+        "the video console, sends each character to serial as well — see SerialMirror.",
+        "Every boot with a console leaves it clear.",
+        "Preserves: A, X, Y"
       ],
       "source": "Kernal.asm:33",
       "check": "GREP"
@@ -140,7 +146,7 @@
       "target": "SetIOModeImpl",
       "description": "Set IO_MODE",
       "input": [
-        "A = mode (bit 0: 0=video, 1=serial)"
+        "A = mode (bit 0: 0=video, 1=serial; bit 1: mirror video to serial)"
       ],
       "source": "Kernal.asm:39",
       "check": "GREP"
@@ -644,7 +650,7 @@
       "address": "$A05A",
       "addressDecimal": 41050,
       "slot": 30,
-      "group": "RTC (DS1511Y)",
+      "group": "RTC (DS1511Y or DS1501)",
       "summary": "Read RTC time",
       "target": "RtcReadTimeImpl",
       "description": "Read current time from DS1511Y",
@@ -662,7 +668,7 @@
       "address": "$A05D",
       "addressDecimal": 41053,
       "slot": 31,
-      "group": "RTC (DS1511Y)",
+      "group": "RTC (DS1511Y or DS1501)",
       "summary": "Read RTC date",
       "target": "RtcReadDateImpl",
       "description": "Read current date from DS1511Y",
@@ -681,7 +687,7 @@
       "address": "$A060",
       "addressDecimal": 41056,
       "slot": 32,
-      "group": "RTC (DS1511Y)",
+      "group": "RTC (DS1511Y or DS1501)",
       "summary": "Set RTC time",
       "target": "RtcWriteTimeImpl",
       "description": "Set DS1511Y time",
@@ -699,7 +705,7 @@
       "address": "$A063",
       "addressDecimal": 41059,
       "slot": 33,
-      "group": "RTC (DS1511Y)",
+      "group": "RTC (DS1511Y or DS1501)",
       "summary": "Set RTC date",
       "target": "RtcWriteDateImpl",
       "description": "Set DS1511Y date",
@@ -718,7 +724,7 @@
       "address": "$A066",
       "addressDecimal": 41062,
       "slot": 34,
-      "group": "RTC (DS1511Y)",
+      "group": "RTC (DS1511Y or DS1501)",
       "summary": "Read NVRAM byte",
       "target": "RtcReadNVRAMImpl",
       "description": "Read a byte from DS1511Y NVRAM",
@@ -739,7 +745,7 @@
       "address": "$A069",
       "addressDecimal": 41065,
       "slot": 35,
-      "group": "RTC (DS1511Y)",
+      "group": "RTC (DS1511Y or DS1501)",
       "summary": "Write NVRAM byte",
       "target": "RtcWriteNVRAMImpl",
       "description": "Write a byte to DS1511Y NVRAM",
@@ -1075,7 +1081,7 @@
       "address": "$A09F",
       "addressDecimal": 41119,
       "slot": 53,
-      "group": "NVRAM save slots (DS1511Y)",
+      "group": "NVRAM save slots (DS1511Y or DS1501)",
       "summary": "Slot status (X=slot) → A=status, Y=owner ID",
       "target": "NvStatImpl",
       "description": "Report a slot's state",
@@ -1097,7 +1103,7 @@
       "address": "$A0A2",
       "addressDecimal": 41122,
       "slot": 54,
-      "group": "NVRAM save slots (DS1511Y)",
+      "group": "NVRAM save slots (DS1511Y or DS1501)",
       "summary": "Copy a valid slot's payload (X=slot, A/Y=dest lo/hi)",
       "target": "NvReadImpl",
       "description": "Copy a valid slot's 14 payload bytes to the caller's buffer",
@@ -1119,7 +1125,7 @@
       "address": "$A0A5",
       "addressDecimal": 41125,
       "slot": 55,
-      "group": "NVRAM save slots (DS1511Y)",
+      "group": "NVRAM save slots (DS1511Y or DS1501)",
       "summary": "Write a slot (X=slot, A/Y=src lo/hi, NV_ID=owner ID)",
       "target": "NvWriteImpl",
       "description": "Write a slot: owner ID, checksum and 14 payload bytes",
@@ -1140,7 +1146,7 @@
       "address": "$A0A8",
       "addressDecimal": 41128,
       "slot": 56,
-      "group": "NVRAM save slots (DS1511Y)",
+      "group": "NVRAM save slots (DS1511Y or DS1501)",
       "summary": "Zero all 16 bytes of a slot (X=slot)",
       "target": "NvEraseImpl",
       "description": "Zero all 16 bytes of a slot, so nothing of the old save is legible",
@@ -1161,7 +1167,7 @@
       "address": "$A0AB",
       "addressDecimal": 41131,
       "slot": 57,
-      "group": "NVRAM save slots (DS1511Y)",
+      "group": "NVRAM save slots (DS1511Y or DS1501)",
       "summary": "Lowest slot owned by A ($00 = first free) → X",
       "target": "NvFindImpl",
       "description": "Find the lowest slot whose owner ID is A",
@@ -1185,7 +1191,7 @@
       "address": "$A0AE",
       "addressDecimal": 41134,
       "slot": 58,
-      "group": "NVRAM save slots (DS1511Y)",
+      "group": "NVRAM save slots (DS1511Y or DS1501)",
       "summary": "Erase all 16 slots",
       "target": "NvFormatImpl",
       "description": "Erase all 16 slots",

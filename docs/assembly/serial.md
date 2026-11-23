@@ -34,6 +34,40 @@ laptop at the same time.
 There is no `SerialPrintStr`, which is why the mode gets flipped around
 `PrintStr` like that. For a single character `SerialChrout` is simpler.
 
+### Mirroring the screen
+
+The third mode sends everything to both places. Bit 1 of `IO_MODE`,
+`IO_MIRROR`, with bit 0 clear, keeps the console on the screen and sends every
+character `Chrout` puts there down the cable as well:
+
+```asm
+  lda #IO_MIRROR                ; 2: the screen, copied to the serial port
+  jsr SetIOMode
+```
+
+That is the serial mirror, which BASIC turns on with `POKE 774,2`;
+[Serial and a terminal](/using/serial#the-serial-mirror) says what a terminal
+sees with it on. Every boot, reset included, clears the bit. It does nothing
+when bit 0 is set, since the serial port is the console already, or when
+`HW_SC` says there is no serial card. Only `Chrout` is copied: `VideoChroutRaw`,
+and anything else that writes to the video card directly, reaches the screen
+alone.
+
+The mirror never holds the screen up. It waits up to about 7.6 ms (at 1 MHz)
+for the chip to take each byte; a byte the chip hasn't taken by then is dropped,
+and bit 7 of `MIRROR_STALL` (`$0379`) is set. While that bit is set, each byte
+gets one look at the chip and is dropped if the line is still stopped, and the
+first byte the chip takes clears it. A terminal holding CTS high, or a card that
+takes CTS from a cable with nothing on the end, therefore costs the terminal its
+characters and costs the screen almost nothing. Over the input buffer's high mark the
+mirror drops bytes as `SerialChrout` does, so a paste arriving at the same time
+still lands. `XModemLoad` and `XModemSave` put `IO_MODE` back as they found it,
+the mirror bit included.
+
+With output that never pauses, the cable sets the pace: a byte takes about
+520 µs at 19200 baud, so the console prints at most about 1,900 characters a
+second with the mirror on.
+
 ## The registers, if you want them
 
 | | |

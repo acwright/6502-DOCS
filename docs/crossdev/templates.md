@@ -30,7 +30,7 @@ and [the next chapter](/crossdev/makefile) explains the rest.
 
 ::: tip `make VDP=1`, every time
 Written as plain `make`, the template builds for the older ACE with a TMS9918A
-video card and BIOS 1.7 — the machine the
+video card and BIOS 1.8 — the machine the
 [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/crossdev/templates)
 of this guide describes. Everything in this guide wants `make VDP=1`, and
 everything below assumes it.
@@ -41,8 +41,8 @@ everything below assumes it.
 | File | What it's for |
 |---|---|
 | `Program.asm` | The source. Yours to replace. |
-| `6502-VDP.inc` | Every Kernal routine, hardware register and constant, by name, for BIOS 2.1 and the 6502-PICOVDP |
-| `6502.inc` | The same for the older ACE with a TMS9918A and BIOS 1.7 |
+| `6502-VDP.inc` | Every Kernal routine, hardware register and constant, by name, for BIOS 2.2 and the 6502-PICOVDP |
+| `6502.inc` | The same for the older ACE with a TMS9918A and BIOS 1.8 |
 | `6502.cfg` | The linker configuration — where things go in memory |
 | `Makefile` | The build |
 

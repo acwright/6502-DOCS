@@ -3,85 +3,85 @@
     "title": "Boot sequence",
     "description": "Version, the header, and the path from reset to the BASIC prompt.",
     "generator": "scripts/extract-facts.mjs",
-    "biosVersion": "2.1",
+    "biosVersion": "2.2",
     "sources": [
       {
         "file": "BIOS.inc",
-        "sha256": "895f48505c4783709a7aa690e1d1c0a4eadd324a85232177dda1f9a135bba0cc"
+        "sha256": "9d00acde7eb3a96519d9b21a39439f9c0be73213422ee418e1c107292db6be91"
       },
       {
         "file": "Kernal.asm",
-        "sha256": "46f5fcdd5666507b4647f7039fb1458c003c58adff9d74e11ebd89e32d3e11f7"
+        "sha256": "22873b0a9eca23c10c82b33b1c64797f05e698721354b7825fabdfc0a6a990b4"
       },
       {
         "file": "BASIC.asm",
-        "sha256": "c133cb0b08ea95d67d1a1a8ddef75394675b71f810456320af52e191615da66b"
+        "sha256": "bdb6c556faee0ea1076dea1676bf284e6a36d1436988776011af1fe05f1cbe80"
       }
     ],
     "warning": "Generated file — edit the BIOS source and re-run the extractor, not this."
   },
   "version": {
     "major": 2,
-    "minor": 1,
-    "string": "v2.1",
-    "source": "BIOS.inc:165-166",
+    "minor": 2,
+    "string": "v2.2",
+    "source": "BIOS.inc:168-169",
     "check": "GREP"
   },
   "headerMatchesVersion": true,
   "headerDerivedFromVersion": true,
   "header": [
-    "AC6502 BIOS v2.1",
+    "AC6502 BIOS v2.2",
     "BASIC v2.0 nnnnn BYTES FREE"
   ],
   "strings": [
     {
       "symbol": "MsgHeader",
-      "text": "AC6502 BIOS v2.1",
+      "text": "AC6502 BIOS v2.2",
       "derivedFrom": "BIOS_VERSION_MAJOR/MINOR",
-      "source": "BASIC.asm:9550",
+      "source": "BASIC.asm:9557",
       "check": "GREP"
     },
     {
       "symbol": "MsgBasicV2",
       "text": "BASIC v2.0 ",
-      "source": "BASIC.asm:9555",
+      "source": "BASIC.asm:9562",
       "check": "GREP"
     },
     {
       "symbol": "MsgBytesFreeNL",
       "text": " BYTES FREE",
-      "source": "BASIC.asm:9558",
+      "source": "BASIC.asm:9565",
       "check": "GREP"
     }
   ],
   "sequence": [
     {
       "step": "Reset the stack pointer to $FF",
-      "source": "Kernal.asm:1116"
-    },
-    {
-      "step": "KernalInit — probe and initialize every card, interrupts still disabled",
-      "source": "Kernal.asm:1117"
-    },
-    {
-      "step": "Beep — guarded, skipped when no SID is fitted",
-      "source": "Kernal.asm:1119"
-    },
-    {
-      "step": "If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)",
       "source": "Kernal.asm:1125"
     },
     {
+      "step": "KernalInit — probe and initialize every card, interrupts still disabled",
+      "source": "Kernal.asm:1126"
+    },
+    {
+      "step": "Beep — guarded, skipped when no SID is fitted",
+      "source": "Kernal.asm:1128"
+    },
+    {
+      "step": "If BOOT_VECTOR ($035B) is non-zero, jmp through it (cartridge takeover)",
+      "source": "Kernal.asm:1134"
+    },
+    {
       "step": "Halt if neither video nor serial is present — there is no console to boot into",
-      "source": "Kernal.asm:1130"
+      "source": "Kernal.asm:1139"
     },
     {
       "step": "Mark BASIC cold, so the header prints and the variables clear; the program at $0800 is kept",
-      "source": "Kernal.asm:1137"
+      "source": "Kernal.asm:1146"
     },
     {
       "step": "cli, then into BASIC, which prints the header on whichever console this machine has",
-      "source": "Kernal.asm:1150"
+      "source": "Kernal.asm:1159"
     }
   ]
 }

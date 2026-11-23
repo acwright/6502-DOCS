@@ -12,11 +12,11 @@ manual will not run here, and the keys are not where that manual says they are.
 What carries over is the way you program the thing, which is the part that was
 worth having.
 
-::: info The KIM runs BIOS 1.7
+::: info The KIM runs BIOS 1.8
 The KC Monitor was written for an ACE running BIOS 1.x, and the KIM and the
-KIMulator on this page run BIOS 1.7 under it. The Kernal
-calls, memory map and character set a keyed-in program works with are the same
-in 1.7 as in 1.6, and the [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/addons/kim)
+KIMulator on this page run BIOS 1.8 under it. The Kernal
+calls, memory map and character set a keyed-in program works with are 1.6's,
+with nothing moved, and the [BIOS 1.6 edition](https://acwright.github.io/6502-DOCS/v1/addons/kim)
 of this guide is their reference. What this page says about the keypad itself
 holds either way.
 :::
@@ -163,6 +163,10 @@ enough on a desktop to stand all four panels beside each other with no switch,
 and a desktop application on
 [its releases page](https://github.com/acwright/6502-KIMULATOR) that can load
 your own `KC Monitor.bin` and attach a real serial port.
+
+Both run the KIM at 1 MHz, and both have a **CPU CLOCK** setting that offers
+2 MHz as well. Its note says why to leave it alone: "1 MHz is the AC6502
+standard, and the KIM is tested at it. 2 MHz is untested on the KIM."
 
 ## The serial monitor
 

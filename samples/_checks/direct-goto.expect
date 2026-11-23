@@ -1,0 +1,11 @@
+# GOTO, GOSUB, IF ... THEN linenum and ON ... GOTO typed at the prompt run the
+# program (6502-BIOS #3, fixed in 2.2.0 and 1.8). Before that they printed OK
+# and ran nothing. A direct GOTO keeps the variables, which is the difference
+# from RUN: the RUN the harness sends last prints A IS 0. A direct GOSUB comes
+# back to the rest of the line it was typed on.
+expect ^A IS 99\s*$
+expect ^IN THE SUBROUTINE$
+expect ^BACK AT THE PROMPT$
+expect ^A IS 7\s*$
+expect ^A IS 3\s*$
+expect ^A IS 0\s*$

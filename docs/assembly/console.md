@@ -106,7 +106,11 @@ recent one, so read until `BufferSize` returns zero and keep the last.
 
 One byte at `$0306` decides where output goes: bit 0 clear means the screen,
 set means the serial port. The Kernal sets it at power-on to whatever the
-machine has, and `SetIOMode` and `GetIOMode` read and write it.
+machine has, and `SetIOMode` and `GetIOMode` read and write it. Bit 1,
+`IO_MIRROR`, counts only with bit 0 clear: set, it keeps the console on the
+screen and copies every character down the serial line as well, which is
+[the serial mirror](/assembly/serial#mirroring-the-screen). Every boot clears
+it.
 
 ```asm
   jsr GetIOMode

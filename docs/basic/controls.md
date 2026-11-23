@@ -88,6 +88,20 @@ halfway down the list.
 after that is arithmetic.
 :::
 
+Keep the loop to one pass a frame, too. Each `JOY` borrows the keyboard's
+wires for a moment, so a loop that does nothing but read a stick leaves the
+keyboard little time to be read. `VSYNC` at the top of the game loop holds it
+to one pass a frame.
+
+::: info A key typed while a stick is held waits for the stick
+On the ACE the sticks and the keyboard share the same wires. A key pressed
+while a stick is held can wait until the stick is let go, and then arrives, so
+`INKEY` sees it late but never wrong. Which keys wait depends on which way the
+stick is pushed: with it held left every letter waits, and with it held right
+nothing does. [Keys typed while a stick is held](/assembly/input#keys-typed-while-a-stick-is-held)
+has the whole list.
+:::
+
 <Diagram
   name="joystick-bits"
   caption="One byte, eight controls. Pushing the stick up turns bit 4 off, not on — which is why every test in this chapter ends in = 0."

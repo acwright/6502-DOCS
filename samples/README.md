@@ -103,7 +103,7 @@ One directive per line; `#` starts a comment. A case must assert something.
 | `screen <regex>` | `dbg screen text` must match — implies `console video` |
 | `picture <hash>` | `dbg screen hash` must be exactly these eight hex digits — implies `console video` |
 | `console serial\|video\|storage\|video storage` | Which machine to run on (default `serial`) |
-| `wait <regex>` | What `RUN` waits for before asserting (default `OK`, serial only) |
+| `wait <regex>` | What `RUN` waits for before asserting (default `OK`). On a video case it is waited for in the serial stream — see *The serial mirror* below |
 | `cycles <n>` | Emulated cycles to advance after each send (video only, default 2,000,000) |
 | `send <text>` | Extra input after `RUN`, before asserting (repeatable) |
 | `timeout <duration>` | Per-assertion budget (default `20s`) |
@@ -131,6 +131,17 @@ settled. The machine is deterministic — pinned clock, fixed cycle budgets — 
 the same program draws the same frame, and one wrong pixel changes the digest.
 To take a new one, run the case with a placeholder digest and copy the one the
 failure reports, after looking at the picture (`npm run screens` shows it).
+
+### The serial mirror
+
+A video case that names a `wait` is watching the serial line rather than only
+the screen. `POKE 774,2` turns on the BIOS's serial mirror, which copies what
+the video console prints down the serial line as well, so with it on the line
+carries a console stream like a serial machine's. `RUN` and each `send` wait
+for the pattern there, and `expect` and `absent` read what arrived. The program
+lines are still typed blind, since every boot leaves the mirror off.
+`basic/mirror` is the case: it asserts the table on the line and on the
+screen, and that the `RUN` typed before the `POKE` never reached the line.
 
 ### Cartridge cases
 
@@ -189,7 +200,7 @@ The method is the one in
   and nothing said about flow control, which is on unless `--peer-rts ignore`
   takes it away. The harness refuses one whose `dbg info` doesn't show flow
   control on and the PICOVDP fitted (or, on a serial console, no card at all),
-  or that didn't print `AC6502 BIOS v2.0` on the way to the prompt. Reading it
+  or that didn't print the header of the BIOS the fact base names (`AC6502 BIOS v2.2`) on the way to the prompt. Reading it
   back rather than asking for it is the point: without flow control a pasted
   listing loses lines, intermittently.
 - **Boot once.** One emulator per console mode, clock pinned with

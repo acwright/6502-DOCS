@@ -16,7 +16,7 @@ cases=${1:-tests}
 port=6510
 state=$(mktemp)
 
-# One machine for the whole run, on the PICOVDP (which boots BIOS 2.0), and with
+# One machine for the whole run, on the PICOVDP (which boots BIOS 2.x), and with
 # the clock pinned so a run here and a run on a build server land in the same
 # place. Flow control is on unless --peer-rts ignore turns it off, which is what
 # lets a long listing typed in arrive whole; don't turn it off here. It starts

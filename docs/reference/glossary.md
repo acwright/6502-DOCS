@@ -21,7 +21,7 @@ See [Banked RAM](/assembly/banking).
 runs it. Version 2.0 here. See [Programming in BASIC](/basic/).
 
 **BIOS** — the whole 32 KB of ROM: Kernal, BASIC and Wozmon together. This
-guide describes BIOS v2.1. Not the same sense as a PC's
+guide describes BIOS v2.2. Not the same sense as a PC's
 BIOS, which is only a boot loader.
 
 **CompactFlash** — the storage card. Behaves as an 8-bit IDE drive; the BIOS
@@ -113,6 +113,11 @@ writes and `LOAD` reads.
 checksum and 14 bytes of save. Programs that keep to the slots can share the
 clock card. Not the same as a *slot*. See [The clock](/assembly/clock#save-slots) and
 [Time and memory that lasts](/basic/clock#save-slots).
+
+**serial mirror** — a copy of everything the screen's console prints, sent
+down the serial line as well, so a terminal can see BASIC's answers. `POKE
+774,2` turns it on; every boot turns it off. See
+[Serial and a terminal](/using/serial#the-serial-mirror).
 
 **sprite** — a small picture the video card draws over the layers at any
 position, without disturbing what is underneath. There are 64.
