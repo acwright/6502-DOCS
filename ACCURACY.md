@@ -1140,6 +1140,17 @@ serial are false at the machine itself.
 | **Status** | `fixed` — the keyboard matrix page gives a hundred times a second and about 250 µs, and points at the new sections of the assembly input chapter: *Once a frame, and twice to be sure* (read a stick once a frame, debounce over two reads), *Three ways to read the controls*, *Keys typed while a stick is held* and *Polling for keys instead of taking the interrupt*. The BASIC controls page says to keep the game loop to one pass a frame with `VSYNC`, and that a key typed while a stick is held waits for the stick. The emulator chapter says its keyboard does the same. 6502-EMULATOR 3.7.0 models the controller; this site is verified against it. |
 | **Consequence** | A game written and tested in the emulator could read its stick in a tight loop, or poll for keys once in a while, and work there, then lose keys or have no keyboard at all on a real ACE. A player holding a stick saw typed keys go missing for a moment and come back, and nothing on the site explained it. |
 
+### A85 — An emulator that typed a held key again on every auto-repeat — **fixed**
+
+| | |
+|---|---|
+| **Claim** | 6502-EMULATOR before 3.7.1: a key held on the computer's keyboard typed again each time the computer auto-repeated it, so holding <kbd>K</kbd> typed `KKK…`. No page said whether a held key repeats on the machine. |
+| **Truth** | The board's keyboard has no repeat. The AB Controller's sweep types a key only as it goes down (a key pressed now that was not pressed at the last sweep), so a held key types once and again only after it has been released. A PS/2 keyboard does repeat: the keyboard resends a held key's make code, the controller queues every make code it receives, and it never sends the keyboard a command that would turn the repeat off. |
+| **Source** | 6502-ACE `Firmware/AB Controller/src/main.cpp`, `scanMatrix()` (*Phase 3*, a key event on the press transition only) and `ps2ToAscii()` (a key queued for every make code); the KEH and IB Controllers carry the same code. 6502-EMULATOR `v3.7.1`, `0482ae6`. |
+| **Check** | GREP — the firmware, as above. RUN — headless, `--console video --vdp picovdp`, after boot: `dbg input key KeyK --down` three times with 300,000 cycles between (the first press, then two the way a host's auto-repeat sends them), then `--up`: 3.7.0 leaves `KKK` on the prompt line, 3.7.1 leaves `K`. |
+| **Status** | `fixed` — 6502-EMULATOR 3.7.1 ignores a second press of a held key on the matrix keyboard and still types each one on the PS/2 port. The keyboard chapter's *Holding a key down* says a key types once and that a PS/2 keyboard repeats; the emulator chapter says the emulator ignores the computer's auto-repeat. |
+| **Consequence** | A program tested in the emulator could count on a held key repeating, a cursor or a menu that kept moving while an arrow was held, and find it moving one step at a time on the machine. |
+
 ### O6 — A picture of a moving program cannot be pinned from the harness — **resolved**
 
 | | |

@@ -284,7 +284,8 @@ The emulated keyboard shares its wires with the sticks as the real one does, so
 a key typed while a stick is held, from a gamepad or the keypad, can wait until
 the stick is let go: with the stick held left, every letter waits.
 [Keys typed while a stick is held](/assembly/input#keys-typed-while-a-stick-is-held)
-explains which keys and why.
+explains which keys and why. Holding a key types it once, as on the board,
+whose keyboard has no repeat: the emulator ignores your computer's auto-repeat.
 
 ## Talking to real hardware
 

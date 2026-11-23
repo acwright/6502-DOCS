@@ -34,6 +34,16 @@ laptop keeps whatever case it was written in. The keyboard is the limit here,
 not BASIC.
 :::
 
+## Holding a key down
+
+A key types once, when it goes down, however long you hold it. There is no
+auto-repeat: to move the cursor ten places, press the arrow ten times, and to
+rub out a word, press <kbd>Backspace</kbd> once for each letter.
+
+A PS/2 keyboard plugged in instead of the built-in one does repeat. That
+comes from the keyboard itself, which sends a held key again and again, and
+the controller types each one.
+
 ## Stopping things
 
 | Key | What it does |
